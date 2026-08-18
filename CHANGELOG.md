@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-17
+
+Rebuild Sensor Node Autorun and unify plugin action selection
+
+### Added
+
+- Added plugin-backed Sensor Node Autorun playlists with independent per-row delay, repeat, and interval scheduling, optional first-detection gating, stored playlist execution, Dashboard workspace execution, and boot/offline operation.
+- Added persistent Autorun runtime state so waiting, running, stopping, and idle status can be reported through the normal Sensor Node status path.
+
+### Changed
+
+- Replaced the legacy Sensor Node Autorun engine, callbacks, configuration, and Dashboard workflow with the generic plugin action and operation framework while preserving stored-file execution and low-throughput start/stop control.
+- Standardized plugin action discovery across Archive Replay, IQ Record, IQ Playback, IQ Inspection, reusable detector selection, and the TSI Detector workbench: query a complete tagged action catalog once per selected node, cache it on the Dashboard, and filter locally by hardware, source, plugin, and `ACTION_HARDWARE` compatibility.
+- Replaced detector Type/Mode navigation with Hardware → Plugin → Action so detector selection is based on concrete execution requirements instead of subjective classification metadata; reusable detector selection also supports `All Compatible` and `No Hardware` for hardware-independent actions.
+- Updated the TSI Detector workbench to expose only detector actions tagged for the RF raster viewer while keeping non-raster detector actions available to reusable workflows such as Autorun and Archive Replay.
+- Updated IQ Inspection to use Source → Plugin → Action while IQ Record, IQ Playback, Archive Replay, and TSI Detector use Hardware → Plugin → Action, keeping hardware visible only where it is part of the user’s execution choice.
+- Updated plugin action compatibility to rely on canonical capability tags and `ACTION_HARDWARE` metadata rather than action names or plugin-specific UI assumptions, allowing third-party plugins to participate without hard-coded integration.
+- Updated Autorun boot behavior to use the plugin-backed default playlist with a boot-only grace delay, and removed the obsolete legacy Autorun interval configuration.
+
+### Fixed
+
+- Fixed Sensor Node shutdown hangs by making plugin operation cancellation, stop, and finalization clear shared running state and complete teardown consistently.
+- Fixed Autorun status synchronization when changing selected Sensor Nodes so Dashboard controls follow the authoritative heartbeat state instead of stale local state.
+- Fixed Stop All Plugin Operations so an active Autorun scheduler, detector gate, delayed rows, and repeating launches are terminated before current operations are stopped, preventing new actions from starting after the stop request.
+
 ## 2026-8-13
 
 Migrate Archive Replay to plugin detectors and expand remote file transfer

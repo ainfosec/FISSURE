@@ -111,22 +111,30 @@ def setup_decorator(func):
     return wrapper
 
 def run_decorator(func):
-    """Decorator to wrap the run() method of Operation class.
-    """
+    """Decorator to wrap the run() method of Operation class."""
     async def wrapper(self) -> None:
         self._running = None
         if not self._setup_complete:
             self.logger.error("Operation environment not set up. Call setup() before run().")
             return
+
         self.logger.info(f"Operation {self.__class__.__name__} run started.")
         self._running = True
+
         try:
             self.logger.info(f"Running operation {self.__class__.__name__}...")
             await func(self)
+        except asyncio.CancelledError:
+            # Cancellation is a stop condition, not an operation failure. Most
+            # importantly, never leave running() stuck True after cancellation.
+            self._stop = True
+            raise
         except Exception as e:
             self.logger.error(f"Error during operation run: {e}")
+        finally:
+            self._running = False
+
         self.logger.info(f"Operation {self.__class__.__name__} run complete.")
-        self._running = False
         return
     return wrapper
 

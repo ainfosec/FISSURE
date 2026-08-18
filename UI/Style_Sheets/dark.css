@@ -2114,8 +2114,7 @@ QLabel#label_archive_replay_empty_icon {
 QFrame#frame_archive_replay_setup,
 QFrame#frame_archive_replay_parameters,
 QFrame#frame_archive_replay_triggers,
-QFrame#frame_archive_replay_playlist,
-QFrame#frame_archive_replay_run {
+QFrame#frame_archive_replay_playlist {
     background-color: @color2;
     border: 1px solid @color3;
     border-radius: 10px;
@@ -2124,8 +2123,7 @@ QFrame#frame_archive_replay_run {
 QLabel#label_archive_replay_setup_badge,
 QLabel#label_archive_replay_parameters_badge,
 QLabel#label_archive_replay_triggers_badge,
-QLabel#label_archive_replay_playlist_badge,
-QLabel#label_archive_replay_run_badge {
+QLabel#label_archive_replay_playlist_badge {
     qproperty-alignment: AlignCenter;
     color: @color4;
     background-color: @color3;
@@ -2141,8 +2139,7 @@ QLabel#label_archive_replay_run_badge {
 QLabel#label_archive_replay_setup_title,
 QLabel#label_archive_replay_parameters_title,
 QLabel#label_archive_replay_triggers_title,
-QLabel#label_archive_replay_playlist_title,
-QLabel#label_archive_replay_run_title {
+QLabel#label_archive_replay_playlist_title {
     color: @color4;
     background-color: transparent;
     border: none;
@@ -2152,8 +2149,7 @@ QLabel#label_archive_replay_run_title {
 QLabel#label_archive_replay_setup_subtitle,
 QLabel#label_archive_replay_parameters_subtitle,
 QLabel#label_archive_replay_triggers_subtitle,
-QLabel#label_archive_replay_playlist_subtitle,
-QLabel#label_archive_replay_run_subtitle {
+QLabel#label_archive_replay_playlist_subtitle {
     color: @color4;
     background-color: transparent;
     border: none;
@@ -2300,4 +2296,192 @@ QLabel#label_sensor_nodes_fn_empty_icon {
     border: 1px solid @color3;
     border-radius: 24px;
     padding: 6px;
+}
+
+
+/* ==========================================================
+   Sensor Nodes - Autorun Workflow
+   ========================================================== */
+
+QLabel#label_sensor_nodes_autorun_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_sensor_nodes_autorun_triggers,
+QFrame#frame_sensor_nodes_autorun_setup,
+QFrame#frame_sensor_nodes_autorun_parameters,
+QFrame#frame_sensor_nodes_autorun_timing,
+QFrame#frame_sensor_nodes_autorun_playlist {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sensor_nodes_autorun_triggers_badge,
+QLabel#label_sensor_nodes_autorun_setup_badge,
+QLabel#label_sensor_nodes_autorun_parameters_badge,
+QLabel#label_sensor_nodes_autorun_timing_badge,
+QLabel#label_sensor_nodes_autorun_playlist_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_sensor_nodes_autorun_triggers_title,
+QLabel#label_sensor_nodes_autorun_setup_title,
+QLabel#label_sensor_nodes_autorun_parameters_title,
+QLabel#label_sensor_nodes_autorun_timing_title,
+QLabel#label_sensor_nodes_autorun_playlist_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sensor_nodes_autorun_triggers_subtitle,
+QLabel#label_sensor_nodes_autorun_setup_subtitle,
+QLabel#label_sensor_nodes_autorun_parameters_subtitle,
+QLabel#label_sensor_nodes_autorun_timing_subtitle,
+QLabel#label_sensor_nodes_autorun_playlist_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_sensor_nodes_autorun_parameters,
+QWidget#scrollAreaWidgetContents_sensor_nodes_autorun_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_sensor_nodes_autorun_parameters {
+    border: 1px solid @color13;
+}
+
+QLabel[uiRole="autorunParameterLabel"] {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox[uiRole="autorunParameterEditor"],
+QSpinBox[uiRole="autorunParameterEditor"],
+QComboBox[uiRole="autorunParameterEditor"],
+QLineEdit[uiRole="autorunParameterEditor"] {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox[uiRole="autorunParameterEditor"] {
+    font: 9pt "Ubuntu";
+}
+
+QLabel[uiRole="autorunParameterInfo"] {
+    font: 8pt "Ubuntu";
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_query,
+QPushButton#pushButton_sensor_nodes_autorun_customize,
+QPushButton#pushButton_sensor_nodes_autorun_timing_add {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_query:hover,
+QPushButton#pushButton_sensor_nodes_autorun_customize:hover,
+QPushButton#pushButton_sensor_nodes_autorun_timing_add:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_query:pressed,
+QPushButton#pushButton_sensor_nodes_autorun_customize:pressed,
+QPushButton#pushButton_sensor_nodes_autorun_timing_add:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_query:disabled,
+QPushButton#pushButton_sensor_nodes_autorun_customize:disabled,
+QPushButton#pushButton_sensor_nodes_autorun_timing_add:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #18a522,
+        stop:1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_start_stop:hover {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #22bd2d,
+        stop:1 #079811
+    );
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #d9534f,
+        stop:1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #e86763,
+        stop:1 #c9302c
+    );
+}
+
+QPushButton#pushButton_sensor_nodes_autorun_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
 }

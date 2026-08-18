@@ -1013,12 +1013,7 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def __init_Sensor_Nodes__(self):
-        """
-        Initializes Sensor Nodes Tabs on Dashboard launch.
-        """
-        ##### Sensor Nodes #####
-        # Load Autorun Playlists into ComboBox
-        SensorNodesTabSlots._slotSensorNodesAutorunRefreshClicked(self)
+        """Initializes Sensor Nodes tabs on Dashboard launch."""
         tree_model = QtWidgets.QFileSystemModel()
         tree_model.setRootPath(os.path.expanduser("~"))
         self.ui.treeView_sensor_nodes_fn_local_files.setModel(tree_model)
@@ -1035,9 +1030,8 @@ class Dashboard(QtWidgets.QMainWindow):
                 "/Archive_Replay",
             ]
         )
-        self.ui.dateTimeEdit_sensor_nodes_autorun.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.ui.textEdit_sensor_nodes_autorun_repetition_interval.setPlainText("-1")
 
+        SensorNodesTabSlots.initialize_sensor_nodes_autorun_controls(self)
         SensorNodesTabSlots.initialize_sensor_nodes_file_navigation_controls(self)
 
 
@@ -1539,128 +1533,33 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def configureTSI_Hardware(self):
-        """
-        Refresh TSI hardware-dependent UI after the selected Sensor Node changes.
-
-        Detector hardware is populated directly here because Detector methods are
-        hardware-driven.
-
-        Conditioner hardware is refreshed through TSITabSlots because the current
-        Conditioner source determines whether hardware is required:
-            File / Folder  -> No Hardware Required
-            Frequencies    -> selected-node SDR hardware
-
-        Do not clear Conditioner actions/parameters here. Those should only be
-        cleared when the user changes Conditioner source/category/method/hardware
-        context.
-        """
+        """Refresh TSI selected-node-dependent controls."""
         try:
-            selected_node_uid = str(getattr(self, "selected_node_uid", "") or "").strip()
-
-            # ------------------------------------------------------------
-            # No selected node: clear Detector hardware and reset caches.
-            # Conditioner gating/hardware display is handled below/finally.
-            # ------------------------------------------------------------
-            if not selected_node_uid:
-                detector_combo = getattr(self.ui, "comboBox_tsi_detector_hardware", None)
-
-                if detector_combo is not None:
-                    detector_combo.blockSignals(True)
-                    detector_combo.clear()
-                    detector_combo.blockSignals(False)
-
-                self._tsi_last_configured_node_uid = ""
-                self._tsi_last_hardware_display_names = []
-
-                TSITabSlots.clear_tsi_detector_methods(self)
-                return
-
-            # ------------------------------------------------------------
-            # Load selected-node hardware display names for TSI.
-            # ------------------------------------------------------------
-            hardware_display_names = (
-                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                    self,
-                    "tsi",
-                )
+            TSITabSlots.update_tsi_detector_selected_node_gate(self)
+        except Exception as e:
+            self.logger.debug(
+                "Could not update unified TSI Detector selected-node gate: "
+                f"{e}"
             )
 
-            previous_node_uid = getattr(self, "_tsi_last_configured_node_uid", "")
-            previous_hardware_display_names = getattr(
-                self,
-                "_tsi_last_hardware_display_names",
-                [],
-            )
-
-            hardware_changed = (
-                previous_node_uid != selected_node_uid
-                or previous_hardware_display_names != hardware_display_names
-            )
-
-            if not hardware_changed:
-                return
-
-            # ------------------------------------------------------------
-            # Refresh Detector hardware combo while preserving selection
-            # when possible.
-            # ------------------------------------------------------------
-            detector_combo = self.ui.comboBox_tsi_detector_hardware
-            current_detector_hardware = detector_combo.currentText()
-
-            detector_combo.blockSignals(True)
-            detector_combo.clear()
-            detector_combo.addItems(hardware_display_names)
-
-            if (
-                current_detector_hardware
-                and detector_combo.findText(current_detector_hardware) >= 0
-            ):
-                detector_combo.setCurrentText(current_detector_hardware)
-
-            detector_combo.blockSignals(False)
-
-            # ------------------------------------------------------------
-            # Refresh Conditioner hardware display only.
-            # This must not clear actions/parameters.
-            # ------------------------------------------------------------
+        try:
             TSITabSlots.update_tsi_conditioner_method_hardware_combo(self)
+            TSITabSlots.update_tsi_conditioner_selected_node_gate(self)
+        except Exception as e:
+            self.logger.debug(
+                "Could not update TSI Conditioner selected-node state: "
+                f"{e}"
+            )
 
-            # ------------------------------------------------------------
-            # Cache current hardware state.
-            # ------------------------------------------------------------
-            self._tsi_last_configured_node_uid = selected_node_uid
-            self._tsi_last_hardware_display_names = list(hardware_display_names)
-
-            # ------------------------------------------------------------
-            # Detector methods depend on hardware, so reset Detector query state.
-            # ------------------------------------------------------------
-            TSITabSlots.clear_tsi_detector_methods(self)
-            TSITabSlots.reset_tsi_detector_customization(self)
-
-        finally:
-            try:
-                TSITabSlots.update_tsi_detector_selected_node_gate(self)
-            except Exception as e:
-                self.logger.debug(
-                    f"Could not update unified TSI Detector selected-node gate: {e}"
-                )
-
-            try:
-                TSITabSlots.update_tsi_conditioner_selected_node_gate(self)
-            except Exception as e:
-                self.logger.debug(
-                    f"Could not update TSI Conditioner selected-node gate: {e}"
-                )
-
-            try:
-                TSITabSlots.update_tsi_fe_selected_node_gate(self)
-                TSITabSlots.update_tsi_fe_run_node(self)
-                TSITabSlots.update_tsi_fe_locality_controls(self)
-            except Exception as e:
-                self.logger.debug(
-                    "Could not update TSI Feature Extractor "
-                    f"selected-node state: {e}"
-                )
+        try:
+            TSITabSlots.update_tsi_fe_selected_node_gate(self)
+            TSITabSlots.update_tsi_fe_run_node(self)
+            TSITabSlots.update_tsi_fe_locality_controls(self)
+        except Exception as e:
+            self.logger.debug(
+                "Could not update TSI Feature Extractor "
+                f"selected-node state: {e}"
+            )
 
 
     def configurePD_Hardware(self):
@@ -1894,151 +1793,61 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def configureArchiveHardware(self):
-        """
-        Configure both legacy and plugin-backed Archive Replay hardware selectors.
-
-        Preserve current selections across periodic selected-node state refreshes.
-        Only reset the plugin-backed action/customization state when the selected
-        Sensor Node changes or the selected replay hardware actually changes.
-        """
+        """Refresh Archive Replay hardware without disturbing a stable action selection."""
         hardware_combo = self.ui.comboBox_archive_replay_hardware
 
-        current_node_uid = str(
-            getattr(
-                self,
-                "selected_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
-
-        previous_node_uid = str(
-            getattr(
-                self,
-                "archive_replay_hardware_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
-
-        node_changed = (
-            current_node_uid != previous_node_uid
-        )
-
-        self.archive_replay_hardware_node_uid = (
-            current_node_uid
-        )
+        current_node_uid = str(getattr(self, "selected_node_uid", "") or "").strip()
+        previous_node_uid = str(getattr(self, "archive_replay_hardware_node_uid", "") or "").strip()
+        node_changed = current_node_uid != previous_node_uid
+        self.archive_replay_hardware_node_uid = current_node_uid
 
         hardware_items = []
-
         if current_node_uid:
-            hardware_items = (
-                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                    self,
-                    "archive",
-                )
-            )
+            hardware_items = fissure.utils.hardware.selectedNodeHardwareDisplayNames(self, "archive")
 
-        def _refresh_combo_preserving_selection(
-            combo,
-            new_items,
-        ):
-            current_text = str(
-                combo.currentText()
-                or ""
-            ).strip()
+        current_hardware = str(hardware_combo.currentText() or "").strip()
+        existing_items = [str(hardware_combo.itemText(index)) for index in range(hardware_combo.count())]
 
-            existing_items = [
-                str(
-                    combo.itemText(
-                        index
-                    )
-                )
-                for index in range(
-                    combo.count()
-                )
-            ]
+        hardware_changed = False
 
-            if existing_items == new_items:
-                return False
-
-            combo.blockSignals(
-                True
-            )
-
+        if existing_items != hardware_items:
+            hardware_combo.blockSignals(True)
             try:
-                combo.clear()
-                combo.addItems(
-                    new_items
-                )
+                hardware_combo.clear()
+                hardware_combo.addItems(hardware_items)
 
-                if current_text:
-                    restored_index = combo.findText(
-                        current_text,
-                        QtCore.Qt.MatchExactly,
-                    )
-
-                    if restored_index >= 0:
-                        combo.setCurrentIndex(
-                            restored_index
-                        )
-
-                    elif combo.count() > 0:
-                        combo.setCurrentIndex(
-                            0
-                        )
-
-                elif combo.count() > 0:
-                    combo.setCurrentIndex(
-                        0
-                    )
-
+                restore_index = hardware_combo.findText(current_hardware, QtCore.Qt.MatchExactly)
+                if restore_index >= 0:
+                    hardware_combo.setCurrentIndex(restore_index)
+                elif hardware_combo.count() > 0:
+                    hardware_combo.setCurrentIndex(0)
             finally:
-                combo.blockSignals(
-                    False
-                )
+                hardware_combo.blockSignals(False)
 
-            new_text = str(
-                combo.currentText()
-                or ""
-            ).strip()
+            hardware_changed = str(hardware_combo.currentText() or "").strip() != current_hardware
 
-            return new_text != current_text
+        if node_changed:
+            self.archive_replay_action_catalog = []
+            self.archive_replay_filtered_actions = []
+            self.archive_replay_action_query_pending = False
+            self.archive_replay_action_query_context = ""
+            self.archive_replay_action_query_node_uid = ""
 
-        _refresh_combo_preserving_selection(
-            hardware_combo,
-            hardware_items,
-        )
+        if node_changed or hardware_changed:
+            ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(self)
 
-        action_hardware_changed = (
-            _refresh_combo_preserving_selection(
-                hardware_combo,
-                hardware_items,
-            )
-        )
-
-        if (
-            node_changed
-            or action_hardware_changed
-        ):
-            ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(
-                self
-            )
-
-        ArchiveTabSlots.update_archive_replay_selected_node_gate(
-            self
-        )
+        ArchiveTabSlots.update_archive_replay_selected_node_gate(self)
 
 
     def configureSensorNodeHardware(self):
-        """
-        Update Sensor Node Tab Based on Hardware
-        """
-        # Do not retrieve plugins for Meshtastic
+        """Update Sensor Node tab state for the selected Sensor Node."""
+        SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
+
+        # Do not retrieve plugins for Meshtastic automatically.
         if selected_node_is_ip(self):
             pass
-            # LibraryTabSlots._slotLibraryPluginPluginRefresh(self)  # async, make user press refresh for now
-            # SensorNodesPluginsTabSlots._slotSensorNodesPluginsPluginsListRefresh(self)  # Future
+            # LibraryTabSlots._slotLibraryPluginPluginRefresh(self)
+            # SensorNodesPluginsTabSlots._slotSensorNodesPluginsPluginsListRefresh(self)
 
 
     def configureSelectedNodeHardware(self):
@@ -2054,27 +1863,13 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def configureHighThroughputWidgets(self):
-        """
-        Enables Dashboard widgets for high throughput, reliable network connections (IP).
-        """
-        # Autorun Tab
-        self.ui.checkBox_sensor_nodes_autorun_run_as_stored.setEnabled(True)
-        self.ui.checkBox_sensor_nodes_autorun_run_as_stored.setChecked(False)
-        SensorNodesTabSlots._slotSensorNodeAutorunRunAsStoredChecked(self)
-        self.ui.pushButton_sensor_nodes_autorun_start.setEnabled(True)  # Need to check if this is running
-        self.ui.pushButton_sensor_nodes_autorun_stop.setEnabled(False)  # Need to check if this is running
+        """Refresh Dashboard controls for a high-throughput Sensor Node connection."""
+        SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
 
     def configureLowThroughputWidgets(self):
-        """
-        Enables Dashboard widgets for low throughput, unreliable network connections (Meshtastic).
-        """
-        # Autorun Tab
-        self.ui.checkBox_sensor_nodes_autorun_run_as_stored.setEnabled(False)
-        self.ui.checkBox_sensor_nodes_autorun_run_as_stored.setChecked(True)
-        SensorNodesTabSlots._slotSensorNodeAutorunRunAsStoredChecked(self)
-        self.ui.pushButton_sensor_nodes_autorun_start.setEnabled(True)
-        self.ui.pushButton_sensor_nodes_autorun_stop.setEnabled(True)
+        """Refresh Dashboard controls for a low-throughput Sensor Node connection."""
+        SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
 
     def refreshStatusBarText(self):
@@ -3318,14 +3113,11 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_classifier_classification_model.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierClassificationModelChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_detector_type.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorTypeChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_detector_mode.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorModeChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_detector_hardware.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_detector_plugin.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorPluginChanged(dashboard)
     )
     dashboard.ui.comboBox_tsi_detector_method.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorMethodChanged(dashboard)
@@ -4045,17 +3837,26 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_iq_record_hardware.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_RecordActionHardwareChanged(dashboard)
     )
+    dashboard.ui.comboBox_iq_record_plugin.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordPluginChanged(dashboard)
+    )
     dashboard.ui.comboBox_iq_record_method.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_RecordMethodChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_playback_hardware.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_PlaybackActionHardwareChanged(dashboard)
     )
+    dashboard.ui.comboBox_iq_playback_plugin.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackPluginChanged(dashboard)
+    )
     dashboard.ui.comboBox_iq_playback_method.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_PlaybackMethodChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_inspection_source.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_InspectionSourceChanged(dashboard)
+    )
+    dashboard.ui.comboBox_iq_inspection_plugin.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionPluginChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_inspection_action.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_InspectionActionChanged(dashboard)
@@ -4587,6 +4388,9 @@ def connect_archive_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_archive_replay_hardware.currentIndexChanged.connect(
         lambda: ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(dashboard)
     )
+    dashboard.ui.comboBox_archive_replay_plugin.currentIndexChanged.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayPluginChanged(dashboard)
+    )
     dashboard.ui.comboBox_archive_replay_method.currentIndexChanged.connect(
         lambda: ArchiveTabSlots._slotArchiveReplayMethodChanged(dashboard)
     )
@@ -4713,17 +4517,11 @@ def connect_archive_slots(dashboard: Dashboard):
 
 def connect_sensor_nodes_slots(dashboard: Dashboard):
     # Check Box
-    dashboard.ui.checkBox_sensor_nodes_autorun_delay.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodeAutorunDelayChecked(dashboard)
-    )
-    dashboard.ui.checkBox_sensor_nodes_autorun_run_as_stored.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodeAutorunRunAsStoredChecked(dashboard)
+    dashboard.ui.checkBox_sensor_nodes_autorun_timing_repeat.toggled.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunTimingRepeatChanged(dashboard)
     )
 
     # Combo Box
-    dashboard.ui.comboBox_sensor_nodes_autorun.currentIndexChanged.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistsChanged(dashboard)
-    )
     dashboard.ui.comboBox_sensor_nodes_fn_local_folder.currentIndexChanged.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalFolderChanged(dashboard)
     )
@@ -4736,23 +4534,17 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_sensor_nodes_listeners_filesystem_type.currentIndexChanged.connect(
         dashboard.ui.stackedWidget_sensor_nodes_listeners_filesytem.setCurrentIndex
     )
+    dashboard.ui.comboBox_sensor_nodes_autorun_hardware.currentIndexChanged.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sensor_nodes_autorun_plugin.currentIndexChanged.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPluginChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sensor_nodes_autorun_action.currentIndexChanged.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunActionChanged(dashboard)
+    )
 
     # Push Button
-    dashboard.ui.pushButton_sensor_nodes_autorun_remove.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_import.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunImportClicked(dashboard, filepath="")
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_export.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunExportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_view.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunViewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_refresh.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunRefreshClicked(dashboard)
-    )
     dashboard.ui.pushButton_sensor_nodes_fn_local_delete.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalDeleteClicked(dashboard)
     )
@@ -4771,18 +4563,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_sensor_nodes_fn_local_view.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalViewClicked(dashboard)
     )
-    dashboard.ui.pushButton_sensor_nodes_autorun_triggers_edit.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunTriggersEditClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_start.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_stop.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunStopClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_sensor_nodes_autorun_overwrite.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunOverwriteClicked(dashboard)
-    )
     dashboard.ui.pushButton_sensor_nodes_fn_refresh.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationRefreshClicked(dashboard)
     )
@@ -4794,9 +4574,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_transfer.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalTransferClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_autorun_triggers_clear.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAutorunTriggersClearClicked(dashboard)
     )
     dashboard.ui.pushButton_sensor_nodes_alerts_clear.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAlertsClearClicked(dashboard)
@@ -4839,6 +4616,45 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_reports_save.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesReportsSaveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_query.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_timing_add.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunTimingAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_detector_add.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunDetectorAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_detector_remove.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunDetectorRemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_remove.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistRemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_clear.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistClearClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_import.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistImportClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_export.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistExportClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_query.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_load.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistLoadClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_playlist_save_to_node.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunPlaylistSaveToNodeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_autorun_start_stop.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesAutorunStartStopClicked(dashboard)
     )
 
     # create connections for sensor nodes pluginsList tab

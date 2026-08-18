@@ -5,39 +5,7 @@ import fissure.utils
 from .UI_Types import UI_Types
 
 
-TSI_DETECTOR_TYPES = [
-    ("rf", "RF"),
-    ("wifi", "Wi-Fi"),
-    ("bluetooth", "Bluetooth"),
-    ("protocol", "Protocol"),
-    ("ml", "ML"),
-    ("time", "Time"),
-    ("system", "System"),
-    ("sensor", "Sensor"),
-    ("environmental", "Environmental"),
-    ("location", "Location"),
-    ("network", "Network"),
-]
-
-
-TSI_DETECTOR_MODES = [
-    ("fixed", "Fixed"),
-    ("sweep", "Sweep"),
-    ("channel_hop", "Channel Hop"),
-    ("lock", "Lock"),
-    ("passive", "Passive"),
-    ("file", "File"),
-    ("simulation", "Simulation"),
-    ("scheduled", "Scheduled"),
-    ("threshold", "Threshold"),
-    ("change", "Change"),
-    ("condition", "Condition"),
-    ("presence", "Presence"),
-    ("proximity", "Proximity"),
-    ("boundary", "Boundary"),
-    ("match", "Match"),
-    ("request", "Request"),
-]
+DETECTOR_QUERY_CONTEXT = "detector.selection.actions"
 
 
 def _safe_float(value, default=0.0):
@@ -70,12 +38,18 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
         self.return_value = None
         self.detector_config = detector_config or {}
 
-        self.action_records = []
+        self.action_catalog = []
+        self.filtered_actions = []
         self.parameter_widgets = {}
         self.current_schema = {}
         self.selected_plugin = ""
         self.selected_action = ""
         self.customized = False
+        self.query_pending = False
+        self.query_node_uid = ""
+        self.pending_plugin = ""
+        self.pending_action = ""
+        self.query_button_text = str(self.pushButton_detector_selection_query.text() or "Query").strip()
 
         self.__connect_slots__()
         self._initialize_controls()
@@ -86,123 +60,259 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
 
 
     def __connect_slots__(self):
-        self.comboBox_detector_selection_type.currentIndexChanged.connect(
-            self._selection_filter_changed
-        )
-        self.comboBox_detector_selection_mode.currentIndexChanged.connect(
-            self._selection_filter_changed
-        )
-        self.comboBox_detector_selection_hardware.currentIndexChanged.connect(
-            self._selection_filter_changed
-        )
-        self.comboBox_detector_selection_action.currentIndexChanged.connect(
-            self._action_changed
-        )
-        self.pushButton_detector_selection_query.clicked.connect(
-            self._query_clicked
-        )
-        self.pushButton_detector_selection_customize.clicked.connect(
-            self._customize_clicked
-        )
-        self.pushButton_detector_selection_save.clicked.connect(
-            self._save_clicked
-        )
+        self.comboBox_detector_selection_hardware.currentIndexChanged.connect(self._hardware_changed)
+        self.comboBox_detector_selection_plugin.currentIndexChanged.connect(self._plugin_changed)
+        self.comboBox_detector_selection_action.currentIndexChanged.connect(self._action_changed)
+        self.pushButton_detector_selection_query.clicked.connect(self._query_clicked)
+        self.pushButton_detector_selection_customize.clicked.connect(self._customize_clicked)
+        self.pushButton_detector_selection_save.clicked.connect(self._save_clicked)
 
 
     def _initialize_controls(self):
-        self.comboBox_detector_selection_type.clear()
-        for value, label in TSI_DETECTOR_TYPES:
-            self.comboBox_detector_selection_type.addItem(label, value)
-
-        self.comboBox_detector_selection_mode.clear()
-        for value, label in TSI_DETECTOR_MODES:
-            self.comboBox_detector_selection_mode.addItem(label, value)
-
-        rf_index = self.comboBox_detector_selection_type.findData("rf")
-        if rf_index >= 0:
-            self.comboBox_detector_selection_type.setCurrentIndex(rf_index)
-
-        sweep_index = self.comboBox_detector_selection_mode.findData("sweep")
-        if sweep_index >= 0:
-            self.comboBox_detector_selection_mode.setCurrentIndex(sweep_index)
-
+        self.comboBox_detector_selection_plugin.clear()
+        self.comboBox_detector_selection_plugin.setEnabled(False)
         self.comboBox_detector_selection_action.clear()
         self.comboBox_detector_selection_action.setEnabled(False)
         self.pushButton_detector_selection_customize.setEnabled(False)
         self.pushButton_detector_selection_save.setEnabled(False)
 
         self.scrollArea_detector_selection_parameters.setWidgetResizable(True)
-        self.scrollArea_detector_selection_parameters.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
-        self.scrollArea_detector_selection_parameters.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAsNeeded
-        )
+        self.scrollArea_detector_selection_parameters.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea_detector_selection_parameters.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
 
         self._clear_parameter_controls()
         self.label_detector_selection_setup_info.setText(
-            "Select detector settings, then query available actions."
+            "Query available detector actions, then choose a plugin and action."
         )
 
 
     def _populate_hardware(self):
+        """Populate detector hardware filters using the same model as Autorun."""
         combo = self.comboBox_detector_selection_hardware
-        current = combo.currentText().strip()
-
-        combo.blockSignals(True)
-        combo.clear()
+        current_text = str(combo.currentText() or "").strip()
+        hardware_records = []
 
         if getattr(self.dashboard, "selected_node_uid", ""):
             try:
-                hardware_names = fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                    self.dashboard,
-                    "tsi",
-                )
-            except Exception as e:
+                for display_name in fissure.utils.hardware.selectedNodeHardwareDisplayNames(self.dashboard, "tsi"):
+                    hardware_type, *_ = fissure.utils.hardware.hardwareDisplayNameLookup(
+                        self.dashboard, display_name, "tsi"
+                    )
+                    hardware_records.append(
+                        (str(display_name or "").strip(), str(hardware_type or "").strip())
+                    )
+            except Exception as error:
                 self.dashboard.logger.debug(
-                    f"Could not populate detector selection hardware: {e}"
+                    f"Could not populate detector selection hardware: {error}"
                 )
-                hardware_names = []
 
-            combo.addItems(hardware_names)
+        combo.blockSignals(True)
+        combo.clear()
+        combo.addItem("All Compatible", {"mode": "all", "hardware_type": ""})
+        combo.addItem("No Hardware", {"mode": "none", "hardware_type": ""})
 
-        if current and combo.findText(current) >= 0:
-            combo.setCurrentText(current)
-        elif combo.count() > 0:
-            combo.setCurrentIndex(0)
+        for display_name, hardware_type in hardware_records:
+            combo.addItem(
+                display_name,
+                {
+                    "mode": "hardware",
+                    "hardware_type": hardware_type,
+                    "display_name": display_name,
+                },
+            )
 
+        restore_index = combo.findText(current_text, QtCore.Qt.MatchExactly)
+        combo.setCurrentIndex(restore_index if restore_index >= 0 else 0)
         combo.blockSignals(False)
 
-        has_hardware = combo.count() > 0
-        combo.setEnabled(has_hardware)
-        self.pushButton_detector_selection_query.setEnabled(has_hardware)
+        has_node = bool(str(getattr(self.dashboard, "selected_node_uid", "") or "").strip())
+        combo.setEnabled(has_node)
+        self.pushButton_detector_selection_query.setEnabled(has_node)
 
 
-    def _selection_filter_changed(self):
-        self._clear_actions()
-        self.label_detector_selection_setup_info.setText(
-            "Query matching detector actions for the selected type, mode, and hardware."
-        )
+    def _hardware_changed(self):
+        """Refilter the cached detector catalog when the hardware filter changes."""
+        self.customized = False
+        self._clear_parameter_controls()
+        self.pushButton_detector_selection_save.setEnabled(False)
+        self._filter_action_catalog()
+
+        if self.action_catalog:
+            self.label_detector_selection_setup_info.setText(
+                "Detector actions filtered by the selected hardware."
+            )
+        else:
+            self.label_detector_selection_setup_info.setText(
+                "Query available detector actions for the selected Sensor Node."
+            )
 
 
-    def _clear_actions(self):
-        self.action_records = []
+    def _plugin_changed(self):
+        """Populate detector actions for the selected plugin."""
+        self.customized = False
+        self._clear_parameter_controls()
+        self.pushButton_detector_selection_save.setEnabled(False)
+        self._populate_actions_for_plugin()
+
+
+    def _clear_action_selection(self):
+        """Clear Plugin/Action selection without discarding the cached catalog."""
+        self.filtered_actions = []
         self.selected_plugin = ""
         self.selected_action = ""
         self.customized = False
 
+        self.comboBox_detector_selection_plugin.blockSignals(True)
+        self.comboBox_detector_selection_plugin.clear()
+        self.comboBox_detector_selection_plugin.blockSignals(False)
+        self.comboBox_detector_selection_plugin.setEnabled(False)
+
         self.comboBox_detector_selection_action.blockSignals(True)
         self.comboBox_detector_selection_action.clear()
         self.comboBox_detector_selection_action.blockSignals(False)
-
         self.comboBox_detector_selection_action.setEnabled(False)
+
         self.pushButton_detector_selection_customize.setEnabled(False)
         self.pushButton_detector_selection_save.setEnabled(False)
         self._clear_parameter_controls()
 
 
+    def _filter_action_catalog(self, preferred_plugin="", preferred_action=""):
+        """Filter cached detector actions by hardware and rebuild Plugin/Action."""
+        hardware_record = self.comboBox_detector_selection_hardware.currentData()
+        mode = "all"
+        selected_type = ""
+
+        if isinstance(hardware_record, dict):
+            mode = str(hardware_record.get("mode", "all") or "all").strip().lower()
+            selected_type = str(hardware_record.get("hardware_type", "") or "").strip().lower()
+
+        filtered = []
+
+        for action_record in self.action_catalog:
+            if not isinstance(action_record, dict):
+                continue
+
+            plugin_name = str(action_record.get("plugin", "") or "").strip()
+            action_name = str(action_record.get("action", "") or "").strip()
+            if not plugin_name or not action_name:
+                continue
+
+            action_hardware = [
+                str(value or "").strip()
+                for value in (action_record.get("hardware", []) or [])
+                if str(value or "").strip()
+            ]
+
+            if mode == "none" and action_hardware:
+                continue
+
+            if mode == "hardware" and action_hardware:
+                normalized = [value.lower() for value in action_hardware]
+                if not any(selected_type in value or value in selected_type for value in normalized):
+                    continue
+
+            filtered.append(action_record)
+
+        self.filtered_actions = filtered
+
+        plugin_combo = self.comboBox_detector_selection_plugin
+        current_plugin = str(preferred_plugin or plugin_combo.currentText() or "").strip()
+        plugins = sorted(
+            {
+                str(record.get("plugin", "") or "").strip()
+                for record in filtered
+                if str(record.get("plugin", "") or "").strip()
+            },
+            key=str.lower,
+        )
+
+        plugin_combo.blockSignals(True)
+        plugin_combo.clear()
+        plugin_combo.addItems(plugins)
+        restore_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+        plugin_combo.setCurrentIndex(restore_index if restore_index >= 0 else (0 if plugins else -1))
+        plugin_combo.blockSignals(False)
+        plugin_combo.setEnabled(bool(plugins))
+
+        self._populate_actions_for_plugin(preferred_action=preferred_action)
+
+
+    def _populate_actions_for_plugin(self, preferred_action=""):
+        """Populate detector actions for the selected plugin."""
+        plugin_name = str(self.comboBox_detector_selection_plugin.currentText() or "").strip()
+        action_combo = self.comboBox_detector_selection_action
+        current_action = str(preferred_action or action_combo.currentText() or "").strip()
+
+        action_combo.blockSignals(True)
+        action_combo.clear()
+
+        for action_record in self.filtered_actions:
+            if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+                continue
+
+            action_name = str(action_record.get("action", "") or "").strip()
+            if action_name:
+                action_combo.addItem(action_name, action_record)
+
+        restore_index = action_combo.findText(current_action, QtCore.Qt.MatchExactly)
+        action_combo.setCurrentIndex(
+            restore_index if restore_index >= 0 else (0 if action_combo.count() else -1)
+        )
+        action_combo.blockSignals(False)
+        action_combo.setEnabled(action_combo.count() > 0)
+        self._action_changed()
+
+
+    def _selected_action_requires_hardware(self):
+        record = self.comboBox_detector_selection_action.currentData()
+        if not isinstance(record, dict):
+            return False
+
+        return any(
+            str(value or "").strip()
+            for value in (record.get("hardware", []) or [])
+        )
+
+
+    def _selected_runtime_hardware(self):
+        """Return the concrete hardware used by the selected action, if required."""
+        if not self._selected_action_requires_hardware():
+            return ""
+
+        hardware_record = self.comboBox_detector_selection_hardware.currentData()
+        if not isinstance(hardware_record, dict):
+            return ""
+
+        if str(hardware_record.get("mode", "") or "").strip().lower() != "hardware":
+            return ""
+
+        return str(
+            hardware_record.get("display_name")
+            or self.comboBox_detector_selection_hardware.currentText()
+            or ""
+        ).strip()
+
+
+    def _update_save_enabled(self):
+        has_selection = bool(self.selected_plugin and self.selected_action)
+        hardware_ready = (
+            not self._selected_action_requires_hardware()
+            or bool(self._selected_runtime_hardware())
+        )
+        self.pushButton_detector_selection_save.setEnabled(
+            bool(self.customized and has_selection and hardware_ready)
+        )
+
+        if self.customized and has_selection and not hardware_ready:
+            self.label_detector_selection_setup_info.setText(
+                "Select a specific compatible hardware device before saving this detector."
+            )
+
+
     @qasync.asyncSlot()
     async def _query_clicked(self):
+        """Query once for all detector actions; hardware/plugin filtering is local."""
         uid = str(getattr(self.dashboard, "selected_node_uid", "") or "").strip()
 
         if not uid:
@@ -211,85 +321,78 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
             )
             return
 
-        detector_type = str(
-            self.comboBox_detector_selection_type.currentData() or ""
-        ).strip()
-        detector_mode = str(
-            self.comboBox_detector_selection_mode.currentData() or ""
-        ).strip()
-        hardware = self.comboBox_detector_selection_hardware.currentText().strip()
+        self.action_catalog = []
+        self._clear_action_selection()
+        self.query_pending = True
+        self.query_node_uid = uid
 
-        include_tags = [
-            "tsi.detector",
-            f"tsi.detector.type.{detector_type}",
-            f"tsi.detector.mode.{detector_mode}",
-        ]
-
-        context = f"detector.selection.{detector_type}.{detector_mode}"
-
-        self._clear_actions()
         self.pushButton_detector_selection_query.setEnabled(False)
+        self.pushButton_detector_selection_query.setText("Querying...")
         self.label_detector_selection_setup_info.setText(
-            "Querying selected node for matching detector actions..."
+            "Querying selected node for detector actions..."
         )
 
         try:
             await self.dashboard.backend.queryPluginActions(
                 uid=uid,
-                context=context,
+                context=DETECTOR_QUERY_CONTEXT,
                 scope="all_plugins",
                 plugin_name="",
-                include_tags=include_tags,
+                include_tags=["tsi.detector"],
                 exclude_tags=[],
-                hardware=hardware,
             )
         except Exception:
+            self.query_pending = False
+            self.query_node_uid = ""
+            self.pushButton_detector_selection_query.setText(self.query_button_text)
             self.pushButton_detector_selection_query.setEnabled(True)
             raise
 
 
     def handle_action_query_results(self, node_uid="", context="", actions=None):
-        self.action_records = actions or []
+        """Cache detector actions and apply the current Hardware -> Plugin filter."""
+        result_node_uid = str(node_uid or "").strip()
+        selected_node_uid = str(getattr(self.dashboard, "selected_node_uid", "") or "").strip()
 
-        combo = self.comboBox_detector_selection_action
-        combo.blockSignals(True)
-        combo.clear()
-
-        for action_record in self.action_records:
-            plugin_name = str(action_record.get("plugin", "")).strip()
-            action_name = str(action_record.get("action", "")).strip()
-
-            if not plugin_name or not action_name:
-                continue
-
-            combo.addItem(
-                f"{plugin_name}: {action_name}",
-                {
-                    "plugin": plugin_name,
-                    "action": action_name,
-                },
+        if (
+            not self.query_pending
+            or result_node_uid != self.query_node_uid
+            or result_node_uid != selected_node_uid
+            or str(context or "").strip() != DETECTOR_QUERY_CONTEXT
+        ):
+            self.dashboard.logger.debug(
+                "Ignoring stale detector selection action query results: "
+                f"node_uid={result_node_uid!r}, context={context!r}"
             )
+            return
 
-        combo.blockSignals(False)
+        self.query_pending = False
+        self.query_node_uid = ""
+        self.action_catalog = [
+            record
+            for record in (actions if isinstance(actions, list) else [])
+            if isinstance(record, dict)
+        ]
 
-        self.pushButton_detector_selection_query.setEnabled(
-            self.comboBox_detector_selection_hardware.count() > 0
+        self.pushButton_detector_selection_query.setText(self.query_button_text)
+        self.pushButton_detector_selection_query.setEnabled(bool(selected_node_uid))
+
+        preferred_plugin = self.pending_plugin
+        preferred_action = self.pending_action
+        self.pending_plugin = ""
+        self.pending_action = ""
+        self._filter_action_catalog(
+            preferred_plugin=preferred_plugin,
+            preferred_action=preferred_action,
         )
 
-        if combo.count() > 0:
-            combo.setEnabled(True)
-            combo.setCurrentIndex(0)
-            self.pushButton_detector_selection_customize.setEnabled(True)
+        if self.comboBox_detector_selection_action.count() > 0:
             self.label_detector_selection_setup_info.setText(
                 "Customize the selected detector to load its parameters."
             )
-            self._action_changed()
         else:
-            combo.setEnabled(False)
-            self.pushButton_detector_selection_customize.setEnabled(False)
-            self.pushButton_detector_selection_save.setEnabled(False)
             self.label_detector_selection_setup_info.setText(
-                "No matching detector actions are available."
+                "No detector actions match the selected hardware filter."
             )
 
 
@@ -306,8 +409,8 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
             self.pushButton_detector_selection_customize.setEnabled(False)
             return
 
-        self.selected_plugin = str(record.get("plugin", "")).strip()
-        self.selected_action = str(record.get("action", "")).strip()
+        self.selected_plugin = str(record.get("plugin", "") or "").strip()
+        self.selected_action = str(record.get("action", "") or "").strip()
 
         has_action = bool(self.selected_plugin and self.selected_action)
         self.pushButton_detector_selection_customize.setEnabled(has_action)
@@ -404,7 +507,7 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
 
         self.pushButton_detector_selection_customize.setText("Customize")
         self.pushButton_detector_selection_customize.setEnabled(True)
-        self.pushButton_detector_selection_save.setEnabled(True)
+        self._update_save_enabled()
 
 
     def _clear_parameter_controls(self):
@@ -582,14 +685,13 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
         if not self.customized or not self.selected_plugin or not self.selected_action:
             return
 
+        runtime_hardware = self._selected_runtime_hardware()
+        if self._selected_action_requires_hardware() and not runtime_hardware:
+            self._update_save_enabled()
+            return
+
         self.return_value = {
-            "detector_type": str(
-                self.comboBox_detector_selection_type.currentData() or ""
-            ).strip(),
-            "detector_mode": str(
-                self.comboBox_detector_selection_mode.currentData() or ""
-            ).strip(),
-            "hardware": self.comboBox_detector_selection_hardware.currentText().strip(),
+            "hardware": runtime_hardware,
             "plugin": self.selected_plugin,
             "action": self.selected_action,
             "parameters": self._collect_parameters(),
@@ -599,21 +701,26 @@ class DetectorSelectionDialog(QtWidgets.QDialog, UI_Types.DetectorSelection):
 
 
     def _load_existing_config(self, detector_config):
-        detector_type = str(detector_config.get("detector_type", "")).strip()
-        detector_mode = str(detector_config.get("detector_mode", "")).strip()
-        hardware = str(detector_config.get("hardware", "")).strip()
+        """Restore the saved hardware filter and action preference before Query."""
+        hardware = str(detector_config.get("hardware", "") or "").strip()
+        plugin_name = str(detector_config.get("plugin", "") or "").strip()
+        action_name = str(detector_config.get("action", "") or "").strip()
 
-        type_index = self.comboBox_detector_selection_type.findData(detector_type)
-        if type_index >= 0:
-            self.comboBox_detector_selection_type.setCurrentIndex(type_index)
+        if hardware:
+            hardware_index = self.comboBox_detector_selection_hardware.findText(
+                hardware, QtCore.Qt.MatchExactly
+            )
+        else:
+            hardware_index = self.comboBox_detector_selection_hardware.findText(
+                "No Hardware", QtCore.Qt.MatchExactly
+            )
 
-        mode_index = self.comboBox_detector_selection_mode.findData(detector_mode)
-        if mode_index >= 0:
-            self.comboBox_detector_selection_mode.setCurrentIndex(mode_index)
+        if hardware_index >= 0:
+            self.comboBox_detector_selection_hardware.setCurrentIndex(hardware_index)
 
-        if hardware and self.comboBox_detector_selection_hardware.findText(hardware) >= 0:
-            self.comboBox_detector_selection_hardware.setCurrentText(hardware)
+        self.pending_plugin = plugin_name
+        self.pending_action = action_name
 
         self.label_detector_selection_setup_info.setText(
-            "Query the saved detector filters, then select and customize the action."
+            "Query detector actions to restore the saved plugin and action."
         )

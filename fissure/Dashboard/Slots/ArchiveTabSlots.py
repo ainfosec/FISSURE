@@ -198,159 +198,181 @@ def _clear_archive_replay_parameter_widgets(
     )
 
 
-def _reset_archive_replay_action_selection(
-    dashboard: QtCore.QObject,
-):
-    """
-    Clear queried Archive Replay actions and customized parameters.
-    """
+def _reset_archive_replay_action_selection(dashboard: QtCore.QObject):
+    """Clear the current Archive Replay plugin/action selection and parameters."""
     dashboard.archive_replay_method_actions = []
+    dashboard.archive_replay_filtered_actions = []
     dashboard.archive_replay_selected_plugin = ""
     dashboard.archive_replay_selected_action = ""
-    dashboard.archive_replay_action_query_pending = False
-    dashboard.archive_replay_action_query_context = ""
-    dashboard.archive_replay_action_query_node_uid = ""
 
-    combo = dashboard.ui.comboBox_archive_replay_method
+    plugin_combo = dashboard.ui.comboBox_archive_replay_plugin
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.blockSignals(False)
+    plugin_combo.setEnabled(False)
 
-    combo.blockSignals(
-        True
-    )
-    combo.clear()
-    combo.blockSignals(
-        False
-    )
-    combo.setEnabled(
-        False
+    action_combo = dashboard.ui.comboBox_archive_replay_method
+    action_combo.blockSignals(True)
+    action_combo.clear()
+    action_combo.blockSignals(False)
+    action_combo.setEnabled(False)
+
+    dashboard.ui.pushButton_archive_replay_customize.setEnabled(False)
+    _clear_archive_replay_parameter_widgets(dashboard)
+
+
+def _populate_archive_replay_actions_for_plugin(
+    dashboard: QtCore.QObject,
+    preferred_action: str = "",
+):
+    """Populate Playback actions for the selected Archive Replay plugin."""
+    plugin_name = str(dashboard.ui.comboBox_archive_replay_plugin.currentText() or "").strip()
+    action_combo = dashboard.ui.comboBox_archive_replay_method
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+
+    for action_record in getattr(dashboard, "archive_replay_filtered_actions", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+            continue
+
+        action_name = str(action_record.get("action", "") or "").strip()
+        if action_name:
+            action_combo.addItem(action_name, action_record)
+
+    if action_combo.count() > 0:
+        restore_index = action_combo.findText(str(preferred_action or "").strip(), QtCore.Qt.MatchExactly)
+        action_combo.setCurrentIndex(restore_index if restore_index >= 0 else 0)
+
+    action_combo.blockSignals(False)
+    action_combo.setEnabled(action_combo.count() > 0)
+    _slotArchiveReplayMethodChanged(dashboard)
+
+
+def _filter_archive_replay_action_catalog(dashboard: QtCore.QObject):
+    """Filter the cached iq.playback catalog by the selected physical hardware."""
+    hardware_display_name = str(dashboard.ui.comboBox_archive_replay_hardware.currentText() or "").strip()
+    plugin_combo = dashboard.ui.comboBox_archive_replay_plugin
+    action_combo = dashboard.ui.comboBox_archive_replay_method
+
+    current_plugin = str(plugin_combo.currentText() or "").strip()
+    current_action = str(action_combo.currentText() or "").strip()
+
+    filtered = []
+
+    if hardware_display_name:
+        hardware_type, *_ = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard,
+            hardware_display_name,
+            "archive",
+        )
+        selected_type = str(hardware_type or "").strip().lower()
+
+        for action_record in getattr(dashboard, "archive_replay_action_catalog", []) or []:
+            if not isinstance(action_record, dict):
+                continue
+
+            compatible_hardware = [
+                str(value or "").strip().lower()
+                for value in (action_record.get("hardware", []) or [])
+                if str(value or "").strip()
+            ]
+
+            if compatible_hardware and not any(
+                selected_type in value or value in selected_type
+                for value in compatible_hardware
+            ):
+                continue
+
+            filtered.append(action_record)
+
+    dashboard.archive_replay_filtered_actions = filtered
+    dashboard.archive_replay_method_actions = filtered
+
+    plugins = sorted(
+        {
+            str(record.get("plugin", "") or "").strip()
+            for record in filtered
+            if isinstance(record, dict) and str(record.get("plugin", "") or "").strip()
+        },
+        key=str.lower,
     )
 
-    dashboard.ui.pushButton_archive_replay_customize.setEnabled(
-        False
-    )
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.addItems(plugins)
 
-    _clear_archive_replay_parameter_widgets(
-        dashboard
+    if plugins:
+        restore_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+        plugin_combo.setCurrentIndex(restore_index if restore_index >= 0 else 0)
+
+    plugin_combo.blockSignals(False)
+    plugin_combo.setEnabled(bool(plugins))
+
+    _populate_archive_replay_actions_for_plugin(
+        dashboard,
+        preferred_action=current_action,
     )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotArchiveReplayActionHardwareChanged(
-    dashboard: QtCore.QObject,
-):
-    """
-    Reset the selected playback action and update playlist hardware defaults
-    when the new Archive Replay hardware selector changes.
-    """
-    _reset_archive_replay_action_selection(
-        dashboard
-    )
+def _slotArchiveReplayActionHardwareChanged(dashboard: QtCore.QObject):
+    """Apply a hardware change to replay defaults and the cached playback catalog."""
+    has_node = bool(str(getattr(dashboard, "selected_node_uid", "") or "").strip())
+    has_hardware = bool(str(dashboard.ui.comboBox_archive_replay_hardware.currentText() or "").strip())
 
-    # The new hardware selector is now authoritative for Archive Replay.
-    _slotArchiveReplayHardwareChanged(
-        dashboard
-    )
+    _clear_archive_replay_parameter_widgets(dashboard)
 
-    has_node = bool(
-        str(
-            getattr(
-                dashboard,
-                "selected_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
-    )
+    if has_hardware:
+        _slotArchiveReplayHardwareChanged(dashboard)
 
-    has_hardware = bool(
-        str(
-            dashboard.ui
-            .comboBox_archive_replay_hardware
-            .currentText()
-            or ""
-        ).strip()
-    )
+    _filter_archive_replay_action_catalog(dashboard)
 
-    dashboard.ui.pushButton_archive_replay_query.setEnabled(
-        has_node and has_hardware
-    )
+    dashboard.ui.pushButton_archive_replay_query.setEnabled(has_node and has_hardware)
+    _update_archive_replay_start_button(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotArchiveReplayPluginChanged(dashboard: QtCore.QObject):
+    """Populate playback actions for the selected Archive Replay plugin."""
+    _populate_archive_replay_actions_for_plugin(dashboard)
 
 
 @qasync.asyncSlot(QtCore.QObject)
-async def _slotArchiveReplayQueryClicked(
-    dashboard: QtCore.QObject,
-):
-    """
-    Query the selected Sensor Node for compatible IQ Playback actions.
-    """
-    node_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    hardware_display_name = str(
-        dashboard.ui
-        .comboBox_archive_replay_hardware
-        .currentText()
-        or ""
-    ).strip()
+async def _slotArchiveReplayQueryClicked(dashboard: QtCore.QObject):
+    """Query once for the selected node's complete iq.playback action catalog."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    hardware_display_name = str(dashboard.ui.comboBox_archive_replay_hardware.currentText() or "").strip()
 
     if not node_uid:
-        dashboard.logger.warning(
-            "Select a Sensor Node before querying Archive Replay actions."
-        )
+        dashboard.logger.warning("Select a Sensor Node before querying Archive Replay actions.")
         return
 
     if not hardware_display_name:
-        dashboard.logger.warning(
-            "Select hardware before querying Archive Replay actions."
-        )
+        dashboard.logger.warning("Select hardware before querying Archive Replay actions.")
         return
 
-    (
-        hardware_type,
-        _hardware_uuid,
-        _hardware_radio_name,
-        _hardware_serial,
-        _hardware_interface,
-        _hardware_ip,
-        _hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        hardware_display_name,
-        "archive",
-    )
-
-    _reset_archive_replay_action_selection(
-        dashboard
-    )
+    dashboard.archive_replay_action_catalog = []
+    _reset_archive_replay_action_selection(dashboard)
 
     context = "archive.replay.actions"
-
     dashboard.archive_replay_action_query_pending = True
     dashboard.archive_replay_action_query_context = context
     dashboard.archive_replay_action_query_node_uid = node_uid
 
-    dashboard.ui.pushButton_archive_replay_query.setText(
-        "Querying..."
-    )
-    dashboard.ui.pushButton_archive_replay_query.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_archive_replay_query.setText("Querying...")
+    dashboard.ui.pushButton_archive_replay_query.setEnabled(False)
 
     await dashboard.backend.queryPluginActions(
         node_uid,
         context=context,
         scope="all_plugins",
-        include_tags=[
-            "iq.playback",
-        ],
-        hardware=hardware_type,
+        include_tags=["iq.playback"],
     )
-
+    
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotArchiveReplayMethodChanged(
@@ -497,54 +519,22 @@ def handle_archive_replay_action_query_results(
     context: str = "",
     actions: list = None,
 ):
-    """
-    Populate the Archive Replay action selector from a filtered action query.
-    """
-    result_node_uid = str(
-        node_uid
-        or ""
-    ).strip()
-
-    result_context = str(
-        context
-        or ""
-    ).strip()
-
-    expected_node_uid = str(
-        getattr(
-            dashboard,
-            "archive_replay_action_query_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    expected_context = str(
-        getattr(
-            dashboard,
-            "archive_replay_action_query_context",
-            "",
-        )
-        or ""
-    ).strip()
-
-    query_pending = bool(
-        getattr(
-            dashboard,
-            "archive_replay_action_query_pending",
-            False,
-        )
-    )
+    """Cache one iq.playback query and apply the local hardware/plugin filters."""
+    result_node_uid = str(node_uid or "").strip()
+    result_context = str(context or "").strip()
+    selected_node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    expected_node_uid = str(getattr(dashboard, "archive_replay_action_query_node_uid", "") or "").strip()
+    expected_context = str(getattr(dashboard, "archive_replay_action_query_context", "") or "").strip()
 
     if (
-        not query_pending
+        not bool(getattr(dashboard, "archive_replay_action_query_pending", False))
         or result_node_uid != expected_node_uid
+        or result_node_uid != selected_node_uid
         or result_context != expected_context
     ):
         dashboard.logger.debug(
             "Ignoring stale Archive Replay action query results: "
-            f"node_uid={result_node_uid!r}, "
-            f"context={result_context!r}"
+            f"node_uid={result_node_uid!r}, context={result_context!r}"
         )
         return
 
@@ -552,89 +542,14 @@ def handle_archive_replay_action_query_results(
     dashboard.archive_replay_action_query_context = ""
     dashboard.archive_replay_action_query_node_uid = ""
 
-    combo = dashboard.ui.comboBox_archive_replay_method
+    dashboard.archive_replay_action_catalog = actions if isinstance(actions, list) else []
 
-    dashboard.archive_replay_method_actions = (
-        actions
-        if isinstance(
-            actions,
-            list,
-        )
-        else []
-    )
-
-    combo.blockSignals(
-        True
-    )
-    combo.clear()
-
-    for action_record in dashboard.archive_replay_method_actions:
-        if not isinstance(
-            action_record,
-            dict,
-        ):
-            continue
-
-        plugin_name = str(
-            action_record.get(
-                "plugin",
-                "",
-            )
-            or ""
-        ).strip()
-
-        action_name = str(
-            action_record.get(
-                "action",
-                "",
-            )
-            or ""
-        ).strip()
-
-        if not plugin_name or not action_name:
-            continue
-
-        combo.addItem(
-            f"{plugin_name}: {action_name}",
-            {
-                "plugin": plugin_name,
-                "action": action_name,
-            },
-        )
-
-    combo.blockSignals(
-        False
-    )
-
-    has_actions = combo.count() > 0
-
-    combo.setEnabled(
-        has_actions
-    )
-
-    dashboard.ui.pushButton_archive_replay_query.setText(
-        "Query Actions"
-    )
+    dashboard.ui.pushButton_archive_replay_query.setText("Query Actions")
     dashboard.ui.pushButton_archive_replay_query.setEnabled(
-        True
+        bool(selected_node_uid and dashboard.ui.comboBox_archive_replay_hardware.currentText())
     )
 
-    dashboard.ui.pushButton_archive_replay_customize.setEnabled(
-        has_actions
-    )
-
-    if has_actions:
-        combo.setCurrentIndex(
-            0
-        )
-
-        _slotArchiveReplayMethodChanged(
-            dashboard
-        )
-
-    else:
-        dashboard.archive_replay_selected_plugin = ""
-        dashboard.archive_replay_selected_action = ""
+    _filter_archive_replay_action_catalog(dashboard)
 
 
 def _create_archive_replay_parameter_widget(
@@ -1152,6 +1067,7 @@ def _set_archive_replay_execution_controls_enabled(
     """Freeze mutable Archive Replay controls while playback is active."""
     for widget in (
         dashboard.ui.comboBox_archive_replay_hardware,
+        dashboard.ui.comboBox_archive_replay_plugin,
         dashboard.ui.comboBox_archive_replay_method,
         dashboard.ui.pushButton_archive_replay_query,
         dashboard.ui.pushButton_archive_replay_customize,
@@ -1940,6 +1856,8 @@ def initialize_archive_replay_controls(
     Initialize the plugin-backed Archive Replay control strip.
     """
     dashboard.archive_replay_method_actions = []
+    dashboard.archive_replay_action_catalog = []
+    dashboard.archive_replay_filtered_actions = []
     dashboard.archive_replay_selected_plugin = ""
     dashboard.archive_replay_selected_action = ""
     dashboard.archive_replay_parameter_widgets = {}
@@ -1986,29 +1904,8 @@ def initialize_archive_replay_controls(
             QtCore.Qt.AlignCenter
         )
 
-    step_badges = (
-        (
-            dashboard.ui.label_archive_replay_setup_badge,
-            "1",
-        ),
-        (
-            dashboard.ui.label_archive_replay_parameters_badge,
-            "2",
-        ),
-        (
-            dashboard.ui.label_archive_replay_run_badge,
-            "5",
-        ),
-    )
-
-    for badge, badge_text in step_badges:
-        badge.setText(
-            badge_text
-        )
-        badge.setAlignment(
-            QtCore.Qt.AlignCenter
-        )
-
+    dashboard.ui.comboBox_archive_replay_plugin.clear()
+    dashboard.ui.comboBox_archive_replay_plugin.setEnabled(False)
     dashboard.ui.comboBox_archive_replay_method.clear()
     dashboard.ui.comboBox_archive_replay_method.setEnabled(
         False
@@ -2160,12 +2057,9 @@ def update_archive_replay_selected_node_gate(
         )
     )
 
-    hardware_combo = (
-        dashboard.ui.comboBox_archive_replay_hardware
-    )
-    method_combo = (
-        dashboard.ui.comboBox_archive_replay_method
-    )
+    hardware_combo = dashboard.ui.comboBox_archive_replay_hardware
+    plugin_combo = dashboard.ui.comboBox_archive_replay_plugin
+    method_combo = dashboard.ui.comboBox_archive_replay_method
     query_button = (
         dashboard.ui.pushButton_archive_replay_query
     )
@@ -2181,6 +2075,11 @@ def update_archive_replay_selected_node_gate(
     hardware_combo.setEnabled(
         mutable_controls_enabled
         and hardware_combo.count() > 0
+    )
+
+    plugin_combo.setEnabled(
+        mutable_controls_enabled
+        and plugin_combo.count() > 0
     )
 
     method_combo.setEnabled(
@@ -3489,7 +3388,7 @@ def _slotArchiveReplayDetectorAddClicked(dashboard: QtCore.QObject):
     detector_item.setData(QtCore.Qt.UserRole, detector_config)
     table.setItem(row, 0, detector_item)
 
-    hardware_item = QtWidgets.QTableWidgetItem(hardware)
+    hardware_item = QtWidgets.QTableWidgetItem(hardware or "No Hardware")
     hardware_item.setTextAlignment(QtCore.Qt.AlignCenter)
     hardware_item.setFlags(hardware_item.flags() & ~QtCore.Qt.ItemIsEditable)
     table.setItem(row, 1, hardware_item)

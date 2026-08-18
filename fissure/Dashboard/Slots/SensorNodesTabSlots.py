@@ -3,7 +3,7 @@ import os
 import fissure.utils
 import yaml
 import datetime
-from ..UI_Components import TriggersDialog
+from ..UI_Components import DetectorSelectionDialog
 import qasync
 import time
 import asyncio
@@ -19,50 +19,1056 @@ from fissure.utils.selected_node_utils import (
     selected_node_is_meshtastic,
 )
 
+
+def initialize_sensor_nodes_autorun_controls(dashboard: QtCore.QObject):
+    """Initialize the plugin-backed Sensor Node Autorun editor."""
+    dashboard.sensor_nodes_autorun_action_catalog = []
+    dashboard.sensor_nodes_autorun_filtered_actions = []
+    dashboard.sensor_nodes_autorun_parameter_widgets = {}
+    dashboard.sensor_nodes_autorun_selected_plugin = ""
+    dashboard.sensor_nodes_autorun_selected_action = ""
+    dashboard.sensor_nodes_autorun_state = "Idle"
+    dashboard.sensor_nodes_autorun_source = ""
+    dashboard.sensor_nodes_autorun_last_node_uid = ""
+    dashboard.sensor_nodes_autorun_hardware_signature = None
+
+    dashboard.ui.textEdit_sensor_nodes_autorun_timing_delay.setPlainText("0")
+    dashboard.ui.textEdit_sensor_nodes_autorun_timing_interval.setPlainText("60")
+    dashboard.ui.checkBox_sensor_nodes_autorun_timing_repeat.setChecked(False)
+    dashboard.ui.textEdit_sensor_nodes_autorun_timing_interval.setEnabled(False)
+
+    dashboard.ui.pushButton_sensor_nodes_autorun_start_stop.setText("Start")
+    dashboard.ui.pushButton_sensor_nodes_autorun_start_stop.setProperty("running", False)
+    dashboard.ui.label2_sensor_nodes_autorun_status.setText("Idle")
+
+    select_node_icon_path = os.path.join(
+        fissure.utils.UI_DIR,
+        "Icons",
+        "select_node.png",
+    )
+    if os.path.isfile(select_node_icon_path):
+        select_node_pixmap = QtGui.QPixmap(select_node_icon_path)
+        dashboard.ui.label_sensor_nodes_autorun_select_sensor_node_image.setPixmap(select_node_pixmap)
+        dashboard.ui.label_sensor_nodes_autorun_select_sensor_node_image.setScaledContents(False)
+        dashboard.ui.label_sensor_nodes_autorun_select_sensor_node_image.setAlignment(QtCore.Qt.AlignCenter)
+
+    _clear_sensor_nodes_autorun_parameter_widgets(dashboard)
+    _refresh_sensor_nodes_autorun_hardware_filter(dashboard)
+    update_sensor_nodes_autorun_selected_node_gate(dashboard)
+
+
+def update_sensor_nodes_autorun_selected_node_gate(dashboard: QtCore.QObject):
+    """Show the Autorun editor for the selected node and synchronize its runtime state."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    has_selected_node = bool(node_uid)
+
+    if has_selected_node:
+        node_state = (getattr(dashboard, "node_states", {}) or {}).get(node_uid)
+        if isinstance(node_state, dict) and node_state.get("connected") is False:
+            has_selected_node = False
+
+    dashboard.ui.stackedWidget_sensor_nodes_autorun.setCurrentWidget(
+        dashboard.ui.page_sensor_nodes_autorun_controls
+        if has_selected_node
+        else dashboard.ui.page_sensor_nodes_autorun_no_node
+    )
+
+    if not has_selected_node:
+        return
+
+    node_changed = dashboard.sensor_nodes_autorun_last_node_uid != node_uid
+
+    if node_changed:
+        dashboard.sensor_nodes_autorun_last_node_uid = node_uid
+        dashboard.sensor_nodes_autorun_action_catalog = []
+        dashboard.sensor_nodes_autorun_hardware_signature = None
+        dashboard.sensor_nodes_autorun_source = ""
+        dashboard.ui.comboBox_sensor_nodes_autorun_playlists.clear()
+        _reset_sensor_nodes_autorun_action_selection(dashboard)
+
+    _refresh_sensor_nodes_autorun_hardware_filter(dashboard)
+
+    node_state = (getattr(dashboard, "node_states", {}) or {}).get(node_uid, {}) or {}
+    heartbeat_autorun_state = str(node_state.get("autorun_state") or "Idle").strip() or "Idle"
+
+    if node_changed or heartbeat_autorun_state != dashboard.sensor_nodes_autorun_state:
+        dashboard.sensor_nodes_autorun_state = heartbeat_autorun_state
+
+        if heartbeat_autorun_state == "Idle":
+            dashboard.sensor_nodes_autorun_source = ""
+
+        status_text = heartbeat_autorun_state
+        if (
+            dashboard.sensor_nodes_autorun_source
+            and heartbeat_autorun_state in {"Waiting", "Running"}
+        ):
+            status_text += f" — {dashboard.sensor_nodes_autorun_source}"
+
+        dashboard.ui.label2_sensor_nodes_autorun_status.setText(status_text)
+
+        running = heartbeat_autorun_state in {"Waiting", "Running", "Stopping"}
+        _set_sensor_nodes_autorun_start_stop_button(dashboard, running)
+        dashboard.ui.pushButton_sensor_nodes_autorun_start_stop.setEnabled(
+            heartbeat_autorun_state != "Stopping"
+        )
+
+
+def _refresh_sensor_nodes_autorun_hardware_filter(dashboard: QtCore.QObject):
+    """Populate the Autorun hardware filter only when configured node hardware changes."""
+    combo = dashboard.ui.comboBox_sensor_nodes_autorun_hardware
+    display_names = fissure.utils.hardware.selectedNodeHardwareDisplayNames(dashboard, "autorun")
+
+    hardware_records = []
+    for display_name in display_names:
+        hardware_type, *_ = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard, display_name, "autorun"
+        )
+        hardware_records.append(
+            (
+                str(display_name or "").strip(),
+                str(hardware_type or "").strip(),
+            )
+        )
+
+    signature = tuple(hardware_records)
+    if getattr(dashboard, "sensor_nodes_autorun_hardware_signature", None) == signature and combo.count() > 0:
+        return
+
+    dashboard.sensor_nodes_autorun_hardware_signature = signature
+    current_text = str(combo.currentText() or "").strip()
+
+    combo.blockSignals(True)
+    combo.clear()
+    combo.addItem("All Compatible", {"mode": "all", "hardware_type": ""})
+    combo.addItem("No Hardware", {"mode": "none", "hardware_type": ""})
+
+    for display_name, hardware_type in hardware_records:
+        combo.addItem(
+            display_name,
+            {
+                "mode": "hardware",
+                "hardware_type": hardware_type,
+                "display_name": display_name,
+            },
+        )
+
+    restore_index = combo.findText(current_text, QtCore.Qt.MatchExactly)
+    combo.setCurrentIndex(restore_index if restore_index >= 0 else 0)
+    combo.blockSignals(False)
+    _filter_sensor_nodes_autorun_action_catalog(dashboard)
+
+
+def _reset_sensor_nodes_autorun_action_selection(dashboard: QtCore.QObject):
+    """Clear the current Autorun plugin/action selection and parameter controls."""
+    dashboard.sensor_nodes_autorun_selected_plugin = ""
+    dashboard.sensor_nodes_autorun_selected_action = ""
+    dashboard.ui.comboBox_sensor_nodes_autorun_plugin.clear()
+    dashboard.ui.comboBox_sensor_nodes_autorun_action.clear()
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setEnabled(False)
+    dashboard.ui.pushButton_sensor_nodes_autorun_timing_add.setEnabled(False)
+    _clear_sensor_nodes_autorun_parameter_widgets(dashboard)
+
+
+def _filter_sensor_nodes_autorun_action_catalog(dashboard: QtCore.QObject):
+    """Filter the cached Autorun action catalog locally by configured hardware."""
+    record = dashboard.ui.comboBox_sensor_nodes_autorun_hardware.currentData()
+    mode = "all"
+    selected_type = ""
+
+    if isinstance(record, dict):
+        mode = str(record.get("mode", "all") or "all")
+        selected_type = str(record.get("hardware_type", "") or "").strip().lower()
+
+    filtered = []
+    for action_record in getattr(dashboard, "sensor_nodes_autorun_action_catalog", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        action_hardware = [
+            str(value or "").strip()
+            for value in (action_record.get("hardware", []) or [])
+            if str(value or "").strip()
+        ]
+
+        if mode == "none" and action_hardware:
+            continue
+
+        if mode == "hardware" and action_hardware:
+            normalized = [value.lower() for value in action_hardware]
+            if not any(selected_type in value or value in selected_type for value in normalized):
+                continue
+
+        filtered.append(action_record)
+
+    plugin_combo = dashboard.ui.comboBox_sensor_nodes_autorun_plugin
+    current_plugin = str(plugin_combo.currentText() or "").strip()
+    plugins = sorted(
+        {
+            str(record.get("plugin", "") or "").strip()
+            for record in filtered
+            if str(record.get("plugin", "") or "").strip()
+        },
+        key=str.lower,
+    )
+
+    dashboard.sensor_nodes_autorun_filtered_actions = filtered
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.addItems(plugins)
+    restore_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+    plugin_combo.setCurrentIndex(restore_index if restore_index >= 0 else (0 if plugins else -1))
+    plugin_combo.blockSignals(False)
+    _populate_sensor_nodes_autorun_actions_for_plugin(dashboard)
+
+
+def _populate_sensor_nodes_autorun_actions_for_plugin(dashboard: QtCore.QObject):
+    """Populate actions for the selected Autorun plugin while preserving a valid selection."""
+    plugin_name = str(dashboard.ui.comboBox_sensor_nodes_autorun_plugin.currentText() or "").strip()
+    previous_plugin = str(getattr(dashboard, "sensor_nodes_autorun_selected_plugin", "") or "").strip()
+    previous_action = str(getattr(dashboard, "sensor_nodes_autorun_selected_action", "") or "").strip()
+
+    action_combo = dashboard.ui.comboBox_sensor_nodes_autorun_action
+    action_combo.blockSignals(True)
+    action_combo.clear()
+
+    for action_record in getattr(dashboard, "sensor_nodes_autorun_filtered_actions", []) or []:
+        if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+            continue
+
+        action_name = str(action_record.get("action", "") or "").strip()
+        if action_name:
+            action_combo.addItem(action_name, action_record)
+
+    restore_index = -1
+    if plugin_name == previous_plugin and previous_action:
+        restore_index = action_combo.findText(previous_action, QtCore.Qt.MatchExactly)
+
+    action_combo.setCurrentIndex(restore_index if restore_index >= 0 else (0 if action_combo.count() else -1))
+    action_combo.blockSignals(False)
+    _slotSensorNodesAutorunActionChanged(dashboard)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunQueryClicked(dashboard: QtCore.QObject):
+    """Query the selected Sensor Node once for its Autorun-compatible action catalog."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not node_uid:
+        return
+
+    dashboard.ui.pushButton_sensor_nodes_autorun_query.setEnabled(False)
+    dashboard.ui.pushButton_sensor_nodes_autorun_query.setText("Querying...")
+    await dashboard.backend.queryPluginActions(
+        node_uid,
+        context="sensor_nodes.autorun.actions",
+        scope="all_plugins",
+    )
+
+
+def handle_sensor_nodes_autorun_action_query_results(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    context: str = "",
+    actions: list = None,
+):
+    """Cache one Autorun action query and apply the local hardware filter."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+    if context != "sensor_nodes.autorun.actions":
+        return
+
+    dashboard.sensor_nodes_autorun_action_catalog = actions if isinstance(actions, list) else []
+    dashboard.ui.pushButton_sensor_nodes_autorun_query.setText("Query Actions")
+    dashboard.ui.pushButton_sensor_nodes_autorun_query.setEnabled(True)
+    _filter_sensor_nodes_autorun_action_catalog(dashboard)
+
+
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodeAutorunTableDelayChecked(state: int, dashboard: QtCore.QObject):
-    """ 
-    Enables/disables the timeEdit box in the table row.
-    """
-    # Get Table Checkbox
-    get_checkbox = dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.currentRow(),3)
-    
-    # Checked
-    if get_checkbox.isChecked():
-        dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.currentRow(),4).setEnabled(True)
-    
-    # Unchecked
+def _slotSensorNodesAutorunHardwareChanged(dashboard: QtCore.QObject):
+    """Apply the optional hardware filter to the cached Autorun action catalog."""
+    _filter_sensor_nodes_autorun_action_catalog(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAutorunPluginChanged(dashboard: QtCore.QObject):
+    """Populate actions for the selected Autorun plugin."""
+    _populate_sensor_nodes_autorun_actions_for_plugin(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAutorunActionChanged(dashboard: QtCore.QObject):
+    """Update Autorun action selection and clear customization only when the action changes."""
+    record = dashboard.ui.comboBox_sensor_nodes_autorun_action.currentData()
+
+    if not isinstance(record, dict):
+        dashboard.sensor_nodes_autorun_selected_plugin = ""
+        dashboard.sensor_nodes_autorun_selected_action = ""
+        dashboard.ui.pushButton_sensor_nodes_autorun_customize.setEnabled(False)
+        dashboard.ui.pushButton_sensor_nodes_autorun_timing_add.setEnabled(False)
+        _clear_sensor_nodes_autorun_parameter_widgets(dashboard)
+        return
+
+    plugin_name = str(record.get("plugin", "") or "").strip()
+    action_name = str(record.get("action", "") or "").strip()
+    same_selection = (
+        plugin_name == str(getattr(dashboard, "sensor_nodes_autorun_selected_plugin", "") or "").strip()
+        and action_name == str(getattr(dashboard, "sensor_nodes_autorun_selected_action", "") or "").strip()
+    )
+
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setEnabled(bool(plugin_name and action_name))
+    if same_selection:
+        return
+
+    dashboard.sensor_nodes_autorun_selected_plugin = plugin_name
+    dashboard.sensor_nodes_autorun_selected_action = action_name
+    dashboard.ui.pushButton_sensor_nodes_autorun_timing_add.setEnabled(False)
+    _clear_sensor_nodes_autorun_parameter_widgets(dashboard)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunCustomizeClicked(dashboard: QtCore.QObject):
+    """Load the schema for the selected Autorun action."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    plugin_name = str(getattr(dashboard, "sensor_nodes_autorun_selected_plugin", "") or "").strip()
+    action_name = str(getattr(dashboard, "sensor_nodes_autorun_selected_action", "") or "").strip()
+    if not node_uid or not plugin_name or not action_name:
+        return
+
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setEnabled(False)
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setText("Loading...")
+    await dashboard.backend.queryPluginActionSchema(
+        node_uid,
+        plugin_name,
+        action_name,
+        context="sensor_nodes.autorun.schema",
+    )
+
+
+def _clear_sensor_nodes_autorun_parameter_widgets(dashboard: QtCore.QObject):
+    """Clear dynamic Autorun action parameter controls."""
+    contents = dashboard.ui.scrollAreaWidgetContents_sensor_nodes_autorun_parameters
+    layout = contents.layout()
+    if layout is None:
+        layout = QtWidgets.QGridLayout(contents)
+        contents.setLayout(layout)
+
+    while layout.count():
+        item = layout.takeAt(0)
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+
+    layout.setContentsMargins(8, 8, 8, 8)
+    layout.setHorizontalSpacing(8)
+    layout.setVerticalSpacing(6)
+    layout.setAlignment(QtCore.Qt.AlignTop)
+    dashboard.sensor_nodes_autorun_parameter_widgets = {}
+
+
+def _create_sensor_nodes_autorun_parameter_widget(parent, parameter: dict):
+    """Create one styled editor for an Autorun action-schema parameter."""
+    parameter_type = str(parameter.get("type", "string") or "string").strip().lower()
+    parameter_name = str(parameter.get("name", "") or "").strip()
+    default = parameter.get("default", "")
+    options = parameter.get("options", []) or []
+
+    if isinstance(options, list) and options:
+        widget = QtWidgets.QComboBox(parent)
+        widget.addItems([str(option) for option in options])
+        index = widget.findText(str(default), QtCore.Qt.MatchExactly)
+        if index >= 0:
+            widget.setCurrentIndex(index)
+
+    elif parameter_type in {"int", "integer"}:
+        widget = QtWidgets.QSpinBox(parent)
+        widget.setMinimum(int(parameter.get("min", -2147483647)))
+        widget.setMaximum(int(parameter.get("max", 2147483647)))
+        widget.setSingleStep(int(parameter.get("step", 1)))
+        widget.setValue(int(default or 0))
+
+    elif parameter_type in {"float", "double", "number"}:
+        widget = QtWidgets.QDoubleSpinBox(parent)
+        widget.setDecimals(int(parameter.get("decimals", 6)))
+        widget.setMinimum(float(parameter.get("min", -1000000000000.0)))
+        widget.setMaximum(float(parameter.get("max", 1000000000000.0)))
+        widget.setSingleStep(float(parameter.get("step", 1.0)))
+        widget.setValue(float(default or 0.0))
+
+    elif parameter_type in {"bool", "boolean"}:
+        widget = QtWidgets.QCheckBox(parent)
+        checked = default.strip().lower() in {"true", "1", "yes", "on", "enabled"} if isinstance(default, str) else bool(default)
+        widget.setChecked(checked)
+
+    elif parameter_type == "label":
+        widget = QtWidgets.QLabel(str(default), parent)
+        widget.setWordWrap(True)
+        widget.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+
     else:
-        dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.currentRow(),4).setEnabled(False)
+        widget = QtWidgets.QLineEdit(str(default), parent)
+
+    widget.setObjectName(f"sensor_nodes_autorun_parameter_{parameter_name}")
+    widget.setProperty(
+        "uiRole",
+        "autorunParameterInfo" if parameter_type == "label" else "autorunParameterEditor",
+    )
+    return widget
+
+
+def handle_sensor_nodes_autorun_action_schema(
+    dashboard: QtCore.QObject,
+    plugin_name: str = "",
+    action_name: str = "",
+    node_uid: str = "",
+    parameters: list = None,
+):
+    """Render the selected Autorun action schema in the Parameters card."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+    if plugin_name != getattr(dashboard, "sensor_nodes_autorun_selected_plugin", ""):
+        return
+    if action_name != getattr(dashboard, "sensor_nodes_autorun_selected_action", ""):
+        return
+
+    _clear_sensor_nodes_autorun_parameter_widgets(dashboard)
+    contents = dashboard.ui.scrollAreaWidgetContents_sensor_nodes_autorun_parameters
+    layout = contents.layout()
+    layout.setColumnStretch(0, 2)
+    layout.setColumnStretch(1, 3)
+
+    visible_parameters = [
+        parameter for parameter in (parameters or [])
+        if str(parameter.get("name", "") or "").strip() != "description"
+    ]
+
+    for row, parameter in enumerate(visible_parameters):
+        name = str(parameter.get("name", "") or "").strip()
+        if not name:
+            continue
+
+        label = QtWidgets.QLabel(f"{str(parameter.get('label') or name).strip()}:", contents)
+        label.setObjectName(f"label_sensor_nodes_autorun_parameter_{name}")
+        label.setProperty("uiRole", "autorunParameterLabel")
+        label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        widget = _create_sensor_nodes_autorun_parameter_widget(contents, parameter)
+
+        layout.addWidget(label, row, 0)
+        layout.addWidget(widget, row, 1)
+        dashboard.sensor_nodes_autorun_parameter_widgets[name] = {
+            "widget": widget,
+            "schema": dict(parameter),
+        }
+
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setText("Customize")
+    dashboard.ui.pushButton_sensor_nodes_autorun_customize.setEnabled(True)
+    dashboard.ui.pushButton_sensor_nodes_autorun_timing_add.setEnabled(True)
+
+
+def _sensor_nodes_autorun_parameter_value(widget):
+    """Return the current value from one Autorun parameter editor."""
+    if isinstance(widget, QtWidgets.QComboBox):
+        return widget.currentText()
+    if isinstance(widget, QtWidgets.QDoubleSpinBox):
+        return widget.value()
+    if isinstance(widget, QtWidgets.QSpinBox):
+        return widget.value()
+    if isinstance(widget, QtWidgets.QCheckBox):
+        return widget.isChecked()
+    if isinstance(widget, QtWidgets.QLineEdit):
+        return widget.text()
+    if isinstance(widget, QtWidgets.QLabel):
+        return widget.text()
+    return None
+
+
+def _collect_sensor_nodes_autorun_action_parameters(dashboard: QtCore.QObject):
+    """Collect customized values for the selected Autorun action."""
+    parameters = {}
+    for name, record in (getattr(dashboard, "sensor_nodes_autorun_parameter_widgets", {}) or {}).items():
+        widget = record.get("widget") if isinstance(record, dict) else None
+        schema = record.get("schema", {}) if isinstance(record, dict) else {}
+        if widget is None or str(schema.get("type", "") or "").lower() == "label":
+            continue
+        parameters[name] = _sensor_nodes_autorun_parameter_value(widget)
+    return parameters
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodeAutorunDelayChecked(dashboard: QtCore.QObject):
-    """ 
-    Enables/disables the dateTimeEdit box.
-    """
-    # Checked
-    if dashboard.ui.checkBox_sensor_nodes_autorun_delay.isChecked():
-        dashboard.ui.dateTimeEdit_sensor_nodes_autorun.setEnabled(True)
-    
-    # Unchecked
+def _slotSensorNodesAutorunTimingRepeatChanged(dashboard: QtCore.QObject):
+    """Enable Interval only when the action is configured to repeat forever."""
+    dashboard.ui.textEdit_sensor_nodes_autorun_timing_interval.setEnabled(
+        dashboard.ui.checkBox_sensor_nodes_autorun_timing_repeat.isChecked()
+    )
+
+
+def _sensor_nodes_autorun_timing_values(dashboard: QtCore.QObject):
+    """Validate and return Delay, Repeat Forever, and Interval values."""
+    try:
+        delay_seconds = float(dashboard.ui.textEdit_sensor_nodes_autorun_timing_delay.toPlainText().strip() or "0")
+        interval_seconds = float(dashboard.ui.textEdit_sensor_nodes_autorun_timing_interval.toPlainText().strip() or "0")
+    except ValueError:
+        raise ValueError("Delay and Interval must be numeric values.")
+
+    if delay_seconds < 0 or interval_seconds < 0:
+        raise ValueError("Delay and Interval cannot be negative.")
+
+    repeat_forever = dashboard.ui.checkBox_sensor_nodes_autorun_timing_repeat.isChecked()
+    if repeat_forever and interval_seconds <= 0:
+        raise ValueError("Interval must be greater than zero when Repeat Forever is enabled.")
+
+    return delay_seconds, repeat_forever, interval_seconds
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAutorunTimingAddClicked(dashboard: QtCore.QObject):
+    """Add one configured plugin action to the Autorun playlist."""
+    plugin_name = str(getattr(dashboard, "sensor_nodes_autorun_selected_plugin", "") or "").strip()
+    action_name = str(getattr(dashboard, "sensor_nodes_autorun_selected_action", "") or "").strip()
+    if not plugin_name or not action_name:
+        return
+
+    try:
+        delay_seconds, repeat_forever, interval_seconds = _sensor_nodes_autorun_timing_values(dashboard)
+    except ValueError as error:
+        QtWidgets.QMessageBox.warning(dashboard, "Autorun Timing", str(error))
+        return
+
+    record = {
+        "plugin": plugin_name,
+        "action": action_name,
+        "parameters": _collect_sensor_nodes_autorun_action_parameters(dashboard),
+        "delay_seconds": delay_seconds,
+        "repeat": repeat_forever,
+        "interval_seconds": interval_seconds,
+    }
+    _append_sensor_nodes_autorun_playlist_row(dashboard, record)
+
+
+def _sensor_nodes_autorun_parameter_summary(parameters):
+    """Build a compact table summary without hiding meaningful falsy values."""
+    values = []
+    for name, value in (parameters or {}).items():
+        if value is None:
+            continue
+        if isinstance(value, str) and not value.strip():
+            continue
+        values.append(f"{name}={value}")
+    return ", ".join(values) if values else "—"
+
+
+def _append_sensor_nodes_autorun_playlist_row(dashboard: QtCore.QObject, record: dict):
+    """Append one normalized action record to the Autorun playlist table."""
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_playlist
+    row = table.rowCount()
+    table.insertRow(row)
+
+    parameter_summary = _sensor_nodes_autorun_parameter_summary(record.get("parameters", {}) or {})
+    values = [
+        str(record.get("plugin", "") or ""),
+        str(record.get("action", "") or ""),
+        str(record.get("delay_seconds", 0)),
+        "Yes" if bool(record.get("repeat", False)) else "No",
+        str(record.get("interval_seconds", 0)) if bool(record.get("repeat", False)) else "—",
+        parameter_summary,
+    ]
+
+    for column, value in enumerate(values):
+        item = QtWidgets.QTableWidgetItem(value)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter if column == 5 else QtCore.Qt.AlignCenter)
+        table.setItem(row, column, item)
+
+    table.item(row, 0).setData(QtCore.Qt.UserRole, dict(record))
+    table.item(row, 5).setToolTip(parameter_summary)
+    table.resizeRowsToContents()
+
+
+def _slotSensorNodesAutorunPlaylistRemoveClicked(dashboard: QtCore.QObject):
+    """Remove the selected action from the Autorun playlist."""
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_playlist
+    selection_model = table.selectionModel()
+    selected_rows = selection_model.selectedRows() if selection_model is not None else []
+
+    if selected_rows:
+        table.removeRow(selected_rows[0].row())
+        return
+
+    selected_indexes = selection_model.selectedIndexes() if selection_model is not None else []
+    if selected_indexes:
+        table.removeRow(selected_indexes[0].row())
+
+
+def _slotSensorNodesAutorunPlaylistClearClicked(dashboard: QtCore.QObject):
+    """Clear the current Autorun playlist action table."""
+    dashboard.ui.tableWidget_sensor_nodes_autorun_playlist.setRowCount(0)
+
+
+def _slotSensorNodesAutorunDetectorAddClicked(dashboard: QtCore.QObject):
+    """Add one reusable detector configuration to the Autorun playlist gate."""
+    detector_config = dashboard.openPopUp("DetectorSelectionDialog", DetectorSelectionDialog)
+    if not detector_config:
+        return
+
+    plugin_name = str(detector_config.get("plugin", "") or "").strip()
+    action_name = str(detector_config.get("action", "") or "").strip()
+    if not plugin_name or not action_name:
+        return
+
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_detectors
+    row = table.rowCount()
+    table.insertRow(row)
+
+    parameters = detector_config.get("parameters", {}) or {}
+    hardware = str(detector_config.get("hardware", "") or "").strip()
+    values = [
+        f"{plugin_name}: {action_name}",
+        hardware or "No Hardware",
+        ", ".join(f"{name}={value}" for name, value in parameters.items()),
+    ]
+
+    for column, value in enumerate(values):
+        item = QtWidgets.QTableWidgetItem(value)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter if column == 2 else QtCore.Qt.AlignCenter)
+        table.setItem(row, column, item)
+
+    table.item(row, 0).setData(QtCore.Qt.UserRole, dict(detector_config))
+    table.item(row, 2).setToolTip(values[2])
+    table.resizeRowsToContents()
+
+
+def _slotSensorNodesAutorunDetectorRemoveClicked(dashboard: QtCore.QObject):
+    """Remove the selected detector from the Autorun gate."""
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_detectors
+    row = table.currentRow()
+    if row >= 0:
+        table.removeRow(row)
+
+
+def _collect_sensor_nodes_autorun_detectors(dashboard: QtCore.QObject):
+    """Collect detector configurations from the Autorun detector table."""
+    detectors = []
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_detectors
+    for row in range(table.rowCount()):
+        item = table.item(row, 0)
+        config = item.data(QtCore.Qt.UserRole) if item is not None else None
+        if isinstance(config, dict):
+            detectors.append(dict(config))
+    return detectors
+
+
+def _collect_sensor_nodes_autorun_actions(dashboard: QtCore.QObject):
+    """Collect action records from the Autorun playlist table."""
+    actions = []
+    table = dashboard.ui.tableWidget_sensor_nodes_autorun_playlist
+    for row in range(table.rowCount()):
+        item = table.item(row, 0)
+        record = item.data(QtCore.Qt.UserRole) if item is not None else None
+        if isinstance(record, dict):
+            actions.append(dict(record))
+    return actions
+
+
+def _build_sensor_nodes_autorun_detector_runtime_parameters(dashboard: QtCore.QObject, detector_config: dict):
+    """Build detector runtime parameters while keeping stored UI parameters clean."""
+    parameters = dict(detector_config.get("parameters", {}) or {})
+    hardware_display_name = str(detector_config.get("hardware", "") or "").strip()
+
+    (
+        hardware_type,
+        hardware_uid,
+        hardware_radio_name,
+        hardware_serial,
+        hardware_interface,
+        hardware_ip,
+        hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        hardware_display_name,
+        "tsi",
+    )
+
+    if hardware_type in {"USRP B20xmini", "USRP B2x0"}:
+        hardware_serial_argument = f"serial={hardware_serial}" if hardware_serial else "False"
     else:
-        dashboard.ui.dateTimeEdit_sensor_nodes_autorun.setEnabled(False)
+        hardware_serial_argument = hardware_serial if hardware_serial else "False"
+
+    parameters.update(
+        {
+            "requester": "autorun",
+            "hardware_display_name": hardware_display_name,
+            "hardware_type": hardware_type,
+            "hardware_uid": hardware_uid,
+            "hardware_uuid": hardware_uid,
+            "hardware_radio_name": hardware_radio_name,
+            "hardware_serial": hardware_serial,
+            "hardware_serial_argument": hardware_serial_argument,
+            "hardware_interface": hardware_interface,
+            "hardware_ip": hardware_ip,
+            "hardware_daughterboard": hardware_daughterboard,
+            "serial": hardware_serial,
+        }
+    )
+    return parameters
+
+
+def build_sensor_nodes_autorun_playlist(dashboard: QtCore.QObject):
+    """Build the versioned plugin-backed Autorun playlist document."""
+    detectors = []
+    for detector_config in _collect_sensor_nodes_autorun_detectors(dashboard):
+        record = dict(detector_config)
+        record["runtime_parameters"] = _build_sensor_nodes_autorun_detector_runtime_parameters(
+            dashboard,
+            detector_config,
+        )
+        detectors.append(record)
+
+    return {
+        "schema_version": 1,
+        "detectors": detectors,
+        "playlist": _collect_sensor_nodes_autorun_actions(dashboard),
+    }
+
+
+def _populate_sensor_nodes_autorun_workspace(dashboard: QtCore.QObject, playlist_dict: dict):
+    """Replace the Autorun workspace from a versioned playlist document."""
+    if not isinstance(playlist_dict, dict) or int(playlist_dict.get("schema_version", 0) or 0) != 1:
+        raise ValueError("This is not a supported plugin-backed Autorun playlist.")
+
+    detector_table = dashboard.ui.tableWidget_sensor_nodes_autorun_detectors
+    playlist_table = dashboard.ui.tableWidget_sensor_nodes_autorun_playlist
+    detector_table.setRowCount(0)
+    playlist_table.setRowCount(0)
+
+    for detector_config in playlist_dict.get("detectors", []) or []:
+        if not isinstance(detector_config, dict):
+            continue
+        plugin_name = str(detector_config.get("plugin", "") or "").strip()
+        action_name = str(detector_config.get("action", "") or "").strip()
+        parameters = detector_config.get("parameters", {}) or {}
+        row = detector_table.rowCount()
+        detector_table.insertRow(row)
+        hardware = str(detector_config.get("hardware", "") or "").strip()
+        values = [
+            f"{plugin_name}: {action_name}",
+            hardware or "No Hardware",
+            ", ".join(f"{name}={value}" for name, value in parameters.items()),
+        ]
+        for column, value in enumerate(values):
+            item = QtWidgets.QTableWidgetItem(value)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            item.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter if column == 2 else QtCore.Qt.AlignCenter)
+            detector_table.setItem(row, column, item)
+        detector_table.item(row, 0).setData(QtCore.Qt.UserRole, dict(detector_config))
+        detector_table.item(row, 2).setToolTip(values[2])
+
+    for action_record in playlist_dict.get("playlist", []) or []:
+        if isinstance(action_record, dict):
+            _append_sensor_nodes_autorun_playlist_row(dashboard, action_record)
+
+    detector_table.resizeRowsToContents()
+    playlist_table.resizeRowsToContents()
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunPlaylistsChanged(dashboard: QtCore.QObject):
-    """ 
-    Imports the selected autorun playlist into the table.
-    """
-    # Load File Information, Ignore Custom
-    if dashboard.ui.comboBox_sensor_nodes_autorun.count() > 0:
-        get_playlist = str(dashboard.ui.comboBox_sensor_nodes_autorun.currentText())
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setRowCount(0)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(0)
-        if get_playlist != "Custom":
-            _slotSensorNodesAutorunImportClicked(dashboard, filepath=os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists",get_playlist))
-            
+def _slotSensorNodesAutorunPlaylistImportClicked(dashboard: QtCore.QObject):
+    """Import a plugin-backed Autorun YAML file into the Dashboard workspace."""
+    filepath, _ = QtWidgets.QFileDialog.getOpenFileName(
+        dashboard,
+        "Import Autorun Playlist",
+        os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists"),
+        "YAML (*.yaml *.yml)",
+    )
+    if not filepath:
+        return
+
+    try:
+        with open(filepath, "r") as yaml_file:
+            playlist_dict = yaml.safe_load(yaml_file) or {}
+        _populate_sensor_nodes_autorun_workspace(dashboard, playlist_dict)
+    except Exception as error:
+        QtWidgets.QMessageBox.warning(dashboard, "Import Autorun Playlist", str(error))
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesAutorunPlaylistExportClicked(dashboard: QtCore.QObject):
+    """Export the current Dashboard Autorun workspace as YAML."""
+    filepath, _ = QtWidgets.QFileDialog.getSaveFileName(
+        dashboard,
+        "Export Autorun Playlist",
+        os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists", "playlist.yaml"),
+        "YAML (*.yaml)",
+    )
+    if not filepath:
+        return
+    if not filepath.lower().endswith((".yaml", ".yml")):
+        filepath += ".yaml"
+
+    with open(filepath, "w") as yaml_file:
+        yaml.safe_dump(build_sensor_nodes_autorun_playlist(dashboard), yaml_file, sort_keys=False)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunPlaylistQueryClicked(dashboard: QtCore.QObject):
+    """Query YAML playlists currently stored on the selected Sensor Node."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if node_uid:
+        await dashboard.backend.autorunPlaylistQuery(node_uid)
+
+
+def handle_sensor_nodes_autorun_playlist_query_results(
+    dashboard: QtCore.QObject, node_uid="", playlists=None, state="Idle", source="", message=""
+):
+    """Populate stored playlist names and synchronize authoritative Autorun state."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+
+    combo = dashboard.ui.comboBox_sensor_nodes_autorun_playlists
+    current_text = str(combo.currentText() or "").strip()
+    combo.clear()
+    combo.addItems(sorted([str(name) for name in (playlists or []) if str(name).strip()], key=str.lower))
+    restore_index = combo.findText(current_text, QtCore.Qt.MatchExactly)
+    if restore_index >= 0:
+        combo.setCurrentIndex(restore_index)
+
+    handle_sensor_nodes_autorun_status(
+        dashboard, node_uid=node_uid, state=state, source=source, message=message
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunPlaylistLoadClicked(dashboard: QtCore.QObject):
+    """Load the selected Sensor Node playlist into the Dashboard workspace."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    playlist_name = str(dashboard.ui.comboBox_sensor_nodes_autorun_playlists.currentText() or "").strip()
+    if node_uid and playlist_name:
+        await dashboard.backend.autorunPlaylistLoad(node_uid, playlist_name)
+
+
+def handle_sensor_nodes_autorun_playlist_load_results(
+    dashboard: QtCore.QObject,
+    node_uid="",
+    playlist_filename="",
+    playlist_dict=None,
+    success=False,
+    message="",
+):
+    """Apply one loaded Sensor Node playlist to the Dashboard workspace."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+    if not success:
+        QtWidgets.QMessageBox.warning(dashboard, "Load Autorun Playlist", str(message or "Could not load playlist."))
+        return
+
+    try:
+        _populate_sensor_nodes_autorun_workspace(dashboard, playlist_dict or {})
+    except Exception as error:
+        QtWidgets.QMessageBox.warning(dashboard, "Load Autorun Playlist", str(error))
+
+
+async def _sensor_nodes_autorun_prompt_filename(dashboard: QtCore.QObject, current_name: str):
+    """Prompt for a Sensor Node playlist filename without nesting the qasync event loop."""
+    dialog = QtWidgets.QInputDialog(dashboard)
+    dialog.setWindowTitle("Save Autorun Playlist to Sensor Node")
+    dialog.setLabelText("Filename:")
+    dialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+    dialog.setTextValue(current_name or "default.yaml")
+    dialog.setWindowModality(QtCore.Qt.WindowModal)
+
+    loop = asyncio.get_running_loop()
+    result_future = loop.create_future()
+
+    def accepted():
+        if not result_future.done():
+            result_future.set_result(str(dialog.textValue() or "").strip())
+
+    def rejected():
+        if not result_future.done():
+            result_future.set_result(None)
+
+    dialog.accepted.connect(accepted)
+    dialog.rejected.connect(rejected)
+    dialog.open()
+
+    try:
+        return await result_future
+    finally:
+        dialog.deleteLater()
+
+
+async def _sensor_nodes_autorun_confirm_overwrite(dashboard: QtCore.QObject, filename: str):
+    """Confirm overwriting a Sensor Node playlist without nesting the qasync event loop."""
+    dialog = QtWidgets.QMessageBox(dashboard)
+    dialog.setWindowTitle("Overwrite Autorun Playlist")
+    dialog.setText(f"{filename} already exists on this Sensor Node. Overwrite it?")
+    dialog.setIcon(QtWidgets.QMessageBox.Question)
+    dialog.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+    dialog.setDefaultButton(QtWidgets.QMessageBox.No)
+    dialog.setWindowModality(QtCore.Qt.WindowModal)
+
+    loop = asyncio.get_running_loop()
+    result_future = loop.create_future()
+
+    def finished(result):
+        if not result_future.done():
+            result_future.set_result(result == QtWidgets.QMessageBox.Yes)
+
+    dialog.finished.connect(finished)
+    dialog.open()
+
+    try:
+        return await result_future
+    finally:
+        dialog.deleteLater()
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunPlaylistSaveToNodeClicked(dashboard: QtCore.QObject):
+    """Save the current Dashboard Autorun workspace as a YAML file on the selected node."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not node_uid:
+        return
+
+    current_name = str(
+        dashboard.ui.comboBox_sensor_nodes_autorun_playlists.currentText() or "default.yaml"
+    ).strip()
+
+    filename = await _sensor_nodes_autorun_prompt_filename(dashboard, current_name)
+    if filename is None:
+        return
+
+    filename = os.path.basename(filename)
+    if not filename:
+        return
+    if not filename.lower().endswith((".yaml", ".yml")):
+        filename += ".yaml"
+
+    combo = dashboard.ui.comboBox_sensor_nodes_autorun_playlists
+    if combo.findText(filename, QtCore.Qt.MatchExactly) >= 0:
+        if not await _sensor_nodes_autorun_confirm_overwrite(dashboard, filename):
+            return
+
+    await dashboard.backend.autorunPlaylistSave(
+        node_uid,
+        filename,
+        build_sensor_nodes_autorun_playlist(dashboard),
+    )
+
+
+def handle_sensor_nodes_autorun_playlist_save_results(
+    dashboard: QtCore.QObject,
+    node_uid="",
+    playlist_filename="",
+    success=False,
+    message="",
+):
+    """Refresh the node-playlist selector after a save completes."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+    if not success:
+        QtWidgets.QMessageBox.warning(dashboard, "Save Autorun Playlist", str(message or "Could not save playlist."))
+        return
+
+    combo = dashboard.ui.comboBox_sensor_nodes_autorun_playlists
+    if combo.findText(playlist_filename, QtCore.Qt.MatchExactly) < 0:
+        combo.addItem(playlist_filename)
+    combo.setCurrentText(playlist_filename)
+
+
+def _set_sensor_nodes_autorun_start_stop_button(
+    dashboard: QtCore.QObject,
+    running: bool,
+):
+    """Update the Autorun Start/Stop button text and dynamic style state."""
+    button = dashboard.ui.pushButton_sensor_nodes_autorun_start_stop
+    button.setText("Stop" if running else "Start")
+    button.setProperty("running", bool(running))
+    button.style().unpolish(button)
+    button.style().polish(button)
+    button.update()
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesAutorunStartStopClicked(dashboard: QtCore.QObject):
+    """Start the current Dashboard workspace or stop the active node Autorun."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not node_uid:
+        return
+
+    state = str(getattr(dashboard, "sensor_nodes_autorun_state", "Idle") or "Idle").strip() or "Idle"
+    button = dashboard.ui.pushButton_sensor_nodes_autorun_start_stop
+
+    if state in {"Waiting", "Running", "Stopping"}:
+        if state == "Stopping":
+            return
+
+        dashboard.ui.label2_sensor_nodes_autorun_status.setText("Stopping...")
+        _set_sensor_nodes_autorun_start_stop_button(dashboard, True)
+        button.setEnabled(False)
+
+        try:
+            await dashboard.backend.autorunPlaylistStop(node_uid)
+        except Exception as error:
+            dashboard.logger.error(f"Failed to stop Autorun playlist: {error}")
+            dashboard.ui.label2_sensor_nodes_autorun_status.setText("Stop Failed")
+            _set_sensor_nodes_autorun_start_stop_button(dashboard, True)
+            button.setEnabled(True)
+        return
+
+    playlist_dict = build_sensor_nodes_autorun_playlist(dashboard)
+    if not playlist_dict.get("playlist"):
+        QtWidgets.QMessageBox.warning(
+            dashboard,
+            "Start Autorun",
+            "Add at least one action to the playlist.",
+        )
+        return
+
+    dashboard.ui.label2_sensor_nodes_autorun_status.setText("Starting...")
+    _set_sensor_nodes_autorun_start_stop_button(dashboard, False)
+    button.setEnabled(False)
+
+    try:
+        await dashboard.backend.autorunPlaylistStart(node_uid, playlist_dict)
+    except Exception as error:
+        dashboard.logger.error(f"Failed to start Autorun playlist: {error}")
+        dashboard.ui.label2_sensor_nodes_autorun_status.setText("Start Failed")
+        _set_sensor_nodes_autorun_start_stop_button(dashboard, False)
+        button.setEnabled(True)
+
+
+def handle_sensor_nodes_autorun_status(
+    dashboard: QtCore.QObject,
+    node_uid="",
+    state="Idle",
+    source="",
+    message="",
+):
+    """Update Autorun execution controls from authoritative Sensor Node state."""
+    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+
+    normalized_state = str(state or "Idle").strip() or "Idle"
+    dashboard.sensor_nodes_autorun_state = normalized_state
+    dashboard.sensor_nodes_autorun_source = str(source or "").strip()
+
+    status_text = normalized_state
+    if dashboard.sensor_nodes_autorun_source and normalized_state in {"Waiting", "Running"}:
+        status_text += f" — {dashboard.sensor_nodes_autorun_source}"
+    if message and normalized_state == "Error":
+        status_text += f": {message}"
+
+    dashboard.ui.label2_sensor_nodes_autorun_status.setText(status_text)
+
+    button = dashboard.ui.pushButton_sensor_nodes_autorun_start_stop
+    running = normalized_state in {"Waiting", "Running", "Stopping"}
+    _set_sensor_nodes_autorun_start_stop_button(dashboard, running)
+
+    if normalized_state == "Stopping":
+        button.setEnabled(False)
+    else:
+        button.setEnabled(True)
+
 
 def _sensor_nodes_file_navigation_node_label(
     dashboard: QtCore.QObject,
@@ -260,329 +1266,6 @@ def _slotSensorNodesFileNavigationFolderChanged(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunRemoveClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes a row from the autorun playlist table.
-    """
-    # Remove from the TableWidget
-    get_current_row = dashboard.ui.tableWidget_sensor_nodes_autorun.currentRow()
-    dashboard.ui.tableWidget_sensor_nodes_autorun.removeRow(get_current_row)
-    if get_current_row == 0:
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setCurrentCell(0,0)
-    else:
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setCurrentCell(get_current_row-1,0)
-
-
-@QtCore.pyqtSlot(QtCore.QObject, str)
-def _slotSensorNodesAutorunImportClicked(dashboard: QtCore.QObject, filepath=""):
-    """ 
-    Removes a row from the autorun playlist table.
-    """
-    # Choose File
-    if len(filepath) == 0:
-        get_playlist_folder = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists")
-        filepath = QtWidgets.QFileDialog.getOpenFileNames(None,"Select YAML File...", get_playlist_folder, filter="YAML (*.yaml)")
-        if len(filepath[0]) == 0:
-            return          
-        
-        # Load the YAML File
-        with open(filepath[0][0]) as yaml_playlist_file:
-            playlist_dict = yaml.load(yaml_playlist_file, yaml.FullLoader)
-            
-    else:
-        # Load the YAML File
-        with open(filepath) as yaml_playlist_file:
-            playlist_dict = yaml.load(yaml_playlist_file, yaml.FullLoader)
-    
-    # Delay Start
-    get_delay_start = playlist_dict.pop('delay_start')
-    if get_delay_start == 'True':
-        dashboard.ui.checkBox_sensor_nodes_autorun_delay.setChecked(True)
-    else:
-        dashboard.ui.checkBox_sensor_nodes_autorun_delay.setChecked(False)
-    _slotSensorNodeAutorunDelayChecked(dashboard)
-    
-    # Delay Start Time
-    get_delay_start_time = playlist_dict.pop('delay_start_time')
-    dashboard.ui.dateTimeEdit_sensor_nodes_autorun.setDateTime(datetime.datetime.strptime(get_delay_start_time,'%Y-%m-%d %H:%M:%S'))
-    
-    # Repetition Interval
-    get_repetition_interval = playlist_dict.pop('repetition_interval_seconds')
-    dashboard.ui.textEdit_sensor_nodes_autorun_repetition_interval.setPlainText(str(get_repetition_interval))
-    
-    # Clear the Tables
-    dashboard.ui.tableWidget_sensor_nodes_autorun.setRowCount(0)
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(0)
-
-    # Triggers Table
-    get_value = playlist_dict.pop('trigger_values')
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(len(get_value))
-    for row in range(0,len(get_value)):
-        # Filename
-        filename_item = QtWidgets.QTableWidgetItem(get_value[row][0])
-        filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        filename_item.setFlags(filename_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,0,filename_item)
-        
-        # Type
-        type_item = QtWidgets.QTableWidgetItem(get_value[row][1])
-        type_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        type_item.setFlags(type_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,1,type_item)
-
-        # Variable Names
-        variable_names_item = QtWidgets.QTableWidgetItem(get_value[row][2])
-        variable_names_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        variable_names_item.setFlags(variable_names_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,2,variable_names_item)
-
-        # Variable Values
-        variable_values_item = QtWidgets.QTableWidgetItem(get_value[row][3])
-        variable_values_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        variable_values_item.setFlags(variable_values_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,3,variable_values_item)
-    
-    # Resize the Table
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.resizeColumnsToContents()
-    #dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setColumnWidth(5,300)
-    #dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setColumnWidth(6,300)
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.resizeRowsToContents()
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.horizontalHeader().setStretchLastSection(False)
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.horizontalHeader().setStretchLastSection(True)
-    
-    # Fill the Table
-    for k in playlist_dict:
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setRowCount(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount() + 1)
-        
-        # Type
-        type_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['type'])
-        type_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        type_item.setFlags(type_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setItem(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,0,type_item)
-        
-        # Repeat
-        new_combobox1 = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,1,new_combobox1)
-        new_combobox1.addItem("True")
-        new_combobox1.addItem("False")
-        new_combobox1.setFixedSize(67,24)
-        if playlist_dict[k]['repeat'] == "True":
-            new_combobox1.setCurrentIndex(0)
-        else:
-            new_combobox1.setCurrentIndex(1)
-            
-        # Timeout
-        timeout_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['timeout_seconds'])
-        timeout_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setItem(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,2,timeout_item)
-        
-        # Delay
-        new_checkbox = QtWidgets.QCheckBox("", dashboard, objectName='checkBox_')
-        new_checkbox.setStyleSheet("margin-left:17%")
-        new_checkbox.setChecked(eval(playlist_dict[k]['delay']))
-        new_checkbox.stateChanged.connect(lambda state, dashboard=dashboard: _slotSensorNodeAutorunTableDelayChecked(-1, dashboard))
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,3,new_checkbox)
-    
-        # Start Time 
-        new_time_edit = QtWidgets.QTimeEdit(dashboard)
-        new_time_edit.setDisplayFormat('h:mm:ss AP')
-        new_time_edit.setTime(QtCore.QTime.fromString(playlist_dict[k]['start_time'],'HH:mm:ss'))
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,4,new_time_edit)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.selectRow(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1)
-        _slotSensorNodeAutorunTableDelayChecked(-1, dashboard)
-        
-        # Details
-        details_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['details'])
-        details_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        details_item.setFlags(details_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setItem(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,5,details_item)
-        
-        # Variable Names
-        variable_names_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['variable_names'])
-        variable_names_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        variable_names_item.setFlags(variable_names_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setItem(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,6,variable_names_item)
-        
-        # Variable Values
-        variable_values_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['variable_values'])
-        variable_values_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        variable_values_item.setFlags(variable_values_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        dashboard.ui.tableWidget_sensor_nodes_autorun.setItem(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,7,variable_values_item)
-            
-    # Resize the Table
-    dashboard.ui.tableWidget_sensor_nodes_autorun.resizeColumnsToContents()
-    dashboard.ui.tableWidget_sensor_nodes_autorun.setColumnWidth(5,300)
-    dashboard.ui.tableWidget_sensor_nodes_autorun.setColumnWidth(6,300)
-    dashboard.ui.tableWidget_sensor_nodes_autorun.resizeRowsToContents()
-    dashboard.ui.tableWidget_sensor_nodes_autorun.horizontalHeader().setStretchLastSection(False)
-    dashboard.ui.tableWidget_sensor_nodes_autorun.horizontalHeader().setStretchLastSection(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunExportClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes a row from the autorun playlist table.
-    """                
-    # Choose File Location
-    get_playlist_folder = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists")
-    path = QtWidgets.QFileDialog.getSaveFileName(dashboard, 'Save YAML', get_playlist_folder, filter='YAML (*.yaml)')
-    get_path = path[0]
-    
-    # Add Extension
-    if get_path.endswith('.yaml') == False:
-        get_path = get_path + '.yaml'
-        
-    # Save Values
-    if len(path[0]) > 0:            
-        playlist_dict = {}
-        playlist_dict['delay_start'] = str(dashboard.ui.checkBox_sensor_nodes_autorun_delay.isChecked())
-        playlist_dict['delay_start_time'] = str(dashboard.ui.dateTimeEdit_sensor_nodes_autorun.dateTime().toString('yyyy-MM-dd hh:mm:ss'))  #.toPyDateTime())  # '2024-01-24 14:08:47.182000'
-        playlist_dict['repetition_interval_seconds'] = str(dashboard.ui.textEdit_sensor_nodes_autorun_repetition_interval.toPlainText())
-        for n in range(0,dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()):
-            row_dict = {}
-            try:
-                row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Type")
-                return
-            try:
-                row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Repeat Value")
-                return
-            try:
-                row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Timeout Value")
-                return
-            try:
-                row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Delay Value")
-                return
-            try:
-                row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Start Time Value")
-                return                                        
-            try:
-                row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Details Value")
-                return
-            try:
-                row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Names Value")
-                return
-            try:
-                row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
-            except:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Values Value")
-                return
-            playlist_dict[n] = row_dict
-        
-        # Trigger Parameters
-        trigger_values = []
-        for row in range(0, dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.rowCount()):
-            trigger_values.append([str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,0).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,1).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,2).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,3).text())])
-        playlist_dict['trigger_values'] = trigger_values
-                
-        # Dump Dictionary to File
-        stream = open(get_path, 'w')
-        yaml.dump(playlist_dict, stream, default_flow_style=False, indent=5)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunViewClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens the autorun playlist item in the attack tab.
-    """
-    # Current Item
-    get_row = dashboard.ui.tableWidget_sensor_nodes_autorun.currentRow()
-    if get_row < 0:
-        return
-        
-    get_type = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(get_row,0).text())
-    get_details = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(get_row,5).text())
-    get_variables = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(get_row,6).text())
-    get_values = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(get_row,7).text())
-    
-    # Load Attack
-    if get_type == "Single-Stage":
-        # Highlight Attack
-        get_attack_name = eval(get_details)[0]  #details = [get_attack_name, get_protocol, get_modulation, get_hardware, str(fname), get_file_type, run_with_sudo]
-        get_protocol = eval(get_details)[1]
-        get_modulation = eval(get_details)[2]
-        get_hardware = eval(get_details)[3]
-        get_values = eval(get_values)
-        get_sudo = eval(get_details)[6]
-        
-        dashboard.ui.comboBox_attack_protocols.setCurrentIndex(dashboard.ui.comboBox_attack_protocols.findText(get_protocol))
-        dashboard.ui.comboBox_attack_modulation.setCurrentIndex(dashboard.ui.comboBox_attack_modulation.findText(get_modulation))
-        dashboard.ui.comboBox_attack_hardware.setCurrentIndex(dashboard.ui.comboBox_attack_hardware.findText(get_hardware))
-        dashboard.ui.treeWidget_attack_attacks.setCurrentItem(dashboard.ui.treeWidget_attack_attacks.findItems(get_attack_name,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0])
-        fissure.Dashboard.Slots.AttackTabSlots._slotAttackLoadTemplateClicked(dashboard)
-        
-        # Replace Default Values
-        variable_list = eval(get_variables)
-        for n in range(0,len(get_values)):
-            # Remove Quotes from Filepaths
-            if 'filepath' in variable_list[n]:
-                variable_value_item = QtWidgets.QTableWidgetItem(get_values[n].replace('"',''))
-            else:
-                variable_value_item = QtWidgets.QTableWidgetItem(get_values[n])
-            dashboard.ui.tableWidget1_attack_flow_graph_current_values.setItem(n,0,variable_value_item)
-            
-        # Check Sudo Checkbox
-        if get_sudo == True:
-            dashboard.ui.checkBox_attack_single_stage_sudo.setChecked(True)
-        else:
-            dashboard.ui.checkBox_attack_single_stage_sudo.setChecked(False)
-            
-        # Switch Tabs
-        dashboard.ui.tabWidget_attack_attack.setCurrentIndex(0)
-        dashboard.ui.tabWidget.setCurrentIndex(3)
-    elif get_type == "Multi-Stage":
-        # Import
-        formatted_data = [get_details, get_variables, get_values]
-        fissure.Dashboard.Slots.AttackTabSlots._slotAttackMultiStageImportClicked(dashboard, fname="n/a", data_override=formatted_data)
-        
-        # Switch Tabs
-        dashboard.ui.tabWidget_attack_attack.setCurrentIndex(1)
-        dashboard.ui.tabWidget.setCurrentIndex(3)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunRefreshClicked(dashboard: QtCore.QObject):
-    """ 
-    Refreshes the Sensor Nodes Autorun Existing Playlists combobox.
-    """
-    try:
-        # Get the Folder Location
-        get_folder = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists")
-
-        # Get the Files for the Combobox
-        dashboard.ui.comboBox_sensor_nodes_autorun.clear()
-        temp_names = []
-        for fname in os.listdir(get_folder):
-            if os.path.isfile(get_folder+"/"+fname):
-                if ".yaml" in fname:
-                    temp_names.append(fname)
-
-        # Sort and Add to the Combobox
-        temp_names = sorted(temp_names)
-        dashboard.ui.comboBox_sensor_nodes_autorun.addItem("Custom")
-        for n in temp_names:
-            dashboard.ui.comboBox_sensor_nodes_autorun.addItem(n)
-
-        # Set the Combobox Selection
-        dashboard.ui.comboBox_sensor_nodes_autorun.setCurrentIndex(0)
-    except:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("Unable to refresh autorun playlists")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotSensorNodesFileNavigationLocalDeleteClicked(dashboard: QtCore.QObject):
     """
     Deletes a selected local folder or file.
@@ -735,239 +1418,6 @@ def _slotSensorNodesFileNavigationLocalViewClicked(dashboard: QtCore.QObject):
         os.system('gedit "' + get_file + '" &')
     else:
         fissure.Dashboard.UI_Components.Qt5.errorMessage("Not a valid file extension.")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunTriggersEditClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens the triggers dialog window to edit the list of Autorun playlist triggers.
-    """
-    # Obtain Table Information
-    table_values = []
-    for row in range(0, dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.rowCount()):
-        table_values.append([str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,0).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,1).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,2).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,3).text())])
-    
-    # Open the Dialog
-    get_value = dashboard.openPopUp("TriggersDialog", TriggersDialog, "Autorun Playlist", table_values)
-
-    # Cancel Clicked
-    if get_value == None:
-        pass
-        
-    # OK Clicked
-    elif len(get_value) > 0:
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(len(get_value))
-        for row in range(0,len(get_value)):
-            # Filename
-            filename_item = QtWidgets.QTableWidgetItem(get_value[row][0])
-            filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            filename_item.setFlags(filename_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,0,filename_item)
-            
-            # Type
-            type_item = QtWidgets.QTableWidgetItem(get_value[row][1])
-            type_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            type_item.setFlags(type_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,1,type_item)
-
-            # Variable Names
-            variable_names_item = QtWidgets.QTableWidgetItem(get_value[row][2])
-            variable_names_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            variable_names_item.setFlags(variable_names_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,2,variable_names_item)
-
-            # Variable Values
-            variable_values_item = QtWidgets.QTableWidgetItem(get_value[row][3])
-            variable_values_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            variable_values_item.setFlags(variable_values_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setItem(row,3,variable_values_item)
-        
-        # Resize the Table
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.resizeColumnsToContents()
-        #dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setColumnWidth(5,300)
-        #dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setColumnWidth(6,300)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.resizeRowsToContents()
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.horizontalHeader().setStretchLastSection(True)
-        
-    # All Rows Removed
-    else:
-        dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(0)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotSensorNodesAutorunStartClicked(dashboard: QtCore.QObject):
-    """ 
-    Sends a message to the sensor node to start/stop autorun playlist.
-    """
-    # Error with no Sensor Node Selected
-    if not dashboard.selected_node_uid:
-        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Select an active sensor node.")
-        return
-
-    # Run As Stored
-    if dashboard.ui.checkBox_sensor_nodes_autorun_run_as_stored.isChecked() == True:
-        get_filename = str(dashboard.ui.textEdit_sensor_nodes_autorun_playlist_filename.toPlainText())
-        if get_filename.strip() == "":
-            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Enter playlist filename.")
-            return
-        
-        # Send the Message
-        if selected_node_is_ip(dashboard):
-            await dashboard.backend.autorunPlaylistExecute(dashboard.selected_node_uid, get_filename)
-        if selected_node_is_meshtastic(dashboard):
-            await dashboard.backend.autorunPlaylistExecuteLT(dashboard.selected_node_uid, get_filename) 
-
-    # Transfer Playlist to Sensor Node
-    else:
-        # Retrieve Playlist
-        playlist_dict = {}
-        playlist_dict['delay_start'] = str(dashboard.ui.checkBox_sensor_nodes_autorun_delay.isChecked())
-        playlist_dict['delay_start_time'] = str(dashboard.ui.dateTimeEdit_sensor_nodes_autorun.dateTime().toString('yyyy-MM-dd hh:mm:ss'))  #.toPyDateTime())  # '2024-01-24 14:08:47.182000'
-        playlist_dict['repetition_interval_seconds'] = str(dashboard.ui.textEdit_sensor_nodes_autorun_repetition_interval.toPlainText())
-        for n in range(0,dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()):
-            row_dict = {}      
-            try:
-                row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Type")
-                return
-            try:
-                row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Repeat Value")
-                return
-            try:
-                row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Timeout Value")
-                return
-            try:
-                row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Delay Value")
-                return
-            try:
-                row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Start Time Value")
-                return                      
-            try:
-                row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Details Value")
-                return
-            try:
-                row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Variable Names Value")
-                return
-            try:
-                row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
-            except:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid Variable Values Value")
-                return
-            playlist_dict[n] = row_dict
-        
-        # Trigger Parameters
-        trigger_values = []
-        for row in range(0, dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.rowCount()):
-            trigger_values.append([str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,0).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,1).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,2).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,3).text())])
-    
-        # Send the Message
-        await dashboard.backend.autorunPlaylistStart(dashboard.selected_node_uid, playlist_dict, trigger_values)
-
-    # Toggle the Text
-    if selected_node_is_ip(dashboard):
-        dashboard.ui.pushButton_sensor_nodes_autorun_start.setEnabled(False)
-        dashboard.ui.pushButton_sensor_nodes_autorun_stop.setEnabled(True)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotSensorNodesAutorunStopClicked(dashboard: QtCore.QObject):
-    """ 
-    Sends a message to the sensor node to stop the autorun playlist.
-    """
-    if selected_node_is_ip(dashboard):
-        # Send the Message
-        await dashboard.backend.autorunPlaylistStop(dashboard.selected_node_uid)
-        
-        # Swap Buttons
-        dashboard.ui.pushButton_sensor_nodes_autorun_start.setEnabled(True)
-        dashboard.ui.pushButton_sensor_nodes_autorun_stop.setEnabled(False)
-
-    elif selected_node_is_meshtastic(dashboard):
-        # Send the Message
-        await dashboard.backend.autorunPlaylistStopLT(dashboard.selected_node_uid)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotSensorNodesAutorunOverwriteClicked(dashboard: QtCore.QObject):
-    """ 
-    Sends a message to the sensor node to overwrite the default autorun playlist.
-    """
-    # Error with no Sensor Node Selected
-    if not dashboard.selected_node_uid:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select an active sensor node.")
-        return
-
-    # Retrieve Playlist
-    playlist_dict = {}
-    playlist_dict['delay_start'] = str(dashboard.ui.checkBox_sensor_nodes_autorun_delay.isChecked())
-    playlist_dict['delay_start_time'] = str(dashboard.ui.dateTimeEdit_sensor_nodes_autorun.dateTime().toString('yyyy-MM-dd hh:mm:ss'))  #.toPyDateTime())  # '2024-01-24 14:08:47.182000'
-    playlist_dict['repetition_interval_seconds'] = str(dashboard.ui.textEdit_sensor_nodes_autorun_repetition_interval.toPlainText())
-    for n in range(0,dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()):
-        row_dict = {}      
-        try:
-            row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Type")
-            return
-        try:
-            row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Repeat Value")
-            return
-        try:
-            row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Timeout Value")
-            return
-        try:
-            row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Delay Value")
-            return
-        try:
-            row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Start Time Value")
-            return                  
-        try:
-            row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Details Value")
-            return
-        try:
-            row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Names Value")
-            return
-        try:
-            row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
-        except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Values Value")
-            return
-        playlist_dict[n] = row_dict
-
-    # Trigger Parameters
-    trigger_values = []
-    for row in range(0, dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.rowCount()):
-        trigger_values.append([str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,0).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,1).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,2).text()), str(dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.item(row,3).text())])
-    playlist_dict['trigger_values'] = trigger_values
-
-    # Send the Message
-    await dashboard.backend.overwriteDefaultAutorunPlaylist(dashboard.selected_node_uid, playlist_dict)
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -1137,15 +1587,6 @@ async def _slotSensorNodesFileNavigationLocalTransferClicked(dashboard: QtCore.Q
         get_remote_folder,
         True,
     )
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAutorunTriggersClearClicked(dashboard: QtCore.QObject):
-    """ 
-    Clears the list of triggers.
-    """
-    # Remove Rows
-    dashboard.ui.tableWidget1_sensor_nodes_autorun_triggers.setRowCount(0)
 
 
 def update_sensor_node_title(dashboard: QtCore.QObject, change: int):
@@ -1335,24 +1776,6 @@ def _slotSensorNodesReportsClearClicked(dashboard: QtCore.QObject):
     # Reset Sensor Nodes Tab Text
     update_sensor_node_title(dashboard, -row_count)
     #dashboard.ui.tabWidget.tabBar().setTabText(6,"Sensor Nodes")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodeAutorunRunAsStoredChecked(dashboard: QtCore.QObject):
-    """ 
-    Enables/Disables the Autorun controls.
-    """
-    # Checked
-    if dashboard.ui.checkBox_sensor_nodes_autorun_run_as_stored.isChecked():
-        dashboard.ui.frame_sensor_nodes_autorun_controls.setEnabled(False)
-        dashboard.ui.label2_sensor_nodes_autorun_playlist_filename.setEnabled(True)
-        dashboard.ui.textEdit_sensor_nodes_autorun_playlist_filename.setEnabled(True)
-    
-    # Unchecked
-    else:
-        dashboard.ui.frame_sensor_nodes_autorun_controls.setEnabled(True)
-        dashboard.ui.label2_sensor_nodes_autorun_playlist_filename.setEnabled(False)
-        dashboard.ui.textEdit_sensor_nodes_autorun_playlist_filename.setEnabled(False)
 
 
 @qasync.asyncSlot(QtCore.QObject)

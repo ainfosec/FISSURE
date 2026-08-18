@@ -1051,6 +1051,7 @@ class HiprFisr:
             # should never block on GPS lookup.
             sn_state = {
                 "status": params.get("status"),
+                "autorun_state": params.get("autorun_state"),
                 "version": params.get("version"),
                 "gps_source": params.get("gps_source"),
                 "gps_valid": fissure.utils.common.safe_bool(params.get("gps_valid"), default=False),
@@ -1172,6 +1173,10 @@ class HiprFisr:
             incoming_status = str(incoming_status).strip()
             if not incoming_status:
                 incoming_status = None
+        
+        incoming_autorun_state = sn_state.get("autorun_state")
+        if incoming_autorun_state is not None:
+            incoming_autorun_state = str(incoming_autorun_state).strip() or "Idle"
 
         incoming_version = sn_state.get("version")
         if incoming_version is not None:
@@ -1216,6 +1221,7 @@ class HiprFisr:
 
                 # Unified node state from heartbeat.
                 "status": incoming_status or "unknown",
+                "autorun_state": incoming_autorun_state or "Idle",
                 "version": incoming_version or "",
                 "gps_source": incoming_gps_source or "",
                 "gps_valid": incoming_gps_valid,
@@ -1253,6 +1259,9 @@ class HiprFisr:
             # Only overwrite optional string fields when the heartbeat provides them.
             if incoming_status is not None:
                 node["status"] = incoming_status
+            
+            if incoming_autorun_state is not None:
+                node["autorun_state"] = incoming_autorun_state
 
             if incoming_version is not None:
                 node["version"] = incoming_version
@@ -1337,6 +1346,7 @@ class HiprFisr:
 
             # Unified node state from heartbeat.
             "status": node.get("status", "unknown"),
+            "autorun_state": node.get("autorun_state", "Idle"),
             "version": node.get("version", ""),
             "gps_source": node.get("gps_source", ""),
             "gps_valid": node.get("gps_valid", False),

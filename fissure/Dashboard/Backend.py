@@ -837,58 +837,89 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def autorunPlaylistStart(self, node_uid, playlist_dict, trigger_values):
-        """
-        Sends a message to transfer and start an autorun playlist.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
+    async def autorunPlaylistQuery(self, node_uid=""):
+        """Query YAML Autorun playlists stored on a Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+        PARAMETERS = {"node_uid": node_uid}
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistQuery",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+    async def autorunPlaylistLoad(self, node_uid="", playlist_filename=""):
+        """Load one stored Sensor Node Autorun playlist back to the Dashboard."""
+        if self.hiprfisr_connected is not True:
+            return
+        PARAMETERS = {"node_uid": node_uid, "playlist_filename": playlist_filename}
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistLoad",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+    async def autorunPlaylistSave(self, node_uid="", playlist_filename="", playlist_dict=None):
+        """Save the current plugin-backed Autorun playlist on a Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+        PARAMETERS = {
+            "node_uid": node_uid,
+            "playlist_filename": playlist_filename,
+            "playlist_dict": playlist_dict or {},
+        }
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistSave",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+    async def autorunPlaylistStart(self, node_uid, playlist_dict):
+        """Start the current plugin-backed Autorun workspace on a Sensor Node."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStart",
+            fissure.comms.MessageFields.PARAMETERS: {
                 "node_uid": node_uid,
-                "playlist_dict": playlist_dict,
-                "trigger_values": trigger_values,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStart",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+                "playlist_dict": playlist_dict or {},
+            },
+        }
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
     async def autorunPlaylistExecute(self, node_uid="", playlist_filename=""):
-        """
-        Sends a message to execute an autorun playlist already located on the sensor node.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "playlist_filename": playlist_filename,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistExecute",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        """Execute an Autorun YAML file already stored on the Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+        PARAMETERS = {"node_uid": node_uid, "playlist_filename": playlist_filename}
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistExecute",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
     async def autorunPlaylistStop(self, node_uid=""):
-        """
-        Sends a message to stop the running autorun playlist.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        """Stop the active Autorun run on the selected Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+        PARAMETERS = {"node_uid": node_uid}
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStop",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
     async def overwriteDefaultAutorunPlaylist(self, node_uid="", playlist_dict={}):

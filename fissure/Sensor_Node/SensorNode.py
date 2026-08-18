@@ -20,6 +20,8 @@ import csv
 import signal
 import json
 import socket
+from contextvars import ContextVar
+
 
 from inspect import isfunction
 from types import ModuleType
@@ -175,7 +177,6 @@ async def main(local_flag):
             fissure.utils.zmq_cleanup()
 
         print("[FISSURE][Sensor Node] end")
-        return
 
 
 class SensorNode(object):
@@ -259,13 +260,7 @@ class SensorNode(object):
         self.running_PD = False
         self.pd_bits_socket = None
 
-        self.autorun_playlist_thread = None
-        if self.settings_dict['Sensor Node']['autorun'] is True:
-            filename = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists", "default.yaml")
-            with open(filename) as yaml_library_file:
-                playlist_dict = yaml.load(yaml_library_file, yaml.FullLoader)
-                trigger_dict = playlist_dict['trigger_values']
-            self.autorunPlaylistStart(playlist_dict, trigger_dict)
+        self.autorun_boot_requested = bool(self.settings_dict["Sensor Node"].get("autorun", False))
 
         # ZMQ DEALER/ROUTER fields
         self.listener = None
@@ -309,6 +304,19 @@ class SensorNode(object):
         self.gps_stale = False
 
         self.operations = {} # operation tracking dictionary
+
+        self.autorun_state = "Idle"
+        self.autorun_source = ""
+        self.autorun_message = ""
+        self.autorun_run_id = ""
+        self.autorun_task = None
+        self.autorun_stop_event = None
+        self.autorun_detector_event = None
+        self.autorun_detector_operation_ids = set()
+        self.autorun_scheduler_tasks = set()
+        self.autorun_action_tasks = set()
+        self._operation_owner_context = ContextVar(f"sensor_node_operation_owner_{self.uuid}", default="")
+        self._operation_owner_ids = {}
 
         # initialize artifact manager
         self.artifact_manager = ArtifactManager(logger=self.logger)
@@ -555,6 +563,8 @@ class SensorNode(object):
             detection.setdefault("altitude", alt)
 
         detection.setdefault("observation_time", observation_time)
+
+        await self._handle_autorun_detection(detection)
 
         if self.network_type != "IP":
             self.logger.warning(
@@ -1020,6 +1030,43 @@ class SensorNode(object):
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    def _autorun_node_status(self):
+        """Return the node status that should be visible when no plugin operation is active."""
+        if self.autorun_state == "Waiting":
+            return "Autorun: Waiting"
+        if self.autorun_state in {"Running", "Stopping"}:
+            return "Autorun"
+        return "Idle"
+
+
+    async def _request_plugin_operation_stop(self, operation_id, op):
+        """Request one plugin operation stop exactly once and wait for it to finish."""
+        if not op:
+            return
+
+        stop_task = op.get("stop_task")
+        if stop_task is None:
+            stop_callback = op.get("stop")
+            if not callable(stop_callback):
+                self.logger.error(f"No callable stop method for operation {operation_id}.")
+                return
+
+            async def request_stop():
+                try:
+                    await stop_callback()
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    self.logger.error(
+                        f"Error stopping plugin operation {operation_id}:\n{traceback.format_exc()}"
+                    )
+
+            stop_task = asyncio.create_task(request_stop(), name=f"op_stop:{operation_id}")
+            op["stop_task"] = stop_task
+
+        await asyncio.gather(stop_task, return_exceptions=True)
+
+
     async def run_plugin_operation(
         self,
         component: object,  # Required for callback system
@@ -1080,7 +1127,7 @@ class SensorNode(object):
             - publish_status_to_hiprfisr is best-effort
             - sends ONLY on change unless force=True
             """
-            s = (status_text or "").strip() or "unknown"
+            s = (status_text or "").strip() or self._autorun_node_status()
 
             # If state didn't change and we're not forcing, do nothing
             if (not force) and self.current_status == s:
@@ -1185,7 +1232,7 @@ class SensorNode(object):
             requested_operation_id = str(parameters.get("operation_id") or "").strip()
             if requested_operation_id:
                 operation_inst.opid = requested_operation_id
-                
+
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error initializing operation class from {plugin_script_path}: {e}\n{tb_str}")
@@ -1242,7 +1289,14 @@ class SensorNode(object):
             "teardown": operation_inst.teardown,
             "start_time": time.time(),
             "task": None,
+            "stop_task": None,
+            "finalize_task": None,
         }
+
+        operation_owner = str(self._operation_owner_context.get() or "").strip()
+        if operation_owner:
+            self._operation_owner_ids.setdefault(operation_owner, set()).add(operation_id)
+            self.operations[operation_id]["owner"] = operation_owner
 
         # Track "busy vs idle" based on active operation IDs
         self._active_operation_ids.add(operation_id)
@@ -1266,6 +1320,15 @@ class SensorNode(object):
             err_str = ""
             try:
                 await task
+            except asyncio.CancelledError:
+                # Process/event-loop shutdown can cancel operation tasks before the
+                # normal stop path runs. Request the operation stop exactly once
+                # before teardown so stop and teardown never race each other.
+                await self._request_plugin_operation_stop(
+                    operation_id,
+                    self.operations.get(operation_id),
+                )
+                raise
             except Exception:
                 err_str = traceback.format_exc()
                 self.logger.error(f"Plugin operation {operation_id} raised:\n{err_str}")
@@ -1286,15 +1349,20 @@ class SensorNode(object):
 
                 # If this was the last active op, revert status once (edge-triggered)
                 if len(self._active_operation_ids) == 0:
-                    # Choose behavior:
-                    # - If you want errors to persist until next heartbeat, you can set "Error" when err_str != ""
-                    # - If you want always "Idle" on completion, do that regardless
                     if err_str:
                         await _set_status_edge("Error")
                     else:
-                        await _set_status_edge(self._idle_status_text)
+                        await _set_status_edge(self._autorun_node_status())
+
+                if operation_owner:
+                    owner_operations = self._operation_owner_ids.get(operation_owner)
+                    if owner_operations is not None:
+                        owner_operations.discard(operation_id)
+                        if not owner_operations:
+                            self._operation_owner_ids.pop(operation_owner, None)
 
         finalize_task = asyncio.create_task(_finalize_operation(), name=f"op_finalize:{operation_id}")
+        self.operations[operation_id]["finalize_task"] = finalize_task
 
         # -------------------------------------------------------------------------
         # Startup handshake: wait for running() to become non-None OR task to finish quickly
@@ -1320,76 +1388,62 @@ class SensorNode(object):
             await finalize_task
 
         return operation_id
-
+    
 
     async def stop_plugin_operation(
-        self, 
-        component: object, # Required for callback system
+        self,
+        component: object,  # Required for callback system
         operation_id: str
     ) -> None:
         """
-        Stops a plugin operation on the Sensor Node.
+        Stop one plugin operation and wait for its finalizer to finish.
 
-        IMPORTANT:
-        - This function must NOT teardown or pop the operation registry.
-        The run_plugin_operation finalizer owns teardown + cleanup + status revert.
-        - This prevents duplicate teardown and duplicate status transitions.
+        The run_plugin_operation finalizer remains the only owner of teardown and
+        registry removal. A shared stop task guarantees that normal Stop, Autorun
+        shutdown, and process cancellation cannot invoke stop() concurrently.
         """
         self.logger.info(f"Stopping plugin operation with ID: {operation_id}")
 
         op = self.operations.get(operation_id)
         if not op:
-            self.logger.error(f"Operation ID {operation_id} not found.")
+            self.logger.debug(f"Operation ID {operation_id} is no longer active.")
             return
 
-        # Request stop
-        if op.get("stop") and callable(op["stop"]):
-            try:
-                await op["stop"]()
-            except Exception:
-                self.logger.error(f"Error stopping plugin operation {operation_id}:\n{traceback.format_exc()}")
-                # still continue to wait for task to settle
-        else:
-            self.logger.error(f"No callable stop method for operation {operation_id}.")
-            return
-
+        await self._request_plugin_operation_stop(operation_id, op)
         self.logger.info(f"Operation {operation_id} stop requested.")
 
-        # Prefer awaiting the task; finalizer will handle teardown + cleanup.
-        task = op.get("task")
-        if task is not None:
-            try:
-                await task
-            except Exception:
-                # Finalizer logs full traceback; keep noise low here.
-                self.logger.debug(f"stop_plugin_operation: task raised for {operation_id}")
-            return
+        current_task = asyncio.current_task()
+        operation_task = op.get("task")
+        if operation_task is not None and operation_task is not current_task:
+            await asyncio.gather(operation_task, return_exceptions=True)
 
-        # Fallback: poll running() if task missing (should be rare)
-        try:
-            while op.get("status") and callable(op["status"]) and op["status"]():
-                await asyncio.sleep(0.25)
-        except Exception:
-            self.logger.debug(f"stop_plugin_operation: status polling error for {operation_id}")
+        finalize_task = op.get("finalize_task")
+        if (
+            finalize_task is not None
+            and finalize_task is not current_task
+            and operation_task is not current_task
+        ):
+            await asyncio.gather(finalize_task, return_exceptions=True)
 
 
     async def stop_all_plugin_operations(
-        self, 
+        self,
         component: object,  # Required for callback system
         requester_uid: str,
         requester_type: str
     ) -> None:
         """
-        Stops all running plugin operations on the Sensor Node.
+        Stop all plugin activity on the Sensor Node.
 
-        Parameters
-        ----------
-        requester_type : str
-            dashboard, tak, or broadcast 
-        plugin_name : str
-            The name of the plugin.
+        An active Autorun playlist is stopped first so detector gates, delayed
+        rows, repeating schedulers, and pending action launches cannot create new
+        operations after the current operation set has been stopped.
         """
         self.logger.info("Stopping all plugin operations.")
+
+        if self.autorun_state in {"Waiting", "Running", "Stopping"}:
+            await self.stop_autorun_playlist()
+
         for operation_id in list(self.operations.keys()):
             await self.stop_plugin_operation(component, operation_id)
 
@@ -1563,135 +1617,127 @@ class SensorNode(object):
 
 
     async def begin(self):
-        """
-        """
+        """Run the Sensor Node lifecycle and optional boot Autorun."""
         self.logger.info("=== STARTING SENSOR NODE ===")
 
-        # Connect to HIPRFISR (HB + MSG channels)
-        if self.network_type == "IP":
-            ok = await self.hiprfisr_socket.connect(
-                self.hiprfisr_address
-            )
+        heartbeat_task = None
 
-            if ok:
+        async def start_boot_autorun():
+            """Start default.yaml after the configured boot-only Autorun delay."""
+            autorun_delay = self.settings_dict["Sensor Node"].get("autorun_delay_seconds", 0)
+
+            try:
+                autorun_delay = max(0.0, float(autorun_delay or 0))
+            except (TypeError, ValueError):
+                self.logger.warning(
+                    f"Invalid autorun_delay_seconds value {autorun_delay!r}; using 0 seconds."
+                )
+                autorun_delay = 0.0
+
+            if autorun_delay > 0:
                 self.logger.info(
-                    f"Connected to HIPRFISR @ {self.hiprfisr_address}"
+                    f"Boot Autorun waiting {autorun_delay:g} seconds before starting default.yaml."
                 )
-                await asyncio.sleep(
-                    0.1
-                )  # For ZMQ handshake to complete
+                await asyncio.sleep(autorun_delay)
 
-                artifact_host = (
-                    "127.0.0.1"
-                    if self.hiprfisr_address.protocol == "ipc"
-                    else self.hiprfisr_address.address
+            if self.shutdown:
+                return
+
+            self.logger.info("Starting boot Autorun playlist: default.yaml")
+            await self.start_autorun_playlist_file("default.yaml", source="default.yaml")
+
+        try:
+            if self.autorun_boot_requested:
+                boot_autorun_task = asyncio.create_task(
+                    start_boot_autorun(),
+                    name=f"sensor_node_boot_autorun:{self.uuid}",
                 )
+                self.child_tasks.append(boot_autorun_task)
 
-                self.artifact_transfer_client = (
-                    fissure.comms.ArtifactTransferClient(
-                        endpoint=fissure.comms.build_artifact_endpoint(
-                            artifact_host
-                        ),
+            # Connect to HIPRFISR when available. Autorun does not depend on this path.
+            if self.network_type == "IP":
+                ok = await self.hiprfisr_socket.connect(self.hiprfisr_address)
+
+                if ok:
+                    self.logger.info(f"Connected to HIPRFISR @ {self.hiprfisr_address}")
+                    await asyncio.sleep(0.1)
+
+                    artifact_host = (
+                        "127.0.0.1"
+                        if self.hiprfisr_address.protocol == "ipc"
+                        else self.hiprfisr_address.address
+                    )
+
+                    self.artifact_transfer_client = fissure.comms.ArtifactTransferClient(
+                        endpoint=fissure.comms.build_artifact_endpoint(artifact_host),
                         identity=f"sensor-artifacts-{self.uuid}",
                         role=fissure.comms.ROLE_SENSOR_NODE,
                         node_uid=self.uuid,
                         logger=self.logger,
                     )
-                )
 
-                await self.artifact_transfer_client.connect()
+                    await self.artifact_transfer_client.connect()
 
-                from fissure.Sensor_Node.SensorNodeFileTransferController import (
-                    SensorNodeFileTransferController,
-                )
-
-                file_transfer_controller = (
-                    SensorNodeFileTransferController(
-                        self
+                    from fissure.Sensor_Node.SensorNodeFileTransferController import (
+                        SensorNodeFileTransferController,
                     )
-                )
 
-                file_transfer_task = asyncio.create_task(
-                    file_transfer_controller.receive_loop()
-                )
+                    file_transfer_controller = SensorNodeFileTransferController(self)
+                    file_transfer_task = asyncio.create_task(
+                        file_transfer_controller.receive_loop(),
+                        name=f"Sensor Node File Transfer Receiver {self.uuid}",
+                    )
+                    self.child_tasks.append(file_transfer_task)
 
-                file_transfer_task.set_name(
-                    f"Sensor Node File Transfer Receiver {self.uuid}"
-                )
+                    heartbeat_task = asyncio.create_task(
+                        self.heartbeat_loop(),
+                        name=f"sensor_node_heartbeat:{self.uuid}",
+                    )
+                    self.child_tasks.append(heartbeat_task)
 
-                self.child_tasks.append(
-                    file_transfer_task
-                )
+                    if self.local_remote == "local":
+                        await self.announce_local_startup()
+
+                else:
+                    self.logger.warning(
+                        "HIPRFISR is unavailable. Sensor Node will continue running locally; "
+                        "boot Autorun and node-local detector handling remain available."
+                    )
+
+            elif self.network_type == "Meshtastic":
+                try:
+                    serial_port = self.pending_meshtastic_params["serial_port"]
+
+                    self.hiprfisr_socket = fissure.comms.FissureMeshtasticNode(
+                        serial_port,
+                        self.pending_meshtastic_params["name"],
+                        self.pending_meshtastic_params["context"],
+                    )
+
+                    self.logger.info(f"Connected to Meshtastic serial port: {serial_port}")
+
+                    heartbeat_task = asyncio.create_task(
+                        self.heartbeat_loop(),
+                        name=f"sensor_node_heartbeat:{self.uuid}",
+                    )
+                    self.child_tasks.append(heartbeat_task)
+
+                except Exception as error:
+                    self.logger.error(f"Failed to initialize Meshtastic on {serial_port}: {error}")
+                    return
 
             else:
                 self.logger.error(
-                    "FAILED connecting to HIPRFISR"
+                    "Unknown network type. Enter IP or Meshtastic in node YAML config file."
                 )
                 return
 
-        elif self.network_type == "Meshtastic":
-            try:
-                serial_port = (
-                    self.pending_meshtastic_params[
-                        "serial_port"
-                    ]
-                )
-
-                self.hiprfisr_socket = (
-                    fissure.comms.FissureMeshtasticNode(
-                        serial_port,
-                        self.pending_meshtastic_params[
-                            "name"
-                        ],
-                        self.pending_meshtastic_params[
-                            "context"
-                        ],
-                    )
-                )
-
-                self.logger.info(
-                    "Connected to Meshtastic serial port: "
-                    f"{serial_port}"
-                )
-
-            except Exception as e:
-                self.logger.error(
-                    "Failed to initialize Meshtastic on "
-                    f"{serial_port}: {e}"
-                )
-                return
-
-        else:
-            self.logger.error(
-                "Unknown network type. Enter IP or Meshtastic "
-                "in node YAML config file."
-            )
-            return
-
-        # Start Heartbeat Loop
-        heartbeat_task = asyncio.create_task(
-            self.heartbeat_loop()
-        )
-        self.child_tasks.append(
-            heartbeat_task
-        )
-
-        # Local Sensor Node should appear quickly in Dashboard/Tactical UI.
-        # Do this after connect and after the heartbeat loop exists.
-        if self.local_remote == "local":
-            await self.announce_local_startup()
-
-        # -----------------------------------------------------
-        # Main loop
-        # -----------------------------------------------------
-        try:
             while not self.shutdown:
-                await asyncio.sleep(
-                    DELAY
-                )
+                await asyncio.sleep(DELAY)
 
                 if self.network_type == "IP":
-                    await self.read_hiprfisr_messages()
+                    if heartbeat_task is not None:
+                        await self.read_hiprfisr_messages()
 
                     if self.pd_bits_socket:
                         await self.read_pd_bits_messages()
@@ -1700,15 +1746,30 @@ class SensorNode(object):
             raise
 
         finally:
-            # Stop Heartbeat Task
-            heartbeat_task.cancel()
+            self.shutdown = True
 
-            try:
-                await heartbeat_task
-            except asyncio.CancelledError:
-                pass
+            if self.autorun_state in {"Waiting", "Running", "Stopping"}:
+                try:
+                    await self.stop_autorun_playlist()
+                except Exception:
+                    self.logger.debug(
+                        "Error stopping Autorun during Sensor Node shutdown.",
+                        exc_info=True,
+                    )
 
-            # Cleanup
+            if self.operations:
+                try:
+                    await self.stop_all_plugin_operations(
+                        self,
+                        requester_uid=self.uuid,
+                        requester_type="shutdown",
+                    )
+                except Exception:
+                    self.logger.debug(
+                        "Error stopping plugin operations during Sensor Node shutdown.",
+                        exc_info=True,
+                    )
+
             for sender in self.alert_senders.values():
                 try:
                     sender.stop()
@@ -1717,16 +1778,13 @@ class SensorNode(object):
 
             self.alert_senders.clear()
 
-            # Close Running Tasks
-            for task in self.child_tasks:
-                task.cancel()
+            for task in list(self.child_tasks):
+                if not task.done():
+                    task.cancel()
 
-            await asyncio.gather(
-                *self.child_tasks,
-                return_exceptions=True,
-            )
+            if self.child_tasks:
+                await asyncio.gather(*self.child_tasks, return_exceptions=True)
 
-            # Shut Down Comms
             await self.shutdown_comms()
 
 
@@ -1863,6 +1921,7 @@ class SensorNode(object):
 
                     # Unified node state. HIPRFISR will consume these in the next step.
                     "status": getattr(self, "current_status", "unknown"),
+                    "autorun_state": getattr(self, "autorun_state", "Idle"),
                     "version": getattr(self, "version_string", ""),
                     "gps_source": getattr(self, "gps_source", ""),
                     "gps_valid": bool(getattr(self, "gps_valid", False)),
@@ -2925,8 +2984,6 @@ class SensorNode(object):
             # asyncio.run(self.flowGraphStarted("Attack"))
         # elif fissure_event == "Archive Replay":
             # asyncio.run(self.flowGraphStarted("Archive"))
-        # elif fissure_event == "Autorun Playlist":
-            # asyncio.run(self.flowGraphStarted("Attack"))
 
         # Monitor Trigger Threads for Termination
         print_timer = 0
@@ -2965,8 +3022,6 @@ class SensorNode(object):
                 asyncio.run(self.flowGraphFinished("Attack"))
             elif fissure_event == "Multi-Stage Attack":
                 asyncio.run(self.multiStageAttackFinished())
-            elif fissure_event == "Autorun Playlist":
-                pass
 
         # Trigger Done
         elif self.trigger_done.is_set():
@@ -2980,41 +3035,7 @@ class SensorNode(object):
             elif fissure_event == "Multi-Stage Attack":
                 self.logger.info("Starting Multi-Stage Attack...")
                 self.multiStageAttackStart(event_values[0], event_values[1], event_values[2], event_values[3], event_values[4], event_values[5], event_values[6])
-                #self.multiStageAttackStart(filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index)
-
-            elif fissure_event == "Autorun Playlist":
-                self.logger.info("Starting Autorun Playlist...")
-                playlist_dict = event_values[0]
-                
-                # Run at Startup
-                # Read the Autorun Playlist File
-                if not playlist_dict:
-                    filename = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists", "default.yaml")
-                    with open(filename) as yaml_library_file:
-                        playlist_dict = yaml.load(yaml_library_file, yaml.FullLoader)
-                
-                # Passed in from Dashboard
-                if self.hiprfisr_socket:
-                
-                    # Send the Message
-                    asyncio.run(self.autorunPlaylistStarted())
-                
-                # Make a New Thread
-                self.autorun_playlist_stop_event = threading.Event()
-                self.autorun_playlist_thread = threading.Thread(target=self.autorunPlaylistThreadStart, args=[playlist_dict])
-                self.autorun_playlist_thread.start()
-                
-
-    async def autorunPlaylistStarted(self):
-        """ Sends the Autorun Playlist Started message to the HIPRFISR/Dashboard.
-        """
-        # Send the Message
-        if self.network_type == "IP":
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStarted",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+                #self.multiStageAttackStart(filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index)               
     
 
     #######################  Physical Fuzzing  #########################
@@ -3296,230 +3317,382 @@ class SensorNode(object):
     
     #######################  Autorun Playlists  ##########################
 
-    def autorunPlaylistStart(self, playlist_dict={}, trigger_values=[]):
-        """ Starts a new thread for cycling through the autorun playlist.
-        """
-        # Use the Function that is Called Frequently in SensorNode.py
-        if len(trigger_values) == 0:
-            self.logger.info("START!")
-
-            # Check if the thread is already running
-            if self.autorun_playlist_thread and self.autorun_playlist_thread.is_alive():
-                self.logger.info("Autorun Playlist is already running. Ignoring duplicate request.")
-                return  # Prevent starting another instance
-            
-            # Passed in from the Dashboard
-            if self.hiprfisr_socket:
-                # Send the Message
-                asyncio.run(self.autorunPlaylistStarted())
-            
-            # Make a New Thread
-            self.autorun_playlist_stop_event = threading.Event()
-            self.autorun_playlist_thread = threading.Thread(target=self.autorunPlaylistThreadStart, args=[playlist_dict])
-            self.autorun_playlist_thread.start()
-        else:            
-            # Make a new Trigger Thread
-            if self.settings_dict['Sensor Node']['autorun'] == True:
-                autorun_index = -2  # Autorun on start with trigger
-            else:
-                autorun_index = -1  # Autorun through Dashboard with trigger
-            unused_stop_event = threading.Event()
-            fissure_event_values = [playlist_dict]
-            c_thread = threading.Thread(target=self.triggerStart, args=(trigger_values, "Autorun Playlist", fissure_event_values, autorun_index))
-            c_thread.daemon = True
-            c_thread.start()
+    def get_autorun_playlist_names(self):
+        """Return YAML playlist filenames stored on this Sensor Node."""
+        playlist_dir = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists")
+        os.makedirs(playlist_dir, exist_ok=True)
+        return sorted(
+            [
+                name for name in os.listdir(playlist_dir)
+                if os.path.isfile(os.path.join(playlist_dir, name)) and name.lower().endswith((".yaml", ".yml"))
+            ],
+            key=str.lower,
+        )
 
 
-    def autorunPlaylistExecute(self, playlist_filename=""):
-        """ 
-        Starts a new thread for cycling through the autorun playlist.
-        """
-        # Check if the autorun playlist thread is already running
-        if self.autorun_playlist_thread and self.autorun_playlist_thread.is_alive():
-            self.logger.info("Autorun Playlist is already running. Ignoring duplicate execute request.")
+    def load_autorun_playlist_file(self, playlist_filename=""):
+        """Load one versioned Autorun YAML file from the Sensor Node playlist directory."""
+        filename = os.path.basename(str(playlist_filename or "").strip())
+        if not filename or filename != str(playlist_filename or "").strip():
+            raise ValueError("Invalid Autorun playlist filename.")
+
+        path = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists", filename)
+        with open(path, "r") as yaml_file:
+            playlist_dict = yaml.safe_load(yaml_file) or {}
+
+        self._validate_autorun_playlist(playlist_dict)
+        return playlist_dict
+
+
+    def save_autorun_playlist_file(self, playlist_filename="", playlist_dict=None):
+        """Save one versioned Autorun playlist YAML file on the Sensor Node."""
+        filename = os.path.basename(str(playlist_filename or "").strip())
+        if not filename or filename != str(playlist_filename or "").strip():
+            raise ValueError("Invalid Autorun playlist filename.")
+        if not filename.lower().endswith((".yaml", ".yml")):
+            filename += ".yaml"
+
+        self._validate_autorun_playlist(playlist_dict)
+        playlist_dir = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists")
+        os.makedirs(playlist_dir, exist_ok=True)
+        path = os.path.join(playlist_dir, filename)
+        with open(path, "w") as yaml_file:
+            yaml.safe_dump(playlist_dict, yaml_file, sort_keys=False)
+        return filename
+
+
+    def _validate_autorun_playlist(self, playlist_dict):
+        """Validate the plugin-backed Autorun playlist document shape."""
+        if not isinstance(playlist_dict, dict):
+            raise ValueError("Autorun playlist must be a dictionary.")
+        if int(playlist_dict.get("schema_version", 0) or 0) != 1:
+            raise ValueError("Unsupported Autorun playlist schema version.")
+        if not isinstance(playlist_dict.get("detectors", []), list):
+            raise ValueError("Autorun detectors must be a list.")
+        if not isinstance(playlist_dict.get("playlist", []), list):
+            raise ValueError("Autorun playlist rows must be a list.")
+
+        for row in playlist_dict.get("playlist", []):
+            if not isinstance(row, dict):
+                raise ValueError("Each Autorun playlist row must be a dictionary.")
+            if not str(row.get("plugin", "") or "").strip() or not str(row.get("action", "") or "").strip():
+                raise ValueError("Each Autorun playlist row requires plugin and action names.")
+            delay_seconds = float(row.get("delay_seconds", 0) or 0)
+            interval_seconds = float(row.get("interval_seconds", 0) or 0)
+            if delay_seconds < 0 or interval_seconds < 0:
+                raise ValueError("Autorun Delay and Interval cannot be negative.")
+            if bool(row.get("repeat", False)) and interval_seconds <= 0:
+                raise ValueError("Repeating Autorun rows require an Interval greater than zero.")
+
+
+    async def _publish_autorun_status(self, state, source="", message=""):
+        """Publish authoritative Autorun state and keep the node's resting status in sync."""
+        self.autorun_state = str(state or "Idle")
+        self.autorun_source = str(source or "")
+        self.autorun_message = str(message or "")
+
+        active_operations = getattr(self, "_active_operation_ids", set())
+        if not active_operations:
+            resting_status = self._autorun_node_status()
+            if self.current_status != resting_status:
+                self.current_status = resting_status
+                try:
+                    await self.publish_status_to_hiprfisr(resting_status)
+                except Exception:
+                    self.logger.debug("Could not publish Autorun node status.", exc_info=True)
+
+        if self.network_type != "IP" or not getattr(self, "hiprfisr_socket", None) or not self.hiprfisr_seen:
             return
-    
-        # Read the Autorun Playlist File
-        filename = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists", playlist_filename)
-        if os.path.isfile(filename):
-            with open(filename) as yaml_library_file:
-                playlist_dict = yaml.load(yaml_library_file, yaml.FullLoader)
-                trigger_dict = playlist_dict['trigger_values']
-            self.autorunPlaylistStart(playlist_dict, trigger_dict)
 
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStatus",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": self.uuid,
+                "state": self.autorun_state,
+                "source": self.autorun_source,
+                "message": self.autorun_message,
+            },
+        }
 
-    def autorunPlaylistThreadStart(self, playlist_dict):
-        """ Cycles through autorun playlist items.
-        """
-        # Delayed Start
-        autorun_delay = self.settings_dict['Sensor Node']['autorun_delay_seconds']
         try:
-            time.sleep(int(autorun_delay))
-        except:
-            self.logger.error("Invalid autorun delay")
-            return
-        
-        self.logger.info("Autorun Playlist Thread")
-        #print(playlist_dict)
-        #playlist_dict = eval(playlist_dict)
-        
-        # Parse Playlist Items
-        get_delay_start = eval(playlist_dict.pop('delay_start'))
-        get_delay_start_time = playlist_dict.pop('delay_start_time')
-        get_repetition_interval = int(playlist_dict.pop('repetition_interval_seconds'))
-        try:
-            get_empty_triggers = playlist_dict.pop('trigger_values')
-        except:
-            pass
-            
-        # Autorun Playlist Repeat Loop
-        while True:
-            sorted_playlist_dict = sorted(playlist_dict.items())
-            
-            # Initialize Timeouts and Repeats
-            autorun_playlist_start_times = []
-            autorun_playlist_repeat = []
-            autorun_playlist_started = []
-            autorun_playlist_first_time = []
-            self.autorun_playlist_manager = []
-            self.autorun_multistage_manager = []
-            self.autorun_multistage_watcher = []
-            for playlist_index,v in sorted_playlist_dict:
-                playlist_index = int(playlist_index)
-                autorun_playlist_start_times.append(0)
-                autorun_playlist_repeat.append(eval(sorted_playlist_dict[int(playlist_index)][1]['repeat']))
-                autorun_playlist_started.append(False)
-                autorun_playlist_first_time.append(True)
-                self.autorun_playlist_manager.append(None)
-                self.autorun_multistage_manager.append(None)
-                self.autorun_multistage_watcher.append(False)
-            
-            # One Playlist Run
-            while True:
-                
-                # Delay Start
-                if get_delay_start == False:
-                    
-                    for playlist_index,v in sorted_playlist_dict:
-                        playlist_index = int(playlist_index)
-                        attack_dict = sorted_playlist_dict[playlist_index][1]
-                        
-                        # Individual Delay
-                        if attack_dict['delay'] == "True":
-                            if time.time() >= parser.parse(attack_dict['start_time']).timestamp():  # FIX THIS
-                                attack_dict['delay'] = "False"
-                                sorted_playlist_dict[playlist_index][1]['delay'] = "False"
-                                
-                        # Individual Delay is Off/Over
-                        if attack_dict['delay'] == "False":
-                    
-                            # Single-Stage
-                            if attack_dict['type'] == "Single-Stage":
-                                self.logger.info("Single-Stage")
-                                get_details = eval(attack_dict['details'])
-                                get_variable_names = eval(attack_dict['variable_names'])
-                                get_variable_values = eval(attack_dict['variable_values'])
-                                
-                                # Start Attack
-                                if (time.time() <= autorun_playlist_start_times[playlist_index] + float(attack_dict['timeout_seconds']) or (autorun_playlist_first_time[playlist_index] == True)) and (self.autorun_playlist_stop_event.is_set() == False):
-                                    #print(time.time() <= autorun_playlist_start_times[playlist_index] + float(attack_dict['timeout_seconds']))
-                                    #print(autorun_playlist_first_time[playlist_index])
-                                    #print(self.autorun_playlist_stop_event.is_set())
-                                    
-                                    if autorun_playlist_started[playlist_index] == False:
-                                        if (autorun_playlist_first_time[playlist_index] == True) or (autorun_playlist_repeat[playlist_index] == True):
-                                            self.logger.info("start it")
-                                            self.attackFlowGraphStart(get_details[4], get_variable_names, get_variable_values, get_details[5], get_details[6], playlist_index)
-                                            autorun_playlist_start_times[playlist_index] = time.time() + float(attack_dict['timeout_seconds'])
-                                            autorun_playlist_started[playlist_index] = True
-                                            autorun_playlist_first_time[playlist_index] = False
-                                    
-                                # Timeout, Stop Attack
-                                else:
-                                    if autorun_playlist_started[playlist_index] == True:
-                                        self.logger.info("stop it")
-                                        get_file_type = get_details[5]
-                                        if (get_file_type == "Python2 Script") or (get_file_type == "Python3 Script"):
-                                            get_file_type = "Python Script"
-                                        self.attackFlowGraphStop(get_file_type, playlist_index)
-                                        autorun_playlist_started[playlist_index] = False                        
-                            
-                            # Multi-Stage
-                            elif attack_dict['type'] == "Multi-Stage":
-                                self.logger.info("Multi-Stage")
-                                get_details = eval(attack_dict['details'])
-                                get_variable_names = eval(attack_dict['variable_names'])
-                                get_variable_values = eval(attack_dict['variable_values'])
-                                
-                                # Start Attack
-                                if (time.time() <= autorun_playlist_start_times[playlist_index] + float(attack_dict['timeout_seconds']) or (autorun_playlist_first_time[playlist_index] == True)) and (self.autorun_playlist_stop_event.is_set() == False):
-                                    if autorun_playlist_started[playlist_index] == False:
-                                        if (autorun_playlist_first_time[playlist_index] == True) or (autorun_playlist_repeat[playlist_index] == True):
-                                            self.logger.info("Start it")
-                                            get_file_types = []
-                                            get_durations = []
-                                            get_filenames = []
-                                            for n in range(0,len(get_details)):
-                                                get_file_types.append(get_details[n][4])
-                                                get_durations.append(get_details[n][5])
-                                                get_filenames.append(get_details[n][6])
-                                            self.multiStageAttackStart(get_filenames, get_variable_names, get_variable_values, get_durations, autorun_playlist_repeat[playlist_index], get_file_types, playlist_index)
-                                            autorun_playlist_start_times[playlist_index] = time.time() + float(attack_dict['timeout_seconds'])
-                                            autorun_playlist_started[playlist_index] = True
-                                            autorun_playlist_first_time[playlist_index] = False
-                                    
-                                # Timeout, Stop Attack
-                                else:
-                                    if autorun_playlist_started[playlist_index] == True:
-                                        self.logger.info("Stop it")
-                                        self.multiStageAttackStop(playlist_index)
-                                        autorun_playlist_started[playlist_index] = False
-                    
-                    # Exit When Everything is Stopped
-                    if self.autorun_playlist_stop_event.is_set() or not any(autorun_playlist_started):
-                        break
-
-                # Delaying Start
-                else:
-                    # Check Time for Delay Start
-                    if time.time() >= parser.parse(get_delay_start_time).timestamp():
-                        get_delay_start = False
-                        
-                    # Exit if Stop is Clicked
-                    if self.autorun_playlist_stop_event.is_set():
-                        break
-                
-                self.logger.info("Looping")
-                time.sleep(0.2)
-            
-            # Repeat for Another Loop
-            if get_repetition_interval > 0:
-                # Exit if Stop is Clicked
-                if self.autorun_playlist_stop_event.is_set():
-                    break
-
-                # Sleep for Repetition Interval
-                self.logger.info("Sleeping until next playlist run.")
-                time.sleep(get_repetition_interval)
-                self.logger.info("Done sleeping.")   
-            else:
-                break
-    
-        # Send the Message
-        if self.hiprfisr_socket:
-            asyncio.run(self.autorunPlaylistFinished())
-
-                
-    async def autorunPlaylistFinished(self):
-        """ Sends the autorun playlist finished message to the HIPRFISR/Dashboard.
-        """
-        # Send the Message
-        if self.network_type == "IP":
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistFinished",
-            }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        except Exception:
+            self.logger.debug("Could not publish Autorun status.", exc_info=True)
+
+
+    def _autorun_action_task(self, run_id, plugin_name, action_name, parameters, task_name):
+        """Launch one node-owned plugin action under the current Autorun ownership context."""
+        async def invoke():
+            token = self._operation_owner_context.set(run_id)
+            try:
+                await self.plugin_action(
+                    self,
+                    requester_uid=self.uuid,
+                    requester_type="autorun",
+                    plugin_name=plugin_name,
+                    action_name=action_name,
+                    parameters=dict(parameters or {}),
+                )
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                self.logger.error(
+                    f"Autorun action failed: {plugin_name} - {action_name}\n{traceback.format_exc()}"
+                )
+            finally:
+                self._operation_owner_context.reset(token)
+
+        task = asyncio.create_task(invoke(), name=task_name)
+        self.autorun_action_tasks.add(task)
+        task.add_done_callback(lambda done: self.autorun_action_tasks.discard(done))
+        return task
+
+
+    async def _autorun_wait(self, seconds):
+        """Wait for a scheduler delay while remaining immediately stop-responsive."""
+        seconds = max(0.0, float(seconds or 0))
+        if seconds <= 0:
+            return not self.autorun_stop_event.is_set()
+
+        try:
+            await asyncio.wait_for(self.autorun_stop_event.wait(), timeout=seconds)
+            return False
+        except asyncio.TimeoutError:
+            return True
+
+
+    async def _autorun_schedule_row(self, run_id, row_index, row):
+        """Schedule one independent Autorun action row."""
+        plugin_name = str(row.get("plugin", "") or "").strip()
+        action_name = str(row.get("action", "") or "").strip()
+        parameters = dict(row.get("parameters", {}) or {})
+        delay_seconds = float(row.get("delay_seconds", 0) or 0)
+        repeat_forever = bool(row.get("repeat", False))
+        interval_seconds = float(row.get("interval_seconds", 0) or 0)
+
+        if not await self._autorun_wait(delay_seconds):
+            return
+
+        launch_index = 0
+        while not self.autorun_stop_event.is_set():
+            launch_index += 1
+            self._autorun_action_task(
+                run_id,
+                plugin_name,
+                action_name,
+                parameters,
+                f"autorun:{run_id}:row:{row_index}:launch:{launch_index}",
+            )
+
+            if not repeat_forever:
+                return
+            if not await self._autorun_wait(interval_seconds):
+                return
+
+
+    async def _stop_autorun_operation_ids(self, operation_ids):
+        """Stop the supplied operation IDs without touching unrelated Sensor Node operations."""
+        for operation_id in list(operation_ids or []):
+            if operation_id not in self.operations:
+                continue
+            try:
+                await self.stop_plugin_operation(self, operation_id)
+            except Exception:
+                self.logger.debug(f"Could not stop Autorun operation {operation_id}.", exc_info=True)
+
+
+    async def _autorun_detector_gate(self, run_id, detectors):
+        """Arm reusable detector actions and release on the first matching Detection."""
+        self.autorun_detector_operation_ids = set()
+        self.autorun_detector_event = asyncio.Event()
+        detector_tasks = set()
+
+        for index, detector in enumerate(detectors):
+            if not isinstance(detector, dict):
+                continue
+
+            plugin_name = str(detector.get("plugin", "") or "").strip()
+            action_name = str(detector.get("action", "") or "").strip()
+            if not plugin_name or not action_name:
+                continue
+
+            operation_id = str(uuid.uuid4())
+            parameters = dict(detector.get("runtime_parameters", detector.get("parameters", {})) or {})
+            parameters["operation_id"] = operation_id
+            self.autorun_detector_operation_ids.add(operation_id)
+            detector_tasks.add(
+                self._autorun_action_task(
+                    run_id,
+                    plugin_name,
+                    action_name,
+                    parameters,
+                    f"autorun:{run_id}:detector:{index}",
+                )
+            )
+
+        if not self.autorun_detector_operation_ids:
+            await self._publish_autorun_status("Error", self.autorun_source, "No valid detectors could be armed.")
+            return False
+
+        while not self.autorun_stop_event.is_set():
+            if self.autorun_detector_event.is_set():
+                await self._stop_autorun_operation_ids(self.autorun_detector_operation_ids)
+                return True
+
+            active_detector = any(operation_id in self.operations for operation_id in self.autorun_detector_operation_ids)
+            pending_action = any(not task.done() for task in detector_tasks)
+            if not active_detector and not pending_action:
+                await self._publish_autorun_status(
+                    "Error",
+                    self.autorun_source,
+                    "All Autorun detectors stopped without a Detection.",
+                )
+                return False
+
+            try:
+                await asyncio.wait_for(self.autorun_detector_event.wait(), timeout=0.25)
+            except asyncio.TimeoutError:
+                pass
+
+        return False
+
+
+    async def _handle_autorun_detection(self, detection):
+        """Consume matching detector observations locally before network forwarding."""
+        if self.autorun_state != "Waiting" or not self.autorun_detector_event:
+            return
+
+        operation_id = str(detection.get("opid") or detection.get("operation_id") or "").strip()
+        if operation_id and operation_id in self.autorun_detector_operation_ids:
+            self.autorun_detector_event.set()
+
+
+    async def _run_autorun_playlist(self, run_id, playlist_dict, source):
+        """Run one validated Autorun playlist until its schedulers and owned operations finish."""
+        detectors = playlist_dict.get("detectors", []) or []
+        rows = playlist_dict.get("playlist", []) or []
+
+        try:
+            if detectors:
+                await self._publish_autorun_status("Waiting", source)
+                released = await self._autorun_detector_gate(run_id, detectors)
+                if not released:
+                    return
+
+            if self.autorun_stop_event.is_set():
+                return
+
+            await self._publish_autorun_status("Running", source)
+            self.autorun_scheduler_tasks = {
+                asyncio.create_task(
+                    self._autorun_schedule_row(run_id, index, row),
+                    name=f"autorun:{run_id}:scheduler:{index}",
+                )
+                for index, row in enumerate(rows)
+            }
+
+            if self.autorun_scheduler_tasks:
+                await asyncio.gather(*self.autorun_scheduler_tasks, return_exceptions=True)
+
+            while not self.autorun_stop_event.is_set():
+                owned_operations = self._operation_owner_ids.get(run_id, set())
+                pending_actions = any(not task.done() for task in self.autorun_action_tasks)
+                if not owned_operations and not pending_actions:
+                    break
+                await asyncio.sleep(0.25)
+
+        except asyncio.CancelledError:
+            raise
+        except Exception as error:
+            self.logger.error(f"Autorun playlist failed: {error}")
+            self.logger.debug(traceback.format_exc())
+            await self._publish_autorun_status("Error", source, str(error))
+        finally:
+            if self.autorun_state == "Stopping":
+                await self._publish_autorun_status("Idle", "")
+            elif self.autorun_state not in {"Error"}:
+                await self._publish_autorun_status("Idle", "")
+
+            self.autorun_detector_operation_ids.clear()
+            self.autorun_scheduler_tasks.clear()
+            self.autorun_run_id = ""
+            self.autorun_task = None
+
+
+    async def start_autorun_playlist(self, playlist_dict, source="Dashboard Playlist"):
+        """Start one in-memory plugin-backed Autorun playlist if the node is idle."""
+        if self.autorun_state in {"Waiting", "Running", "Stopping"} or (self.autorun_task and not self.autorun_task.done()):
+            self.logger.warning("Autorun start rejected because an Autorun playlist is already active.")
+            await self._publish_autorun_status(self.autorun_state, self.autorun_source, "Autorun is already active.")
+            return False
+
+        try:
+            self._validate_autorun_playlist(playlist_dict)
+        except Exception as error:
+            await self._publish_autorun_status("Error", source, str(error))
+            return False
+
+        if not playlist_dict.get("playlist"):
+            await self._publish_autorun_status("Error", source, "Autorun playlist contains no actions.")
+            return False
+
+        self.autorun_run_id = str(uuid.uuid4())
+        self.autorun_stop_event = asyncio.Event()
+        self.autorun_detector_event = asyncio.Event()
+        self.autorun_detector_operation_ids = set()
+        self.autorun_scheduler_tasks = set()
+        self.autorun_action_tasks = set()
+        self.autorun_source = str(source or "Dashboard Playlist")
+        self.autorun_state = "Waiting" if playlist_dict.get("detectors") else "Running"
+        self.autorun_task = asyncio.create_task(
+            self._run_autorun_playlist(self.autorun_run_id, playlist_dict, self.autorun_source),
+            name=f"autorun:{self.autorun_run_id}",
+        )
+        return True
+
+
+    async def start_autorun_playlist_file(self, playlist_filename="", source=""):
+        """Load a stored Sensor Node Autorun YAML file and start it."""
+        try:
+            playlist_dict = self.load_autorun_playlist_file(playlist_filename)
+        except Exception as error:
+            await self._publish_autorun_status("Error", source or playlist_filename, str(error))
+            return False
+        return await self.start_autorun_playlist(playlist_dict, source=source or playlist_filename)
+
+
+    async def stop_autorun_playlist(self):
+        """Stop schedulers, detector waits, and operations owned by the active Autorun run."""
+        if self.autorun_state not in {"Waiting", "Running", "Stopping"}:
+            return
+        if self.autorun_state == "Stopping":
+            return
+
+        run_id = self.autorun_run_id
+        await self._publish_autorun_status("Stopping", self.autorun_source)
+        self.autorun_stop_event.set()
+        if self.autorun_detector_event:
+            self.autorun_detector_event.set()
+
+        await self._stop_autorun_operation_ids(self.autorun_detector_operation_ids)
+        await self._stop_autorun_operation_ids(self._operation_owner_ids.get(run_id, set()))
+
+        for task in list(self.autorun_scheduler_tasks):
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*list(self.autorun_scheduler_tasks), return_exceptions=True)
+
+        for task in list(self.autorun_action_tasks):
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*list(self.autorun_action_tasks), return_exceptions=True)
+
+        if self.autorun_task and self.autorun_task is not asyncio.current_task():
+            try:
+                await self.autorun_task
+            except asyncio.CancelledError:
+                pass
 
 
     async def gpsUpdate(self, gps_data):

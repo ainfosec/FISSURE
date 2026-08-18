@@ -1,7 +1,6 @@
 Sensor Node:
      autorun: false
      autorun_delay_seconds: 3
-     autorun_interval_seconds: 3
      console_logging_level: 'INFO'     
      enabled_disabled: enabled
      file_logging_level: 'DEBUG'

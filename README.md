@@ -411,7 +411,7 @@ Install FISSURE per usual on a general purpose computer. Install FISSURE on the 
 - hiprfisr_ip_address: (the HIPRFISR/hub IP address the sensor node connects to)
 - hardware: (fill with your hardware specifics) 
 
-Change the "autorun" field from from `false` to `true` to run the default autorun playlist file on startup and forgo remote operations. New autorun playlists can be generated and saved from the Dashboard Autorun tab.
+Change the autorun field from false to true to run the default Autorun playlist when the Sensor Node starts. Autorun is the Sensor Node’s unattended execution system for running a saved sequence of plugin actions without requiring the Dashboard to remain connected. Playlists can include per-action timing and optional detector gating.
 
 The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the "server.key_secret" and "client.key" files while the client needs the "client.key_secret" and "server.key" files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.
 

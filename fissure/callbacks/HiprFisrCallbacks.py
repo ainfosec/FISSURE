@@ -1171,30 +1171,81 @@ async def overwriteDefaultAutorunPlaylist(component: object, node_uid="", playli
     )
 
 
-async def autorunPlaylistStart(component: object, node_uid="", playlist_dict={}, trigger_values=[]):
-    """Signals to sensor node to start autorun playlist."""
-    # Send Message
-    PARAMETERS = {
-        "playlist_dict": playlist_dict, 
-        "trigger_values": trigger_values
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
+async def autorunPlaylistQuery(component: object, node_uid=""):
+    """Ask a Sensor Node for stored Autorun playlist filenames."""
     identity = component.nodes[node_uid].get("identity", None)
     if identity is None:
         component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
         return
-    
-    # Send through ROUTER
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistQuery",
+    }
     await component.sensor_node_router.send_msg(
         fissure.comms.MessageTypes.COMMANDS,
         msg,
-        target_ids=[identity]
+        target_ids=[identity],
+    )
+
+
+async def autorunPlaylistLoad(component: object, node_uid="", playlist_filename=""):
+    """Ask a Sensor Node to return one stored Autorun playlist."""
+    identity = component.nodes[node_uid].get("identity", None)
+    if identity is None:
+        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistLoad",
+        fissure.comms.MessageFields.PARAMETERS: {"playlist_filename": playlist_filename},
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
+
+
+async def autorunPlaylistSave(component: object, node_uid="", playlist_filename="", playlist_dict=None):
+    """Ask a Sensor Node to save one plugin-backed Autorun playlist."""
+    identity = component.nodes[node_uid].get("identity", None)
+    if identity is None:
+        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistSave",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "playlist_filename": playlist_filename,
+            "playlist_dict": playlist_dict or {},
+        },
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
+
+
+async def autorunPlaylistStart(component: object, node_uid="", playlist_dict=None):
+    """Signal a Sensor Node to start the current plugin-backed Autorun playlist."""
+    identity = component.nodes[node_uid].get("identity", None)
+    if identity is None:
+        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStart",
+        fissure.comms.MessageFields.PARAMETERS: {"playlist_dict": playlist_dict or {}},
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
     )
 
 
@@ -2416,32 +2467,6 @@ async def refreshSensorNodeFilesResults(
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def autorunPlaylistStarted(component: object, node_uid=""):
-    """
-    Forwards the autorun playlist started message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStarted",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def autorunPlaylistFinished(component: object, node_uid=""):
-    """
-    Forwards the autorun playlist finished message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistFinished",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def flowGraphError(component: object, node_uid="", error=""):
     """
     Forwards the flow graph error message to the Dashboard.
@@ -3282,6 +3307,90 @@ async def iwconfigIP_Return(component: object, iwconfig: str):
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
 
+
+async def autorunPlaylistQueryResults(
+    component: object, node_uid="", playlists=None, state="Idle", source="", message=""
+):
+    """Forward stored Autorun playlist filenames to the Dashboard."""
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistQueryResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": node_uid,
+            "playlists": playlists or [],
+            "state": state,
+            "source": source,
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistLoadResults(
+    component: object,
+    node_uid="",
+    playlist_filename="",
+    playlist_dict=None,
+    success=False,
+    message="",
+):
+    """Forward a loaded Sensor Node Autorun playlist to the Dashboard."""
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistLoadResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": node_uid,
+            "playlist_filename": playlist_filename,
+            "playlist_dict": playlist_dict or {},
+            "success": bool(success),
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistSaveResults(
+    component: object,
+    node_uid="",
+    playlist_filename="",
+    success=False,
+    message="",
+):
+    """Forward Sensor Node Autorun save completion to the Dashboard."""
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistSaveResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": node_uid,
+            "playlist_filename": playlist_filename,
+            "success": bool(success),
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistStatus(component: object, node_uid="", state="Idle", source="", message=""):
+    """Forward authoritative Sensor Node Autorun state to the Dashboard."""
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistStatus",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": node_uid,
+            "state": state,
+            "source": source,
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 ##########################################################################

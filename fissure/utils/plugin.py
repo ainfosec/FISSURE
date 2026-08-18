@@ -171,52 +171,32 @@ def action_tags_allow_context(
     Apply optional client.* and node.* capability restrictions.
 
     Absence of a namespace is permissive for backward compatibility.
-    Presence of a namespace requires an exact context match.
+    Presence of a namespace requires an exact context match. Autorun is a
+    node-owned execution context, so client.* tags do not restrict it.
     """
-    normalized_tags = _normalize_action_tags(
-        tags
-    )
+    normalized_tags = _normalize_action_tags(tags)
+    requester = str(requester_type or "").strip().lower()
 
     client_tags = {
         tag
         for tag in normalized_tags
-        if tag.startswith(
-            "client."
-        )
+        if tag.startswith("client.")
     }
 
-    if client_tags:
-        requester_tag = (
-            _requester_type_action_tag(
-                requester_type
-            )
-        )
-
-        if (
-            not requester_tag
-            or requester_tag not in client_tags
-        ):
+    if client_tags and requester != "autorun":
+        requester_tag = _requester_type_action_tag(requester_type)
+        if not requester_tag or requester_tag not in client_tags:
             return False
 
     node_tags = {
         tag
         for tag in normalized_tags
-        if tag.startswith(
-            "node."
-        )
+        if tag.startswith("node.")
     }
 
     if node_tags:
-        node_tag = (
-            _node_location_action_tag(
-                node_location
-            )
-        )
-
-        if (
-            not node_tag
-            or node_tag not in node_tags
-        ):
+        node_tag = _node_location_action_tag(node_location)
+        if not node_tag or node_tag not in node_tags:
             return False
 
     return True
@@ -808,7 +788,7 @@ def register_delegated_actions(
                     action_name
                 ]
             )
-            
+
 
 # def apply_csv_to_table(conn:connection, file: str, function: object):
 #     """Apply CSV Rows to PostgreSQL Table

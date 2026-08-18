@@ -211,40 +211,85 @@ async def refreshSensorNodeFiles(component: object, sensor_node_folder=""):
         await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def autorunPlaylistStart(component: object, playlist_dict={}, trigger_values=[]):
-    """
-    Starts a new thread for cycling through the autorun playlist.
-    """
-    # Run Event and Do Not Block
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.autorunPlaylistStart, playlist_dict, trigger_values)
-    # component.autorunPlaylistStart(sensor_node_id, playlist_dict, trigger_values)
+async def autorunPlaylistQuery(component: object):
+    """Return stored Autorun playlist filenames to HIPRFISR."""
+    playlists = component.get_autorun_playlist_names()
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistQueryResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": component.uuid,
+            "playlists": playlists,
+            "state": component.autorun_state,
+            "source": component.autorun_source,
+            "message": component.autorun_message,
+        },
+    }
+    await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistLoad(component: object, playlist_filename=""):
+    """Return one stored Autorun playlist to HIPRFISR."""
+    success = True
+    message = ""
+    playlist_dict = {}
+    try:
+        playlist_dict = component.load_autorun_playlist_file(playlist_filename)
+    except Exception as error:
+        success = False
+        message = str(error)
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistLoadResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": component.uuid,
+            "playlist_filename": playlist_filename,
+            "playlist_dict": playlist_dict,
+            "success": success,
+            "message": message,
+        },
+    }
+    await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistSave(component: object, playlist_filename="", playlist_dict=None):
+    """Save one plugin-backed Autorun playlist and report completion."""
+    success = True
+    message = ""
+    saved_filename = playlist_filename
+    try:
+        saved_filename = component.save_autorun_playlist_file(playlist_filename, playlist_dict or {})
+    except Exception as error:
+        success = False
+        message = str(error)
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "autorunPlaylistSaveResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": component.uuid,
+            "playlist_filename": saved_filename,
+            "success": success,
+            "message": message,
+        },
+    }
+    await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def autorunPlaylistStart(component: object, playlist_dict=None):
+    """Start the in-memory plugin-backed Autorun playlist sent by the Dashboard."""
+    await component.start_autorun_playlist(playlist_dict or {}, source="Dashboard Playlist")
 
 
 async def autorunPlaylistExecute(component: object, playlist_filename=""):
-    """
-    Starts a new thread for loading and cycling through the autorun playlist.
-    """
-    # Run Event and Do Not Block
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.autorunPlaylistExecute, playlist_filename)
+    """Start one plugin-backed Autorun playlist already stored on the Sensor Node."""
+    await component.start_autorun_playlist_file(playlist_filename, source=playlist_filename)
 
 
 async def autorunPlaylistStop(component: object):
-    """
-    Stops an autorun playlist already in progress.
-    """
-    component.logger.info("STOP!")
-    try:
-        # Stop Triggers
-        if component.triggers_running == True:
-            component.triggers_running = False
-            component.trigger_done.set()
-
-        # Stop the Thread
-        component.autorun_playlist_stop_event.set()
-    except:
-        pass
+    """Stop the active plugin-backed Autorun run."""
+    await component.stop_autorun_playlist()
 
 
 async def physicalFuzzingStart(
@@ -1235,11 +1280,16 @@ async def queryPluginActions(
     hardware: str = "",
 ):
     """
-    Return plugin/action pairs matching generic tag and hardware filters.
+    Return plugin/action records matching generic tag and hardware filters.
+
+    Autorun is node-owned execution, so its catalog ignores client.dashboard /
+    client.tak restrictions while still honoring node.local / node.remote and
+    configured hardware compatibility.
     """
     try:
         include_tags = include_tags or []
         exclude_tags = exclude_tags or []
+        action_requester_type = "autorun" if context.startswith("sensor_nodes.autorun") else requester_type
 
         if scope == "plugin" and plugin_name:
             plugin_names = [plugin_name]
@@ -1253,42 +1303,27 @@ async def queryPluginActions(
             if not os.path.isdir(plugin_path):
                 continue
 
-            actions_module = _load_plugin_actions_module(
-                candidate_plugin,
-                component.logger,
-            )
+            actions_module = _load_plugin_actions_module(candidate_plugin, component.logger)
             if actions_module is None:
                 continue
 
             action_tags = getattr(actions_module, "ACTION_TAGS", {}) or {}
             action_hardware = getattr(actions_module, "ACTION_HARDWARE", {}) or {}
 
-            # Use existing utility so disabled/invalid actions stay consistent
-            # with the current plugin action list path.
             available_actions = plugin.get_plugin_actions(
                 candidate_plugin,
                 component.settings_dict,
                 component.logger,
-                requester_type=(
-                    requester_type
-                ),
-                node_location=(
-                    getattr(
-                        component,
-                        "local_remote",
-                        "",
-                    )
-                ),
+                requester_type=action_requester_type,
+                node_location=getattr(component, "local_remote", ""),
             )
 
             for action_name in available_actions:
-                tags = action_tags.get(action_name, [])
-
+                tags = list(action_tags.get(action_name, []) or [])
                 if not _action_tags_match(tags, include_tags, exclude_tags):
                     continue
 
-                compatible_hardware = action_hardware.get(action_name, [])
-
+                compatible_hardware = list(action_hardware.get(action_name, []) or [])
                 if not _action_hardware_matches(hardware, compatible_hardware):
                     continue
 
@@ -1296,6 +1331,8 @@ async def queryPluginActions(
                     {
                         "plugin": candidate_plugin,
                         "action": action_name,
+                        "tags": tags,
+                        "hardware": compatible_hardware,
                     }
                 )
 
@@ -1314,16 +1351,11 @@ async def queryPluginActions(
         }
 
         component.logger.debug(
-            f"queryPluginActions context={context}, "
-            f"scope={scope}, plugin={plugin_name}, "
-            f"include_tags={include_tags}, hardware={hardware}, "
-            f"matches={matches}"
+            f"queryPluginActions context={context}, scope={scope}, plugin={plugin_name}, "
+            f"include_tags={include_tags}, hardware={hardware}, matches={matches}"
         )
 
-        await component.hiprfisr_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg,
-        )
+        await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
     except Exception as e:
         component.logger.error(f"queryPluginActions failed: {e}")

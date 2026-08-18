@@ -431,31 +431,18 @@ async def guessHardwareLT(component: object, tab_index=0, table_row=[], table_ro
 
 
 async def autorunPlaylistExecuteLT(component: object, playlist_filename=""):
-    """
-    Starts a new thread for loading and cycling through the autorun playlist.
-    """
-    component.logger.info("Start autorun playlist command received")
-
-    # Run Event and Do Not Block
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.autorunPlaylistExecute, playlist_filename)
+    """Start a stored plugin-backed Autorun playlist from a low-bandwidth command."""
+    component.logger.info(f"Start Autorun playlist command received: {playlist_filename}")
+    await component.start_autorun_playlist_file(
+        playlist_filename,
+        source=playlist_filename,
+    )
 
 
 async def autorunPlaylistStopLT(component: object):
-    """
-    Stops an autorun playlist already in progress.
-    """
-    component.logger.info("Stop autorun playlist command received")
-    try:
-        # Stop Triggers
-        if component.triggers_running == True:
-            component.triggers_running = False
-            component.trigger_done.set()
-
-        # Stop the Thread
-        component.autorun_playlist_stop_event.set()
-    except:
-        pass
+    """Stop the active plugin-backed Autorun playlist from a low-bandwidth command."""
+    component.logger.info("Stop Autorun playlist command received")
+    await component.stop_autorun_playlist()
 
 
 async def gpsBeaconEnableMeshtasticLT(component: object):

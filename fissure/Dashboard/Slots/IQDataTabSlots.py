@@ -6347,82 +6347,239 @@ def _clear_iq_record_parameter_widgets(
     dashboard.ui.pushButton_iq_record_start_stop.setEnabled(False)
 
 
-def _reset_iq_record_action_selection(
-    dashboard: QtCore.QObject,
-):
-    """
-    Clear queried actions and customized parameters.
-    """
+def _reset_iq_record_action_selection(dashboard: QtCore.QObject):
+    """Reset IQ Record Plugin/Action selection and customized parameters."""
+    dashboard.iq_record_filtered_actions = []
     dashboard.iq_record_method_actions = []
     dashboard.iq_record_selected_plugin = ""
     dashboard.iq_record_selected_action = ""
-    dashboard.iq_record_action_query_pending = False
-    dashboard.iq_record_action_query_context = ""
-    dashboard.iq_record_action_query_node_uid = ""
+    dashboard.iq_record_customized = False
 
-    combo = dashboard.ui.comboBox_iq_record_method
+    plugin_combo = dashboard.ui.comboBox_iq_record_plugin
+    action_combo = dashboard.ui.comboBox_iq_record_method
 
-    combo.blockSignals(True)
-    combo.clear()
-    combo.blockSignals(False)
-    combo.setEnabled(False)
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.blockSignals(False)
+    plugin_combo.setEnabled(False)
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+    action_combo.blockSignals(False)
+    action_combo.setEnabled(False)
 
     dashboard.ui.pushButton_iq_record_customize.setEnabled(False)
-
     _clear_iq_record_parameter_widgets(dashboard)
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_RecordActionHardwareChanged(
-    dashboard: QtCore.QObject,
-):
-    """
-    Reset the action selection when the IQ Record hardware changes.
-    """
-    _reset_iq_record_action_selection(dashboard)
+def _iq_record_action_matches_hardware(hardware_type: str, compatible_hardware) -> bool:
+    """Return True when an IQ Record action supports the selected hardware."""
+    compatible_hardware = list(compatible_hardware or [])
 
-    has_hardware = bool(
-        str(
-            dashboard.ui.comboBox_iq_record_hardware.currentText()
-            or ""
-        ).strip()
+    if not compatible_hardware:
+        return True
+
+    selected = str(hardware_type or "").strip().lower()
+
+    if not selected:
+        return False
+
+    for hardware_name in compatible_hardware:
+        candidate = str(hardware_name or "").strip().lower()
+
+        if candidate and (candidate in selected or selected in candidate):
+            return True
+
+    return False
+
+
+def _populate_iq_record_actions_for_plugin(
+    dashboard: QtCore.QObject,
+    preferred_action: str = "",
+):
+    """Populate IQ Record Action from the selected Plugin."""
+    plugin_name = str(dashboard.ui.comboBox_iq_record_plugin.currentText() or "").strip()
+    action_combo = dashboard.ui.comboBox_iq_record_method
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+
+    matching_actions = []
+
+    for action_record in getattr(dashboard, "iq_record_filtered_actions", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+            continue
+
+        action_name = str(action_record.get("action", "") or "").strip()
+
+        if not action_name:
+            continue
+
+        matching_actions.append(action_record)
+        action_combo.addItem(action_name, action_record)
+
+    action_combo.blockSignals(False)
+
+    dashboard.iq_record_method_actions = matching_actions
+
+    has_actions = action_combo.count() > 0
+    action_combo.setEnabled(
+        has_actions and not bool(getattr(dashboard, "iq_record_running", False))
     )
 
-    has_node = bool(
-        str(
-            getattr(
-                dashboard,
-                "selected_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
+    if not has_actions:
+        dashboard.iq_record_selected_plugin = ""
+        dashboard.iq_record_selected_action = ""
+        dashboard.iq_record_customized = False
+        dashboard.ui.pushButton_iq_record_customize.setEnabled(False)
+        _clear_iq_record_parameter_widgets(dashboard)
+        return
+
+    preferred_action = str(preferred_action or "").strip()
+
+    if preferred_action:
+        preferred_index = action_combo.findText(preferred_action, QtCore.Qt.MatchExactly)
+
+        if preferred_index >= 0:
+            action_combo.setCurrentIndex(preferred_index)
+
+    if action_combo.currentIndex() < 0:
+        action_combo.setCurrentIndex(0)
+
+    _slotIQ_RecordMethodChanged(dashboard)
+
+
+def _filter_iq_record_action_catalog(
+    dashboard: QtCore.QObject,
+    preferred_plugin: str = "",
+    preferred_action: str = "",
+):
+    """Filter cached IQ Record actions by Hardware, then rebuild Plugin/Action."""
+    hardware_display_name = str(
+        dashboard.ui.comboBox_iq_record_hardware.currentText() or ""
+    ).strip()
+
+    dashboard.iq_record_filter_hardware_display = hardware_display_name
+    hardware_type = ""
+
+    if hardware_display_name:
+        (
+            hardware_type,
+            _hardware_uuid,
+            _hardware_radio_name,
+            _hardware_serial,
+            _hardware_interface,
+            _hardware_ip,
+            _hardware_daughterboard,
+        ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard,
+            hardware_display_name,
+            "iq",
+        )
+
+    filtered_actions = []
+
+    if hardware_type:
+        for action_record in getattr(dashboard, "iq_record_action_catalog", []) or []:
+            if not isinstance(action_record, dict):
+                continue
+
+            plugin_name = str(action_record.get("plugin", "") or "").strip()
+            action_name = str(action_record.get("action", "") or "").strip()
+
+            if not plugin_name or not action_name:
+                continue
+
+            if not _iq_record_action_matches_hardware(
+                hardware_type,
+                action_record.get("hardware", []),
+            ):
+                continue
+
+            filtered_actions.append(action_record)
+
+    dashboard.iq_record_filtered_actions = filtered_actions
+
+    plugin_combo = dashboard.ui.comboBox_iq_record_plugin
+    current_plugin = str(
+        preferred_plugin or plugin_combo.currentText() or ""
+    ).strip()
+
+    plugins = sorted(
+        {
+            str(action_record.get("plugin", "") or "").strip()
+            for action_record in filtered_actions
+            if isinstance(action_record, dict)
+            and str(action_record.get("plugin", "") or "").strip()
+        },
+        key=str.lower,
+    )
+
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.addItems(plugins)
+
+    if current_plugin:
+        plugin_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+
+        if plugin_index >= 0:
+            plugin_combo.setCurrentIndex(plugin_index)
+
+    if plugin_combo.currentIndex() < 0 and plugin_combo.count() > 0:
+        plugin_combo.setCurrentIndex(0)
+
+    plugin_combo.blockSignals(False)
+
+    has_plugins = plugin_combo.count() > 0
+    plugin_combo.setEnabled(
+        has_plugins and not bool(getattr(dashboard, "iq_record_running", False))
+    )
+
+    dashboard.iq_record_customized = False
+    _clear_iq_record_parameter_widgets(dashboard)
+
+    _populate_iq_record_actions_for_plugin(
+        dashboard,
+        preferred_action=preferred_action,
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_RecordActionHardwareChanged(dashboard: QtCore.QObject):
+    """Refilter the cached IQ Record catalog when capture hardware changes."""
+    dashboard.iq_record_customized = False
+    _clear_iq_record_parameter_widgets(dashboard)
+    _filter_iq_record_action_catalog(dashboard)
+
+    has_node = bool(str(getattr(dashboard, "selected_node_uid", "") or "").strip())
+    has_hardware = bool(
+        str(dashboard.ui.comboBox_iq_record_hardware.currentText() or "").strip()
     )
 
     dashboard.ui.pushButton_iq_record_query.setEnabled(
-        has_node and has_hardware
+        has_node
+        and has_hardware
+        and not bool(getattr(dashboard, "iq_record_running", False))
     )
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_RecordQueryClicked(
-    dashboard: QtCore.QObject,
-):
-    """
-    Query the selected Sensor Node for compatible IQ Record actions.
-    """
-    node_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_RecordPluginChanged(dashboard: QtCore.QObject):
+    """Populate IQ Record actions for the selected Plugin."""
+    dashboard.iq_record_customized = False
+    _clear_iq_record_parameter_widgets(dashboard)
+    _populate_iq_record_actions_for_plugin(dashboard)
 
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_RecordQueryClicked(dashboard: QtCore.QObject):
+    """Query the selected Sensor Node for the complete IQ Record action catalog."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     hardware_display_name = str(
-        dashboard.ui.comboBox_iq_record_hardware.currentText()
-        or ""
+        dashboard.ui.comboBox_iq_record_hardware.currentText() or ""
     ).strip()
 
     if not node_uid:
@@ -6437,20 +6594,7 @@ async def _slotIQ_RecordQueryClicked(
         )
         return
 
-    (
-        hardware_type,
-        _hardware_uuid,
-        _hardware_radio_name,
-        _hardware_serial,
-        _hardware_interface,
-        _hardware_ip,
-        _hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        hardware_display_name,
-        "iq",
-    )
-
+    dashboard.iq_record_action_catalog = []
     _reset_iq_record_action_selection(dashboard)
 
     context = "iq.record.actions"
@@ -6467,7 +6611,6 @@ async def _slotIQ_RecordQueryClicked(
         context=context,
         scope="all_plugins",
         include_tags=["iq.record"],
-        hardware=hardware_type,
     )
 
 
@@ -6578,46 +6721,28 @@ def handle_iq_record_action_query_results(
     context: str = "",
     actions: list = None,
 ):
-    """
-    Populate the IQ Record action selector from a filtered action query.
-    """
+    """Cache the complete IQ Record catalog and filter it locally."""
     result_node_uid = str(node_uid or "").strip()
     result_context = str(context or "").strip()
-
     expected_node_uid = str(
-        getattr(
-            dashboard,
-            "iq_record_action_query_node_uid",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_record_action_query_node_uid", "") or ""
     ).strip()
     expected_context = str(
-        getattr(
-            dashboard,
-            "iq_record_action_query_context",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_record_action_query_context", "") or ""
+    ).strip()
+    selected_node_uid = str(
+        getattr(dashboard, "selected_node_uid", "") or ""
     ).strip()
 
-    query_pending = bool(
-        getattr(
-            dashboard,
-            "iq_record_action_query_pending",
-            False,
-        )
-    )
-
     if (
-        not query_pending
+        not bool(getattr(dashboard, "iq_record_action_query_pending", False))
         or result_node_uid != expected_node_uid
         or result_context != expected_context
+        or result_node_uid != selected_node_uid
     ):
         dashboard.logger.debug(
             "Ignoring stale IQ Record action query results: "
-            f"node_uid={result_node_uid!r}, "
-            f"context={result_context!r}"
+            f"node_uid={result_node_uid!r}, context={result_context!r}"
         )
         return
 
@@ -6625,56 +6750,24 @@ def handle_iq_record_action_query_results(
     dashboard.iq_record_action_query_context = ""
     dashboard.iq_record_action_query_node_uid = ""
 
-    combo = dashboard.ui.comboBox_iq_record_method
+    dashboard.iq_record_action_catalog = [
+        action_record
+        for action_record in (actions if isinstance(actions, list) else [])
+        if isinstance(action_record, dict)
+    ]
 
-    dashboard.iq_record_method_actions = (
-        actions
-        if isinstance(actions, list)
-        else []
+    dashboard.ui.pushButton_iq_record_query.setText("Query Actions")
+    _filter_iq_record_action_catalog(dashboard)
+
+    has_hardware = bool(
+        str(dashboard.ui.comboBox_iq_record_hardware.currentText() or "").strip()
     )
 
-    combo.blockSignals(True)
-    combo.clear()
-
-    for action_record in dashboard.iq_record_method_actions:
-        if not isinstance(action_record, dict):
-            continue
-
-        plugin_name = str(
-            action_record.get("plugin", "")
-            or ""
-        ).strip()
-        action_name = str(
-            action_record.get("action", "")
-            or ""
-        ).strip()
-
-        if not plugin_name or not action_name:
-            continue
-
-        combo.addItem(
-            f"{plugin_name}: {action_name}",
-            {
-                "plugin": plugin_name,
-                "action": action_name,
-            },
-        )
-
-    combo.blockSignals(False)
-
-    has_actions = combo.count() > 0
-
-    combo.setEnabled(has_actions)
-    dashboard.ui.pushButton_iq_record_query.setText("Query Actions")
-    dashboard.ui.pushButton_iq_record_query.setEnabled(True)
-    dashboard.ui.pushButton_iq_record_customize.setEnabled(has_actions)
-
-    if has_actions:
-        combo.setCurrentIndex(0)
-        _slotIQ_RecordMethodChanged(dashboard)
-    else:
-        dashboard.iq_record_selected_plugin = ""
-        dashboard.iq_record_selected_action = ""
+    dashboard.ui.pushButton_iq_record_query.setEnabled(
+        bool(selected_node_uid)
+        and has_hardware
+        and not bool(getattr(dashboard, "iq_record_running", False))
+    )
 
 
 def _create_iq_record_parameter_widget(
@@ -7576,6 +7669,7 @@ def _set_iq_record_running(
 
     for widget_name in (
         "comboBox_iq_record_hardware",
+        "comboBox_iq_record_plugin",
         "comboBox_iq_record_method",
         "pushButton_iq_record_query",
         "pushButton_iq_record_customize",
@@ -7637,15 +7731,15 @@ def _set_iq_record_stopped(
         )
     )
 
-    hardware_combo = (
-        dashboard.ui.comboBox_iq_record_hardware
-    )
-    method_combo = (
-        dashboard.ui.comboBox_iq_record_method
-    )
+    hardware_combo = dashboard.ui.comboBox_iq_record_hardware
+    plugin_combo = dashboard.ui.comboBox_iq_record_plugin
+    method_combo = dashboard.ui.comboBox_iq_record_method
 
     hardware_combo.setEnabled(
         hardware_combo.count() > 0
+    )
+    plugin_combo.setEnabled(
+        plugin_combo.count() > 0
     )
     method_combo.setEnabled(
         method_combo.count() > 0
@@ -7750,98 +7844,240 @@ def _clear_iq_playback_parameter_widgets(
     )
 
 
-def _reset_iq_playback_action_selection(
-    dashboard: QtCore.QObject,
-):
-    """
-    Clear queried IQ Playback actions and customized parameters.
-    """
+def _reset_iq_playback_action_selection(dashboard: QtCore.QObject):
+    """Reset IQ Playback Plugin/Action selection and customized parameters."""
+    dashboard.iq_playback_filtered_actions = []
     dashboard.iq_playback_method_actions = []
     dashboard.iq_playback_selected_plugin = ""
     dashboard.iq_playback_selected_action = ""
-    dashboard.iq_playback_action_query_pending = False
-    dashboard.iq_playback_action_query_context = ""
-    dashboard.iq_playback_action_query_node_uid = ""
+    dashboard.iq_playback_customized = False
 
-    combo = dashboard.ui.comboBox_iq_playback_method
+    plugin_combo = dashboard.ui.comboBox_iq_playback_plugin
+    action_combo = dashboard.ui.comboBox_iq_playback_method
 
-    combo.blockSignals(
-        True
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.blockSignals(False)
+    plugin_combo.setEnabled(False)
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+    action_combo.blockSignals(False)
+    action_combo.setEnabled(False)
+
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(False)
+    _clear_iq_playback_parameter_widgets(dashboard)
+
+
+def _iq_playback_action_matches_hardware(hardware_type: str, compatible_hardware) -> bool:
+    """Return True when an IQ Playback action supports the selected hardware."""
+    compatible_hardware = list(compatible_hardware or [])
+
+    if not compatible_hardware:
+        return True
+
+    selected = str(hardware_type or "").strip().lower()
+
+    if not selected:
+        return False
+
+    for hardware_name in compatible_hardware:
+        candidate = str(hardware_name or "").strip().lower()
+
+        if candidate and (candidate in selected or selected in candidate):
+            return True
+
+    return False
+
+
+def _populate_iq_playback_actions_for_plugin(
+    dashboard: QtCore.QObject,
+    preferred_action: str = "",
+):
+    """Populate IQ Playback Action from the selected Plugin."""
+    plugin_name = str(dashboard.ui.comboBox_iq_playback_plugin.currentText() or "").strip()
+    action_combo = dashboard.ui.comboBox_iq_playback_method
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+
+    matching_actions = []
+
+    for action_record in getattr(dashboard, "iq_playback_filtered_actions", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+            continue
+
+        action_name = str(action_record.get("action", "") or "").strip()
+
+        if not action_name:
+            continue
+
+        matching_actions.append(action_record)
+        action_combo.addItem(action_name, action_record)
+
+    action_combo.blockSignals(False)
+    dashboard.iq_playback_method_actions = matching_actions
+
+    active = bool(
+        getattr(dashboard, "iq_playback_running", False)
+        or getattr(dashboard, "iq_playback_start_pending", False)
     )
-    combo.clear()
-    combo.blockSignals(
-        False
-    )
-    combo.setEnabled(
-        False
+    has_actions = action_combo.count() > 0
+    action_combo.setEnabled(has_actions and not active)
+
+    if not has_actions:
+        dashboard.iq_playback_selected_plugin = ""
+        dashboard.iq_playback_selected_action = ""
+        dashboard.iq_playback_customized = False
+        dashboard.ui.pushButton_iq_playback_customize.setEnabled(False)
+        _clear_iq_playback_parameter_widgets(dashboard)
+        return
+
+    preferred_action = str(preferred_action or "").strip()
+
+    if preferred_action:
+        preferred_index = action_combo.findText(preferred_action, QtCore.Qt.MatchExactly)
+
+        if preferred_index >= 0:
+            action_combo.setCurrentIndex(preferred_index)
+
+    if action_combo.currentIndex() < 0:
+        action_combo.setCurrentIndex(0)
+
+    _slotIQ_PlaybackMethodChanged(dashboard)
+
+
+def _filter_iq_playback_action_catalog(
+    dashboard: QtCore.QObject,
+    preferred_plugin: str = "",
+    preferred_action: str = "",
+):
+    """Filter cached IQ Playback actions by Hardware, then rebuild Plugin/Action."""
+    hardware_display_name = str(
+        dashboard.ui.comboBox_iq_playback_hardware.currentText() or ""
+    ).strip()
+
+    dashboard.iq_playback_filter_hardware_display = hardware_display_name
+    hardware_type = ""
+
+    if hardware_display_name:
+        (
+            hardware_type,
+            _hardware_uuid,
+            _hardware_radio_name,
+            _hardware_serial,
+            _hardware_interface,
+            _hardware_ip,
+            _hardware_daughterboard,
+        ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard,
+            hardware_display_name,
+            "iq",
+        )
+
+    filtered_actions = []
+
+    if hardware_type:
+        for action_record in getattr(dashboard, "iq_playback_action_catalog", []) or []:
+            if not isinstance(action_record, dict):
+                continue
+
+            plugin_name = str(action_record.get("plugin", "") or "").strip()
+            action_name = str(action_record.get("action", "") or "").strip()
+
+            if not plugin_name or not action_name:
+                continue
+
+            if not _iq_playback_action_matches_hardware(
+                hardware_type,
+                action_record.get("hardware", []),
+            ):
+                continue
+
+            filtered_actions.append(action_record)
+
+    dashboard.iq_playback_filtered_actions = filtered_actions
+
+    plugin_combo = dashboard.ui.comboBox_iq_playback_plugin
+    current_plugin = str(preferred_plugin or plugin_combo.currentText() or "").strip()
+
+    plugins = sorted(
+        {
+            str(action_record.get("plugin", "") or "").strip()
+            for action_record in filtered_actions
+            if isinstance(action_record, dict)
+            and str(action_record.get("plugin", "") or "").strip()
+        },
+        key=str.lower,
     )
 
-    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
-        False
-    )
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.addItems(plugins)
 
-    _clear_iq_playback_parameter_widgets(
-        dashboard
+    if current_plugin:
+        plugin_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+
+        if plugin_index >= 0:
+            plugin_combo.setCurrentIndex(plugin_index)
+
+    if plugin_combo.currentIndex() < 0 and plugin_combo.count() > 0:
+        plugin_combo.setCurrentIndex(0)
+
+    plugin_combo.blockSignals(False)
+
+    active = bool(
+        getattr(dashboard, "iq_playback_running", False)
+        or getattr(dashboard, "iq_playback_start_pending", False)
+    )
+    plugin_combo.setEnabled(plugin_combo.count() > 0 and not active)
+
+    dashboard.iq_playback_customized = False
+    _clear_iq_playback_parameter_widgets(dashboard)
+    _populate_iq_playback_actions_for_plugin(
+        dashboard,
+        preferred_action=preferred_action,
     )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_PlaybackActionHardwareChanged(
-    dashboard: QtCore.QObject,
-):
-    """
-    Reset the selected IQ Playback action when hardware changes.
-    """
-    _reset_iq_playback_action_selection(
-        dashboard
-    )
+def _slotIQ_PlaybackActionHardwareChanged(dashboard: QtCore.QObject):
+    """Refilter the cached IQ Playback catalog when TX hardware changes."""
+    dashboard.iq_playback_customized = False
+    _clear_iq_playback_parameter_widgets(dashboard)
+    _filter_iq_playback_action_catalog(dashboard)
 
-    has_node = bool(
-        str(
-            getattr(
-                dashboard,
-                "selected_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
-    )
-
+    has_node = bool(str(getattr(dashboard, "selected_node_uid", "") or "").strip())
     has_hardware = bool(
-        str(
-            dashboard.ui
-            .comboBox_iq_playback_hardware
-            .currentText()
-            or ""
-        ).strip()
+        str(dashboard.ui.comboBox_iq_playback_hardware.currentText() or "").strip()
+    )
+    active = bool(
+        getattr(dashboard, "iq_playback_running", False)
+        or getattr(dashboard, "iq_playback_start_pending", False)
     )
 
     dashboard.ui.pushButton_iq_playback_query.setEnabled(
-        has_node and has_hardware
+        has_node and has_hardware and not active
     )
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_PlaybackQueryClicked(
-    dashboard: QtCore.QObject,
-):
-    """
-    Query the selected Sensor Node for compatible IQ Playback actions.
-    """
-    node_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_PlaybackPluginChanged(dashboard: QtCore.QObject):
+    """Populate IQ Playback actions for the selected Plugin."""
+    dashboard.iq_playback_customized = False
+    _clear_iq_playback_parameter_widgets(dashboard)
+    _populate_iq_playback_actions_for_plugin(dashboard)
 
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_PlaybackQueryClicked(dashboard: QtCore.QObject):
+    """Query the selected Sensor Node for the complete IQ Playback action catalog."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     hardware_display_name = str(
-        dashboard.ui
-        .comboBox_iq_playback_hardware
-        .currentText()
-        or ""
+        dashboard.ui.comboBox_iq_playback_hardware.currentText() or ""
     ).strip()
 
     if not node_uid:
@@ -7856,23 +8092,8 @@ async def _slotIQ_PlaybackQueryClicked(
         )
         return
 
-    (
-        hardware_type,
-        _hardware_uuid,
-        _hardware_radio_name,
-        _hardware_serial,
-        _hardware_interface,
-        _hardware_ip,
-        _hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        hardware_display_name,
-        "iq",
-    )
-
-    _reset_iq_playback_action_selection(
-        dashboard
-    )
+    dashboard.iq_playback_action_catalog = []
+    _reset_iq_playback_action_selection(dashboard)
 
     context = "iq.playback.actions"
 
@@ -7880,21 +8101,14 @@ async def _slotIQ_PlaybackQueryClicked(
     dashboard.iq_playback_action_query_context = context
     dashboard.iq_playback_action_query_node_uid = node_uid
 
-    dashboard.ui.pushButton_iq_playback_query.setText(
-        "Querying..."
-    )
-    dashboard.ui.pushButton_iq_playback_query.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_iq_playback_query.setText("Querying...")
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(False)
 
     await dashboard.backend.queryPluginActions(
         node_uid,
         context=context,
         scope="all_plugins",
-        include_tags=[
-            "iq.playback",
-        ],
-        hardware=hardware_type,
+        include_tags=["iq.playback"],
     )
 
 
@@ -8043,54 +8257,28 @@ def handle_iq_playback_action_query_results(
     context: str = "",
     actions: list = None,
 ):
-    """
-    Populate the IQ Playback action selector from a filtered action query.
-    """
-    result_node_uid = str(
-        node_uid
-        or ""
-    ).strip()
-
-    result_context = str(
-        context
-        or ""
-    ).strip()
-
+    """Cache the complete IQ Playback catalog and filter it locally."""
+    result_node_uid = str(node_uid or "").strip()
+    result_context = str(context or "").strip()
     expected_node_uid = str(
-        getattr(
-            dashboard,
-            "iq_playback_action_query_node_uid",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_playback_action_query_node_uid", "") or ""
     ).strip()
-
     expected_context = str(
-        getattr(
-            dashboard,
-            "iq_playback_action_query_context",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_playback_action_query_context", "") or ""
     ).strip()
-
-    query_pending = bool(
-        getattr(
-            dashboard,
-            "iq_playback_action_query_pending",
-            False,
-        )
-    )
+    selected_node_uid = str(
+        getattr(dashboard, "selected_node_uid", "") or ""
+    ).strip()
 
     if (
-        not query_pending
+        not bool(getattr(dashboard, "iq_playback_action_query_pending", False))
         or result_node_uid != expected_node_uid
         or result_context != expected_context
+        or result_node_uid != selected_node_uid
     ):
         dashboard.logger.debug(
             "Ignoring stale IQ Playback action query results: "
-            f"node_uid={result_node_uid!r}, "
-            f"context={result_context!r}"
+            f"node_uid={result_node_uid!r}, context={result_context!r}"
         )
         return
 
@@ -8098,89 +8286,26 @@ def handle_iq_playback_action_query_results(
     dashboard.iq_playback_action_query_context = ""
     dashboard.iq_playback_action_query_node_uid = ""
 
-    combo = dashboard.ui.comboBox_iq_playback_method
+    dashboard.iq_playback_action_catalog = [
+        action_record
+        for action_record in (actions if isinstance(actions, list) else [])
+        if isinstance(action_record, dict)
+    ]
 
-    dashboard.iq_playback_method_actions = (
-        actions
-        if isinstance(
-            actions,
-            list,
-        )
-        else []
+    dashboard.ui.pushButton_iq_playback_query.setText("Query Actions")
+    _filter_iq_playback_action_catalog(dashboard)
+
+    has_hardware = bool(
+        str(dashboard.ui.comboBox_iq_playback_hardware.currentText() or "").strip()
+    )
+    active = bool(
+        getattr(dashboard, "iq_playback_running", False)
+        or getattr(dashboard, "iq_playback_start_pending", False)
     )
 
-    combo.blockSignals(
-        True
-    )
-    combo.clear()
-
-    for action_record in dashboard.iq_playback_method_actions:
-        if not isinstance(
-            action_record,
-            dict,
-        ):
-            continue
-
-        plugin_name = str(
-            action_record.get(
-                "plugin",
-                "",
-            )
-            or ""
-        ).strip()
-
-        action_name = str(
-            action_record.get(
-                "action",
-                "",
-            )
-            or ""
-        ).strip()
-
-        if not plugin_name or not action_name:
-            continue
-
-        combo.addItem(
-            f"{plugin_name}: {action_name}",
-            {
-                "plugin": plugin_name,
-                "action": action_name,
-            },
-        )
-
-    combo.blockSignals(
-        False
-    )
-
-    has_actions = combo.count() > 0
-
-    combo.setEnabled(
-        has_actions
-    )
-
-    dashboard.ui.pushButton_iq_playback_query.setText(
-        "Query Actions"
-    )
     dashboard.ui.pushButton_iq_playback_query.setEnabled(
-        True
+        bool(selected_node_uid) and has_hardware and not active
     )
-
-    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
-        has_actions
-    )
-
-    if has_actions:
-        combo.setCurrentIndex(
-            0
-        )
-
-        _slotIQ_PlaybackMethodChanged(
-            dashboard
-        )
-
-    else:
-        dashboard.iq_playback_selected_plugin = ""
-        dashboard.iq_playback_selected_action = ""
 
 
 def _create_iq_playback_parameter_widget(
@@ -9182,21 +9307,12 @@ async def _slotIQ_PlaybackStartStopClicked(
     )
 
     # Disable Setup, Parameters, and filepath while starting/running.
-    dashboard.ui.comboBox_iq_playback_hardware.setEnabled(
-        False
-    )
-    dashboard.ui.comboBox_iq_playback_method.setEnabled(
-        False
-    )
-    dashboard.ui.pushButton_iq_playback_query.setEnabled(
-        False
-    )
-    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
-        False
-    )
-    dashboard.ui.textEdit_iq_playback_filepath.setEnabled(
-        False
-    )
+    dashboard.ui.comboBox_iq_playback_hardware.setEnabled(False)
+    dashboard.ui.comboBox_iq_playback_plugin.setEnabled(False)
+    dashboard.ui.comboBox_iq_playback_method.setEnabled(False)
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(False)
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(False)
+    dashboard.ui.textEdit_iq_playback_filepath.setEnabled(False)
 
     for parameter_record in (
         getattr(
@@ -9279,6 +9395,10 @@ def initialize_iq_playback_controls(
     dashboard.iq_playback_operation_id = ""
     dashboard.iq_playback_pending_parameters = {}
 
+    dashboard.iq_playback_action_catalog = []
+    dashboard.iq_playback_filtered_actions = []
+    dashboard.iq_playback_action_catalog_node_uid = ""
+    dashboard.iq_playback_filter_hardware_display = ""
     dashboard.iq_playback_method_actions = []
     dashboard.iq_playback_selected_plugin = ""
     dashboard.iq_playback_selected_action = ""
@@ -9317,28 +9437,8 @@ def initialize_iq_playback_controls(
             QtCore.Qt.AlignCenter
         )
 
-    step_badges = (
-        (
-            dashboard.ui.label_iq_playback_setup_badge,
-            "1",
-        ),
-        (
-            dashboard.ui.label_iq_playback_parameters_badge,
-            "2",
-        ),
-        (
-            dashboard.ui.label_iq_playback_run_badge,
-            "3",
-        ),
-    )
-
-    for badge, badge_text in step_badges:
-        badge.setText(
-            badge_text
-        )
-        badge.setAlignment(
-            QtCore.Qt.AlignCenter
-        )
+    dashboard.ui.comboBox_iq_playback_plugin.clear()
+    dashboard.ui.comboBox_iq_playback_plugin.setEnabled(False)
 
     dashboard.ui.comboBox_iq_playback_method.clear()
     dashboard.ui.comboBox_iq_playback_method.setEnabled(
@@ -9423,51 +9523,18 @@ def initialize_iq_playback_controls(
     )
 
 
-def update_iq_playback_selected_node_gate(
-    dashboard: QtCore.QObject,
-):
+def update_iq_playback_selected_node_gate(dashboard: QtCore.QObject):
     """
-    Show IQ Playback controls only when an online Sensor Node is selected.
-
-    This function controls only the INNER Playback stack. It must never change
-    the user's currently selected outer IQ Data page.
+    Show IQ Playback controls only for an online selected Sensor Node and keep
+    the cached action catalog owned by the correct node/hardware selection.
     """
-    selected_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    has_selected_node = bool(
-        selected_uid
-    )
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    has_selected_node = bool(selected_uid)
 
     if has_selected_node:
-        node_states = (
-            getattr(
-                dashboard,
-                "node_states",
-                {},
-            )
-            or {}
-        )
+        node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid)
 
-        node_state = node_states.get(
-            selected_uid
-        )
-
-        if (
-            isinstance(
-                node_state,
-                dict,
-            )
-            and node_state.get(
-                "connected"
-            ) is False
-        ):
+        if isinstance(node_state, dict) and node_state.get("connected") is False:
             has_selected_node = False
 
     dashboard.ui.stackedWidget_iq_playback.setCurrentWidget(
@@ -9476,138 +9543,119 @@ def update_iq_playback_selected_node_gate(
         else dashboard.ui.page_iq_playback_no_node
     )
 
-    hardware_combo = (
-        dashboard.ui.comboBox_iq_playback_hardware
-    )
-    method_combo = (
-        dashboard.ui.comboBox_iq_playback_method
-    )
-    query_button = (
-        dashboard.ui.pushButton_iq_playback_query
-    )
-    customize_button = (
-        dashboard.ui.pushButton_iq_playback_customize
-    )
-    start_button = (
-        dashboard.ui.pushButton_iq_playback_start_stop
-    )
-    filepath_edit = (
-        dashboard.ui.textEdit_iq_playback_filepath
+    hardware_combo = dashboard.ui.comboBox_iq_playback_hardware
+    plugin_combo = dashboard.ui.comboBox_iq_playback_plugin
+    method_combo = dashboard.ui.comboBox_iq_playback_method
+    query_button = dashboard.ui.pushButton_iq_playback_query
+    customize_button = dashboard.ui.pushButton_iq_playback_customize
+    start_button = dashboard.ui.pushButton_iq_playback_start_stop
+    filepath_edit = dashboard.ui.textEdit_iq_playback_filepath
+
+    catalog_node_uid = str(
+        getattr(dashboard, "iq_playback_action_catalog_node_uid", "") or ""
+    ).strip()
+    node_changed = selected_uid != catalog_node_uid
+
+    if node_changed:
+        dashboard.iq_playback_action_catalog_node_uid = selected_uid
+        dashboard.iq_playback_action_catalog = []
+        dashboard.iq_playback_filter_hardware_display = ""
+        dashboard.iq_playback_action_query_pending = False
+        dashboard.iq_playback_action_query_context = ""
+        dashboard.iq_playback_action_query_node_uid = ""
+        query_button.setText("Query Actions")
+        _reset_iq_playback_action_selection(dashboard)
+
+        if not bool(
+            getattr(dashboard, "iq_playback_running", False)
+            or getattr(dashboard, "iq_playback_start_pending", False)
+        ):
+            dashboard.ui.label2_iq_playback_status.setText(
+                "Idle" if has_selected_node else "Unavailable"
+            )
+
+    current_hardware = str(hardware_combo.currentText() or "").strip()
+    filtered_hardware = str(
+        getattr(dashboard, "iq_playback_filter_hardware_display", "") or ""
+    ).strip()
+
+    active = bool(
+        getattr(dashboard, "iq_playback_running", False)
+        or getattr(dashboard, "iq_playback_start_pending", False)
     )
 
-    if bool(
-        getattr(
-            dashboard,
-            "iq_playback_running",
-            False,
-        )
-        or getattr(
-            dashboard,
-            "iq_playback_start_pending",
-            False,
-        )
-    ):
-        hardware_combo.setEnabled(
-            False
-        )
-        method_combo.setEnabled(
-            False
-        )
-        query_button.setEnabled(
-            False
-        )
-        customize_button.setEnabled(
-            False
-        )
-        filepath_edit.setEnabled(
-            False
-        )
-        start_button.setEnabled(
-            True
-        )
+    if current_hardware != filtered_hardware and not active:
+        dashboard.iq_playback_customized = False
+        _clear_iq_playback_parameter_widgets(dashboard)
+        _filter_iq_playback_action_catalog(dashboard)
+
+    if active:
+        hardware_combo.setEnabled(False)
+        plugin_combo.setEnabled(False)
+        method_combo.setEnabled(False)
+        query_button.setEnabled(False)
+        customize_button.setEnabled(False)
+        filepath_edit.setEnabled(False)
+        start_button.setEnabled(True)
+
+        for parameter_record in (
+            getattr(dashboard, "iq_playback_parameter_widgets", {}) or {}
+        ).values():
+            if not isinstance(parameter_record, dict):
+                continue
+
+            widget = parameter_record.get("widget")
+
+            if widget is not None:
+                widget.setEnabled(False)
+
         return
 
+    _set_iq_playback_start_stop_button(dashboard, False)
+
     hardware_combo.setEnabled(
-        has_selected_node
-        and hardware_combo.count() > 0
+        has_selected_node and hardware_combo.count() > 0
     )
-
+    plugin_combo.setEnabled(
+        has_selected_node and plugin_combo.count() > 0
+    )
     method_combo.setEnabled(
-        has_selected_node
-        and method_combo.count() > 0
+        has_selected_node and method_combo.count() > 0
     )
-
     query_button.setEnabled(
         has_selected_node
         and hardware_combo.count() > 0
+        and not bool(getattr(dashboard, "iq_playback_action_query_pending", False))
     )
-
     customize_button.setEnabled(
-        has_selected_node
-        and method_combo.count() > 0
+        has_selected_node and method_combo.count() > 0
     )
-
-    filepath_edit.setEnabled(
-        has_selected_node
-    )
-    filepath_edit.setReadOnly(
-        False
-    )
-
-    start_button.setText(
-        "Play"
-    )
+    filepath_edit.setEnabled(has_selected_node)
+    filepath_edit.setReadOnly(False)
     start_button.setEnabled(
         has_selected_node
-        and bool(
-            getattr(
-                dashboard,
-                "iq_playback_customized",
-                False,
-            )
-        )
+        and bool(getattr(dashboard, "iq_playback_customized", False))
     )
 
     current_status = str(
-        dashboard.ui.label2_iq_playback_status.text()
-        or ""
+        dashboard.ui.label2_iq_playback_status.text() or ""
     ).strip()
 
     if not has_selected_node:
-        dashboard.ui.label2_iq_playback_status.setText(
-            "Unavailable"
-        )
-
-    elif current_status in {
-        "",
-        "Unavailable",
-    }:
-        dashboard.ui.label2_iq_playback_status.setText(
-            "Idle"
-        )
+        dashboard.ui.label2_iq_playback_status.setText("Unavailable")
+    elif current_status in {"", "Unavailable"}:
+        dashboard.ui.label2_iq_playback_status.setText("Idle")
 
     for parameter_record in (
-        getattr(
-            dashboard,
-            "iq_playback_parameter_widgets",
-            {},
-        )
-        or {}
+        getattr(dashboard, "iq_playback_parameter_widgets", {}) or {}
     ).values():
-        if not isinstance(
-            parameter_record,
-            dict,
-        ):
+        if not isinstance(parameter_record, dict):
             continue
 
-        widget = parameter_record.get(
-            "widget"
-        )
+        widget = parameter_record.get("widget")
 
         if widget is not None:
-            widget.setEnabled(
-                has_selected_node
-            )
+            widget.setEnabled(has_selected_node)
 
 
 def _clear_iq_inspection_parameter_widgets(
@@ -9667,36 +9715,237 @@ def _clear_iq_inspection_parameter_widgets(
     )
 
 
-def _reset_iq_inspection_action_selection(
-    dashboard,
-):
-    """Clear queried IQ Inspection actions and customized parameters."""
+def _reset_iq_inspection_action_selection(dashboard):
+    """Reset IQ Inspection Plugin/Action selection and customized parameters."""
+    dashboard.iq_inspection_filtered_actions = []
     dashboard.iq_inspection_method_actions = []
     dashboard.iq_inspection_selected_plugin = ""
     dashboard.iq_inspection_selected_action = ""
-    dashboard.iq_inspection_action_query_pending = False
-    dashboard.iq_inspection_action_query_context = ""
-    dashboard.iq_inspection_action_query_node_uid = ""
+    dashboard.iq_inspection_customized = False
 
-    combo = dashboard.ui.comboBox_iq_inspection_action
+    plugin_combo = dashboard.ui.comboBox_iq_inspection_plugin
+    action_combo = dashboard.ui.comboBox_iq_inspection_action
 
-    combo.blockSignals(
-        True
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.blockSignals(False)
+    plugin_combo.setEnabled(False)
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+    action_combo.blockSignals(False)
+    action_combo.setEnabled(False)
+
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(False)
+    _clear_iq_inspection_parameter_widgets(dashboard)
+
+
+def _iq_inspection_action_tags(action_record: dict) -> set:
+    """Return normalized tags for one IQ Inspection action record."""
+    tags = action_record.get("tags", []) if isinstance(action_record, dict) else []
+
+    if not isinstance(tags, (list, tuple, set)):
+        tags = [tags]
+
+    return {
+        str(tag or "").strip().lower()
+        for tag in tags
+        if str(tag or "").strip()
+    }
+
+
+def _iq_inspection_action_matches_hardware(hardware_type: str, compatible_hardware) -> bool:
+    """Return True when a live IQ Inspection action supports selected hardware."""
+    compatible_hardware = list(compatible_hardware or [])
+
+    if not compatible_hardware:
+        return True
+
+    selected = str(hardware_type or "").strip().lower()
+
+    if not selected:
+        return False
+
+    for hardware_name in compatible_hardware:
+        candidate = str(hardware_name or "").strip().lower()
+
+        if candidate and (candidate in selected or selected in candidate):
+            return True
+
+    return False
+
+
+def _populate_iq_inspection_actions_for_plugin(
+    dashboard,
+    preferred_action: str = "",
+):
+    """Populate IQ Inspection Action from the selected Plugin."""
+    plugin_name = str(
+        dashboard.ui.comboBox_iq_inspection_plugin.currentText() or ""
+    ).strip()
+    action_combo = dashboard.ui.comboBox_iq_inspection_action
+
+    action_combo.blockSignals(True)
+    action_combo.clear()
+
+    matching_actions = []
+
+    for action_record in getattr(dashboard, "iq_inspection_filtered_actions", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        if str(action_record.get("plugin", "") or "").strip() != plugin_name:
+            continue
+
+        action_name = str(action_record.get("action", "") or "").strip()
+
+        if not action_name:
+            continue
+
+        matching_actions.append(action_record)
+        action_combo.addItem(action_name, action_record)
+
+    action_combo.blockSignals(False)
+    dashboard.iq_inspection_method_actions = matching_actions
+
+    active = bool(
+        getattr(dashboard, "iq_inspection_running", False)
+        or getattr(dashboard, "iq_inspection_start_pending", False)
     )
-    combo.clear()
-    combo.blockSignals(
-        False
-    )
-    combo.setEnabled(
-        False
+    local_available = selected_node_is_local(dashboard)
+    has_actions = action_combo.count() > 0
+    action_combo.setEnabled(has_actions and local_available and not active)
+
+    if not has_actions:
+        dashboard.iq_inspection_selected_plugin = ""
+        dashboard.iq_inspection_selected_action = ""
+        dashboard.iq_inspection_customized = False
+        dashboard.ui.pushButton_iq_inspection_customize.setEnabled(False)
+        _clear_iq_inspection_parameter_widgets(dashboard)
+        return
+
+    preferred_action = str(preferred_action or "").strip()
+
+    if preferred_action:
+        preferred_index = action_combo.findText(preferred_action, QtCore.Qt.MatchExactly)
+
+        if preferred_index >= 0:
+            action_combo.setCurrentIndex(preferred_index)
+
+    if action_combo.currentIndex() < 0:
+        action_combo.setCurrentIndex(0)
+
+    _slotIQ_InspectionActionChanged(dashboard)
+
+
+def _filter_iq_inspection_action_catalog(
+    dashboard,
+    preferred_plugin: str = "",
+    preferred_action: str = "",
+):
+    """Filter cached IQ Inspection actions by Source, then rebuild Plugin/Action."""
+    source_text = str(
+        dashboard.ui.comboBox_iq_inspection_source.currentText() or ""
+    ).strip()
+
+    dashboard.iq_inspection_filter_source = source_text
+
+    source_is_file = source_text.lower() == "file"
+    hardware_type = ""
+
+    if source_text and not source_is_file:
+        (
+            hardware_type,
+            _hardware_uuid,
+            _hardware_radio_name,
+            _hardware_serial,
+            _hardware_interface,
+            _hardware_ip,
+            _hardware_daughterboard,
+        ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard,
+            source_text,
+            "iq",
+        )
+
+    filtered_actions = []
+
+    for action_record in getattr(dashboard, "iq_inspection_action_catalog", []) or []:
+        if not isinstance(action_record, dict):
+            continue
+
+        plugin_name = str(action_record.get("plugin", "") or "").strip()
+        action_name = str(action_record.get("action", "") or "").strip()
+
+        if not plugin_name or not action_name:
+            continue
+
+        tags = _iq_inspection_action_tags(action_record)
+
+        if source_is_file:
+            if "iq.inspection.source.file" not in tags:
+                continue
+
+        else:
+            if not hardware_type:
+                continue
+
+            if "iq.inspection.source.radio" not in tags:
+                continue
+
+            if not _iq_inspection_action_matches_hardware(
+                hardware_type,
+                action_record.get("hardware", []),
+            ):
+                continue
+
+        filtered_actions.append(action_record)
+
+    dashboard.iq_inspection_filtered_actions = filtered_actions
+
+    plugin_combo = dashboard.ui.comboBox_iq_inspection_plugin
+    current_plugin = str(preferred_plugin or plugin_combo.currentText() or "").strip()
+
+    plugins = sorted(
+        {
+            str(action_record.get("plugin", "") or "").strip()
+            for action_record in filtered_actions
+            if isinstance(action_record, dict)
+            and str(action_record.get("plugin", "") or "").strip()
+        },
+        key=str.lower,
     )
 
-    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
-        False
+    plugin_combo.blockSignals(True)
+    plugin_combo.clear()
+    plugin_combo.addItems(plugins)
+
+    if current_plugin:
+        plugin_index = plugin_combo.findText(current_plugin, QtCore.Qt.MatchExactly)
+
+        if plugin_index >= 0:
+            plugin_combo.setCurrentIndex(plugin_index)
+
+    if plugin_combo.currentIndex() < 0 and plugin_combo.count() > 0:
+        plugin_combo.setCurrentIndex(0)
+
+    plugin_combo.blockSignals(False)
+
+    active = bool(
+        getattr(dashboard, "iq_inspection_running", False)
+        or getattr(dashboard, "iq_inspection_start_pending", False)
+    )
+    plugin_combo.setEnabled(
+        plugin_combo.count() > 0
+        and selected_node_is_local(dashboard)
+        and not active
     )
 
-    _clear_iq_inspection_parameter_widgets(
-        dashboard
+    dashboard.iq_inspection_customized = False
+    _clear_iq_inspection_parameter_widgets(dashboard)
+    _populate_iq_inspection_actions_for_plugin(
+        dashboard,
+        preferred_action=preferred_action,
     )
 
 
@@ -9732,73 +9981,49 @@ def _update_iq_inspection_source_ui(
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionSourceChanged(
-    dashboard,
-):
-    """Reset stale action/schema state when the Inspection Source changes."""
-    _reset_iq_inspection_action_selection(
-        dashboard
-    )
+def _slotIQ_InspectionSourceChanged(dashboard):
+    """Refilter cached IQ Inspection actions when Source changes."""
+    dashboard.iq_inspection_customized = False
+    _clear_iq_inspection_parameter_widgets(dashboard)
+    _update_iq_inspection_source_ui(dashboard)
+    _filter_iq_inspection_action_catalog(dashboard)
 
-    _update_iq_inspection_source_ui(
-        dashboard
-    )
-
-    node_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     has_source = bool(
-        str(
-            dashboard.ui
-            .comboBox_iq_inspection_source
-            .currentText()
-            or ""
-        ).strip()
+        str(dashboard.ui.comboBox_iq_inspection_source.currentText() or "").strip()
+    )
+    active = bool(
+        getattr(dashboard, "iq_inspection_running", False)
+        or getattr(dashboard, "iq_inspection_start_pending", False)
     )
 
     dashboard.ui.pushButton_iq_inspection_query.setEnabled(
         bool(
             node_uid
-            and selected_node_is_local(
-                dashboard
-            )
+            and selected_node_is_local(dashboard)
             and has_source
+            and not active
         )
     )
 
-    if node_uid and selected_node_is_local(
-        dashboard
-    ):
-        dashboard.ui.label2_iq_inspection_status.setText(
-            "Idle"
-        )
+    if node_uid and selected_node_is_local(dashboard) and not active:
+        dashboard.ui.label2_iq_inspection_status.setText("Idle")
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_InspectionPluginChanged(dashboard):
+    """Populate IQ Inspection actions for the selected Plugin."""
+    dashboard.iq_inspection_customized = False
+    _clear_iq_inspection_parameter_widgets(dashboard)
+    _populate_iq_inspection_actions_for_plugin(dashboard)
 
 
 @qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_InspectionQueryClicked(
-    dashboard,
-):
-    """Query the local Sensor Node for Inspection actions matching Source."""
-    node_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
+async def _slotIQ_InspectionQueryClicked(dashboard):
+    """Query the local Sensor Node for the complete IQ Inspection action catalog."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     source_text = str(
-        dashboard.ui
-        .comboBox_iq_inspection_source
-        .currentText()
-        or ""
+        dashboard.ui.comboBox_iq_inspection_source.currentText() or ""
     ).strip()
 
     if not node_uid:
@@ -9807,9 +10032,7 @@ async def _slotIQ_InspectionQueryClicked(
         )
         return
 
-    if not selected_node_is_local(
-        dashboard
-    ):
+    if not selected_node_is_local(dashboard):
         dashboard.logger.warning(
             "IQ Inspection GUI actions currently require a local Sensor Node."
         )
@@ -9821,62 +10044,23 @@ async def _slotIQ_InspectionQueryClicked(
         )
         return
 
-    if source_text.lower() == "file":
-        include_tags = [
-            "iq.inspection",
-            "iq.inspection.source.file",
-        ]
-        hardware_type = ""
-        context = "iq.inspection.file.actions"
+    dashboard.iq_inspection_action_catalog = []
+    _reset_iq_inspection_action_selection(dashboard)
 
-    else:
-        (
-            hardware_type,
-            _hardware_uuid,
-            _hardware_radio_name,
-            _hardware_serial,
-            _hardware_interface,
-            _hardware_ip,
-            _hardware_daughterboard,
-        ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-            dashboard,
-            source_text,
-            "iq",
-        )
-
-        if not hardware_type:
-            dashboard.logger.warning(
-                "Could not resolve the selected IQ Inspection hardware."
-            )
-            return
-
-        include_tags = [
-            "iq.inspection",
-            "iq.inspection.source.radio",
-        ]
-        context = "iq.inspection.live.actions"
-
-    _reset_iq_inspection_action_selection(
-        dashboard
-    )
+    context = "iq.inspection.actions"
 
     dashboard.iq_inspection_action_query_pending = True
     dashboard.iq_inspection_action_query_context = context
     dashboard.iq_inspection_action_query_node_uid = node_uid
 
-    dashboard.ui.pushButton_iq_inspection_query.setText(
-        "Querying..."
-    )
-    dashboard.ui.pushButton_iq_inspection_query.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_iq_inspection_query.setText("Querying...")
+    dashboard.ui.pushButton_iq_inspection_query.setEnabled(False)
 
     await dashboard.backend.queryPluginActions(
         node_uid,
         context=context,
         scope="all_plugins",
-        include_tags=include_tags,
-        hardware=hardware_type,
+        include_tags=["iq.inspection"],
     )
 
 
@@ -10031,50 +10215,28 @@ def handle_iq_inspection_action_query_results(
     context: str = "",
     actions: list = None,
 ):
-    """Populate the IQ Inspection action selector from a filtered query."""
-    result_node_uid = str(
-        node_uid
-        or ""
-    ).strip()
-    result_context = str(
-        context
-        or ""
-    ).strip()
-
+    """Cache the complete IQ Inspection catalog and filter it by current Source."""
+    result_node_uid = str(node_uid or "").strip()
+    result_context = str(context or "").strip()
     expected_node_uid = str(
-        getattr(
-            dashboard,
-            "iq_inspection_action_query_node_uid",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_inspection_action_query_node_uid", "") or ""
     ).strip()
     expected_context = str(
-        getattr(
-            dashboard,
-            "iq_inspection_action_query_context",
-            "",
-        )
-        or ""
+        getattr(dashboard, "iq_inspection_action_query_context", "") or ""
+    ).strip()
+    selected_node_uid = str(
+        getattr(dashboard, "selected_node_uid", "") or ""
     ).strip()
 
-    query_pending = bool(
-        getattr(
-            dashboard,
-            "iq_inspection_action_query_pending",
-            False,
-        )
-    )
-
     if (
-        not query_pending
+        not bool(getattr(dashboard, "iq_inspection_action_query_pending", False))
         or result_node_uid != expected_node_uid
         or result_context != expected_context
+        or result_node_uid != selected_node_uid
     ):
         dashboard.logger.debug(
             "Ignoring stale IQ Inspection action query results: "
-            f"node_uid={result_node_uid!r}, "
-            f"context={result_context!r}"
+            f"node_uid={result_node_uid!r}, context={result_context!r}"
         )
         return
 
@@ -10082,105 +10244,31 @@ def handle_iq_inspection_action_query_results(
     dashboard.iq_inspection_action_query_context = ""
     dashboard.iq_inspection_action_query_node_uid = ""
 
-    combo = dashboard.ui.comboBox_iq_inspection_action
+    dashboard.iq_inspection_action_catalog = [
+        action_record
+        for action_record in (actions if isinstance(actions, list) else [])
+        if isinstance(action_record, dict)
+    ]
 
-    dashboard.iq_inspection_method_actions = (
-        actions
-        if isinstance(
-            actions,
-            list,
-        )
-        else []
+    dashboard.ui.pushButton_iq_inspection_query.setText("Query Actions")
+    _filter_iq_inspection_action_catalog(dashboard)
+
+    has_source = bool(
+        str(dashboard.ui.comboBox_iq_inspection_source.currentText() or "").strip()
+    )
+    active = bool(
+        getattr(dashboard, "iq_inspection_running", False)
+        or getattr(dashboard, "iq_inspection_start_pending", False)
     )
 
-    combo.blockSignals(
-        True
-    )
-    combo.clear()
-
-    for action_record in dashboard.iq_inspection_method_actions:
-        if not isinstance(
-            action_record,
-            dict,
-        ):
-            continue
-
-        plugin_name = str(
-            action_record.get(
-                "plugin",
-                "",
-            )
-            or ""
-        ).strip()
-
-        action_name = str(
-            action_record.get(
-                "action",
-                "",
-            )
-            or ""
-        ).strip()
-
-        if not plugin_name or not action_name:
-            continue
-
-        combo.addItem(
-            f"{plugin_name}: {action_name}",
-            {
-                "plugin": plugin_name,
-                "action": action_name,
-            },
-        )
-
-    combo.blockSignals(
-        False
-    )
-
-    has_actions = combo.count() > 0
-
-    combo.setEnabled(
-        has_actions
-        and selected_node_is_local(
-            dashboard
-        )
-    )
-
-    dashboard.ui.pushButton_iq_inspection_query.setText(
-        "Query Actions"
-    )
     dashboard.ui.pushButton_iq_inspection_query.setEnabled(
         bool(
-            selected_node_is_local(
-                dashboard
-            )
-            and str(
-                dashboard.ui
-                .comboBox_iq_inspection_source
-                .currentText()
-                or ""
-            ).strip()
+            selected_node_uid
+            and selected_node_is_local(dashboard)
+            and has_source
+            and not active
         )
     )
-
-    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
-        has_actions
-        and selected_node_is_local(
-            dashboard
-        )
-    )
-
-    if has_actions:
-        combo.setCurrentIndex(
-            0
-        )
-
-        _slotIQ_InspectionActionChanged(
-            dashboard
-        )
-
-    else:
-        dashboard.iq_inspection_selected_plugin = ""
-        dashboard.iq_inspection_selected_action = ""
 
 
 def _create_iq_inspection_parameter_widget(
@@ -11233,6 +11321,10 @@ def initialize_iq_inspection_controls(
     dashboard.iq_inspection_node_uid = ""
     dashboard.iq_inspection_operation_id = ""
 
+    dashboard.iq_inspection_action_catalog = []
+    dashboard.iq_inspection_filtered_actions = []
+    dashboard.iq_inspection_action_catalog_node_uid = ""
+    dashboard.iq_inspection_filter_source = ""
     dashboard.iq_inspection_method_actions = []
     dashboard.iq_inspection_selected_plugin = ""
     dashboard.iq_inspection_selected_action = ""
@@ -11271,38 +11363,14 @@ def initialize_iq_inspection_controls(
             QtCore.Qt.AlignCenter
         )
 
-    step_badges = (
-        (
-            dashboard.ui.label_iq_inspection_setup_badge,
-            "1",
-        ),
-        (
-            dashboard.ui.label_iq_inspection_parameters_badge,
-            "2",
-        ),
-        (
-            dashboard.ui.label_iq_inspection_run_badge,
-            "3",
-        ),
-    )
-
-    for badge, badge_text in step_badges:
-        badge.setText(
-            badge_text
-        )
-        badge.setAlignment(
-            QtCore.Qt.AlignCenter
-        )
-
     dashboard.ui.comboBox_iq_inspection_source.clear()
-    dashboard.ui.comboBox_iq_inspection_source.setEnabled(
-        False
-    )
+    dashboard.ui.comboBox_iq_inspection_source.setEnabled(False)
+
+    dashboard.ui.comboBox_iq_inspection_plugin.clear()
+    dashboard.ui.comboBox_iq_inspection_plugin.setEnabled(False)
 
     dashboard.ui.comboBox_iq_inspection_action.clear()
-    dashboard.ui.comboBox_iq_inspection_action.setEnabled(
-        False
-    )
+    dashboard.ui.comboBox_iq_inspection_action.setEnabled(False)
 
     dashboard.ui.pushButton_iq_inspection_query.setText(
         "Query Actions"
@@ -11389,284 +11457,171 @@ def initialize_iq_inspection_controls(
     )
 
 
-def update_iq_inspection_selected_node_gate(
-    dashboard,
-):
-    """Select the local/remote/no-node Inspection page and gate controls."""
-    selected_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    has_selected_node = bool(
-        selected_uid
-    )
+def update_iq_inspection_selected_node_gate(dashboard):
+    """
+    Gate the local-only IQ Inspection workflow and keep the cached action
+    catalog owned by the correct node/source selection.
+    """
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    has_selected_node = bool(selected_uid)
 
     if has_selected_node:
-        node_states = (
-            getattr(
-                dashboard,
-                "node_states",
-                {},
-            )
-            or {}
-        )
+        node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid)
 
-        node_state = node_states.get(
-            selected_uid
-        )
-
-        if (
-            isinstance(
-                node_state,
-                dict,
-            )
-            and node_state.get(
-                "connected"
-            ) is False
-        ):
+        if isinstance(node_state, dict) and node_state.get("connected") is False:
             has_selected_node = False
 
     is_local = bool(
-        has_selected_node
-        and selected_node_is_local(
-            dashboard
-        )
+        has_selected_node and selected_node_is_local(dashboard)
     )
-
     is_remote = bool(
-        has_selected_node
-        and selected_node_is_remote(
-            dashboard
-        )
+        has_selected_node and selected_node_is_remote(dashboard)
     )
 
     if not has_selected_node:
         dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
             dashboard.ui.page_iq_inspection_no_node
         )
-
     elif is_local:
         dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
             dashboard.ui.page_iq_inspection_controls
         )
-
     elif is_remote:
         dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
             dashboard.ui.page_iq_inspection_remote_node
         )
-
     else:
         dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
             dashboard.ui.page_iq_inspection_no_node
         )
 
-    source_combo = (
-        dashboard.ui.comboBox_iq_inspection_source
-    )
-    action_combo = (
-        dashboard.ui.comboBox_iq_inspection_action
-    )
-    query_button = (
-        dashboard.ui.pushButton_iq_inspection_query
-    )
-    customize_button = (
-        dashboard.ui.pushButton_iq_inspection_customize
-    )
-    filepath_edit = (
-        dashboard.ui.textEdit_iq_inspection_filepath
-    )
-    start_button = (
-        dashboard.ui.pushButton_iq_inspection_start_stop
+    source_combo = dashboard.ui.comboBox_iq_inspection_source
+    plugin_combo = dashboard.ui.comboBox_iq_inspection_plugin
+    action_combo = dashboard.ui.comboBox_iq_inspection_action
+    query_button = dashboard.ui.pushButton_iq_inspection_query
+    customize_button = dashboard.ui.pushButton_iq_inspection_customize
+    filepath_edit = dashboard.ui.textEdit_iq_inspection_filepath
+    start_button = dashboard.ui.pushButton_iq_inspection_start_stop
+
+    _update_iq_inspection_source_ui(dashboard)
+
+    catalog_node_uid = str(
+        getattr(dashboard, "iq_inspection_action_catalog_node_uid", "") or ""
+    ).strip()
+    node_changed = selected_uid != catalog_node_uid
+
+    if node_changed:
+        dashboard.iq_inspection_action_catalog_node_uid = selected_uid
+        dashboard.iq_inspection_action_catalog = []
+        dashboard.iq_inspection_filter_source = ""
+        dashboard.iq_inspection_action_query_pending = False
+        dashboard.iq_inspection_action_query_context = ""
+        dashboard.iq_inspection_action_query_node_uid = ""
+        query_button.setText("Query Actions")
+        _reset_iq_inspection_action_selection(dashboard)
+
+        if not bool(
+            getattr(dashboard, "iq_inspection_running", False)
+            or getattr(dashboard, "iq_inspection_start_pending", False)
+        ):
+            dashboard.ui.label2_iq_inspection_status.setText(
+                "Idle" if is_local else "Unavailable"
+            )
+
+    current_source = str(source_combo.currentText() or "").strip()
+    filtered_source = str(
+        getattr(dashboard, "iq_inspection_filter_source", "") or ""
+    ).strip()
+
+    active = bool(
+        getattr(dashboard, "iq_inspection_running", False)
+        or getattr(dashboard, "iq_inspection_start_pending", False)
     )
 
-    _update_iq_inspection_source_ui(
-        dashboard
-    )
+    if current_source != filtered_source and is_local and not active:
+        dashboard.iq_inspection_customized = False
+        _clear_iq_inspection_parameter_widgets(dashboard)
+        _filter_iq_inspection_action_catalog(dashboard)
 
     if not is_local:
-        source_combo.setEnabled(
-            False
-        )
-        action_combo.setEnabled(
-            False
-        )
-        query_button.setEnabled(
-            False
-        )
-        customize_button.setEnabled(
-            False
-        )
-        filepath_edit.setEnabled(
-            False
-        )
-        start_button.setEnabled(
-            False
-        )
-
-        dashboard.ui.label2_iq_inspection_status.setText(
-            "Unavailable"
-        )
+        source_combo.setEnabled(False)
+        plugin_combo.setEnabled(False)
+        action_combo.setEnabled(False)
+        query_button.setEnabled(False)
+        customize_button.setEnabled(False)
+        filepath_edit.setEnabled(False)
+        start_button.setEnabled(False)
+        dashboard.ui.label2_iq_inspection_status.setText("Unavailable")
 
         for parameter_record in (
-            getattr(
-                dashboard,
-                "iq_inspection_parameter_widgets",
-                {},
-            )
-            or {}
+            getattr(dashboard, "iq_inspection_parameter_widgets", {}) or {}
         ).values():
-            if not isinstance(
-                parameter_record,
-                dict,
-            ):
+            if not isinstance(parameter_record, dict):
                 continue
 
-            widget = parameter_record.get(
-                "widget"
-            )
+            widget = parameter_record.get("widget")
 
             if widget is not None:
-                widget.setEnabled(
-                    False
-                )
+                widget.setEnabled(False)
 
         return
 
-    if bool(
-        getattr(
-            dashboard,
-            "iq_inspection_running",
-            False,
-        )
-        or getattr(
-            dashboard,
-            "iq_inspection_start_pending",
-            False,
-        )
-    ):
-        source_combo.setEnabled(
-            False
-        )
-        action_combo.setEnabled(
-            False
-        )
-        query_button.setEnabled(
-            False
-        )
-        customize_button.setEnabled(
-            False
-        )
-        filepath_edit.setEnabled(
-            False
-        )
-        start_button.setEnabled(
-            True
-        )
+    if active:
+        source_combo.setEnabled(False)
+        plugin_combo.setEnabled(False)
+        action_combo.setEnabled(False)
+        query_button.setEnabled(False)
+        customize_button.setEnabled(False)
+        filepath_edit.setEnabled(False)
+        start_button.setEnabled(True)
 
         for parameter_record in (
-            getattr(
-                dashboard,
-                "iq_inspection_parameter_widgets",
-                {},
-            )
-            or {}
+            getattr(dashboard, "iq_inspection_parameter_widgets", {}) or {}
         ).values():
-            if not isinstance(
-                parameter_record,
-                dict,
-            ):
+            if not isinstance(parameter_record, dict):
                 continue
 
-            widget = parameter_record.get(
-                "widget"
-            )
+            widget = parameter_record.get("widget")
 
             if widget is not None:
-                widget.setEnabled(
-                    False
-                )
+                widget.setEnabled(False)
 
         return
 
-    has_source = bool(
-        str(
-            source_combo.currentText()
-            or ""
-        ).strip()
-    )
-    has_action = action_combo.count() > 0
-    source_is_file = _iq_inspection_source_is_file(
-        dashboard
-    )
+    has_source = bool(current_source)
+    source_is_file = _iq_inspection_source_is_file(dashboard)
 
-    source_combo.setEnabled(
-        source_combo.count() > 0
-    )
-    action_combo.setEnabled(
-        has_action
-    )
+    source_combo.setEnabled(source_combo.count() > 0)
+    plugin_combo.setEnabled(plugin_combo.count() > 0)
+    action_combo.setEnabled(action_combo.count() > 0)
     query_button.setEnabled(
         has_source
+        and not bool(getattr(dashboard, "iq_inspection_action_query_pending", False))
     )
-    customize_button.setEnabled(
-        has_action
-    )
-    filepath_edit.setEnabled(
-        source_is_file
-    )
-    filepath_edit.setReadOnly(
-        False
-    )
+    customize_button.setEnabled(action_combo.count() > 0)
+    filepath_edit.setEnabled(source_is_file)
+    filepath_edit.setReadOnly(False)
     start_button.setEnabled(
-        bool(
-            getattr(
-                dashboard,
-                "iq_inspection_customized",
-                False,
-            )
-        )
+        bool(getattr(dashboard, "iq_inspection_customized", False))
     )
 
     current_status = str(
-        dashboard.ui.label2_iq_inspection_status.text()
-        or ""
+        dashboard.ui.label2_iq_inspection_status.text() or ""
     ).strip()
 
-    if current_status in {
-        "",
-        "Unavailable",
-    }:
-        dashboard.ui.label2_iq_inspection_status.setText(
-            "Idle"
-        )
+    if current_status in {"", "Unavailable"}:
+        dashboard.ui.label2_iq_inspection_status.setText("Idle")
 
     for parameter_record in (
-        getattr(
-            dashboard,
-            "iq_inspection_parameter_widgets",
-            {},
-        )
-        or {}
+        getattr(dashboard, "iq_inspection_parameter_widgets", {}) or {}
     ).values():
-        if not isinstance(
-            parameter_record,
-            dict,
-        ):
+        if not isinstance(parameter_record, dict):
             continue
 
-        widget = parameter_record.get(
-            "widget"
-        )
+        widget = parameter_record.get("widget")
 
         if widget is not None:
-            widget.setEnabled(
-                True
-            )
+            widget.setEnabled(True)
 
 
 def initialize_iq_record_controls(
@@ -11681,6 +11636,10 @@ def initialize_iq_record_controls(
     dashboard.iq_record_artifact_id = ""
     dashboard.iq_record_select_after_download_id = ""
 
+    dashboard.iq_record_action_catalog = []
+    dashboard.iq_record_filtered_actions = []
+    dashboard.iq_record_action_catalog_node_uid = ""
+    dashboard.iq_record_filter_hardware_display = ""
     dashboard.iq_record_method_actions = []
     dashboard.iq_record_selected_plugin = ""
     dashboard.iq_record_selected_action = ""
@@ -11724,68 +11683,27 @@ def initialize_iq_record_controls(
             QtCore.Qt.AlignCenter
         )
 
-    step_badges = (
-        (
-            dashboard.ui.label_iq_record_setup_badge,
-            "1",
-        ),
-        (
-            dashboard.ui.label_iq_record_parameters_badge,
-            "2",
-        ),
-        (
-            dashboard.ui.label_iq_record_run_badge,
-            "3",
-        ),
-    )
-
-    for badge, badge_text in step_badges:
-        badge.setText(
-            badge_text
-        )
-        badge.setAlignment(
-            QtCore.Qt.AlignCenter
-        )
+    dashboard.ui.comboBox_iq_record_plugin.clear()
+    dashboard.ui.comboBox_iq_record_plugin.setEnabled(False)
 
     dashboard.ui.comboBox_iq_record_method.clear()
-    dashboard.ui.comboBox_iq_record_method.setEnabled(
-        False
-    )
+    dashboard.ui.comboBox_iq_record_method.setEnabled(False)
 
-    dashboard.ui.pushButton_iq_record_query.setText(
-        "Query Actions"
-    )
-    dashboard.ui.pushButton_iq_record_query.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_iq_record_query.setText("Query Actions")
+    dashboard.ui.pushButton_iq_record_query.setEnabled(False)
 
-    dashboard.ui.pushButton_iq_record_customize.setText(
-        "Customize"
-    )
-    dashboard.ui.pushButton_iq_record_customize.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_iq_record_customize.setText("Customize")
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(False)
 
-    _set_iq_record_start_stop_button(
-        dashboard,
-        False,
-    )
+    _set_iq_record_start_stop_button(dashboard, False,)
 
-    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(
-        False
-    )
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(False)
 
-    dashboard.ui.label2_iq_record_status.setText(
-        "Unavailable"
-    )
+    dashboard.ui.label2_iq_record_status.setText("Unavailable")
 
-    dashboard.ui.label2_iq_record_status_artifact_id_label.setText(
-        "Artifact ID:"
-    )
+    dashboard.ui.label2_iq_record_status_artifact_id_label.setText("Artifact ID:")
 
-    _update_iq_record_artifact_button(
-        dashboard
-    )
+    _update_iq_record_artifact_button(dashboard)
 
     scroll_area = getattr(
         dashboard.ui,
@@ -11815,68 +11733,27 @@ def initialize_iq_record_controls(
                 "uiRole",
                 "parameterPanel",
             )
-            widget.style().unpolish(
-                widget
-            )
-            widget.style().polish(
-                widget
-            )
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
             widget.update()
 
-    _clear_iq_record_parameter_widgets(
-        dashboard
-    )
+    _clear_iq_record_parameter_widgets(dashboard)
 
-    update_iq_record_selected_node_gate(
-        dashboard
-    )
+    update_iq_record_selected_node_gate(dashboard)
 
 
-def update_iq_record_selected_node_gate(
-    dashboard: QtCore.QObject,
-):
+def update_iq_record_selected_node_gate(dashboard: QtCore.QObject):
     """
-    Show IQ Record controls only when an online Sensor Node is selected.
-
-    This function controls only the INNER Record stack. It must never change
-    the user's currently selected outer IQ Data page.
+    Show IQ Record controls only for an online selected Sensor Node and keep
+    the cached action catalog owned by the correct node/hardware selection.
     """
-    selected_uid = str(
-        getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    has_selected_node = bool(
-        selected_uid
-    )
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    has_selected_node = bool(selected_uid)
 
     if has_selected_node:
-        node_states = (
-            getattr(
-                dashboard,
-                "node_states",
-                {},
-            )
-            or {}
-        )
+        node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid)
 
-        node_state = node_states.get(
-            selected_uid
-        )
-
-        if (
-            isinstance(
-                node_state,
-                dict,
-            )
-            and node_state.get(
-                "connected"
-            ) is False
-        ):
+        if isinstance(node_state, dict) and node_state.get("connected") is False:
             has_selected_node = False
 
     dashboard.ui.stackedWidget_iq_record.setCurrentWidget(
@@ -11885,107 +11762,84 @@ def update_iq_record_selected_node_gate(
         else dashboard.ui.page_iq_record_no_node
     )
 
-    hardware_combo = (
-        dashboard.ui.comboBox_iq_record_hardware
-    )
-    method_combo = (
-        dashboard.ui.comboBox_iq_record_method
-    )
-    query_button = (
-        dashboard.ui.pushButton_iq_record_query
-    )
-    customize_button = (
-        dashboard.ui.pushButton_iq_record_customize
-    )
-    start_button = (
-        dashboard.ui.pushButton_iq_record_start_stop
-    )
+    hardware_combo = dashboard.ui.comboBox_iq_record_hardware
+    plugin_combo = dashboard.ui.comboBox_iq_record_plugin
+    method_combo = dashboard.ui.comboBox_iq_record_method
+    query_button = dashboard.ui.pushButton_iq_record_query
+    customize_button = dashboard.ui.pushButton_iq_record_customize
+    start_button = dashboard.ui.pushButton_iq_record_start_stop
 
-    if bool(
-        getattr(
-            dashboard,
-            "iq_record_running",
-            False,
-        )
+    catalog_node_uid = str(
+        getattr(dashboard, "iq_record_action_catalog_node_uid", "") or ""
+    ).strip()
+    node_changed = selected_uid != catalog_node_uid
+
+    if node_changed:
+        dashboard.iq_record_action_catalog_node_uid = selected_uid
+        dashboard.iq_record_action_catalog = []
+        dashboard.iq_record_filter_hardware_display = ""
+        dashboard.iq_record_action_query_pending = False
+        dashboard.iq_record_action_query_context = ""
+        dashboard.iq_record_action_query_node_uid = ""
+        dashboard.ui.pushButton_iq_record_query.setText("Query Actions")
+        _reset_iq_record_action_selection(dashboard)
+
+        if not bool(getattr(dashboard, "iq_record_running", False)):
+            dashboard.ui.label2_iq_record_status.setText(
+                "Idle" if has_selected_node else "Unavailable"
+            )
+
+    current_hardware = str(hardware_combo.currentText() or "").strip()
+    filtered_hardware = str(
+        getattr(dashboard, "iq_record_filter_hardware_display", "") or ""
+    ).strip()
+
+    if (
+        current_hardware != filtered_hardware
+        and not bool(getattr(dashboard, "iq_record_running", False))
     ):
-        hardware_combo.setEnabled(
-            False
-        )
-        method_combo.setEnabled(
-            False
-        )
-        query_button.setEnabled(
-            False
-        )
-        customize_button.setEnabled(
-            False
-        )
-        start_button.setEnabled(
-            True
-        )
+        dashboard.iq_record_customized = False
+        _clear_iq_record_parameter_widgets(dashboard)
+        _filter_iq_record_action_catalog(dashboard)
+
+    if bool(getattr(dashboard, "iq_record_running", False)):
+        hardware_combo.setEnabled(False)
+        plugin_combo.setEnabled(False)
+        method_combo.setEnabled(False)
+        query_button.setEnabled(False)
+        customize_button.setEnabled(False)
+        start_button.setEnabled(True)
         return
 
-    _set_iq_record_start_stop_button(
-        dashboard,
-        False,
-    )
+    _set_iq_record_start_stop_button(dashboard, False)
 
     hardware_combo.setEnabled(
-        has_selected_node
-        and hardware_combo.count() > 0
+        has_selected_node and hardware_combo.count() > 0
     )
-
+    plugin_combo.setEnabled(
+        has_selected_node and plugin_combo.count() > 0
+    )
     method_combo.setEnabled(
-        has_selected_node
-        and method_combo.count() > 0
+        has_selected_node and method_combo.count() > 0
     )
-
     query_button.setEnabled(
         has_selected_node
         and hardware_combo.count() > 0
+        and not bool(getattr(dashboard, "iq_record_action_query_pending", False))
     )
-
     customize_button.setEnabled(
-        has_selected_node
-        and method_combo.count() > 0
+        has_selected_node and method_combo.count() > 0
     )
-
     start_button.setEnabled(
         has_selected_node
-        and bool(
-            getattr(
-                dashboard,
-                "iq_record_customized",
-                False,
-            )
-        )
+        and bool(getattr(dashboard, "iq_record_customized", False))
     )
 
-    dashboard.ui.label2_iq_record_status.setText(
-        "Idle"
-        if has_selected_node
-        else "Unavailable"
-    )
+    current_status = str(
+        dashboard.ui.label2_iq_record_status.text() or ""
+    ).strip()
 
-    for parameter_record in (
-        getattr(
-            dashboard,
-            "iq_record_parameter_widgets",
-            {},
-        )
-        or {}
-    ).values():
-        if not isinstance(
-            parameter_record,
-            dict,
-        ):
-            continue
-
-        widget = parameter_record.get(
-            "widget"
-        )
-
-        if widget is not None:
-            widget.setEnabled(
-                has_selected_node
-            )
+    if not has_selected_node:
+        dashboard.ui.label2_iq_record_status.setText("Unavailable")
+    elif current_status in {"", "Unavailable"}:
+        dashboard.ui.label2_iq_record_status.setText("Idle")

@@ -476,22 +476,65 @@ async def flowGraphError(component: object, error=""):
     fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph Error:\n" + error)
 
 
-async def autorunPlaylistFinished(component: object):
-    """ 
-    Updates the statusbar dialog.
-    """
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][6] = "Not Running"
-    component.frontend.refreshStatusBarText()
+def autorunPlaylistQueryResults(
+    component: object, node_uid="", playlists=None, state="Idle", source="", message=""
+):
+    """Populate stored Sensor Node Autorun playlist names."""
+    SensorNodesTabSlots.handle_sensor_nodes_autorun_playlist_query_results(
+        component.frontend,
+        node_uid=node_uid,
+        playlists=playlists or [],
+        state=state,
+        source=source,
+        message=message,
+    )
 
 
-async def autorunPlaylistStarted(component: object):
-    """ 
-    Updates the statusbar dialog.
-    """
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][6] = "Running"
-    component.frontend.refreshStatusBarText()
+def autorunPlaylistLoadResults(
+    component: object,
+    node_uid="",
+    playlist_filename="",
+    playlist_dict=None,
+    success=False,
+    message="",
+):
+    """Load a stored Sensor Node Autorun playlist into the Dashboard workspace."""
+    SensorNodesTabSlots.handle_sensor_nodes_autorun_playlist_load_results(
+        component.frontend,
+        node_uid=node_uid,
+        playlist_filename=playlist_filename,
+        playlist_dict=playlist_dict or {},
+        success=success,
+        message=message,
+    )
+
+
+def autorunPlaylistSaveResults(
+    component: object,
+    node_uid="",
+    playlist_filename="",
+    success=False,
+    message="",
+):
+    """Handle completion of a Sensor Node Autorun playlist save."""
+    SensorNodesTabSlots.handle_sensor_nodes_autorun_playlist_save_results(
+        component.frontend,
+        node_uid=node_uid,
+        playlist_filename=playlist_filename,
+        success=success,
+        message=message,
+    )
+
+
+def autorunPlaylistStatus(component: object, node_uid="", state="Idle", source="", message=""):
+    """Update the Dashboard from authoritative Sensor Node Autorun state."""
+    SensorNodesTabSlots.handle_sensor_nodes_autorun_status(
+        component.frontend,
+        node_uid=node_uid,
+        state=state,
+        source=source,
+        message=message,
+    )
 
 
 async def sensorNodeFileTransferStatus(
@@ -2800,6 +2843,15 @@ def queryPluginActionsResults(
 
     frontend = component.frontend
 
+    if context.startswith("sensor_nodes.autorun"):
+        SensorNodesTabSlots.handle_sensor_nodes_autorun_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
     if context.startswith("detector.selection"):
         dialog = frontend.popups.get("DetectorSelectionDialog")
         if dialog is not None:
@@ -2907,6 +2959,16 @@ def queryPluginActionSchemaResults(
         schema["params"] = []
 
     frontend = component.frontend
+
+    if context.startswith("sensor_nodes.autorun"):
+        SensorNodesTabSlots.handle_sensor_nodes_autorun_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
 
     if context.startswith("detector.selection"):
         dialog = frontend.popups.get("DetectorSelectionDialog")
