@@ -19,7 +19,6 @@ class UI_Types:
     CustomColor, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "custom_color.ui"))
     JointPlot, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "joint_plot.ui"))
     Trim, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "trim.ui"))
-    Triggers, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "triggers.ui"))
     DetectorSelection, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "detector_selection.ui"))
     Demod, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "demod.ui"))
     Features, _ = uic.loadUiType(os.path.join(fissure.utils.UI_DIR, "features.ui"))

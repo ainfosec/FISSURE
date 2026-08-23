@@ -30,6 +30,8 @@ from fissure.Dashboard.Slots import (
     PDTabSlots,
     SensorNodesTabSlots,
     SensorNodesPluginsTabSlots,
+    SequentialActionTabSlots,
+    SingleActionTabSlots,
     StatusBarSlots,
     TopBarSlots,
     TSITabSlots,
@@ -54,105 +56,56 @@ from fissure.utils.selected_node_utils import set_selected_node_connection_state
 
 
 async def flowGraphFinished(component: object, category=""):
-    """
-    Update the Dashboard in response to a flow graph finished message.
-    """
-    # Perform Action
+    """Update the Dashboard in response to a legacy flow graph finished message."""
     if category == "PD":
         if component.frontend.ui.pushButton_pd_flow_graphs_start_stop.text() == "Stop":
-            # Toggle the Text
             component.frontend.ui.pushButton_pd_flow_graphs_start_stop.setText("Start")
-
-            # Disable Apply Button
             component.frontend.ui.pushButton_pd_flow_graphs_apply_changes.setEnabled(False)
-
-            # Update Flow Graph Status Labels
             component.frontend.ui.label2_pd_flow_graphs_status.setText("Stopped")
             component.frontend.ui.label2_pd_status_flow_graph_status.setText("Stopped")
-
-            # Update the Status Dialog               
-            # component.frontend.statusbar_text[sensor_node_id][2] = "Not Running"
             component.frontend.refreshStatusBarText()
 
     elif category == "Attack":
-        # Single-Stage
-        if component.frontend.ui.pushButton_attack_start_stop.text() == "Stop Attack":
-            # Toggle the Text
-            component.frontend.ui.pushButton_attack_start_stop.setText("Start Attack")
-
-            # Disable Apply Button
-            component.frontend.ui.pushButton_attack_apply_changes.setEnabled(False)
-
-            # Update Flow Graph Status Label
-            component.frontend.ui.label2_attack_flow_graph_status.setText("Stopped")
-
-            # Enable Attack Switching
-            component.frontend.ui.comboBox_attack_protocols.setEnabled(True)
-            component.frontend.ui.comboBox_attack_modulation.setEnabled(True)
-            component.frontend.ui.comboBox_attack_hardware.setEnabled(True)
-
-            # Enabled All Values for Editing
-            for get_row in range(component.frontend.ui.tableWidget1_attack_flow_graph_current_values.rowCount()):
-                get_value_item = component.frontend.ui.tableWidget1_attack_flow_graph_current_values.takeItem(get_row,0)
-                get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEditable)
-                get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEnabled)
-                component.frontend.ui.tableWidget1_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
-
-        # Fuzzing
+        # Fuzzing is temporarily hidden but still owns the remaining legacy
+        # attack flow-graph lifecycle until that tab is modernized.
         if component.frontend.ui.pushButton_attack_fuzzing_start.text() == "Stop Attack":
-            # Toggle the Text
-            component.frontend.ui.pushButton_attack_fuzzing_start.setText("Start Attack")  ######
+            component.frontend.ui.pushButton_attack_fuzzing_start.setText("Start Attack")
+            component.frontend.ui.pushButton_attack_fuzzing_apply_changes.setEnabled(False)
+            component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Stopped")
 
-            # Disable Apply Button
-            component.frontend.ui.pushButton_attack_fuzzing_apply_changes.setEnabled(False) #######
+            table = component.frontend.ui.tableWidget_attack_fuzzing_flow_graph_current_values
+            for row in range(table.rowCount()):
+                item = table.takeItem(row, 0)
+                if item is None:
+                    continue
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
+                table.setItem(row, 0, item)
 
-            # Update Flow Graph Status Label
-            component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Stopped") ######
-
-            # Enabled All Values for Editing
-            for get_row in range(component.frontend.ui.tableWidget_attack_fuzzing_flow_graph_current_values.rowCount()):
-                get_value_item = component.frontend.ui.tableWidget_attack_fuzzing_flow_graph_current_values.takeItem(get_row,0)
-                get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEditable)
-                get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEnabled)
-                component.frontend.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setItem(get_row,0,get_value_item)
-
-        # Update the Status Dialog
-        # component.frontend.statusbar_text[sensor_node_id][3] = "Not Running"
         component.frontend.refreshStatusBarText()
 
 
 async def flowGraphStarted(component: object, category=""):
-    """
-    Enable the stop buttons and change the status messages to indicate the flow graph is running.
-    """
-    # Perform Action
+    """Update Dashboard controls when a legacy flow graph reports that it started."""
     if category == "PD":
-        # Update Flow Graph Status Labels
         component.frontend.ui.label2_pd_flow_graphs_status.setText("Running... ")
         component.frontend.ui.pushButton_pd_flow_graphs_start_stop.setEnabled(True)
         component.frontend.ui.label2_pd_status_flow_graph_status.setText("Running... ")
 
-        # Update the Status Dialog
         if component.frontend.active_sensor_node > -1:
-            component.frontend.statusbar_text[component.frontend.active_sensor_node][2] = 'Running Flow Graph... ' + str(component.frontend.ui.textEdit_pd_flow_graphs_filepath.toPlainText()).rsplit("/",1)[1]
+            filepath = str(component.frontend.ui.textEdit_pd_flow_graphs_filepath.toPlainText())
+            component.frontend.statusbar_text[component.frontend.active_sensor_node][2] = (
+                "Running Flow Graph... " + filepath.rsplit("/", 1)[-1]
+            )
             component.frontend.refreshStatusBarText()
 
     elif category == "Attack":
-        # Single-Stage
-        if component.frontend.ui.tabWidget_attack_attack.currentIndex() == 0:
-            # Update Flow Graph Status Label
-            component.frontend.ui.label2_attack_flow_graph_status.setText("Running...")
-            component.frontend.ui.pushButton_attack_start_stop.setEnabled(True)
+        # The remaining legacy attack runner is retained only for the hidden
+        # Fuzzing workflow until Fuzzing is converted to generic actions.
+        component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Running...")
+        component.frontend.ui.pushButton_attack_fuzzing_start.setEnabled(True)
 
-        # Fuzzing
-        elif component.frontend.ui.tabWidget_attack_attack.currentIndex() == 2:
-            # Update Flow Graph Status Label
-            component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Running...")
-            component.frontend.ui.pushButton_attack_fuzzing_start.setEnabled(True)
-
-        # Update the Status Dialog
         if component.frontend.active_sensor_node > -1:
-            component.frontend.statusbar_text[component.frontend.active_sensor_node][3] = 'Running Flow Graph...'
+            component.frontend.statusbar_text[component.frontend.active_sensor_node][3] = "Running Flow Graph..."
             component.frontend.refreshStatusBarText()
 
 
@@ -445,34 +398,8 @@ async def flowGraphFinishedSniffer(component: object, category=""):
     component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
 
 
-async def multiStageAttackFinished(component: object):
-    """ 
-    Changes the pushbuttons and labels upon receiving a message from the Sensor Node.
-    """       
-    # Change the Pushbuttons and Labels
-    component.frontend.ui.pushButton_attack_multi_stage_start.setText("Start")
-    component.frontend.ui.label2_attack_multi_stage_status.setText("Not Running")
-
-    # Update the Status Dialog
-    if component.frontend.active_sensor_node > -1:
-        component.frontend.statusbar_text[component.frontend.active_sensor_node][3] = "Not Running"
-        component.frontend.refreshStatusBarText()
-
-    # Enable Load/Save
-    component.frontend.ui.pushButton_attack_multi_stage_load.setEnabled(True)
-    component.frontend.ui.pushButton_attack_multi_stage_save.setEnabled(True)
-
-
 async def flowGraphError(component: object, error=""):
-    """ 
-    Creates a message box with an error message upon flow graph error.
-    """
-    # Enable Items
-    component.frontend.ui.comboBox_attack_protocols.setEnabled(True)
-    component.frontend.ui.comboBox_attack_modulation.setEnabled(True)
-    component.frontend.ui.comboBox_attack_hardware.setEnabled(True)
-
-    # Open Window
+    """Display a legacy flow-graph error returned by a Sensor Node."""
     fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph Error:\n" + error)
 
 
@@ -910,14 +837,6 @@ async def libraryUpdateFinished(component: object):
     component.frontend.ui.comboBox_pd_dissectors_protocol.clear()
     component.frontend.ui.comboBox_pd_dissectors_protocol.addItems(sorted(protocols_with_packet_types))
 
-    # Attack Tab Protocols
-    component.frontend.ui.comboBox_attack_protocols.clear()
-    protocols_with_attacks = []
-    for p in protocols:
-        if len(fissure.utils.library.getAttackNames(component.library, p, fissure.utils.get_library_version())) > 0:
-            protocols_with_attacks.append(p)
-    component.frontend.ui.comboBox_attack_protocols.addItems(sorted(protocols_with_attacks))
-
     # Gallery Protocols
     component.frontend.ui.comboBox_library_gallery_protocol.clear()
     protocols_with_images = []
@@ -925,11 +844,6 @@ async def libraryUpdateFinished(component: object):
         if len(component.frontend.findGalleryImages(p)) > 0:
             protocols_with_images.append(p)
     component.frontend.ui.comboBox_library_gallery_protocol.addItems(sorted(protocols_with_images))
-
-    component.frontend.ui.treeWidget_attack_attacks.clear()
-    component.frontend.populateAttackTreeWidget()
-    component.frontend.ui.treeWidget_attack_attacks.expandAll()
-    AttackTabSlots._slotAttackProtocols(component.frontend)
 
     # Refresh Browse Table
     LibraryTabSlots._slotLibraryBrowseChanged(component.frontend)
@@ -968,9 +882,6 @@ async def libraryUpdateFinished(component: object):
 
     # Update All Flow Graphs in Demodulation Tab
     PDTabSlots._slotPD_DemodHardwareChanged(component.frontend)
-
-    # Create a Dialog Window
-    # fissure.Dashboard.UI_Components.Qt5.errorMessage("Library updated successfully.")
 
 
 async def findEntropyReturn(component: object, ents):
@@ -2065,6 +1976,20 @@ async def detectionReturn(component: object, detection: dict):
             f"Failed to process Archive Replay detector Detection: {exc}"
         )
 
+    try:
+        SingleActionTabSlots.handle_single_action_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to process Single Action detector Detection: {exc}"
+        )
+
+    try:
+        SequentialActionTabSlots.handle_sequential_actions_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to process Sequential Actions detector Detection: {exc}"
+        )
+
 
 async def dashboardCoT_Message(component: object, raw_xml: str):
     """
@@ -2096,6 +2021,10 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     Also updates the selected-node top card when the selected node times out
     or reconnects, and mirrors that connection state into an existing
     Tactical node record.
+
+    Heartbeat/status updates do not rebuild selected-node hardware controls.
+    Hardware-dependent controls and gates are refreshed only when the selected
+    node's connection state actually changes.
     """
     if not node_uid:
         return
@@ -2108,6 +2037,18 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     if not hasattr(frontend, "node_states"):
         frontend.node_states = {}
 
+    previous_node_state = frontend.node_states.get(node_uid, {}) or {}
+    previous_connected = (
+        previous_node_state.get("connected")
+        if isinstance(previous_node_state, dict)
+        else None
+    )
+    connected = bool(node.get("connected", False))
+    connection_state_changed = (
+        previous_connected is None
+        or bool(previous_connected) != connected
+    )
+
     frontend.node_states[node_uid] = node
 
     tactical_nodes = getattr(frontend, "tactical_nodes", None)
@@ -2118,7 +2059,6 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     )
 
     if isinstance(tactical_node, dict):
-        connected = bool(node.get("connected", False))
         reported_status = str(node.get("status") or "").strip()
 
         tactical_node["connected"] = connected
@@ -2164,8 +2104,6 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     ) if selected_uid and node_uid_text else False
 
     if selected_node_changed:
-        connected = bool(node.get("connected", False))
-
         frontend.selected_node_ip = (
             node.get("node_ip_address")
             or node.get("ip")
@@ -2181,57 +2119,61 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         if hasattr(frontend, "selected_tactical_node_uid"):
             TacticalTabSlots._updateTacticalNodeInfoFrameState(frontend)
 
-        try:
-            frontend.configureSelectedNodeHardware()
-        except Exception as e:
-            component.logger.debug(
-                f"Could not refresh selected-node hardware after node state update: {e}"
-            )
+        if connection_state_changed:
+            try:
+                frontend.configureSelectedNodeHardware()
+            except Exception as e:
+                component.logger.debug(
+                    f"Could not refresh selected-node hardware after connection-state change: {e}"
+                )
 
-        try:
-            TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                f"Could not update unified TSI Detector selected-node gate after node state update: {e}"
-            )
+            try:
+                TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update unified TSI Detector selected-node gate "
+                    f"after connection-state change: {e}"
+                )
 
-        try:
-            TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                f"Could not update TSI Conditioner selected-node gate after node state update: {e}"
-            )
-        
-        try:
-            TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                f"Could not update TSI Feature Extractor selected-node gate "
-                f"after node state update: {e}"
-            )
+            try:
+                TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update TSI Conditioner selected-node gate "
+                    f"after connection-state change: {e}"
+                )
 
-        try:
-            IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                "Could not update IQ Record selected-node gate "
-            )
-        
-        try:
-            ArchiveTabSlots.update_archive_replay_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                "Could not update Archive Replay selected-node gate "
-                f"after node state update: {e}"
-            )
+            try:
+                TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update TSI Feature Extractor selected-node gate "
+                    f"after connection-state change: {e}"
+                )
 
-        try:
-            SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
-        except Exception as e:
-            component.logger.debug(
-                "Could not update Sensor Nodes File Navigation selected-node gate "
-                f"after node state update: {e}"
-            )
+            try:
+                IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update IQ Record selected-node gate "
+                    f"after connection-state change: {e}"
+                )
+
+            try:
+                ArchiveTabSlots.update_archive_replay_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update Archive Replay selected-node gate "
+                    f"after connection-state change: {e}"
+                )
+
+            try:
+                SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
+            except Exception as e:
+                component.logger.debug(
+                    "Could not update Sensor Nodes File Navigation selected-node gate "
+                    f"after connection-state change: {e}"
+                )
 
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
@@ -2254,7 +2196,7 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         component.logger.debug(
             f"Could not update TSI Conditioner status: {e}"
         )
-    
+
     try:
         IQDataTabSlots.update_iq_playback_status_from_selected_node(
             frontend,
@@ -2286,18 +2228,26 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         )
 
     try:
-        TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+        await SingleActionTabSlots.update_single_action_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
     except Exception as e:
         component.logger.debug(
-            f"Could not update unified TSI Detector selected-node gate: {e}"
+            f"Could not update Single Action status from selected node: {e}"
         )
 
     try:
-        IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+        await SequentialActionTabSlots.update_sequential_actions_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
     except Exception as e:
         component.logger.debug(
-            "Could not update IQ Record selected-node gate "
-        )
+            f"Could not update Sequential Actions status from selected node: {e}"
+        )        
 
     component.logger.debug(
         f"nodeStateUpdate: {node_uid} "
@@ -2852,6 +2802,25 @@ def queryPluginActionsResults(
         )
         return
 
+    if context.startswith("targets_actions.single_action"):
+            SingleActionTabSlots.handle_single_action_action_query_results(
+                frontend,
+                node_uid=node_uid,
+                context=context,
+                actions=actions,
+            )
+            return
+
+    if context.startswith("targets_actions.sequential_action.selection"):
+        dialog = frontend.popups.get("SequentialActionSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_query_results(
+                node_uid=node_uid,
+                context=context,
+                actions=actions,
+            )
+        return
+    
     if context.startswith("detector.selection"):
         dialog = frontend.popups.get("DetectorSelectionDialog")
         if dialog is not None:
@@ -2968,6 +2937,27 @@ def queryPluginActionSchemaResults(
             node_uid=node_uid,
             parameters=schema.get("params", []),
         )
+        return
+    
+    if context.startswith("targets_actions.single_action"):
+        SingleActionTabSlots.handle_single_action_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("targets_actions.sequential_action.selection"):
+        dialog = frontend.popups.get("SequentialActionSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_schema(
+                plugin_name=plugin_name,
+                action_name=action_name,
+                node_uid=node_uid,
+                parameters=schema.get("params", []),
+            )
         return
 
     if context.startswith("detector.selection"):

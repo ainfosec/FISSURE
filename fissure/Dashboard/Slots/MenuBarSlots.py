@@ -326,26 +326,33 @@ def _slotMenuHelpUserManualClicked():
 
 
 def _slotMenuOptionsClicked(dashboard: QtWidgets.QMainWindow):
-    """Opens the Options dialog for the current tab."""
-    dlg = fissure.Dashboard.UI_Components.Qt5.OptionsDialog(
-        dashboard,
-        opening_tab=dashboard.ui.tabWidget.tabText(dashboard.ui.tabWidget.currentIndex()),
-        settings_dictionary=dashboard.backend.settings,
-    )
-    dlg.show()
-    dlg.exec_()
+        """Opens the Options dialog for the current workbench."""
+        current_tab = dashboard.ui.tabWidget.currentWidget()
 
-    # OK Clicked  # Update how options get saved/read
-    # get_value = dlg.return_value  # No longer needed, async messages sent on accept()
-    # if len(get_value) > 0:
-        # dashboard.backend.settings = dlg.settings_dictionary
+        if current_tab is dashboard.ui.tab_tsi:
+            current_signal_tab = dashboard.ui.tabWidget_tsi.currentWidget()
+            if current_signal_tab is dashboard.ui.tab_iq_data:
+                opening_tab = "IQ Data"
+            elif current_signal_tab is dashboard.ui.tabWidget_protocol.parentWidget():
+                opening_tab = "PD"
+            else:
+                opening_tab = "TSI"
+        elif current_tab is dashboard.ui.tab_attack:
+            opening_tab = "Attack"
+        elif current_tab is dashboard.ui.tab_library:
+            if dashboard.ui.tabWidget_library.currentWidget() is dashboard.ui.tabWidget_archive.parentWidget():
+                opening_tab = "Archive"
+            else:
+                opening_tab = "Library"
+        else:
+            opening_tab = dashboard.ui.tabWidget.tabText(dashboard.ui.tabWidget.currentIndex())
 
-        # # Update Settings Across Components
-        # msg = {
-        # MessageFields.IDENTIFIER: Identifiers.DASHBOARD,
-        # MessageFields.MESSAGE_NAME: "Update FISSURE Settings"
-        # }
-        # self.hiprfisr_socket.send_msg(MessageTypes.COMMANDS, **msg)
+        dlg = fissure.Dashboard.UI_Components.Qt5.OptionsDialog(
+            dashboard,
+            opening_tab=opening_tab,
+            settings_dictionary=dashboard.backend.settings,
+        )
+        dlg.show()
 
 
 @QtCore.pyqtSlot()
@@ -5413,31 +5420,7 @@ async def _slotMenuDemoAttackAllClicked(dashboard: QtWidgets.QMainWindow):
 
 
 @qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoAttackSingleStageTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoAttackMultiStageTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
 async def _slotMenuDemoAttackFuzzingTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoAttackHistoryTabClicked(dashboard: QtWidgets.QMainWindow):
     """
     Executes the demo script and logs its progress.
     """

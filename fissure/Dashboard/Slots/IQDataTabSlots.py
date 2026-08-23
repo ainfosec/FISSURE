@@ -5629,9 +5629,9 @@ def _slotIQ_DemodClicked(dashboard: QtCore.QObject):
     # OK Clicked
     elif len(get_value) > 0:
         dashboard.ui.plainTextEdit_pd_bit_viewer_bits.setPlainText(get_value)
-        dashboard.ui.tabWidget.setCurrentIndex(2)
-        dashboard.ui.tabWidget_protocol.setCurrentIndex(3)
-        
+        dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_tsi)
+        dashboard.ui.tabWidget_tsi.setCurrentWidget(dashboard.ui.tabWidget_protocol.parentWidget())
+        dashboard.ui.tabWidget_protocol.setCurrentWidget(dashboard.ui.tab_pd_bit_viewer)
     else:
         pass
 
@@ -8896,7 +8896,7 @@ def handle_iq_playback_action_schema(
             QtWidgets.QLabel,
         ):
             widget.setObjectName(
-                "label_iq_playback_parameter_info"
+                "label2_iq_playback_parameter_info"
             )
 
         dashboard.iq_playback_parameter_widgets[
@@ -8915,7 +8915,7 @@ def handle_iq_playback_action_schema(
             content,
         )
         label.setObjectName(
-            "label_iq_playback_parameter"
+            "label2_iq_playback_parameter"
         )
         label.setWordWrap(
             True
@@ -10859,7 +10859,7 @@ def handle_iq_inspection_action_schema(
             QtWidgets.QLabel,
         ):
             widget.setObjectName(
-                "label_iq_inspection_parameter_info"
+                "label2_iq_inspection_parameter_info"
             )
 
         dashboard.iq_inspection_parameter_widgets[
@@ -10878,7 +10878,7 @@ def handle_iq_inspection_action_schema(
             content,
         )
         label.setObjectName(
-            "label_iq_inspection_parameter"
+            "label2_iq_inspection_parameter"
         )
         label.setWordWrap(
             True

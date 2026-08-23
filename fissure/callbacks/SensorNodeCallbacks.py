@@ -327,42 +327,6 @@ async def physicalFuzzingStop(component: object):
     component.physical_fuzzing_stop_event = True
 
 
-async def multiStageAttackStart(
-    component: object,
-    filenames=[],
-    variable_names=[],
-    variable_values=[],
-    durations=[],
-    repeat=False,
-    file_types=[],
-    autorun_index=0,
-    trigger_values=[]
-):
-    """
-    Starts a new thread for running two flow graphs.
-    A new thread is created to allow the Sensor Node to still perform normal
-    functionality while waiting for an attack to finish.
-    """
-    # Use the Function that is Called Frequently in SensorNode.py
-    if len(trigger_values) == 0:
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.multiStageAttackStart, filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index)
-    else:
-        # Make a new Trigger Thread
-        fissure_event_values = [filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index]
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.triggerStart, trigger_values, "Multi-Stage Attack", fissure_event_values, autorun_index)
-    await asyncio.sleep(0.1)
-
-
-async def multiStageAttackStop(component: object, autorun_index=0):
-    """Stops a multi-stage attack already in progress"""
-    # Use the Function that is Called Frequently in SensorNode.py
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.multiStageAttackStop, autorun_index)
-
-
 async def attackFlowGraphStart(
     component: object,
     flow_graph_filepath="",
@@ -370,33 +334,24 @@ async def attackFlowGraphStart(
     variable_values=[],
     file_type="",
     run_with_sudo=False,
-    autorun_index=0,
-    trigger_values=[]
 ):
-    """
-    Runs the flow graph with the specified file path.
-    """
-    # Use the Function that is Called Frequently in SensorNode.py
-    if len(trigger_values) == 0:
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.attackFlowGraphStart, flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo, autorun_index)
-    else:
-        # Run Event and Do Not Block
-        fissure_event_values = [flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo, autorun_index]
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.triggerStart, trigger_values, "Single-Stage Attack", fissure_event_values, autorun_index)
+    """Run the remaining legacy Fuzzing flow graph."""
+    loop = asyncio.get_event_loop()
+    loop.run_in_executor(
+        None,
+        component.attackFlowGraphStart,
+        flow_graph_filepath,
+        variable_names,
+        variable_values,
+        file_type,
+        run_with_sudo,
+    )
     await asyncio.sleep(0.1)
 
 
-async def attackFlowGraphStop(component: object, parameter="", autorun_index=0):
-    """
-    Stop the currently running attack flow graph.
-    """
-    # Use the Function that is Called Frequently in SensorNode.py
-    component.attackFlowGraphStop(parameter, autorun_index)
-    # loop = asyncio.get_event_loop()
-    # loop.run_in_executor(None, component.attackFlowGraphStop, parameter, autorun_index)
+async def attackFlowGraphStop(component: object, parameter=""):
+    """Stop the remaining legacy Fuzzing flow graph."""
+    component.attackFlowGraphStop(parameter)
 
 
 async def iqFlowGraphStart(

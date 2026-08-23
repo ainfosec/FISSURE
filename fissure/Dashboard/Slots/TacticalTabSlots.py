@@ -2301,20 +2301,21 @@ def _slotTacticalEcosystemClearNodeRowsClicked(
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalTargetsRefreshTargetsClicked(dashboard):
-    """
-    Requests the current target list from the hub.
-    """
+    """Requests the current Target list from the Hub."""
+    from fissure.Dashboard.Slots import TargetsTabSlots
+
     try:
-        dashboard.tactical_targets = {}
-
-        dashboard.ui.tableWidget_tactical_targets.setRowCount(0)
-
-        await dashboard.backend.tacticalTargetsRefreshTargets()
-
-    except Exception as e:
-        dashboard.logger.error(
-            f"[Tactical] Failed requesting target list: {e}"
+        dashboard.pending_targets_actions_target_id = getattr(
+            dashboard, "selected_targets_actions_target_id", None
         )
+        dashboard.selected_targets_actions_target_id = None
+        dashboard.tactical_targets = {}
+        dashboard.ui.tableWidget_tactical_targets.setRowCount(0)
+        clear_tactical_targets_details(dashboard)
+        TargetsTabSlots.refresh_targets_view(dashboard)
+        await dashboard.backend.tacticalTargetsRefreshTargets()
+    except Exception as e:
+        dashboard.logger.error(f"[Tactical] Failed requesting target list: {e}")
 
 
 def update_tactical_target_row(
@@ -3302,49 +3303,39 @@ def _slotTacticalTargetsPlotAllClicked(dashboard: QtCore.QObject):
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalTargetsDeleteRowClicked(dashboard: QtCore.QObject):
-    table = dashboard.ui.tableWidget_tactical_targets
+    from fissure.Dashboard.Slots import TargetsTabSlots
 
+    table = dashboard.ui.tableWidget_tactical_targets
     selected_items = table.selectedItems()
     if not selected_items:
         return
 
     row = selected_items[0].row()
-
     id_item = table.item(row, 0)
     if id_item is None:
         return
 
     target_id = id_item.data(QtCore.Qt.UserRole) or id_item.text()
-
-    # Remove plotted marker + persistent map overlay record
     dashboard.tactical_map.remove_target(target_id)
-
-    # Remove dashboard target record
     dashboard.tactical_targets.pop(target_id, None)
-
-    # Remove row
     table.removeRow(row)
 
-    # Clear details if deleting selected target
     if dashboard.selected_tactical_target_id == target_id:
         clear_tactical_targets_details(dashboard)
+
+    TargetsTabSlots.refresh_targets_view(dashboard)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalTargetsClearRowsClicked(dashboard: QtCore.QObject):
-    table = dashboard.ui.tableWidget_tactical_targets
+    from fissure.Dashboard.Slots import TargetsTabSlots
 
-    # Clear plotted markers + persistent map overlay records
     dashboard.tactical_map.clear_target_records()
-
-    # Clear dashboard target records
     dashboard.tactical_targets.clear()
-
-    # Clear table
-    table.setRowCount(0)
-
-    # Clear details panel
+    dashboard.ui.tableWidget_tactical_targets.setRowCount(0)
     clear_tactical_targets_details(dashboard)
+    TargetsTabSlots.refresh_targets_view(dashboard)
+
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

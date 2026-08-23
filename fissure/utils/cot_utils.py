@@ -4,6 +4,7 @@ import json
 import xml.etree.ElementTree as ET
 from fissure.Dashboard.Slots import (
     TacticalTabSlots,
+    TargetsTabSlots,
     IQDataTabSlots,
     TSITabSlots,
 )
@@ -70,6 +71,7 @@ def parse_cot_xml(raw_xml):
         "rssi_dbm": None,
         "last_observation_time": None,
         "source_soi_id": None,
+        "target_notes": None,
 
         "soi_node_uid": None,
         "soi_id": None,
@@ -257,6 +259,12 @@ def parse_cot_xml(raw_xml):
             cot_message["source_soi_id"] = (
                 fissure_target.findtext(
                     "source_soi_id"
+                )
+            )
+
+            cot_message["target_notes"] = (
+                fissure_target.findtext(
+                    "notes"
                 )
             )
 
@@ -716,41 +724,31 @@ def handle_tactical_node_message(dashboard, cot_message):
 
 
 def handle_tactical_target_message(dashboard, cot_message):
-    frontend = dashboard.frontend
+        frontend = dashboard.frontend
 
-    target_record = cot_to_tactical_target_record(cot_message)
-    if not target_record:
-        return
+        target_record = cot_to_tactical_target_record(cot_message)
+        if not target_record:
+            return
 
-    if not hasattr(frontend, "tactical_targets"):
-        frontend.tactical_targets = {}
+        if not hasattr(frontend, "tactical_targets"):
+            frontend.tactical_targets = {}
 
-    if not hasattr(frontend, "selected_tactical_target_id"):
-        frontend.selected_tactical_target_id = None
+        if not hasattr(frontend, "selected_tactical_target_id"):
+            frontend.selected_tactical_target_id = None
 
-    target_id = target_record["target_id"]
+        target_id = target_record["target_id"]
+        is_new_target = target_id not in frontend.tactical_targets
 
-    is_new_target = target_id not in frontend.tactical_targets
+        frontend.tactical_targets[target_id] = target_record
 
-    frontend.tactical_targets[target_id] = target_record
+        TacticalTabSlots.update_tactical_target_row(frontend, target_record)
+        TargetsTabSlots.update_target_record(frontend, target_record)
 
-    TacticalTabSlots.update_tactical_target_row(
-        frontend,
-        target_record,
-    )
+        if is_new_target and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked():
+            TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
 
-    if (
-        is_new_target
-        and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked()
-    ):
-        TacticalTabSlots.plot_tactical_target(
-            frontend,
-            target_record,
-            zoom=False,
-        )
-
-    if frontend.selected_tactical_target_id == target_id:
-        TacticalTabSlots._slotTacticalTargetsRowSelectionChanged(frontend)
+        if frontend.selected_tactical_target_id == target_id:
+            TacticalTabSlots._slotTacticalTargetsRowSelectionChanged(frontend)
 
 
 def cot_to_tactical_target_record(
@@ -910,6 +908,11 @@ def cot_to_tactical_target_record(
         "source_soi_id":
             cot_message.get(
                 "source_soi_id",
+                "",
+            ),
+        "notes":
+            cot_message.get(
+                "target_notes",
                 "",
             ),
 

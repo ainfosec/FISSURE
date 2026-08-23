@@ -166,15 +166,6 @@ def _slotAttackImportAttackTypeChanged(dashboard: QtCore.QObject):
         dashboard.ui.label2_library_attacks_modulation.setHidden(False)
         dashboard.ui.comboBox_library_attacks_modulation.setHidden(False)
 
-    # elif dashboard.ui.comboBox_library_attacks_attack_type.currentText() == "Multi-Stage":
-        # dashboard.ui.comboBox_library_attacks_subcategory.addItems(["Multi-Stage"])
-        # dashboard.ui.label2_library_attacks_new_name.setHidden(True)
-        # dashboard.ui.label2_library_attacks_new_name2.setHidden(True)
-        # dashboard.ui.textEdit_library_attacks_new_name.setHidden(True)
-        # dashboard.ui.label2_library_attacks_file_select.setText(".msa File:")
-        # dashboard.ui.label2_library_attacks_modulation.setHidden(True)
-        # dashboard.ui.comboBox_library_attacks_modulation.setHidden(True)
-
     # Reset State
     dashboard.ui.label_library_attacks_filepath.setText("")
     dashboard.ui.textEdit_library_attacks_name.setPlainText("")
@@ -464,14 +455,10 @@ def _slotLibraryAddAttacksSelectClicked(dashboard: QtCore.QObject):
     directory = ""
     dialog_text = ""
     dialog_filter = ""
-    if dashboard.ui.comboBox_library_attacks_attack_type.currentText() == "Multi-Stage":
-        directory = os.path.join(fissure.utils.FISSURE_ROOT, "Multi-Stage Attack Files")
-        dialog_text = "Select Multi-Stage Attack File..."
-        dialog_filter = "Multi-Stage Attack Files (*.msa)"
-    else:
-        directory = fissure.utils.FISSURE_ROOT
-        dialog_text = "Select Python File..."
-        dialog_filter = "Python Files (*.py)"
+
+    directory = fissure.utils.FISSURE_ROOT
+    dialog_text = "Select Python File..."
+    dialog_filter = "Python Files (*.py)"
 
     fpath = str(QtWidgets.QFileDialog.getOpenFileName(None,dialog_text, directory, filter=dialog_filter)[0])
 
@@ -715,10 +702,6 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
             await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Attack needs to end with ".py" or ".msa"')
             return
         
-        # Multi-Stage Category Name
-        if get_attack_type == "Multi-Stage":  # Multi-Stage and Fuzzing types not supported yet
-            get_tree_parent = "Multi-Stage"
-
         # Get Modulation Type
         if get_attack_type == "Single-Stage":
             get_modulation = str(dashboard.ui.comboBox_library_attacks_modulation.currentText())

@@ -263,6 +263,18 @@ AIS has published several articles highlighting FISSURE’s applications, update
 
 - [FISSURE Capabilities (Updated: 11Sep24)](https://docs.google.com/viewer?url=https://raw.githubusercontent.com/ainfosec/FISSURE/Python3/docs/Help/FISSURE_Capabilities.pdf)
 
+FISSURE provides a framework for RF sensing, signal analysis, target management, action execution, automation, and distributed Sensor Node operations.
+
+- **Tactical Operations** – Monitor Sensor Nodes, detections, SOIs, Targets, artifacts, geolocation data, and TAK-based situational awareness.
+- **Signal Analysis** – Detect, record, replay, inspect, condition, classify, and analyze RF/IQ data and protocols.
+- **Targets & Actions** – Maintain Target context, run configurable plugin actions, build timed/repeating action sequences, and optionally gate actions or sequences on detections.
+- **Sensor Nodes & Automation** – Manage remote nodes, plugins, files, artifacts, operations, and boot/offline Autorun playlists.
+- **Library & Archive** – Browse signal/protocol knowledge, replay archived IQ data, build datasets, and use packet/protocol analysis utilities.
+- **Additional Tools** – Packet crafting, fuzzing/vulnerability-testing capabilities, logging, hardware abstraction, GNU Radio integration, and dark/custom themes.
+
+FISSURE is currently migrating older workflows into the plugin/action architecture while preserving useful existing capabilities.
+
+<!--
 <table style="padding:10px">
   <tr>
     <td><img src="/docs/Icons/README/detector.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Signal Detector</b></i></small></dt></td>
@@ -289,6 +301,7 @@ AIS has published several articles highlighting FISSURE’s applications, update
     <td><img src="/docs/Icons/README/dark_mode.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Dark and Custom Themes</b></i></small></dt></td>
   </tr>  
 </table>
+-->
 
 ## Hardware
 
@@ -411,7 +424,7 @@ Install FISSURE per usual on a general purpose computer. Install FISSURE on the 
 - hiprfisr_ip_address: (the HIPRFISR/hub IP address the sensor node connects to)
 - hardware: (fill with your hardware specifics) 
 
-Change the autorun field from false to true to run the default Autorun playlist when the Sensor Node starts. Autorun is the Sensor Node’s unattended execution system for running a saved sequence of plugin actions without requiring the Dashboard to remain connected. Playlists can include per-action timing and optional detector gating.
+Change the `autorun` field from `false` to `true` to run the default Autorun playlist when the Sensor Node starts. Autorun is the Sensor Node’s unattended execution system for running a saved sequence of plugin actions without requiring the Dashboard to remain connected. Playlists can include per-action timing and optional detector gating.
 
 The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the "server.key_secret" and "client.key" files while the client needs the "client.key_secret" and "server.key" files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.
 

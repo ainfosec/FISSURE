@@ -3,6 +3,7 @@ from fissure.Dashboard.Backend import DashboardBackend
 from fissure.Dashboard.Slots import (
     ArchiveTabSlots,
     AttackTabSlots,
+    TargetsTabSlots,
     TacticalTabSlots,
     DashboardSlots,
     IQDataTabSlots,
@@ -13,6 +14,8 @@ from fissure.Dashboard.Slots import (
     PDTabSlots,
     SensorNodesTabSlots,
     SensorNodesPluginsTabSlots,
+    SequentialActionTabSlots,
+    SingleActionTabSlots,
     StatusBarSlots,
     TopBarSlots,
     TSITabSlots,
@@ -151,6 +154,8 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Plugins")
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Operations")
         self.remove_tab_by_text(self.ui.tabWidget_library, "Plugin Manager")
+        self.remove_tab_by_text(self.ui.tabWidget_attack_attack, "Fuzzing")
+        self.ui.pushButton_sensor_nodes_exploit_run.setVisible(False)
 
         # Load FISSURE Logo
         self.ui.label_diagram.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "logo.png")))
@@ -222,14 +227,8 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Enable the Tabs
         self.ui.tabWidget.setEnabled(True)
-        self.ui.tabWidget.setTabEnabled(1,True)
-        self.ui.tabWidget.setTabEnabled(2,True)
-        self.ui.tabWidget.setTabEnabled(3,True)
-        self.ui.tabWidget.setTabEnabled(4,True)
-        self.ui.tabWidget.setTabEnabled(5,True)
-        self.ui.tabWidget.setTabEnabled(6,True)
-        self.ui.tabWidget.setTabEnabled(7,True)
-        self.ui.tabWidget.setTabEnabled(8,True)
+        for index in range(self.ui.tabWidget.count()):
+            self.ui.tabWidget.setTabEnabled(index, True)
 
         # Show the Dialog
         self.show()
@@ -771,52 +770,21 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def __init_Attack__(self):
-        """
-        Initializes Attack Tabs on Dashboard launch.
-        """
-        # #### Attack #####
-        self.ui.textEdit_attack_fuzzing_seed.setPlainText("0")
-        self.ui.textEdit_attack_fuzzing_interval.setPlainText("1")
-        self.ui.textEdit_fuzzing_update_period.setPlainText("1")
+        """Initialize Targets & Actions and Packet Crafter workflows."""
+        TargetsTabSlots.initialize_targets_tab(self)
+        SingleActionTabSlots.initialize_single_action_tab(self)
+        SequentialActionTabSlots.initialize_sequential_actions_tab(self)
 
-        # Get Protocols
-        protocols = fissure.utils.library.getProtocols(self.backend.library)
-
-        # Load Protocols into Combobox
-        self.ui.comboBox_attack_protocols.clear()
-        protocols_with_attacks = []
-        for p in protocols:
-            if len(fissure.utils.library.getAttackNames(self.backend.library, p, fissure.utils.get_library_version())) > 0:
-                protocols_with_attacks.append(p)
-        self.ui.comboBox_attack_protocols.addItems(sorted(protocols_with_attacks))
-
-        # Configure Attack TreeWidget
-        self.populateAttackTreeWidget()
-        self.ui.treeWidget_attack_attacks.expandAll()
-        AttackTabSlots._slotAttackProtocols(self)
-
-        # Select Something in Attack Tree Widget
-        self.ui.treeWidget_attack_attacks.setCurrentItem(self.ui.treeWidget_attack_attacks.itemAt(0, 0))
-
-        # For Applying Attack Changes
-        self.attack_flow_graph_variables = None
-
-        # Guess Interface Index
-        self.guess_index_table = 0
-
-        # List of Dynamic Tables
-        self.table_list = []
-
-        # #### Attack - Packet Crafter #####
+        # Packet Crafter
         self.ui.textEdit_packet_scapy_interval.setPlainText(".1")
         self.ui.textEdit_packet_number_of_messages.setPlainText("1")
 
-        # Load Protocols into Combobox
+        protocols = fissure.utils.library.getProtocols(self.backend.library)
         self.ui.comboBox_packet_protocols.clear()
         protocols_with_packet_types = []
-        for p in protocols:
-            if len(fissure.utils.library.getPacketTypes(self.backend.library, p)) > 0:
-                protocols_with_packet_types.append(p)
+        for protocol in protocols:
+            if len(fissure.utils.library.getPacketTypes(self.backend.library, protocol)) > 0:
+                protocols_with_packet_types.append(protocol)
         self.ui.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
         self.scapy_data = None
 
@@ -1581,30 +1549,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.comboBox_pd_demod_hardware.addItems(get_sensor_node_hardware)
 
 
-    def configureAttackHardware(self):
-        """
-        Configures Attack after new selected sensor node selection.
-        """
-        self.ui.comboBox_attack_hardware.clear()
-
-        if not self.selected_node_uid:
-            return
-
-        get_sensor_node_hardware = (
-            fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                self,
-                "attack",
-                include_computer=True,
-            )
-        )
-
-        self.ui.comboBox_attack_hardware.addItems(get_sensor_node_hardware)
-
-        # Prefer first actual hardware item after Computer when available.
-        if len(get_sensor_node_hardware) > 1:
-            self.ui.comboBox_attack_hardware.setCurrentIndex(1)
-
-
     def configureIQ_Hardware(self):
         """
         Configure IQ hardware/source selectors for the selected Sensor Node.
@@ -1852,11 +1796,12 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureSelectedNodeHardware(self):
         """
-        Refreshes hardware combo boxes across tabs from selected_node_settings.
+        Refreshes hardware combo boxes and selected-node page gates.
         """
         self.configureTSI_Hardware()
         self.configurePD_Hardware()
-        self.configureAttackHardware()
+        SingleActionTabSlots.update_single_action_selected_node_gate(self)
+        SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
         self.configureIQ_Hardware()
         self.configureArchiveHardware()
         self.configureSensorNodeHardware()
@@ -1864,11 +1809,15 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureHighThroughputWidgets(self):
         """Refresh Dashboard controls for a high-throughput Sensor Node connection."""
+        SingleActionTabSlots.update_single_action_selected_node_gate(self)
+        SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
         SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
 
     def configureLowThroughputWidgets(self):
         """Refresh Dashboard controls for a low-throughput Sensor Node connection."""
+        SingleActionTabSlots.update_single_action_selected_node_gate(self)
+        SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
         SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
 
@@ -2120,51 +2069,6 @@ class Dashboard(QtWidgets.QMainWindow):
             item.addChild(child)
     
 
-    def populateAttackTreeWidget(self):
-        """
-        This adds the complete list of attacks to the Attack TreeWidget.
-        """
-        # Create all items and store them in a dictionary
-        items_dict = {}
-        get_attack_categories = fissure.utils.library.getAttackCategories(self.backend.library)
-        no_bold_list = ["New Multi-Stage", "Variables"]
-        for row in get_attack_categories:
-            category_name = row[1]  # Column 1 for category_name
-            parent_name = row[2]    # Column 2 for parent
-
-            # Create a QTreeWidgetItem for each category_name
-            item = QtWidgets.QTreeWidgetItem([category_name])
-            font = QtGui.QFont("Times", 11, QtGui.QFont.Bold)
-            if category_name not in no_bold_list:
-                font.setBold(True)
-            else:
-                font.setBold(False)
-            item.setFont(0, font)
-            items_dict[category_name] = (item, parent_name)
-
-        # Add items to the tree with proper parent-child structure
-        for category_name, (item, parent_name) in items_dict.items():
-            if parent_name is None:
-                # Top-level item
-                self.ui.treeWidget_attack_attacks.addTopLevelItem(item)
-            else:
-                # Child item; find the parent and add it
-                parent_item, _ = items_dict.get(parent_name, (None, None))
-                if parent_item:
-                    parent_item.addChild(item)
-
-        # Add attacks under their corresponding categories
-        get_attack_rows = fissure.utils.library.getAttacks(self.backend.library, None, fissure.utils.get_library_version())
-        for row in get_attack_rows:
-            attack_name = row[1] + ' - ' + row[2]
-            category_name = row[7]
-            category_item, _ = items_dict.get(category_name, (None, None))
-            if category_item:
-                attack_item = QtWidgets.QTreeWidgetItem([attack_name])
-                attack_item.setDisabled(True)
-                category_item.addChild(attack_item)
-
-
 class SplashScreen(QtWidgets.QDialog):
     def __init__(self):
         super(SplashScreen, self).__init__()
@@ -2228,6 +2132,9 @@ def connect_slots(dashboard: Dashboard):
     connect_tsi_slots(dashboard)
     connect_pd_slots(dashboard)
     connect_iq_slots(dashboard)
+    connect_targets_slots(dashboard)
+    connect_single_action_slots(dashboard)
+    connect_sequential_action_slots(dashboard)
     connect_attack_slots(dashboard)
     connect_archive_slots(dashboard)
     connect_sensor_nodes_slots(dashboard)
@@ -2731,10 +2638,7 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionDemo_TSI_SOI_Aggregator_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_SOI_AggregatorTabClicked(dashboard))
     dashboard.window.actionDemo_PD_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoPD_AllClicked(dashboard))
     dashboard.window.actionDemo_Attack_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackAllClicked(dashboard))
-    dashboard.window.actionDemo_Attack_Single_Stage_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackSingleStageTabClicked(dashboard))
-    dashboard.window.actionDemo_Attack_Multi_Stage_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackMultiStageTabClicked(dashboard))
     dashboard.window.actionDemo_Attack_Fuzzing_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackFuzzingTabClicked(dashboard))
-    dashboard.window.actionDemo_Attack_History_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackHistoryTabClicked(dashboard))
     dashboard.window.actionDemo_Attack_Packet_Crafter_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackPacketCrafterTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataAllClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Data_Viewer.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataDataViewerClicked(dashboard))
@@ -4209,172 +4113,92 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.textEdit_iq_end.textChanged.connect(lambda: IQDataTabSlots._slotIQ_EndChanged(dashboard))
 
 
+def connect_targets_slots(dashboard: Dashboard):
+        dashboard.ui.comboBox_ta_target.currentIndexChanged.connect(
+            lambda: TargetsTabSlots._slotTargetContextChanged(dashboard)
+        )
+        dashboard.ui.textEdit_ta_targets_search.textChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsSearchChanged(dashboard)
+        )
+
+        dashboard.ui.tableWidget1_ta_targets.itemSelectionChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsRowSelectionChanged(dashboard)
+        )
+        dashboard.ui.tableWidget1_ta_targets.itemDoubleClicked.connect(
+            lambda _item: TargetsTabSlots._slotTargetsOpenInTacticalClicked(dashboard)
+        )
+
+        dashboard.ui.pushButton_ta_targets_refresh.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsRefreshClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_open_in_tactical.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsOpenInTacticalClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_open_soi.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsOpenSoiClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_copy_target_id.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsCopyTargetIdClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_save_notes.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsSaveNotesClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_download_data.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsDownloadDataClicked(dashboard)
+        )
+
+
+def connect_single_action_slots(dashboard: Dashboard):
+    dashboard.ui.comboBox_ta_single_action_hardware.currentIndexChanged.connect(lambda: SingleActionTabSlots._slotSingleActionHardwareChanged(dashboard))
+    dashboard.ui.comboBox_ta_single_action_plugin.currentIndexChanged.connect(lambda: SingleActionTabSlots._slotSingleActionPluginChanged(dashboard))
+    dashboard.ui.comboBox_ta_single_action_action.currentIndexChanged.connect(lambda: SingleActionTabSlots._slotSingleActionActionChanged(dashboard))
+    dashboard.ui.pushButton_ta_single_action_query.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionQueryClicked(dashboard))
+    dashboard.ui.pushButton_ta_single_action_customize.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionCustomizeClicked(dashboard))
+    dashboard.ui.pushButton_ta_single_action_detector_add.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionDetectorAddClicked(dashboard))
+    dashboard.ui.pushButton_ta_single_action_detector_remove.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionDetectorRemoveClicked(dashboard))
+    dashboard.ui.pushButton_ta_single_action_start_stop.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionStartStopClicked(dashboard))
+
+
+def connect_sequential_action_slots(dashboard: Dashboard):
+    dashboard.ui.pushButton_ta_sequential_actions_add.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsAddClicked(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_duplicate.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDuplicateClicked(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_remove.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsRemoveClicked(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_up.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsUpClicked(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_down.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDownClicked(dashboard))
+    dashboard.ui.tableWidget_ta_sequential_actions_sequence.itemSelectionChanged.connect(lambda: SequentialActionTabSlots._slotSequentialActionsSelectionChanged(dashboard))
+    dashboard.ui.tableWidget_ta_sequential_actions_sequence.cellDoubleClicked.connect(lambda row, column: SequentialActionTabSlots._slotSequentialActionsTableDoubleClicked(dashboard, row, column))
+    dashboard.ui.pushButton_ta_sequential_actions_detector_add.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDetectorAddClicked(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_detector_remove.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDetectorRemoveClicked(dashboard))
+    dashboard.ui.tableWidget_ta_sequential_actions_detectors.itemSelectionChanged.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDetectorSelectionChanged(dashboard))
+    dashboard.ui.pushButton_ta_sequential_actions_start_stop.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsStartStopClicked(dashboard))
+
+
 def connect_attack_slots(dashboard: Dashboard):
-    # Check Box
-    dashboard.ui.checkBox_attack_show_all.clicked.connect(lambda: AttackTabSlots._slotAttackProtocols(dashboard))
+    """Connect the remaining Packet Crafter controls under Targets & Actions."""
+    dashboard.ui.comboBox_packet_protocols.currentIndexChanged.connect(lambda: AttackTabSlots._slotPacketProtocols(dashboard))
+    dashboard.ui.comboBox_packet_subcategory.currentIndexChanged.connect(lambda: AttackTabSlots._slotPacketSubcategory(dashboard))
 
-    # Combo Box
-    dashboard.ui.comboBox_packet_protocols.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotPacketProtocols(dashboard)
-    )
-    dashboard.ui.comboBox_packet_subcategory.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotPacketSubcategory(dashboard)
-    )
-    dashboard.ui.comboBox_attack_protocols.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotAttackProtocols(dashboard)
-    )
-    dashboard.ui.comboBox_attack_fuzzing_subcategory.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingSubcategory(dashboard)
-    )
-    dashboard.ui.comboBox_attack_modulation.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotAttackModulationChanged(dashboard)
-    )
-    dashboard.ui.comboBox_attack_hardware.currentIndexChanged.connect(
-        lambda: AttackTabSlots._slotAttackHardwareChanged(dashboard)
-    )
-
-    # Push Button
-    dashboard.ui.pushButton_packet_restore_defaults.clicked.connect(
-        lambda: AttackTabSlots._slotPacketRestoreDefaultsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_assemble.clicked.connect(
-        lambda: AttackTabSlots._slotPacketAssembleClicked(dashboard)
-    )
+    dashboard.ui.pushButton_packet_restore_defaults.clicked.connect(lambda: AttackTabSlots._slotPacketRestoreDefaultsClicked(dashboard))
+    dashboard.ui.pushButton_packet_assemble.clicked.connect(lambda: AttackTabSlots._slotPacketAssembleClicked(dashboard))
     dashboard.ui.pushButton_packet_save_as.clicked.connect(lambda: AttackTabSlots._slotPacketSaveAs(dashboard))
-    dashboard.ui.pushButton_packet_calculate_crcs.clicked.connect(
-        lambda: AttackTabSlots._slotPacketCalculateCRCsClicked(dashboard)
-    )
+    dashboard.ui.pushButton_packet_calculate_crcs.clicked.connect(lambda: AttackTabSlots._slotPacketCalculateCRCsClicked(dashboard))
     dashboard.ui.pushButton_packet_all_hex.clicked.connect(lambda: AttackTabSlots._slotPacketAllHexClicked(dashboard))
-    dashboard.ui.pushButton_packet_all_binary.clicked.connect(
-        lambda: AttackTabSlots._slotPacketAllBinaryClicked(dashboard)
-    )
+    dashboard.ui.pushButton_packet_all_binary.clicked.connect(lambda: AttackTabSlots._slotPacketAllBinaryClicked(dashboard))
     dashboard.ui.pushButton_packet_open.clicked.connect(lambda: AttackTabSlots._slotPacketOpenClicked(dashboard))
     dashboard.ui.pushButton_packet_append.clicked.connect(lambda: AttackTabSlots._slotPacketAppendClicked(dashboard))
-    dashboard.ui.pushButton_packet_scapy_show.clicked.connect(
-        lambda: AttackTabSlots._slotPacketScapyShowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_scapy_refresh.clicked.connect(
-        lambda: AttackTabSlots._slotPacketScapyRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_scapy_start.clicked.connect(
-        lambda: AttackTabSlots._slotPacketScapyStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_scapy_load.clicked.connect(
-        lambda: AttackTabSlots._slotPacketScapyLoadClicked(dashboard)
-    )
+    dashboard.ui.pushButton_packet_scapy_show.clicked.connect(lambda: AttackTabSlots._slotPacketScapyShowClicked(dashboard))
+    dashboard.ui.pushButton_packet_scapy_refresh.clicked.connect(lambda: AttackTabSlots._slotPacketScapyRefreshClicked(dashboard))
+    dashboard.ui.pushButton_packet_scapy_start.clicked.connect(lambda: AttackTabSlots._slotPacketScapyStartClicked(dashboard))
+    dashboard.ui.pushButton_packet_scapy_load.clicked.connect(lambda: AttackTabSlots._slotPacketScapyLoadClicked(dashboard))
     dashboard.ui.pushButton_packet_scapy_ls.clicked.connect(lambda: AttackTabSlots._slotPacketScapyLsClicked(dashboard))
-    dashboard.ui.pushButton_packet_comma_separated.clicked.connect(
-        lambda: AttackTabSlots._slotPacketCommaSeparatedClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_comma_separated2.clicked.connect(
-        lambda: AttackTabSlots._slotPacketCommaSeparatedClicked2(dashboard)
-    )
-    dashboard.ui.pushButton_packet_pattern1.clicked.connect(
-        lambda: AttackTabSlots._slotPacketPattern1Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_scapy_stop.clicked.connect(
-        lambda: AttackTabSlots._slotPacketScapyStopClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_restore_defaults.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingRestoreDefaultsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_view_flow_graph.clicked.connect(
-        lambda: AttackTabSlots._slotAttackViewFlowGraph(dashboard)
-    )
-    dashboard.ui.pushButton_attack_restore_defaults.clicked.connect(
-        lambda: AttackTabSlots._slotAttackRestoreDefaults(dashboard)
-    )
-    dashboard.ui.pushButton_attack_history_delete.clicked.connect(
-        lambda: AttackTabSlots._slotAttackHistoryDeleteClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_all_hex.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingAllHexClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_all_binary.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingAllBinaryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_add.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageAdd(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_remove.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageRemove(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_up.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageUpClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_down.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageDownClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_generate.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageGenerate(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_load.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageImportClicked(dashboard, fname="", data_override="")
-    )
-    dashboard.ui.pushButton_attack_multi_stage_save.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageExportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_single_stage_autorun.clicked.connect(
-        lambda: AttackTabSlots._slotAttackSingleStageAutorunClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_autorun.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageAutorunClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_single_stage_triggers_edit.clicked.connect(
-        lambda: AttackTabSlots._slotAttackSingleStageTriggersEditClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_triggers_edit.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageTriggersEditClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_clear.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_select_file.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingSelectFileClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_start_stop.clicked.connect(
-        lambda: AttackTabSlots._slotAttackStartStopAttack(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_start.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_apply_changes.clicked.connect(
-        lambda: AttackTabSlots._slotAttackApplyChangesClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_start.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_fuzzing_apply_changes.clicked.connect(
-        lambda: AttackTabSlots._slotAttackFuzzingApplyChangesClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_single_stage_triggers_clear.clicked.connect(
-        lambda: AttackTabSlots._slotAttackSingleStageTriggersClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_attack_multi_stage_triggers_clear.clicked.connect(
-        lambda: AttackTabSlots._slotAttackMultiStageTriggersClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_import.clicked.connect(
-        lambda: AttackTabSlots._slotPacketImportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_packet_export.clicked.connect(
-        lambda: AttackTabSlots._slotPacketExportClicked(dashboard)
-    )
+    dashboard.ui.pushButton_packet_comma_separated.clicked.connect(lambda: AttackTabSlots._slotPacketCommaSeparatedClicked(dashboard))
+    dashboard.ui.pushButton_packet_comma_separated2.clicked.connect(lambda: AttackTabSlots._slotPacketCommaSeparatedClicked2(dashboard))
+    dashboard.ui.pushButton_packet_pattern1.clicked.connect(lambda: AttackTabSlots._slotPacketPattern1Clicked(dashboard))
+    dashboard.ui.pushButton_packet_scapy_stop.clicked.connect(lambda: AttackTabSlots._slotPacketScapyStopClicked(dashboard))
+    dashboard.ui.pushButton_packet_import.clicked.connect(lambda: AttackTabSlots._slotPacketImportClicked(dashboard))
+    dashboard.ui.pushButton_packet_export.clicked.connect(lambda: AttackTabSlots._slotPacketExportClicked(dashboard))
 
-    # Table Widget
-    dashboard.ui.tableWidget1_attack_packet_editor.cellChanged.connect(
-        lambda row, col: AttackTabSlots._slotPacketItemChanged(dashboard, row, col)
-    )
-    dashboard.ui.tableWidget1_attack_flow_graph_current_values.cellChanged.connect(
-        lambda: AttackTabSlots._slotAttackCurrentValuesEdited(dashboard)
-    )
-    dashboard.ui.tableWidget_attack_fuzzing_data_field.cellChanged.connect(
-        lambda row, col: AttackTabSlots._slotAttackFuzzingItemChanged(dashboard, row, col)
-    )
-
-    # Tree Widget
-    dashboard.ui.treeWidget_attack_attacks.itemDoubleClicked.connect(
-        lambda: AttackTabSlots._slotAttackTemplatesDoubleClicked(dashboard)
-    )
+    dashboard.ui.tableWidget1_attack_packet_editor.cellChanged.connect(lambda row, col: AttackTabSlots._slotPacketItemChanged(dashboard, row, col))
 
 
 def connect_archive_slots(dashboard: Dashboard):
@@ -4583,9 +4407,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_exploits_clear.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesExploitsClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_exploit_run.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesExploitsRunClicked(dashboard)
     )
     dashboard.ui.pushButton_sensor_nodes_reports_clear.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesReportsClearClicked(dashboard)

@@ -254,7 +254,6 @@ class SensorNode(object):
         self.attack_flow_graph_loaded = False
         self.physical_fuzzing_stop_event = False
         self.attack_script_name = ""
-        self.triggers_running = False
         self.alert_senders = {}
 
         self.running_PD = False
@@ -2215,146 +2214,49 @@ class SensorNode(object):
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    def runPythonScriptThread(self, stop_event, file_type, flow_graph_filename, variable_names, variable_values, run_with_sudo, autorun_index, trigger_action):
-        """ Runs the attack flow graph in the new thread.
-        """
-        # Return Different Status Messages for Autorun
-        if autorun_index == -1:
-            # Stop Any Running Attack Flow Graphs
-            try:
-                self.attackFlowGraphStop(None)
-            except:
-                pass
+    def runPythonScriptThread(self, stop_event, file_type, flow_graph_filename, variable_names, variable_values, run_with_sudo):
+        """Run the remaining legacy attack Python script used by Fuzzing."""
+        try:
+            self.attackFlowGraphStop(None)
+        except Exception:
+            pass
 
-            try:
-                # Replace Username in Filepaths
-                if self.local_remote == "remote":
-                    # In Variables
-                    for n in range(0,len(variable_names)):
-                        if 'filepath' in variable_names[n]:
-                            variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-
-                    # In Filepath
-                    flow_graph_filename = self.replaceUsername(flow_graph_filename, os.getenv('USER'))
-                
-                # Check for Quotes and Backticks
-                for n in range(0,len(variable_values)):
-                    variable_values[n] = variable_values[n].replace('`','\\`')
-                    variable_values[n] = variable_values[n].replace('"','\\"')
-
-                # Start it
-                arguments = ""
-                for n in variable_values:
-                    arguments = arguments + '"' + n + '" '
-
-                # Python3
-                if file_type == "Python3 Script":
-                    if run_with_sudo == True:
-                        osCommandString = "sudo python3 " + '"' + flow_graph_filename + '" ' + arguments
-                    else:
-                        osCommandString = "python3 " + '"' + flow_graph_filename + '" ' + arguments
-                # Python2
-                else:
-                    if run_with_sudo == True:
-                        osCommandString = "sudo python2 " + '"' + flow_graph_filename + '" ' + arguments
-                    else:
-                        osCommandString = "python2 " + '"' + flow_graph_filename + '" ' + arguments
-
-                # Signal Start
-                asyncio.run(self.flowGraphStarted("Attack"))  # Signals to other components
-                self.attack_script_name = flow_graph_filename
-
-                # In New Terminal
-                if trigger_action == False:
-                    self.alert_senders[autorun_index] = alertSender(osCommandString, self.identifier, self.identifier, self.hiprfisr_socket, self.gps_position, self.logger, self.network_type)
-                    self.alert_senders[autorun_index].thread.join()
-
-                    # In FISSURE Dashboard
-                    #proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE)
-                    #output, error = proc.communicate()
-                    
-                    # Restore the Start Button for Scripts
-                    if self.network_type == "IP":
-                        asyncio.run(self.flowGraphFinished("Attack"))
-                        asyncio.run(self.multiStageAttackFinished())
-
-                # As a Blocking Trigger
-                else:               
-                    result = subprocess.run(osCommandString, shell=True, capture_output=True, text=True)
-                    if result.returncode == 0:
-                        self.trigger_done.set()                
-
-            # Error Loading Flow Graph
-            except Exception as e:
-                asyncio.run(self.flowGraphStarted("Attack"))
-                asyncio.run(self.flowGraphFinished("Attack"))
-                asyncio.run(self.flowGraphError(str(e)))
-                asyncio.run(self.multiStageAttackFinished())              
-                #~ #raise e
-                
-        # Autorun
-        else:
-            # Replace Username in Filepaths
+        try:
             if self.local_remote == "remote":
-                for n in range(0,len(variable_names)):
-                    # In Variables
-                    if 'filepath' in variable_names[n]:
-                        variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
+                for index, variable_name in enumerate(variable_names):
+                    if "filepath" in variable_name:
+                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
+                flow_graph_filename = self.replaceUsername(flow_graph_filename, os.getenv("USER"))
 
-                    # In Filepath
-                    flow_graph_filename = self.replaceUsername(flow_graph_filename, os.getenv('USER'))
+            for index in range(len(variable_values)):
+                variable_values[index] = variable_values[index].replace("`", "\\`")
+                variable_values[index] = variable_values[index].replace('"', '\\"')
 
-            # Check for Quotes and Backticks
-            for n in range(0,len(variable_values)):
-                variable_values[n] = variable_values[n].replace('`','\\`')
-                variable_values[n] = variable_values[n].replace('"','\\"')
+            arguments = "".join(f'"{value}" ' for value in variable_values)
+            python_type = "python3" if file_type == "Python3 Script" else "python2"
+            sudo_prefix = "sudo " if run_with_sudo else ""
+            command = f'{sudo_prefix}{python_type} "{flow_graph_filename}" {arguments}'
 
-            # Start it
-            arguments = ""
-            for n in variable_values:
-                arguments = arguments + '"' + n + '" '
-
-            # Python3
-            if file_type == "Python3 Script":
-                if run_with_sudo == True:
-                    osCommandString = "sudo python3 " + '"' + flow_graph_filename + '" ' + arguments
-                else:
-                    osCommandString = "python3 " + '"' + flow_graph_filename + '" ' + arguments
-
-            # Python2
-            else:
-                if run_with_sudo == True:
-                    osCommandString = "sudo python2 " + '"' + flow_graph_filename + '" ' + arguments
-                else:
-                    osCommandString = "python2 " + '"' + flow_graph_filename + '" ' + arguments
-
-            # In New Terminal
-            if trigger_action == False:
-                #proc = subprocess.Popen('gnome-terminal -- ' + osCommandString + " &", shell=True)
-                self.alert_senders[autorun_index] = alertSender(osCommandString, self.identifier, node_uid, self.hiprfisr_socket, self.gps_position, self.logger, self.network_type)
-                self.alert_senders[autorun_index].thread.join()
-
-                # In FISSURE Dashboard
-                #proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE)
-                #output, error = proc.communicate()
-                
-                # Restore the Start Button for Scripts
-                if self.network_type == "IP":
-                    asyncio.run(self.flowGraphFinished("Attack"))
-                    asyncio.run(self.multiStageAttackFinished())
-
-            # As a Blocking Trigger
-            else:               
-                result = subprocess.run(osCommandString, shell=True, capture_output=True, text=True)
-                if result.returncode == 0:
-                    self.trigger_done.set()
-
+            asyncio.run(self.flowGraphStarted("Attack"))
             self.attack_script_name = flow_graph_filename
-            
-            # Ignore for Autorun on Start Triggers
-            if autorun_index > -1:
-                self.autorun_playlist_manager[autorun_index] = flow_graph_filename
-                self.autorun_multistage_watcher[autorun_index] = True
+            self.alert_senders["attack"] = alertSender(
+                command,
+                self.identifier,
+                self.identifier,
+                self.hiprfisr_socket,
+                self.gps_position,
+                self.logger,
+                self.network_type,
+            )
+            self.alert_senders["attack"].thread.join()
+
+            if self.network_type == "IP":
+                asyncio.run(self.flowGraphFinished("Attack"))
+
+        except Exception as e:
+            asyncio.run(self.flowGraphStarted("Attack"))
+            asyncio.run(self.flowGraphFinished("Attack"))
+            asyncio.run(self.flowGraphError(str(e)))
 
 
     def overwriteFlowGraphVariables(self, flow_graph_filename, variable_names, variable_values):
@@ -2481,230 +2383,112 @@ class SensorNode(object):
 
     ######################  Attack Flow Graphs  ########################
 
-    def attackFlowGraphStart(self, flow_graph_filepath="", variable_names=[], variable_values=[], file_type="", run_with_sudo=False, autorun_index=0):
-        """ Runs the flow graph with the specified file path.
-        """
-        # Make a new Thread
+    def attackFlowGraphStart(self, flow_graph_filepath="", variable_names=[], variable_values=[], file_type="", run_with_sudo=False):
+        """Run the remaining legacy attack flow graph used by Fuzzing."""
         stop_event = threading.Event()
 
         if file_type == "Flow Graph":
-            c_thread = threading.Thread(target=self.runFlowGraphThread, args=(stop_event, flow_graph_filepath, variable_names, variable_values, autorun_index))
+            c_thread = threading.Thread(
+                target=self.runFlowGraphThread,
+                args=(stop_event, flow_graph_filepath, variable_names, variable_values),
+            )
         elif file_type == "Flow Graph - GUI":
-            c_thread = threading.Thread(target=self.runFlowGraphGUI_Thread, args=(stop_event, flow_graph_filepath, variable_names, variable_values, autorun_index))
-        # Python2, Python3
+            c_thread = threading.Thread(
+                target=self.runFlowGraphGUI_Thread,
+                args=(stop_event, flow_graph_filepath, variable_names, variable_values),
+            )
         else:
-            c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event, file_type, flow_graph_filepath, variable_names, variable_values, run_with_sudo, autorun_index, False))  # backticks execute commands
+            c_thread = threading.Thread(
+                target=self.runPythonScriptThread,
+                args=(stop_event, file_type, flow_graph_filepath, variable_names, variable_values, run_with_sudo),
+            )
 
         c_thread.daemon = True
         c_thread.start()
     
 
-    def attackFlowGraphStop(self, parameter="", autorun_index=0):
-        """ Stop the currently running attack flow graph.
-        """
-        # Stop Triggers
-        if self.triggers_running == True:
-            self.triggers_running = False
-            self.trigger_done.set()
-        
-        # Stop Alert Sender Gracefully if Present
+    def attackFlowGraphStop(self, parameter=""):
+        """Stop the remaining legacy attack flow graph used by Fuzzing."""
         if parameter == "Python Script":
-            # Stop Alert Sender
-            sender = self.alert_senders.pop(autorun_index, None)
+            sender = self.alert_senders.pop("attack", None)
             if sender:
                 try:
                     sender.stop()
                     sender.thread.join(timeout=3)
                 except Exception as e:
                     self.logger.warning(f"Failed to stop alert sender: {e}")
-            
-            # Normal
-            if autorun_index == -1:
-                os.system("sudo pkill -f " + '"' + self.attack_script_name +'"')
-                self.attack_flow_graph_loaded = False
-            # Autorun
-            else:
-                process_name = self.autorun_playlist_manager[autorun_index] if 0 <= autorun_index < len(self.autorun_playlist_manager) else None
-                if process_name is None:
-                    self.logger.debug(f"⚠️ Warning: No process found for autorun index {autorun_index}. Skipping kill command.")
-                else:
-                    os.system("sudo pkill -f " + '"' + process_name + '"')
 
-                # os.system("sudo pkill -f " + '"' + self.autorun_playlist_manager[autorun_index] +'"')
-                self.autorun_playlist_manager[autorun_index] = None
-                
+            os.system("sudo pkill -f " + '"' + self.attack_script_name + '"')
+            self.attack_flow_graph_loaded = False
+
         elif parameter == "Flow Graph - GUI":
-            # Normal
-            if autorun_index == -1:
-                os.system("sudo pkill -f " + '"' + self.attack_script_name +'"')
-                self.attack_flow_graph_loaded = False
-            # Autorun
-            else:
-                process_name = self.autorun_playlist_manager[autorun_index] if 0 <= autorun_index < len(self.autorun_playlist_manager) else None
-                if process_name is None:
-                    self.logger.debug(f"⚠️ Warning: No process found for autorun index {autorun_index}. Skipping kill command.")
-                else:
-                    os.system("sudo pkill -f " + '"' + process_name + '"')
+            os.system("sudo pkill -f " + '"' + self.attack_script_name + '"')
+            self.attack_flow_graph_loaded = False
 
-                # os.system("sudo pkill -f " + '"' + self.autorun_playlist_manager[autorun_index] +'"')
-                self.autorun_playlist_manager[autorun_index] = None
-            
-        else:
-            # Normal
-            if autorun_index == -1:
-                if self.attack_flow_graph_loaded == True:
-                    self.attackflowtoexec.stop()
-                    self.attackflowtoexec.wait()
+        elif self.attack_flow_graph_loaded:
+            self.attackflowtoexec.stop()
+            self.attackflowtoexec.wait()
 
-                    # Stop Fuzzer Thread or Future Blocks with Infinite Threads
-                    if hasattr(self.attackflowtoexec,'fuzzer_fuzzer_0_0'):
-                        self.attackflowtoexec.fuzzer_fuzzer_0_0.stop_event.set()
+            if hasattr(self.attackflowtoexec, "fuzzer_fuzzer_0_0"):
+                self.attackflowtoexec.fuzzer_fuzzer_0_0.stop_event.set()
 
-                    del self.attackflowtoexec  # Free up the ports
-                    self.attack_flow_graph_loaded = False
-            
-            # Autorun
-            else:
-                self.autorun_playlist_manager[autorun_index].stop()
-                self.autorun_playlist_manager[autorun_index].wait()
-                self.autorun_playlist_manager[autorun_index] = None
-                self.autorun_multistage_watcher[autorun_index] = False
+            del self.attackflowtoexec
+            self.attack_flow_graph_loaded = False
 
 
-    def runFlowGraphThread(self, stop_event, flow_graph_filename, variable_names, variable_values, autorun_index):
-        """ Runs the attack script in the new thread.
-        """
-        # Return Different Status Messages for Autorun
-        if autorun_index == -1:
+    def runFlowGraphThread(self, stop_event, flow_graph_filename, variable_names, variable_values):
+        """Run the remaining legacy headless attack flow graph used by Fuzzing."""
+        try:
             try:
-                # Stop Any Running Attack Flow Graphs
-                try:
-                    self.attackFlowGraphStop(None)
-                except:
-                    pass
-                    
-                # Replace Username in Filepaths
-                if self.local_remote == "remote":
-                    for n in range(0,len(variable_names)):
-                        if 'filepath' in variable_names[n]:
-                            variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-                
-                # Overwrite Variables
-                loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
+                self.attackFlowGraphStop(None)
+            except Exception:
+                pass
 
-                # Call the "__init__" Function
-                self.attackflowtoexec = getattr(loadedmod,class_name)()
-                
-                # Start it
-                self.attackflowtoexec.start()  # How do you tell if this fails?
-                asyncio.run(self.flowGraphStarted("Attack"))  # Signals to other components
-                    
-                # Physical Layer Fuzzing Can Now Commence
-                self.attack_flow_graph_loaded = True
-                
-                # Let it Run
-                self.attackflowtoexec.wait()
-                
-                # Signal on the PUB that the Attack Flow Graph is Finished
-                asyncio.run(self.flowGraphFinished("Attack"))
-                        
-            # Error Loading Flow Graph
-            except Exception as e:
-                asyncio.run(self.flowGraphStarted("Attack"))
-                asyncio.run(self.flowGraphFinished("Attack"))
-                asyncio.run(self.flowGraphError(str(e)))
-                asyncio.run(self.multiStageAttackFinished())
-                #~ #raise e
-                
-        # Autorun
-        else:
-            # Replace Username in Filepaths
             if self.local_remote == "remote":
-                for n in range(0,len(variable_names)):
-                    if 'filepath' in variable_names[n]:
-                        variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
+                for index, variable_name in enumerate(variable_names):
+                    if "filepath" in variable_name:
+                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
 
-            # Overwrite Variables
             loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
+            self.attackflowtoexec = getattr(loadedmod, class_name)()
+            self.attackflowtoexec.start()
+            asyncio.run(self.flowGraphStarted("Attack"))
+            self.attack_flow_graph_loaded = True
+            self.attackflowtoexec.wait()
+            asyncio.run(self.flowGraphFinished("Attack"))
 
-            # Call the "__init__" Function
-            self.autorun_playlist_manager[autorun_index] = getattr(loadedmod,class_name)()
-            
-            # Start it
-            self.autorun_playlist_manager[autorun_index].start()
-            self.autorun_multistage_watcher[autorun_index] = True
-            
-            # Let it Run
-            self.autorun_playlist_manager[autorun_index].wait()
+        except Exception as e:
+            asyncio.run(self.flowGraphStarted("Attack"))
+            asyncio.run(self.flowGraphFinished("Attack"))
+            asyncio.run(self.flowGraphError(str(e)))
 
 
-    def runFlowGraphGUI_Thread(self, stop_event, flow_graph_filename, variable_names, variable_values, autorun_index):
-        """ Runs the attack flow graph in the new thread.
-        """
-        # Normal
-        if autorun_index == -1:
-        
-            # # Stop Any Running Attack Flow Graphs
-            # try:
-                # self.attackFlowGraphStop(None)
-            # except:
-                # pass
+    def runFlowGraphGUI_Thread(self, stop_event, flow_graph_filename, variable_names, variable_values):
+        """Run the remaining legacy GUI attack flow graph used by Fuzzing."""
+        try:
+            if self.local_remote == "remote":
+                for index, variable_name in enumerate(variable_names):
+                    if "filepath" in variable_name:
+                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
 
-            try:
-                # Replace Username in Filepaths
-                if self.local_remote == "remote":
-                    for n in range(0,len(variable_names)):
-                        if 'filepath' in variable_names[n]:
-                            variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
+            filepath = flow_graph_filename
+            flow_graph_filename = flow_graph_filename.rsplit("/", 1)[1]
+            arguments = "".join(
+                f'--{variable_names[index]}="{variable_values[index]}" '
+                for index in range(len(variable_names))
+            )
+            command = f'python3 "{filepath}" {arguments}'
+            subprocess.Popen(command + " &", shell=True)
+            asyncio.run(self.flowGraphStarted("Attack"))
+            self.attack_script_name = flow_graph_filename
+            time.sleep(4.8)
+            self.attack_flow_graph_loaded = True
 
-                # Start it
-                filepath = flow_graph_filename
-                flow_graph_filename = flow_graph_filename.rsplit("/",1)[1]
-                arguments = ""
-                for n in range(0,len(variable_names)):
-                    arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
-
-                osCommandString = "python3 " + '"' + filepath + '" ' + arguments
-                proc = subprocess.Popen(osCommandString + " &", shell=True)
-                asyncio.run(self.flowGraphStarted("Attack"))  # Signals to other components
-                self.attack_script_name = flow_graph_filename
-                time.sleep(4.8)  # Need a way to detect flow graph/hardware is running when called via Python
-                self.attack_flow_graph_loaded = True
-
-            # Error Loading Flow Graph
-            except Exception as e:
-                asyncio.run(self.flowGraphStarted("Attack"))
-                asyncio.run(self.flowGraphFinished("Attack"))
-                asyncio.run(self.flowGraphError(str(e)))
-                asyncio.run(self.multiStageAttackFinished())
-                #~ #raise e
-        
-        # Autorun
-        else:
-            try:
-                # Replace Username in Filepaths
-                if self.local_remote == "remote":
-                    for n in range(0,len(variable_names)):
-                        if 'filepath' in variable_names[n]:
-                            variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-
-                # Start it
-                filepath = flow_graph_filename
-                flow_graph_filename = flow_graph_filename.rsplit("/",1)[1]
-                arguments = ""
-                for n in range(0,len(variable_names)):
-                    arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
-
-                osCommandString = "python3 " + '"' + filepath + '" ' + arguments
-                proc = subprocess.Popen(osCommandString + " &", shell=True)
-                self.autorun_playlist_manager[autorun_index] = flow_graph_filename
-                time.sleep(4.8)  # Need a way to detect flow graph/hardware is running when called via Python
-                self.autorun_multistage_watcher[autorun_index] = True
-
-            # Error Loading Flow Graph
-            except Exception as e:
-                self.logger.error("Error running flow graph with GUI")
-            
+        except Exception as e:
+            asyncio.run(self.flowGraphStarted("Attack"))
+            asyncio.run(self.flowGraphFinished("Attack"))
+            asyncio.run(self.flowGraphError(str(e)))
+     
 
     ##############  IQ Playback Flow Graphs  #############
     
@@ -2901,143 +2685,6 @@ class SensorNode(object):
             asyncio.run(self.flowGraphError(str(e)))
 
 
-    ############################  Triggers  ############################
-
-    def triggerRunScript(self, result_dict, index, script_filepath, variable_names, variable_values, python_type):
-        """ Runs an individual trigger and wait for a return code.
-        """
-        try:
-            # Replace Username in Filepaths
-            if self.local_remote == "remote":
-                for n in range(0,len(variable_names)):
-                    if 'filepath' in variable_names[n]:
-                        variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-            
-            # Check for Quotes and Backticks
-            for n in range(0,len(variable_values)):
-                variable_values[n] = variable_values[n].replace('`','\\`')
-                variable_values[n] = variable_values[n].replace('"','\\"')
-
-            # Start it
-            arguments = ""
-            for n in variable_values:
-                arguments = arguments + '"' + n + '" '        
-            osCommandString = python_type + ' "' + script_filepath + '" ' + arguments
-            process = subprocess.Popen(osCommandString, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
-            
-            # Listen for Return Code 0
-            while not self.trigger_done.is_set():
-                if process.poll() is not None:
-                    result_dict[index] = process.returncode
-                    if process.returncode == 0:
-                        self.trigger_done.set()
-                    break
-                time.sleep(0.1)
-            
-            # Termination Event is Set, Kill the Process
-            if self.trigger_done.is_set() and process.poll() is None:
-                os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-                #process.terminate()
-                #process.kill()
-                #process.wait()
-                result_dict[index] = -1
-        except Exception as e:
-            self.logger.error(f"Error running trigger script {script_filepath}: {e}")
-
-
-    def triggerStart(self, trigger_values, fissure_event, event_values, autorun_index):
-        """ Starts trigger threads before continuing with other actions.
-        """
-        # Run the Triggers
-        self.logger.info("Starting Triggers...")
-        threads = []
-        result_dict = {}
-        self.triggers_running = True
-        self.trigger_done = threading.Event()
-        for n in range(0,len(trigger_values)):
-            trigger_file = os.path.join(fissure.utils.get_fg_library_dir(self.os_info), "Triggers", trigger_values[n][0])
-            trigger_type = trigger_values[n][1]
-            trigger_variables = eval(trigger_values[n][2])
-            trigger_variable_values = eval(trigger_values[n][3])
-            
-            # From FISSURE Library
-            if trigger_type == "Flow Graph":
-                #c_thread = threading.Thread(target=self.runFlowGraphThread, args=(self.trigger_done, event_values[0], event_values[1], event_values[2], event_values[3], event_values[4]))
-                pass  # Do everything through Python for now, make sure "run to completion is set"
-            elif trigger_type == "Flow Graph - GUI":
-                pass
-            elif trigger_type == "Python2 Script":
-                thread = threading.Thread(target=self.triggerRunScript, args=(result_dict, n, trigger_file, trigger_variables, trigger_variable_values, 'python2'))
-                threads.append(thread)
-                thread.start()
-            elif trigger_type == "Python3 Script":
-                thread = threading.Thread(target=self.triggerRunScript, args=(result_dict, n, trigger_file, trigger_variables, trigger_variable_values, 'python3'))
-                threads.append(thread)
-                thread.start()
-            else:
-                self.logger.error("Error!")
-
-        # Signal Start, Restore Start/Stop Buttons
-        if fissure_event == "Single-Stage Attack":
-            asyncio.run(self.flowGraphStarted("Attack"))
-        # elif fissure_event == "Multi-Stage Attack":
-            # asyncio.run(self.flowGraphStarted("Attack"))
-        # elif fissure_event == "Archive Replay":
-            # asyncio.run(self.flowGraphStarted("Archive"))
-
-        # Monitor Trigger Threads for Termination
-        print_timer = 0
-        while not self.trigger_done.is_set():
-            # Print to Terminal/Log
-            if print_timer >= 5:
-                self.logger.info("Waiting on triggers...")
-                print_timer = 0
-            else:
-                print_timer = print_timer + 0.1
-                
-            # Wait for a Thread to End
-            if not any(thread.is_alive() for thread in threads):
-                break                
-            time.sleep(0.1)
-        
-        # If Termination Event is Set, Attempt to Join all Threads
-        if self.trigger_done.is_set():
-            for thread in threads:
-                if thread.is_alive():
-                    thread.join()
-        
-        # Check the Return Codes
-        for i, returncode in result_dict.items():
-            if returncode == 0:
-                self.logger.info(f"Trigger {i} completed successfully with return code 0.")
-            else:
-                self.logger.info(f"Trigger {i} ended with return code {returncode}.")
-
-        #Cancelled
-        if self.triggers_running == False:
-            self.logger.info("Triggers Ended")
-
-            # Restore the Start Button for Scripts
-            if fissure_event == "Single-Stage Attack":
-                asyncio.run(self.flowGraphFinished("Attack"))
-            elif fissure_event == "Multi-Stage Attack":
-                asyncio.run(self.multiStageAttackFinished())
-
-        # Trigger Done
-        elif self.trigger_done.is_set():
-            self.logger.info("Triggers Complete.")
-    
-            # Run the Event
-            if fissure_event == "Single-Stage Attack":
-                self.logger.info("Starting Single-Stage Attack...")
-                self.attackFlowGraphStart(event_values[0], event_values[1], event_values[2], event_values[3], event_values[4], event_values[5])
-           
-            elif fissure_event == "Multi-Stage Attack":
-                self.logger.info("Starting Multi-Stage Attack...")
-                self.multiStageAttackStart(event_values[0], event_values[1], event_values[2], event_values[3], event_values[4], event_values[5], event_values[6])
-                #self.multiStageAttackStart(filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index)               
-    
-
     #######################  Physical Fuzzing  #########################
 
 
@@ -3121,200 +2768,6 @@ class SensorNode(object):
         self.physical_fuzzing_stop_event = False
 
 
-    #######################  Multi-Stage Attack  #######################
-    
-    def multiStageAttackStart(self, filenames=[], variable_names=[], variable_values=[], durations=[], repeat=False, file_types=[], autorun_index=0):
-        """ Starts a new thread for running two flow graphs. A new thread is created to allow the Sensor Node to still perform normal functionality while waiting for an attack to finish.
-        """
-        # Make a New Thread
-        if autorun_index == -1:
-            self.multi_stage_stop_event = threading.Event()
-        else:
-            self.autorun_multistage_manager[autorun_index] = threading.Event()
-        multi_stage_thread = threading.Thread(target=self.multiStageAttackThreadStart, args=(filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index))
-
-        multi_stage_thread.start()
-    
-
-    def multiStageAttackThreadStart(self, filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index):
-        """ Starts consecutive flow graphs with each running for a set duration with a fixed pause in between.
-        """
-        # Normal
-        if autorun_index == -1:
-            while(not self.multi_stage_stop_event.is_set()):
-                for n in range(0,len(filenames)):
-
-                    # Make a new Thread
-                    stop_event = threading.Event()
-                    if file_types[n] == "Flow Graph":
-                        flow_graph_filename = filenames[n].replace(".py","")
-                        c_thread = threading.Thread(
-                            target=self.runFlowGraphThread, 
-                            args=(stop_event, flow_graph_filename, variable_names[n], variable_values[n], autorun_index)
-                        )
-                    elif file_types[n] == "Flow Graph - GUI":
-                        flow_graph_filename = filenames[n]                        
-                        c_thread = threading.Thread(
-                            target=self.runFlowGraphGUI_Thread, 
-                            args=(stop_event, flow_graph_filename, variable_names[n], variable_values[n], autorun_index)
-                        )
-                    # Python2, Python3
-                    else:
-                        run_with_sudo = True
-                        for m in range(0,len(variable_names[n])):
-                            if variable_names[n][m] == "run_with_sudo":
-                                if str(variable_values[n][m]).lower() == "true":
-                                    run_with_sudo = True
-                                else:
-                                    run_with_sudo = False
-                                break
-                        c_thread = threading.Thread(
-                            target=self.runPythonScriptThread, 
-                            args=(stop_event, file_types[n], filenames[n], variable_names[n], variable_values[n], run_with_sudo, autorun_index, False)
-                        )
-
-                    c_thread.daemon = True
-                    c_thread.start()
-
-                    # Wait for the Flow Graph to Start
-                    if (file_types[n] == "Flow Graph") or (file_types[n] == "Flow Graph - GUI"):
-                        while self.attack_flow_graph_loaded == False:
-                            time.sleep(0.05)
-
-                    # Start the Timer
-                    start_time = time.time()                    
-                    while time.time() - start_time < float(durations[n]):
-                        # Check if Stop was Pressed while Running Flow Graph
-                        if self.multi_stage_stop_event.is_set():
-                            break
-                        time.sleep(.05)
-
-                    # Stop the Flow Graph
-                    if file_types[n] == "Flow Graph":
-                        self.attackFlowGraphStop("Flow Graph", autorun_index)
-                        time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
-                    elif file_types[n] == "Flow Graph - GUI":
-                        self.attackFlowGraphStop("Flow Graph - GUI", autorun_index)
-                        time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
-                    else:
-                        self.attackFlowGraphStop("Python Script", autorun_index)
-
-                    # Break if Stop was Pressed while Running Flow Graph
-                    if self.multi_stage_stop_event.is_set():
-                        break
-
-                # End the thread
-                if repeat == False:
-                    self.multiStageAttackStop(autorun_index)
-        
-        # Autorun
-        else:            
-            while(not self.autorun_multistage_manager[autorun_index].is_set()):
-                for n in range(0,len(filenames)):
-
-                    # Make a new Thread
-                    stop_event = threading.Event()
-                    if file_types[n] == "Flow Graph":
-                        flow_graph_filename = filenames[n].replace(".py","")
-                        c_thread = threading.Thread(
-                            target=self.runFlowGraphThread, 
-                            args=(stop_event, flow_graph_filename, variable_names[n], variable_values[n], autorun_index)
-                        )
-                    elif file_types[n] == "Flow Graph - GUI":
-                        flow_graph_filename = filenames[n]
-                        c_thread = threading.Thread(
-                            target=self.runFlowGraphGUI_Thread, 
-                            args=(stop_event, flow_graph_filename, variable_names[n], variable_values[n], autorun_index)
-                        )
-                    # Python2, Python3
-                    else:
-                        run_with_sudo = True
-                        for m in range(0,len(variable_names[n])):
-                            if variable_names[n][m] == "run_with_sudo":
-                                if str(variable_values[n][m]).lower() == "true":
-                                    run_with_sudo = True
-                                else:
-                                    run_with_sudo = False
-                                break
-                        c_thread = threading.Thread(
-                            target=self.runPythonScriptThread, 
-                            args=(stop_event, file_types[n], filenames[n], variable_names[n], variable_values[n], run_with_sudo, autorun_index, False)
-                        )
-
-                    c_thread.daemon = True
-                    c_thread.start()
-
-                    # Wait for the Flow Graph to Start
-                    if (file_types[n] == "Flow Graph") or (file_types[n] == "Flow Graph - GUI"):
-                        while self.autorun_multistage_watcher[autorun_index] == False:
-                            time.sleep(0.05)
-
-                    # Start the Timer
-                    start_time = time.time()                    
-                    while time.time() - start_time < float(durations[n]):
-                        if self.autorun_multistage_manager[autorun_index].is_set():
-                            break
-                        time.sleep(.05)
-
-                    # Stop the Flow Graph
-                    if file_types[n] == "Flow Graph":
-                        self.attackFlowGraphStop("Flow Graph", autorun_index)
-                        time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
-                    elif file_types[n] == "Flow Graph - GUI":
-                        self.attackFlowGraphStop("Flow Graph - GUI", autorun_index)
-                        time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
-                    else:
-                        self.attackFlowGraphStop("Python Script", autorun_index)
-
-                    # Break if Stop was Pressed while Running Flow Graph
-                    if self.autorun_multistage_manager[autorun_index].is_set():
-                        break
-
-                # End the thread
-                if repeat == False:
-                    self.multiStageAttackStop(autorun_index)
-
-
-    async def multiStageAttackFinished(self):
-        """ Signals to the other components that the multi-stage attack has finished.
-        """
-        # Send the Message
-        msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "multiStageAttackFinished",
-        }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-        
-
-    def multiStageAttackStop(self, autorun_index=0):
-        """ Stops a multi-stage attack already in progress
-        """
-        # Stop Triggers
-        if self.triggers_running == True:
-            self.triggers_running = False
-            self.trigger_done.set()
-
-        # Normal
-        if autorun_index == -1:
-            try:
-                # Signal to the Other Components
-                asyncio.run(self.multiStageAttackFinished())
-
-                # Stop the Thread
-                self.multi_stage_stop_event.set()
-                
-            except:
-                pass
-            
-        # Autorun
-        else:
-            # Reset Listener Loop Variable
-            self.autorun_multistage_watcher[autorun_index] = False
-
-            # Stop the Thread
-            self.autorun_multistage_manager[autorun_index].set()
-  
-    
     #######################  Autorun Playlists  ##########################
 
     def get_autorun_playlist_names(self):

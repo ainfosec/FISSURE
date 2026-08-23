@@ -152,24 +152,12 @@ def _clear_archive_replay_parameter_widgets(
     layout = content.layout()
 
     if layout is None:
-        layout = QtWidgets.QFormLayout(
-            content
-        )
-        layout.setContentsMargins(
-            8,
-            8,
-            8,
-            8,
-        )
-        layout.setHorizontalSpacing(
-            10
-        )
-        layout.setVerticalSpacing(
-            6
-        )
-        layout.setFieldGrowthPolicy(
-            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
-        )
+        layout = QtWidgets.QGridLayout(content)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setHorizontalSpacing(10)
+        layout.setVerticalSpacing(6)
+        layout.setColumnStretch(0, 2)
+        layout.setColumnStretch(1, 3)
 
     else:
         while layout.count():
@@ -1686,24 +1674,12 @@ def handle_archive_replay_action_schema(
     layout = content.layout()
 
     if layout is None:
-        layout = QtWidgets.QFormLayout(
-            content
-        )
-        layout.setContentsMargins(
-            8,
-            8,
-            8,
-            8,
-        )
-        layout.setHorizontalSpacing(
-            10
-        )
-        layout.setVerticalSpacing(
-            6
-        )
-        layout.setFieldGrowthPolicy(
-            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
-        )
+        layout = QtWidgets.QGridLayout(content)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setHorizontalSpacing(10)
+        layout.setVerticalSpacing(6)
+        layout.setColumnStretch(0, 2)
+        layout.setColumnStretch(1, 3)
 
     normalized_parameters = (
         parameters
@@ -1799,7 +1775,7 @@ def handle_archive_replay_action_schema(
             QtWidgets.QLabel,
         ):
             widget.setObjectName(
-                "label_archive_replay_parameter_info"
+                "label2_archive_replay_parameter_info"
             )
 
         dashboard.archive_replay_parameter_widgets[
@@ -1818,16 +1794,16 @@ def handle_archive_replay_action_schema(
             content,
         )
         label.setObjectName(
-            "label_archive_replay_parameter"
+            "label2_archive_replay_parameter"
         )
         label.setWordWrap(
             True
         )
 
-        layout.addRow(
-            label,
-            widget,
-        )
+        row = layout.rowCount()
+        label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        layout.addWidget(label, row, 0)
+        layout.addWidget(widget, row, 1)
 
     dashboard.archive_replay_selected_plugin = selected_plugin
     dashboard.archive_replay_selected_action = selected_action
@@ -3668,7 +3644,8 @@ def _slotArchiveDownloadPlotClicked(dashboard: QtCore.QObject):
     fissure.Dashboard.Slots.IQDataTabSlots._slotIQ_PlotAllClicked(dashboard)
 
     # Change to IQ Tab
-    dashboard.ui.tabWidget.setCurrentIndex(4)
+    dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_tsi)
+    dashboard.ui.tabWidget_tsi.setCurrentWidget(dashboard.ui.tab_iq_data)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

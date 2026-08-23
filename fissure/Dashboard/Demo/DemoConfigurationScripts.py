@@ -7,7 +7,6 @@ import fissure.utils
 import time
 # import subprocess
 # import qasync
-# from ..UI_Components import TriggersDialog
 # from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
 # import struct
 # import matplotlib.pyplot as plt

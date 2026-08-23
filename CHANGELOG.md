@@ -1,6 +1,32 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-23
+
+Reorganize Dashboard around targets and plugin actions
+
+### Added
+
+- Added a Targets workspace with shared Target selection, searchable Target details, notes, SOI linkage, Tactical navigation, and persistent Target updates through the existing Target model.
+- Added a generic Single Action workflow for querying compatible plugin actions, filtering locally by hardware and plugin, customizing action parameters, starting/stopping individual operations, reporting results, associating runs with an optional Target, and optionally waiting for configured detector events before execution.
+- Added Sequential Actions for building ordered plugin-action sequences with per-action parameters, duration, repeat count, interval, and early-advance behavior; sequences support error/completion policies, optional detector gating, explicit stop control, progress tracking, action-state timeline cards, sequence/action logs, and Target history.
+
+### Changed
+
+- Reorganized the Dashboard around the top-level workflow order **Tactical → Signal Analysis → Targets & Actions → Sensor Nodes → Library → Log**; moved IQ Data and Protocol Discovery under Signal Analysis and kept the Archive browser/replay/dataset workflows together under Library.
+- Replaced the legacy Attack workspace model with **Targets & Actions**, using optional Target context across Targets, Single Action, Sequential Actions, and the remaining action-oriented tools while keeping executable plugin actions independent from Target-specific state.
+- Standardized Single Action and Sequential Actions on the generic plugin action catalog, schema, and operation lifecycle so arbitrary compatible plugin actions can be configured and reused instead of relying on attack-specific flow-graph runners.
+- Replaced legacy Single-Stage and Multi-Stage execution and trigger workflows with Single Action, Sequential Actions, and reusable detector selection; removed their Dashboard pages, callbacks, dialogs, Sensor Node orchestration, Multi-Stage execution engine, and obsolete trigger machinery.
+- Removed the obsolete legacy Autorun page and old attack-Autorun execution branches while retaining the current plugin-backed Sensor Node Autorun workflow introduced in the previous update.
+- Temporarily hid the legacy Fuzzing workflow and its outdated shared attack selectors until it can be rebuilt around the current plugin/action architecture; Packet Crafter remains available and unchanged.
+- Removed Attack History and obsolete Single-/Multi-Stage Autorun coupling, and updated tab navigation to avoid hard-coded top-level tab indexes where practical after the Dashboard reorganization.
+- Updated light, dark, and custom themes for the new Targets, Single Action, and Sequential Actions workflows, including guided workflow cards, dynamic parameter controls, status/result areas, detector panels, and state-aware sequence timeline cards.
+- Updated the README Capabilities section to describe the current workflow organization and plugin/action direction while temporarily hiding the outdated capability screenshots for a later imagery refresh.
+
+### Fixed
+
+- Fixed selected-node heartbeat updates repeatedly rebuilding hardware-dependent controls, which could clear Detector action selection and customized parameters; hardware/configuration gates now refresh on actual connection-state changes while normal operation status continues to update on every heartbeat.
+
 ## 2026-8-17
 
 Rebuild Sensor Node Autorun and unify plugin action selection

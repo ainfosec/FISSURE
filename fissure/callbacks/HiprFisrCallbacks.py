@@ -1359,107 +1359,25 @@ async def physicalFuzzingStop(component: object, node_uid=""):
     )
 
 
-async def multiStageAttackStart(
-    component: object,
-    node_uid="",
-    filenames=[],
-    variable_names=[],
-    variable_values=[],
-    durations=[],
-    repeat=False,
-    file_types=[],
-    autorun_index=0,
-    trigger_values=[]
-):
-    """
-    Sends message to Sensor Node/PD to start multi-stage attack.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "filenames": filenames,
-        "variable_names": variable_names,
-        "variable_values": variable_values,
-        "durations": durations,
-        "repeat": repeat,
-        "file_types": file_types,
-        "autorun_index": autorun_index,
-        "trigger_values": trigger_values
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "multiStageAttackStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def multiStageAttackStop(component: object, node_uid="", autorun_index=0):
-    """
-    Sends message to Sensor Node/PD to stop multi-stage attack.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "autorun_index": autorun_index,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "multiStageAttackStop",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def attackFlowGraphStop(component: object, node_uid="", parameter="", autorun_index=0):
-    """
-    Sends message to Sensor Node to stop a running attack flow graph.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "parameter": parameter, 
-        "autorun_index": autorun_index
-    }
+async def attackFlowGraphStop(component: object, node_uid="", parameter=""):
+    """Send the remaining legacy Fuzzing stop command to a Sensor Node."""
+    PARAMETERS = {"parameter": parameter}
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "attackFlowGraphStop",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
 
-    # Resolve Identity
     identity = component.nodes[node_uid].get("identity", None)
     if identity is None:
         return
-    
-    # Send through ROUTER
+
     await component.sensor_node_router.send_msg(
         fissure.comms.MessageTypes.COMMANDS,
         msg,
-        target_ids=[identity]
+        target_ids=[identity],
     )
-
+    
 
 async def attackFlowGraphStart(
     component: object,
@@ -1469,19 +1387,14 @@ async def attackFlowGraphStart(
     variable_values=[],
     file_type="",
     run_with_sudo=False,
-    autorun_index=0,
-    trigger_values=[]
 ):
-    """Command for loading an attack."""
-    # Send Message to Sensor Node
+    """Send the remaining legacy Fuzzing flow-graph start command to a Sensor Node."""
     PARAMETERS = {
         "flow_graph_filepath": flow_graph_filepath,
         "variable_names": variable_names,
         "variable_values": variable_values,
         "file_type": file_type,
         "run_with_sudo": run_with_sudo,
-        "autorun_index": autorun_index,
-        "trigger_values": trigger_values
     }
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
@@ -1489,16 +1402,14 @@ async def attackFlowGraphStart(
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
 
-    # Resolve Identity
     identity = component.nodes[node_uid].get("identity", None)
     if identity is None:
         return
-    
-    # Send through ROUTER
+
     await component.sensor_node_router.send_msg(
         fissure.comms.MessageTypes.COMMANDS,
         msg,
-        target_ids=[identity]
+        target_ids=[identity],
     )
 
 
@@ -2479,19 +2390,6 @@ async def flowGraphError(component: object, node_uid="", error=""):
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphError",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def multiStageAttackFinished(component: object, node_uid=""):
-    """
-    Forwards the multi-stage attack finished message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "multiStageAttackFinished",
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -7219,6 +7117,7 @@ async def targetPatch(
         ),
         "display_label": display_label,
         "state": record.get("state"),
+        "notes": record.get("notes", ""),
         "frequency_mhz": record.get(
             "frequency_mhz"
         ),
@@ -7350,6 +7249,7 @@ async def sendTargetsListTak(
                 ),
                 "display_label": display_label,
                 "state": target.get("state"),
+                "notes": target.get("notes", ""),
                 "frequency_mhz": target.get(
                     "frequency_mhz"
                 ),

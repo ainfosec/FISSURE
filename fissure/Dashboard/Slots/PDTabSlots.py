@@ -1809,8 +1809,8 @@ def _slotPD_StatusSearchLibraryClicked(dashboard: QtCore.QObject):
     fissure.Dashboard.Slots.LibraryTabSlots._slotLibrarySearchCurrentSOI_Clicked(dashboard)
 
     # Change the Tab
-    dashboard.ui.tabWidget_library.setCurrentIndex(2)
-    dashboard.ui.tabWidget.setCurrentIndex(7)
+    dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_library)
+    dashboard.ui.tabWidget_library.setCurrentWidget(dashboard.ui.tab_search)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -4244,8 +4244,8 @@ def _slotPD_BitSlicingAddToLibraryClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_library_pd_packet.horizontalHeader().setSectionResizeMode(2,QtWidgets.QHeaderView.Stretch)
 
         # Change the Tab
-        dashboard.ui.tabWidget_library.setCurrentIndex(3)
-        dashboard.ui.tabWidget.setCurrentIndex(7)
+        dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_library)
+        dashboard.ui.tabWidget_library.setCurrentWidget(dashboard.ui.tab_protocol_data)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -4301,8 +4301,8 @@ def _slotPD_BitSlicingSearchLibraryClicked(dashboard: QtCore.QObject):
         dashboard.ui.textEdit_library_search_field_value.setPlainText(new_text)
 
         # Change the Tab
-        dashboard.ui.tabWidget_library.setCurrentIndex(2)
-        dashboard.ui.tabWidget.setCurrentIndex(7)
+        dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_library)
+        dashboard.ui.tabWidget_library.setCurrentWidget(dashboard.ui.tab_search)
 
 
 @qasync.asyncSlot(QtCore.QObject)
