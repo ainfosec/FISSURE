@@ -353,7 +353,7 @@ async def _slotSingleActionQueryClicked(dashboard: QtCore.QObject):
     dashboard.ui.pushButton_ta_single_action_query.setText("Querying...")
     dashboard.ui.label_ta_single_action_setup_info.setText("Querying available actions...")
 
-    await dashboard.backend.queryPluginActions(node_uid, context=ACTION_QUERY_CONTEXT, scope="all_plugins")
+    await dashboard.backend.queryPluginActions(node_uid, context=ACTION_QUERY_CONTEXT, scope="all_plugins", exclude_tags=["ui.fuzzing"])
 
 
 def handle_single_action_action_query_results(

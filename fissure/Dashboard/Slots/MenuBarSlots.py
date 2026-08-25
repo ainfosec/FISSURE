@@ -5420,14 +5420,6 @@ async def _slotMenuDemoAttackAllClicked(dashboard: QtWidgets.QMainWindow):
 
 
 @qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoAttackFuzzingTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
 async def _slotMenuDemoAttackPacketCrafterTabClicked(dashboard: QtWidgets.QMainWindow):
     """
     Executes the demo script and logs its progress.

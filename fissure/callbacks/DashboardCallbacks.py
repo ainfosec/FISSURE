@@ -23,6 +23,7 @@ from fissure.Dashboard.Slots import (
     ArchiveTabSlots,
     AttackTabSlots,
     DashboardSlots,
+    FuzzingTabSlots,
     IQDataTabSlots,
     LibraryTabSlots,
     LogTabSlots,
@@ -65,24 +66,6 @@ async def flowGraphFinished(component: object, category=""):
             component.frontend.ui.label2_pd_status_flow_graph_status.setText("Stopped")
             component.frontend.refreshStatusBarText()
 
-    elif category == "Attack":
-        # Fuzzing is temporarily hidden but still owns the remaining legacy
-        # attack flow-graph lifecycle until that tab is modernized.
-        if component.frontend.ui.pushButton_attack_fuzzing_start.text() == "Stop Attack":
-            component.frontend.ui.pushButton_attack_fuzzing_start.setText("Start Attack")
-            component.frontend.ui.pushButton_attack_fuzzing_apply_changes.setEnabled(False)
-            component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Stopped")
-
-            table = component.frontend.ui.tableWidget_attack_fuzzing_flow_graph_current_values
-            for row in range(table.rowCount()):
-                item = table.takeItem(row, 0)
-                if item is None:
-                    continue
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
-                table.setItem(row, 0, item)
-
-        component.frontend.refreshStatusBarText()
-
 
 async def flowGraphStarted(component: object, category=""):
     """Update Dashboard controls when a legacy flow graph reports that it started."""
@@ -96,16 +79,6 @@ async def flowGraphStarted(component: object, category=""):
             component.frontend.statusbar_text[component.frontend.active_sensor_node][2] = (
                 "Running Flow Graph... " + filepath.rsplit("/", 1)[-1]
             )
-            component.frontend.refreshStatusBarText()
-
-    elif category == "Attack":
-        # The remaining legacy attack runner is retained only for the hidden
-        # Fuzzing workflow until Fuzzing is converted to generic actions.
-        component.frontend.ui.label2_attack_fuzzing_flow_graph_status.setText("Running...")
-        component.frontend.ui.pushButton_attack_fuzzing_start.setEnabled(True)
-
-        if component.frontend.active_sensor_node > -1:
-            component.frontend.statusbar_text[component.frontend.active_sensor_node][3] = "Running Flow Graph..."
             component.frontend.refreshStatusBarText()
 
 
@@ -2239,6 +2212,17 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         )
 
     try:
+        await FuzzingTabSlots.update_fuzzing_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update Fuzzing status from selected node: {e}"
+        )
+
+    try:
         await SequentialActionTabSlots.update_sequential_actions_status_from_selected_node(
             frontend,
             node_uid=node_uid,
@@ -2803,13 +2787,22 @@ def queryPluginActionsResults(
         return
 
     if context.startswith("targets_actions.single_action"):
-            SingleActionTabSlots.handle_single_action_action_query_results(
-                frontend,
-                node_uid=node_uid,
-                context=context,
-                actions=actions,
-            )
-            return
+        SingleActionTabSlots.handle_single_action_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("targets_actions.fuzzing"):
+        FuzzingTabSlots.handle_fuzzing_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
 
     if context.startswith("targets_actions.sequential_action.selection"):
         dialog = frontend.popups.get("SequentialActionSelectionDialog")
@@ -2941,6 +2934,16 @@ def queryPluginActionSchemaResults(
     
     if context.startswith("targets_actions.single_action"):
         SingleActionTabSlots.handle_single_action_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("targets_actions.fuzzing"):
+        FuzzingTabSlots.handle_fuzzing_action_schema(
             frontend,
             plugin_name=plugin_name,
             action_name=action_name,

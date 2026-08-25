@@ -703,13 +703,6 @@ def getMultiStageAttackNames(library, version):
     return [row[2] for row in library["attacks"] if row[7] == "Multi-Stage"]
 
 
-def getFuzzingAttackNames(library, version):
-    """
-    Returns the attack_name of each row in the attacks table if the category is "Fuzzing".
-    """
-    return [row[1] + ' - ' + row[2] for row in library["attacks"] if row[7] == "Fuzzing"]
-
-
 def getFields(library, protocol, packet_name):
     """
     Returns the sorted field names (no data) for a protocol and packet type from the packet_types table.

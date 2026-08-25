@@ -987,7 +987,6 @@
      </property>
      <addaction name="actionDemo_Attack_All"/>
      <addaction name="separator"/>
-     <addaction name="actionDemo_Attack_Fuzzing_Tab"/>
      <addaction name="actionDemo_Attack_Packet_Crafter_Tab"/>
     </widget>
     <widget class="QMenu" name="menuDemo_IQ_Data_Tab">

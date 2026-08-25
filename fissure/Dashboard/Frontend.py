@@ -6,6 +6,7 @@ from fissure.Dashboard.Slots import (
     TargetsTabSlots,
     TacticalTabSlots,
     DashboardSlots,
+    FuzzingTabSlots,
     IQDataTabSlots,
     LibraryTabSlots,
     LibraryTabPluginManagerTabSlots,
@@ -154,7 +155,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Plugins")
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Operations")
         self.remove_tab_by_text(self.ui.tabWidget_library, "Plugin Manager")
-        self.remove_tab_by_text(self.ui.tabWidget_attack_attack, "Fuzzing")
         self.ui.pushButton_sensor_nodes_exploit_run.setVisible(False)
 
         # Load FISSURE Logo
@@ -495,11 +495,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.target_soi = []
         self.soi_blacklist = []
 
-        self.ui.tabWidget.setTabToolTip(
-            1,
-            "Target Signal Identification",
-        )
-
         try:
             TSITabSlots.initialize_tsi_conditioner_controls(
                 self
@@ -589,9 +584,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_pd_flow_graphs_end_frequency_margin.setPlainText("0")
         self.ui.textEdit_pd_sniffer_netcat_ip.setPlainText("127.0.0.1")
         self.ui.textEdit_pd_sniffer_netcat_port.setPlainText("55555")
-
-        # Create Tooltip
-        self.ui.tabWidget.setTabToolTip(2, "Protocol Discovery")
 
         # Disable the Tabs
         self.ui.tabWidget_protocol.setTabEnabled(1, False)
@@ -774,6 +766,7 @@ class Dashboard(QtWidgets.QMainWindow):
         TargetsTabSlots.initialize_targets_tab(self)
         SingleActionTabSlots.initialize_single_action_tab(self)
         SequentialActionTabSlots.initialize_sequential_actions_tab(self)
+        FuzzingTabSlots.initialize_fuzzing_tab(self)
 
         # Packet Crafter
         self.ui.textEdit_packet_scapy_interval.setPlainText(".1")
@@ -1802,15 +1795,17 @@ class Dashboard(QtWidgets.QMainWindow):
         self.configurePD_Hardware()
         SingleActionTabSlots.update_single_action_selected_node_gate(self)
         SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
+        FuzzingTabSlots.update_fuzzing_selected_node_gate(self)
         self.configureIQ_Hardware()
         self.configureArchiveHardware()
         self.configureSensorNodeHardware()
 
 
-    def configureHighThroughputWidgets(self):
-        """Refresh Dashboard controls for a high-throughput Sensor Node connection."""
+    def configureLowThroughputWidgets(self):
+        """Refresh Dashboard controls for a low-throughput Sensor Node connection."""
         SingleActionTabSlots.update_single_action_selected_node_gate(self)
         SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
+        FuzzingTabSlots.update_fuzzing_selected_node_gate(self)
         SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
 
@@ -2135,6 +2130,7 @@ def connect_slots(dashboard: Dashboard):
     connect_targets_slots(dashboard)
     connect_single_action_slots(dashboard)
     connect_sequential_action_slots(dashboard)
+    connect_fuzzing_slots(dashboard)
     connect_attack_slots(dashboard)
     connect_archive_slots(dashboard)
     connect_sensor_nodes_slots(dashboard)
@@ -2638,7 +2634,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionDemo_TSI_SOI_Aggregator_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_SOI_AggregatorTabClicked(dashboard))
     dashboard.window.actionDemo_PD_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoPD_AllClicked(dashboard))
     dashboard.window.actionDemo_Attack_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackAllClicked(dashboard))
-    dashboard.window.actionDemo_Attack_Fuzzing_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackFuzzingTabClicked(dashboard))
     dashboard.window.actionDemo_Attack_Packet_Crafter_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackPacketCrafterTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataAllClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Data_Viewer.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataDataViewerClicked(dashboard))
@@ -4171,6 +4166,21 @@ def connect_sequential_action_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_ta_sequential_actions_detector_remove.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDetectorRemoveClicked(dashboard))
     dashboard.ui.tableWidget_ta_sequential_actions_detectors.itemSelectionChanged.connect(lambda: SequentialActionTabSlots._slotSequentialActionsDetectorSelectionChanged(dashboard))
     dashboard.ui.pushButton_ta_sequential_actions_start_stop.clicked.connect(lambda: SequentialActionTabSlots._slotSequentialActionsStartStopClicked(dashboard))
+
+
+def connect_fuzzing_slots(dashboard: Dashboard):
+    dashboard.ui.comboBox_ta_fuzzing_protocol.currentIndexChanged.connect(lambda: FuzzingTabSlots._slotFuzzingProtocolChanged(dashboard))
+    dashboard.ui.comboBox_ta_fuzzing_packet_type.currentIndexChanged.connect(lambda: FuzzingTabSlots._slotFuzzingPacketTypeChanged(dashboard))
+    dashboard.ui.comboBox_ta_fuzzing_hardware.currentIndexChanged.connect(lambda: FuzzingTabSlots._slotFuzzingHardwareChanged(dashboard))
+    dashboard.ui.comboBox_ta_fuzzing_plugin.currentIndexChanged.connect(lambda: FuzzingTabSlots._slotFuzzingPluginChanged(dashboard))
+    dashboard.ui.comboBox_ta_fuzzing_action.currentIndexChanged.connect(lambda: FuzzingTabSlots._slotFuzzingActionChanged(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_query.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingQueryClicked(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_customize.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingCustomizeClicked(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_restore_defaults.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingRestoreDefaultsClicked(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_all_binary.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingAllBinaryClicked(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_all_hex.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingAllHexClicked(dashboard))
+    dashboard.ui.pushButton_ta_fuzzing_start_stop.clicked.connect(lambda: FuzzingTabSlots._slotFuzzingStartStopClicked(dashboard))
+    dashboard.ui.tableWidget_ta_fuzzing_fields.cellChanged.connect(lambda row, column: FuzzingTabSlots._slotFuzzingFieldItemChanged(dashboard, row, column))
 
 
 def connect_attack_slots(dashboard: Dashboard):

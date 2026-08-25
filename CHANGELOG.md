@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-25
+
+Rebuild Fuzzing around protocol plugin actions
+
+### Added
+
+- Added the rebuilt Fuzzing workflow under Targets & Actions with Library-driven protocol and packet-type selection, per-field fuzz configuration, seed and interval controls, Restore Defaults / All Binary / All Hex helpers, plugin-action querying, dynamic action parameters, and Start/Stop execution status.
+- Added the first protocol-owned fuzzing capability for X10, including the `x10_ook_field_fuzzer` action, B210 execution operation, and maint-3.8 X10 OOK field-fuzzing flow graph packaged under the X10 plugin.
+
+### Changed
+
+- Moved fuzzing execution onto the current plugin/action operation lifecycle while preserving the existing structured field-fuzzing mechanism and shared `gr-fuzzer` behavior instead of replacing the underlying fuzzing model.
+- Removed the legacy Fuzzing/Attack execution path, including the old Dashboard, HIPRFISR, and Sensor Node flow-graph runners, physical-fuzzing controls, Attack variable handling, obsolete Fuzzing UI, and the legacy alert-sender path now superseded by plugin operation results.
+- Made fuzzing capabilities protocol-centric and explicitly tagged for the Fuzzing workspace so specialized fuzzing actions can be filtered by protocol and hardware without appearing in the generic Single Action or Sequential Actions workflows.
+- Moved fuzzing runtime setup to the Sensor Node operation path, with RF/execution parameters and the Library-derived fuzzing plan passed into the protocol flow graph while the hub remains responsible for orchestration.
+- Updated the light, dark, and custom themes for the rebuilt Fuzzing workflow, including the guided setup/parameter/field/execution cards, field controls, state-aware Start/Stop button, execution status, setup grouping, and a persistent readable Operation ID that remains visible after a run completes or stops.
+
+### Fixed
+
+- Fixed the shared `gr-fuzzer` lifecycle so its private fuzzing thread stops with the GNU Radio flow graph instead of continuing to generate packets after the operation has been stopped.
+
 ## 2026-8-23
 
 Reorganize Dashboard around targets and plugin actions

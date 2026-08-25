@@ -75,7 +75,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="iconSize">
     <size>
@@ -28328,7 +28328,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_ta_targets">
       <attribute name="title">
@@ -28725,7 +28725,7 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>10</x>
            <y>535</y>
-           <width>1195</width>
+           <width>1200</width>
            <height>235</height>
           </rect>
          </property>
@@ -28900,7 +28900,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>555</x>
             <y>30</y>
-            <width>630</width>
+            <width>635</width>
             <height>195</height>
            </rect>
           </property>
@@ -28923,7 +28923,7 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>390</width>
+           <width>395</width>
            <height>335</height>
           </rect>
          </property>
@@ -29031,7 +29031,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_ta_single_action_query">
           <property name="geometry">
            <rect>
-            <x>128</x>
+            <x>130</x>
             <y>300</y>
             <width>135</width>
             <height>28</height>
@@ -29074,7 +29074,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>15</x>
             <y>165</y>
-            <width>360</width>
+            <width>365</width>
             <height>125</height>
            </rect>
           </property>
@@ -29089,7 +29089,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QFrame" name="frame_ta_single_action_parameters">
          <property name="geometry">
           <rect>
-           <x>410</x>
+           <x>415</x>
            <y>10</y>
            <width>795</width>
            <height>335</height>
@@ -29185,7 +29185,7 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>10</x>
            <y>355</y>
-           <width>1195</width>
+           <width>1200</width>
            <height>170</height>
           </rect>
          </property>
@@ -29242,7 +29242,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>5</x>
             <y>60</y>
-            <width>1105</width>
+            <width>1110</width>
             <height>100</height>
            </rect>
           </property>
@@ -29286,7 +29286,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_ta_single_action_detector_add">
           <property name="geometry">
            <rect>
-            <x>1115</x>
+            <x>1120</x>
             <y>80</y>
             <width>70</width>
             <height>27</height>
@@ -29305,7 +29305,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_ta_single_action_detector_remove">
           <property name="geometry">
            <rect>
-            <x>1115</x>
+            <x>1120</x>
             <y>110</y>
             <width>70</width>
             <height>27</height>
@@ -30450,822 +30450,30 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_attack_fuzzing">
+     <widget class="QWidget" name="tab_ta_fuzzing">
       <attribute name="title">
        <string>Fuzzing</string>
       </attribute>
-      <widget class="QTabWidget" name="tabWidget_attack_fuzzing">
+      <widget class="QStackedWidget" name="stackedWidget_ta_fuzzing">
        <property name="geometry">
         <rect>
-         <x>-1</x>
-         <y>90</y>
-         <width>915</width>
-         <height>670</height>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>815</height>
         </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
        </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="tab_6">
-        <attribute name="title">
-         <string>Fuzzing Controls </string>
-        </attribute>
-        <widget class="QStackedWidget" name="stackedWidget_fuzzing">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>-5</y>
-           <width>910</width>
-           <height>635</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="lineWidth">
-          <number>1</number>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="Fields">
-          <widget class="QLabel" name="label1_245">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>890</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Ubuntu</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string>Data Field Fuzzing</string>
-           </property>
-          </widget>
-          <widget class="QFrame" name="frame1_65">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>890</width>
-             <height>600</height>
-            </rect>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <widget class="QLabel" name="label2_attack_fuzzing_default_length_total">
-            <property name="geometry">
-             <rect>
-              <x>805</x>
-              <y>575</y>
-              <width>75</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_attack_fuzzing_restore_defaults">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>525</x>
-              <y>7</y>
-              <width>126</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Restore Defaults</string>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_attack_fuzzing_all_binary">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>690</x>
-              <y>7</y>
-              <width>75</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>All Binary</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_attack_fuzzing_current_length_total">
-            <property name="geometry">
-             <rect>
-              <x>730</x>
-              <y>575</y>
-              <width>75</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_attack_fuzzing_all_hex">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>770</x>
-              <y>7</y>
-              <width>75</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>All Hex</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_attack_fuzzing_seed">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>575</y>
-              <width>96</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Interval (sec):</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_attack_fuzzing_seed">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>60</x>
-              <y>7</y>
-              <width>46</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="comboBox_attack_fuzzing_subcategory">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>225</x>
-              <y>7</y>
-              <width>291</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>-1</number>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_attack_fuzzing_interval">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>110</x>
-              <y>570</y>
-              <width>36</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-            <property name="lineWrapMode">
-             <enum>QTextEdit::NoWrap</enum>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_attack_fuzzing_subcategory">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>125</x>
-              <y>12</y>
-              <width>96</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Subcategory:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTableWidget" name="tableWidget_attack_fuzzing_data_field">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>5</x>
-              <y>40</y>
-              <width>880</width>
-              <height>526</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <attribute name="horizontalHeaderMinimumSectionSize">
-             <number>5</number>
-            </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderMinimumSectionSize">
-             <number>24</number>
-            </attribute>
-            <attribute name="verticalHeaderDefaultSectionSize">
-             <number>24</number>
-            </attribute>
-            <attribute name="verticalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <row>
-             <property name="text">
-              <string/>
-             </property>
-            </row>
-            <column>
-             <property name="text">
-              <string>Select</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Type</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Min.</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Max.</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Bin/Hex</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Data</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Length</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Default</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <item row="0" column="2">
-             <property name="text">
-              <string/>
-             </property>
-            </item>
-            <item row="0" column="3">
-             <property name="text">
-              <string/>
-             </property>
-            </item>
-           </widget>
-           <widget class="QLabel" name="label2_attack_fuzzing_seed_2">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>12</y>
-              <width>45</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Seed:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_86">
-            <property name="geometry">
-             <rect>
-              <x>690</x>
-              <y>575</y>
-              <width>36</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Total:</string>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="Variables">
-          <widget class="QLabel" name="label1_244">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>885</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Ubuntu</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string>Variable Fuzzing</string>
-           </property>
-          </widget>
-          <widget class="QFrame" name="frame1_58">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>885</width>
-             <height>600</height>
-            </rect>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <widget class="QTableWidget" name="tableWidget_fuzzing_variables">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>100</y>
-              <width>865</width>
-              <height>490</height>
-             </rect>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <attribute name="horizontalHeaderMinimumSectionSize">
-             <number>5</number>
-            </attribute>
-            <attribute name="horizontalHeaderDefaultSectionSize">
-             <number>100</number>
-            </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string>Select</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Type</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Seed/Step</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Min.</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Max.</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Default</string>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-            </column>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_fuzzing_from_file">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>95</x>
-              <y>5</y>
-              <width>676</width>
-              <height>46</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_fuzzing_variables_fg">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>5</x>
-              <y>10</y>
-              <width>86</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Flow Graph:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_attack_fuzzing_select_file">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>775</x>
-              <y>5</y>
-              <width>71</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_fuzzing_update_period">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>70</y>
-              <width>120</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Update Period (s):</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_fuzzing_update_period">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>135</x>
-              <y>65</y>
-              <width>75</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="tab_7">
-        <attribute name="title">
-         <string>Flow Graph Controls</string>
-        </attribute>
-        <widget class="QLabel" name="label1_246">
+       <widget class="QWidget" name="page_ta_fuzzing_controls">
+        <widget class="QFrame" name="frame_ta_fuzzing_setup">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>5</y>
-           <width>890</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Current Values</string>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_66">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>25</y>
-           <width>890</width>
-           <height>600</height>
+           <y>10</y>
+           <width>470</width>
+           <height>295</height>
           </rect>
          </property>
          <property name="frameShape">
@@ -31274,13 +30482,395 @@ p, li { white-space: pre-wrap; }
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QTableWidget" name="tableWidget_attack_fuzzing_flow_graph_current_values">
+         <widget class="QLabel" name="label_ta_fuzzing_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Fuzzing Setup</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>415</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select the protocol, packet type, hardware, and compatible fuzzing action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_480">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>149</y>
+            <width>80</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Hardware:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_fuzzing_hardware">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>145</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_setup_badge">
           <property name="geometry">
            <rect>
             <x>10</x>
             <y>10</y>
-            <width>870</width>
-            <height>580</height>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_481">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>219</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_fuzzing_action">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>215</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_query">
+          <property name="geometry">
+           <rect>
+            <x>168</x>
+            <y>255</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_482">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>184</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Plugin:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_fuzzing_plugin">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>180</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_483">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>60</y>
+            <width>80</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Protocol:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_fuzzing_protocol">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>56</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_484">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>95</y>
+            <width>80</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Packet Type:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_fuzzing_packet_type">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>91</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="Line" name="line2_1">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>132</y>
+            <width>440</width>
+            <height>3</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_fuzzing_parameters">
+         <property name="geometry">
+          <rect>
+           <x>490</x>
+           <y>10</y>
+           <width>720</width>
+           <height>295</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_fuzzing_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Action Parameters</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>500</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Configure the execution and RF parameters for the selected action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_ta_fuzzing_parameters">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>700</width>
+            <height>200</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_ta_fuzzing_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>698</width>
+             <height>198</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>293</x>
+            <y>255</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_fuzzing_fields">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>315</y>
+           <width>1200</width>
+           <height>380</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_fuzzing_fields_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Field Fuzzing</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_fields_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>500</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Choose packet fields and define how each field is varied during fuzzing.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_fields_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_all_binary">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>985</x>
+            <y>55</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>All Binary</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_fuzzing_interval">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>55</y>
+            <width>96</width>
+            <height>27</height>
            </rect>
           </property>
           <property name="font">
@@ -31289,17 +30879,121 @@ p, li { white-space: pre-wrap; }
             <strikeout>false</strikeout>
            </font>
           </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
+          <property name="text">
+           <string>Interval (s):</string>
           </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_restore_defaults">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>850</x>
+            <y>55</y>
+            <width>130</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Restore Defaults</string>
+          </property>
+         </widget>
+         <widget class="QTextEdit" name="textEdit_ta_fuzzing_seed">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>55</y>
+            <width>45</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_fuzzing_seed">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>55</y>
+            <width>45</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Seed:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_ta_fuzzing_fields">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>1180</width>
+            <height>280</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>5</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
-           <bool>true</bool>
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderMinimumSectionSize">
+           <number>24</number>
+          </attribute>
+          <attribute name="verticalHeaderDefaultSectionSize">
+           <number>24</number>
           </attribute>
           <attribute name="verticalHeaderStretchLastSection">
            <bool>false</bool>
@@ -31311,7 +31005,7 @@ p, li { white-space: pre-wrap; }
           </row>
           <column>
            <property name="text">
-            <string>Value</string>
+            <string>Select</string>
            </property>
            <property name="font">
             <font>
@@ -31319,243 +31013,372 @@ p, li { white-space: pre-wrap; }
             </font>
            </property>
           </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Min.</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Max.</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Bin/Hex</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Data</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Default</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+          <item row="0" column="2">
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item row="0" column="3">
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+         </widget>
+         <widget class="QTextEdit" name="textEdit_ta_fuzzing_interval">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>55</y>
+            <width>45</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
+          <property name="lineWrapMode">
+           <enum>QTextEdit::NoWrap</enum>
+          </property>
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_all_hex">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>1090</x>
+            <y>55</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>All Hex</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_fuzzing_execution">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>705</y>
+           <width>1200</width>
+           <height>65</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_fuzzing_execution_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>235</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Execution</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_execution_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>480</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start or stop the fuzzing operation and monitor its current status.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_execution_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_start_stop">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>1025</x>
+            <y>15</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_fuzzing_execution_status_label">
+          <property name="geometry">
+           <rect>
+            <x>540</x>
+            <y>30</y>
+            <width>50</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_execution_status">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>30</y>
+            <width>350</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_fuzzing_execution_operation_id">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>5</y>
+            <width>350</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_fuzzing_execution_operation_id_label">
+          <property name="geometry">
+           <rect>
+            <x>540</x>
+            <y>5</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Operation ID:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
          </widget>
         </widget>
        </widget>
-      </widget>
-      <widget class="QPushButton" name="pushButton_attack_fuzzing_start">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>640</x>
-         <y>770</y>
-         <width>130</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Start Attack</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_attack_fuzzing_apply_changes">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>505</x>
-         <y>770</y>
-         <width>130</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Apply All</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_attack_fuzzing_flow_graph_status">
-       <property name="geometry">
-        <rect>
-         <x>770</x>
-         <y>775</y>
-         <width>130</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Not Loaded</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="Line" name="line3_11">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>80</y>
-         <width>911</width>
-         <height>2</height>
-        </rect>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_78">
-       <property name="geometry">
-        <rect>
-         <x>315</x>
-         <y>10</y>
-         <width>91</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Modulation:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_81">
-       <property name="geometry">
-        <rect>
-         <x>15</x>
-         <y>10</y>
-         <width>71</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Protocol: </string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_attack_fuzzing_selected_protocol">
-       <property name="geometry">
-        <rect>
-         <x>85</x>
-         <y>9</y>
-         <width>171</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_attack_fuzzing_selected_attack">
-       <property name="geometry">
-        <rect>
-         <x>670</x>
-         <y>9</y>
-         <width>220</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_attack_fuzzing_selected_modulation">
-       <property name="geometry">
-        <rect>
-         <x>405</x>
-         <y>9</y>
-         <width>171</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_82">
-       <property name="geometry">
-        <rect>
-         <x>15</x>
-         <y>30</y>
-         <width>91</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Flow Graph:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_attack_fuzzing_selected_flow_graph">
-       <property name="geometry">
-        <rect>
-         <x>105</x>
-         <y>30</y>
-         <width>671</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_83">
-       <property name="geometry">
-        <rect>
-         <x>615</x>
-         <y>10</y>
-         <width>61</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Attack: </string>
-       </property>
+       <widget class="QWidget" name="page_ta_fuzzing_no_node">
+        <widget class="QLabel" name="label_ta_fuzzing_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_ta_fuzzing_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_ta_fuzzing_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to configure hardware, query the node, and configure the fuzzing actions.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_ta_fuzzing_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label2_ta_fuzzing_no_node_selected</zorder>
+        <zorder>label2_ta_fuzzing_select_a_node</zorder>
+        <zorder>label_ta_fuzzing_empty_icon</zorder>
+        <zorder>label_ta_fuzzing_select_sensor_node_image</zorder>
+       </widget>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_attack_packet_crafter">

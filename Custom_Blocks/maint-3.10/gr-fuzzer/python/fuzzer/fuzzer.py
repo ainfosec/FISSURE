@@ -39,35 +39,35 @@ class fuzzer(gr.sync_block):
             name = "fuzzer",
             in_sig = None,
             out_sig = None)
-        
+
         self.message_port_register_out(pmt.intern('packet_out'))
 
         # Create Fuzzing Variables
         self.fuzzing_seed = int(fuzzing_seed)
-        
+
         self.fuzzing_fields = ast.literal_eval(fuzzing_fields)
-        
+
         self.fuzzing_type = ast.literal_eval(fuzzing_type)
-        
+
         self.fuzzing_min = ast.literal_eval(fuzzing_min)
         self.fuzzing_min = list(map(int, self.fuzzing_min))
- 
+
         self.fuzzing_max = ast.literal_eval(fuzzing_max)
         self.fuzzing_max = list(map(int, self.fuzzing_max))
-                                
+
         self.fuzzing_data = str(bin(int(fuzzing_data, 16))[2:].zfill(len(fuzzing_data)*4))  # Convert to Binary
-        
+
         self.fuzzing_interval = float(fuzzing_interval)
         self.fuzzing_protocol = fuzzing_protocol
         self.fuzzing_packet_type = fuzzing_packet_type
-        
+
         self.packet_types_fields = ast.literal_eval(packet_types_fields)
 
         # Make a new Thread
         self.stop_event = threading.Event()
-        fuzz_thread = threading.Thread(target=self.run, args=())
-        fuzz_thread.daemon = True
-        fuzz_thread.start()
+        self.fuzz_thread = threading.Thread(target=self.run, args=())
+        self.fuzz_thread.daemon = True
+        self.fuzz_thread.start()
                     
 
     def run(self):        
@@ -137,7 +137,7 @@ class fuzzer(gr.sync_block):
                                             
                         # Random Fuzzing Type for Field  (Check if the Length is Greater than some Limit, Break it up into Chunks?)
                         if self.fuzzing_type[fuzz_index] == "Random":
-                            new_value = generic_rng.randrange(self.fuzzing_min[fuzz_index],self.fuzzing_max[fuzz_index],1)
+                            new_value = generic_rng.randrange(self.fuzzing_min[fuzz_index],self.fuzzing_max[fuzz_index]+1,1)
                             
                         # Sequence Fuzzing Type for Field  (Check if the Length is Greater than some Limit, Break it up into Chunks?)
                         elif self.fuzzing_type[fuzz_index] == "Sequential":
@@ -388,13 +388,15 @@ class fuzzer(gr.sync_block):
                     
                 ########################################################
                     
-                       
+            if self.stop_event.is_set():
+                break
+
             # Convert Packet to a PMT List
             print(data_out_bytes)
             list_out = pmt.list1(pmt.to_pmt(data_out_bytes[0]))
             for n in range(1,len(data_out_bytes)):
                 list_out = pmt.list_add(list_out,pmt.to_pmt(data_out_bytes[n]))
-            
+
             # Output the Packet in a Message
             try:
                 self.message_port_pub(pmt.intern('packet_out'),list_out)
@@ -402,11 +404,10 @@ class fuzzer(gr.sync_block):
                 # Stop the Thread When the Block's Program Exits
                 print("Stopping the thread")
                 self.stop_event.set()
-                
             
             # Sleep the Remainder of the Fuzzing Interval
             time_difference = self.fuzzing_interval-(time.time()-start_time)
-            time.sleep(time_difference)
+            self.stop_event.wait(max(0.0, time_difference))
             
             
             
@@ -433,7 +434,11 @@ class fuzzer(gr.sync_block):
             #~ time.sleep(self.fuzzing_interval)
             #~ ######
             
-            
+    def stop(self):
+        self.stop_event.set()
+        if self.fuzz_thread.is_alive() and threading.current_thread() is not self.fuzz_thread:
+            self.fuzz_thread.join(timeout=1.0)
+        return True           
 
     # Set Functions
     def set_fuzzing_seed(self,fuzzing_seed):

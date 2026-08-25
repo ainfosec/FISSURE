@@ -234,7 +234,7 @@ class SequentialActionSelectionDialog(DetectorSelectionDialog):
                 scope="all_plugins",
                 plugin_name="",
                 include_tags=[],
-                exclude_tags=[],
+                exclude_tags=["ui.fuzzing"],
             )
         except Exception:
             self.query_pending = False

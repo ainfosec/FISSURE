@@ -749,37 +749,6 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def attackFlowGraphStart(self, node_uid, flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo):
-        """Send the remaining legacy Fuzzing flow-graph start command."""
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "flow_graph_filepath": flow_graph_filepath,
-                "variable_names": variable_names,
-                "variable_values": variable_values,
-                "file_type": file_type,
-                "run_with_sudo": run_with_sudo,
-            }
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                fissure.comms.MessageFields.MESSAGE_NAME: "attackFlowGraphStart",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def attackFlowGraphStop(self, node_uid, parameter):
-        """Send the remaining legacy Fuzzing flow-graph stop command."""
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {"node_uid": node_uid, "parameter": parameter}
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                fissure.comms.MessageFields.MESSAGE_NAME: "attackFlowGraphStop",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
     async def autorunPlaylistQuery(self, node_uid=""):
         """Query YAML Autorun playlists stored on a Sensor Node."""
         if self.hiprfisr_connected is not True:
@@ -1594,55 +1563,6 @@ class DashboardBackend:
             msg = {
                     fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
                     fissure.comms.MessageFields.MESSAGE_NAME: "snifferFlowGraphStop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def physicalFuzzingStop(self, node_uid=""):
-        """
-        Sends message to Sensor Node to stop the physical fuzzing being performed on a running flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "physicalFuzzingStop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-    
-    async def physicalFuzzingStart(
-        self, 
-        node_uid="",
-        fuzzing_variables=[],
-        fuzzing_type="",
-        fuzzing_min=0,
-        fuzzing_max=0,
-        fuzzing_update_period=0,
-        fuzzing_seed_step=0,
-    ):
-        """
-        Command for starting physical fuzzing on a running flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "fuzzing_variables": fuzzing_variables,
-                "fuzzing_type": fuzzing_type,
-                "fuzzing_min": fuzzing_min,
-                "fuzzing_max": fuzzing_max,
-                "fuzzing_update_period": fuzzing_update_period,
-                "fuzzing_seed_step": fuzzing_seed_step,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "physicalFuzzingStart",
                     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)

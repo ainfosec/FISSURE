@@ -259,20 +259,16 @@ AIS has published several articles highlighting FISSURE’s applications, update
 - [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
 - [Hack Chat Transcript](https://hackaday.io/event/187076-rf-hacking-hack-chat/log/212136-hack-chat-transcript-part-1)
 
-## Capabilities
+## Workflow Overview
 
-- [FISSURE Capabilities (Updated: 11Sep24)](https://docs.google.com/viewer?url=https://raw.githubusercontent.com/ainfosec/FISSURE/Python3/docs/Help/FISSURE_Capabilities.pdf)
+FISSURE organizes RF workflows around a set of connected workspaces that share sensor nodes, targets, artifacts, protocol information, and plugin actions.
 
-FISSURE provides a framework for RF sensing, signal analysis, target management, action execution, automation, and distributed Sensor Node operations.
-
-- **Tactical Operations** – Monitor Sensor Nodes, detections, SOIs, Targets, artifacts, geolocation data, and TAK-based situational awareness.
-- **Signal Analysis** – Detect, record, replay, inspect, condition, classify, and analyze RF/IQ data and protocols.
-- **Targets & Actions** – Maintain Target context, run configurable plugin actions, build timed/repeating action sequences, and optionally gate actions or sequences on detections.
-- **Sensor Nodes & Automation** – Manage remote nodes, plugins, files, artifacts, operations, and boot/offline Autorun playlists.
-- **Library & Archive** – Browse signal/protocol knowledge, replay archived IQ data, build datasets, and use packet/protocol analysis utilities.
-- **Additional Tools** – Packet crafting, fuzzing/vulnerability-testing capabilities, logging, hardware abstraction, GNU Radio integration, and dark/custom themes.
-
-FISSURE is currently migrating older workflows into the plugin/action architecture while preserving useful existing capabilities.
+- **Tactical:** Monitor distributed sensor nodes, detections, targets, geolocation results, and other RF activity on a shared operational map.
+- **Signal Analysis:** Record, inspect, replay, and process IQ data; identify signals and perform protocol discovery.
+- **Targets & Actions:** Manage Targets and execute reusable plugin actions through Single Action, Sequential Actions, Fuzzing, and Packet Crafter workflows.
+- **Sensor Nodes:** Configure local and remote nodes, manage hardware, transfer files, automate startup behavior, and monitor node status.
+- **Library:** Maintain reusable protocol and packet definitions, archived signals, replay content, datasets, and supporting RF reference material.
+- **Plugins & Actions:** Extend FISSURE with protocol-specific or general-purpose capabilities that can be deployed and executed across supported nodes and interfaces.
 
 <!--
 <table style="padding:10px">

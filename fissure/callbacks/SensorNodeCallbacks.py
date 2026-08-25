@@ -292,68 +292,6 @@ async def autorunPlaylistStop(component: object):
     await component.stop_autorun_playlist()
 
 
-async def physicalFuzzingStart(
-    component: object,
-   
-    fuzzing_variables=[],
-    fuzzing_type=[],
-    fuzzing_min=[],
-    fuzzing_max=[],
-    fuzzing_update_period=0,
-    fuzzing_seed_step=0,
-):
-    """
-    Sets variables within a flow graph as specified by the Dashboard.
-    """
-    # Run Event and Do Not Block
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(
-        None, 
-        component.physicalFuzzingThreadStart, 
-        fuzzing_variables,
-        fuzzing_type,
-        fuzzing_min,
-        fuzzing_max,
-        fuzzing_update_period,
-        fuzzing_seed_step,
-    )
-
-
-async def physicalFuzzingStop(component: object):
-    """
-    Stop physical fuzzing on the currently running attack flow graph.
-    """
-    # Stop the Thread
-    component.physical_fuzzing_stop_event = True
-
-
-async def attackFlowGraphStart(
-    component: object,
-    flow_graph_filepath="",
-    variable_names=[],
-    variable_values=[],
-    file_type="",
-    run_with_sudo=False,
-):
-    """Run the remaining legacy Fuzzing flow graph."""
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(
-        None,
-        component.attackFlowGraphStart,
-        flow_graph_filepath,
-        variable_names,
-        variable_values,
-        file_type,
-        run_with_sudo,
-    )
-    await asyncio.sleep(0.1)
-
-
-async def attackFlowGraphStop(component: object, parameter=""):
-    """Stop the remaining legacy Fuzzing flow graph."""
-    component.attackFlowGraphStop(parameter)
-
-
 async def iqFlowGraphStart(
     component: object,
     flow_graph_filepath="",
@@ -474,15 +412,11 @@ async def setVariable(component: object, flow_graph="", variable="", value=""):
     if isNumber:
         if flow_graph == "Protocol Discovery":
             getattr(component.pdflowtoexec, formatted_name)(float(value))
-        elif flow_graph == "Attack":
-            getattr(component.attackflowtoexec, formatted_name)(float(value))
         elif flow_graph == "Sniffer":
             getattr(component.snifferflowtoexec, formatted_name)(float(value))
     else:
         if flow_graph == "Protocol Discovery":
             getattr(component.pdflowtoexec, formatted_name)(value)
-        elif flow_graph == "Attack":
-            getattr(component.attackflowtoexec, formatted_name)(value)
         elif flow_graph == "Sniffer":
             getattr(component.snifferflowtoexec, formatted_name)(value)
 

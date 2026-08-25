@@ -937,16 +937,6 @@ QStackedWidget[objectName^="stackedWidget2_"]{
 QStackedWidget[objectName^="stackedWidget3_"]{border: 1px solid @color3;}
 
 
-#tabWidget_attack_fuzzing > QTabBar::tab {width: 150px;}
-#tabWidget_attack_fuzzing::pane {border-bottom: 0px;}
-QTabWidget[objectName^="tabWidget_hardware"]::pane{  /*Changed*/
-    background-color: @color2;
-    border: 1px solid @color3;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-}
-
-
 /*QWidget#centralwidget{
     background-color: @color1;
 }*/
@@ -2959,6 +2949,212 @@ QLabel#label_ta_sequential_actions_select_sensor_node_image {
 QLabel#label_ta_sequential_actions_empty_icon {
     background-color: @color3;
     border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+
+/* ==========================================================
+   Targets & Actions - Fuzzing
+   ========================================================== */
+
+QFrame#frame_ta_fuzzing_setup,
+QFrame#frame_ta_fuzzing_parameters,
+QFrame#frame_ta_fuzzing_fields,
+QFrame#frame_ta_fuzzing_execution {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_ta_fuzzing_setup_badge,
+QLabel#label_ta_fuzzing_parameters_badge,
+QLabel#label_ta_fuzzing_fields_badge,
+QLabel#label_ta_fuzzing_execution_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_ta_fuzzing_setup_title,
+QLabel#label_ta_fuzzing_parameters_title,
+QLabel#label_ta_fuzzing_fields_title,
+QLabel#label_ta_fuzzing_execution_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_ta_fuzzing_setup_subtitle,
+QLabel#label_ta_fuzzing_parameters_subtitle,
+QLabel#label_ta_fuzzing_fields_subtitle,
+QLabel#label_ta_fuzzing_execution_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_ta_fuzzing_parameters {
+    background-color: @color2;
+    border: 1px solid @color13;
+}
+
+QWidget#scrollAreaWidgetContents_ta_fuzzing_parameters {
+    background-color: @color2;
+}
+
+QTableWidget#tableWidget_ta_fuzzing_fields {
+    font: 9pt "Ubuntu";
+}
+
+QTextEdit#textEdit_ta_fuzzing_seed,
+QTextEdit#textEdit_ta_fuzzing_interval {
+    font: 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_ta_fuzzing_query,
+QPushButton#pushButton_ta_fuzzing_customize,
+QPushButton#pushButton_ta_fuzzing_restore_defaults,
+QPushButton#pushButton_ta_fuzzing_all_binary,
+QPushButton#pushButton_ta_fuzzing_all_hex {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_ta_fuzzing_query:hover,
+QPushButton#pushButton_ta_fuzzing_customize:hover,
+QPushButton#pushButton_ta_fuzzing_restore_defaults:hover,
+QPushButton#pushButton_ta_fuzzing_all_binary:hover,
+QPushButton#pushButton_ta_fuzzing_all_hex:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_ta_fuzzing_query:pressed,
+QPushButton#pushButton_ta_fuzzing_customize:pressed,
+QPushButton#pushButton_ta_fuzzing_restore_defaults:pressed,
+QPushButton#pushButton_ta_fuzzing_all_binary:pressed,
+QPushButton#pushButton_ta_fuzzing_all_hex:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_ta_fuzzing_query:disabled,
+QPushButton#pushButton_ta_fuzzing_customize:disabled,
+QPushButton#pushButton_ta_fuzzing_restore_defaults:disabled,
+QPushButton#pushButton_ta_fuzzing_all_binary:disabled,
+QPushButton#pushButton_ta_fuzzing_all_hex:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+
+QPushButton#pushButton_ta_fuzzing_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #18a522,
+        stop:1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_ta_fuzzing_start_stop:hover {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #22bd2d,
+        stop:1 #079811
+    );
+}
+
+QPushButton#pushButton_ta_fuzzing_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #d9534f,
+        stop:1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_ta_fuzzing_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #e86763,
+        stop:1 #c9302c
+    );
+}
+
+QPushButton#pushButton_ta_fuzzing_start_stop:disabled,
+QPushButton#pushButton_ta_fuzzing_start_stop[running="true"]:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+
+QLabel#label_ta_fuzzing_execution_status {
+    qproperty-alignment: AlignCenter;
+    color: @color1;
+    background-color: @color9;
+    border: 1px solid @color1;
+    border-radius: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_fuzzing_execution_operation_id {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_ta_fuzzing_select_sensor_node_image {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label_ta_fuzzing_empty_icon {
+    background-color: @color3;
     border-radius: 24px;
     padding: 6px;
 }

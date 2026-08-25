@@ -40,7 +40,6 @@ import logging
 
 from concurrent.futures import ThreadPoolExecutor
 
-from fissure.utils.alert_sender import alertSender
 from datetime import datetime, timezone
 
 import warnings
@@ -63,16 +62,12 @@ def add_subdirectories_to_path(base_path):
 
 if "maint-3.8" in fissure.utils.get_fg_library_dir(fissure.utils.get_os_info()):
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "PD Flow Graphs"))
-    sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "Single-Stage Flow Graphs"))
-    sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "Fuzzing Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "IQ Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "Archive Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "Sniffer Flow Graphs"))
     add_subdirectories_to_path(os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.8", "TSI Flow Graphs"))
 elif "maint-3.10" in fissure.utils.get_fg_library_dir(fissure.utils.get_os_info()):
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "PD Flow Graphs"))
-    sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "Single-Stage Flow Graphs"))
-    sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "Fuzzing Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "IQ Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "Archive Flow Graphs"))
     sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "maint-3.10", "Sniffer Flow Graphs"))
@@ -251,10 +246,6 @@ class SensorNode(object):
         self.heartbeat_interval = int(self.settings_dict["Sensor Node"].get("heartbeat_interval", 5))
         self.heartbeat_interval_connected = int(self.settings_dict["Sensor Node"].get("heartbeat_interval_connected", 20))
         self.sensor_node_heartbeat_time = 0
-        self.attack_flow_graph_loaded = False
-        self.physical_fuzzing_stop_event = False
-        self.attack_script_name = ""
-        self.alert_senders = {}
 
         self.running_PD = False
         self.pd_bits_socket = None
@@ -1769,14 +1760,6 @@ class SensorNode(object):
                         exc_info=True,
                     )
 
-            for sender in self.alert_senders.values():
-                try:
-                    sender.stop()
-                except Exception:
-                    pass
-
-            self.alert_senders.clear()
-
             for task in list(self.child_tasks):
                 if not task.done():
                     task.cancel()
@@ -2080,16 +2063,6 @@ class SensorNode(object):
                         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-        elif flow_graph_type == "Attack":
-            PARAMETERS = {
-                "category": "Attack"
-            }
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinished",
-                        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
         elif flow_graph_type == "IQ":
             # Remote Sensor Node
             if self.local_remote == "remote":
@@ -2168,14 +2141,6 @@ class SensorNode(object):
                         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-        elif flow_graph_type == "Attack":
-            PARAMETERS = {"category": "Attack"}
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStarted",
-                        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
         elif flow_graph_type == "IQ":
             msg = {
                         fissure.comms.MessageFields.IDENTIFIER: self.identifier,
@@ -2212,51 +2177,6 @@ class SensorNode(object):
                         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    def runPythonScriptThread(self, stop_event, file_type, flow_graph_filename, variable_names, variable_values, run_with_sudo):
-        """Run the remaining legacy attack Python script used by Fuzzing."""
-        try:
-            self.attackFlowGraphStop(None)
-        except Exception:
-            pass
-
-        try:
-            if self.local_remote == "remote":
-                for index, variable_name in enumerate(variable_names):
-                    if "filepath" in variable_name:
-                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
-                flow_graph_filename = self.replaceUsername(flow_graph_filename, os.getenv("USER"))
-
-            for index in range(len(variable_values)):
-                variable_values[index] = variable_values[index].replace("`", "\\`")
-                variable_values[index] = variable_values[index].replace('"', '\\"')
-
-            arguments = "".join(f'"{value}" ' for value in variable_values)
-            python_type = "python3" if file_type == "Python3 Script" else "python2"
-            sudo_prefix = "sudo " if run_with_sudo else ""
-            command = f'{sudo_prefix}{python_type} "{flow_graph_filename}" {arguments}'
-
-            asyncio.run(self.flowGraphStarted("Attack"))
-            self.attack_script_name = flow_graph_filename
-            self.alert_senders["attack"] = alertSender(
-                command,
-                self.identifier,
-                self.identifier,
-                self.hiprfisr_socket,
-                self.gps_position,
-                self.logger,
-                self.network_type,
-            )
-            self.alert_senders["attack"].thread.join()
-
-            if self.network_type == "IP":
-                asyncio.run(self.flowGraphFinished("Attack"))
-
-        except Exception as e:
-            asyncio.run(self.flowGraphStarted("Attack"))
-            asyncio.run(self.flowGraphFinished("Attack"))
-            asyncio.run(self.flowGraphError(str(e)))
 
 
     def overwriteFlowGraphVariables(self, flow_graph_filename, variable_names, variable_values):
@@ -2368,127 +2288,14 @@ class SensorNode(object):
         if isNumber:
             if flow_graph == "Protocol Discovery":
                 getattr(self.pdflowtoexec,formatted_name)(float(value))
-            elif flow_graph == "Attack":
-                getattr(self.attackflowtoexec,formatted_name)(float(value))
             elif flow_graph == "Sniffer":
                 getattr(self.snifferflowtoexec,formatted_name)(float(value))
         else:
             if flow_graph == "Protocol Discovery":
                 getattr(self.pdflowtoexec,formatted_name)(value)
-            elif flow_graph == "Attack":
-                getattr(self.attackflowtoexec,formatted_name)(value)
             elif flow_graph == "Sniffer":
                 getattr(self.snifferflowtoexec,formatted_name)(value)
 
-
-    ######################  Attack Flow Graphs  ########################
-
-    def attackFlowGraphStart(self, flow_graph_filepath="", variable_names=[], variable_values=[], file_type="", run_with_sudo=False):
-        """Run the remaining legacy attack flow graph used by Fuzzing."""
-        stop_event = threading.Event()
-
-        if file_type == "Flow Graph":
-            c_thread = threading.Thread(
-                target=self.runFlowGraphThread,
-                args=(stop_event, flow_graph_filepath, variable_names, variable_values),
-            )
-        elif file_type == "Flow Graph - GUI":
-            c_thread = threading.Thread(
-                target=self.runFlowGraphGUI_Thread,
-                args=(stop_event, flow_graph_filepath, variable_names, variable_values),
-            )
-        else:
-            c_thread = threading.Thread(
-                target=self.runPythonScriptThread,
-                args=(stop_event, file_type, flow_graph_filepath, variable_names, variable_values, run_with_sudo),
-            )
-
-        c_thread.daemon = True
-        c_thread.start()
-    
-
-    def attackFlowGraphStop(self, parameter=""):
-        """Stop the remaining legacy attack flow graph used by Fuzzing."""
-        if parameter == "Python Script":
-            sender = self.alert_senders.pop("attack", None)
-            if sender:
-                try:
-                    sender.stop()
-                    sender.thread.join(timeout=3)
-                except Exception as e:
-                    self.logger.warning(f"Failed to stop alert sender: {e}")
-
-            os.system("sudo pkill -f " + '"' + self.attack_script_name + '"')
-            self.attack_flow_graph_loaded = False
-
-        elif parameter == "Flow Graph - GUI":
-            os.system("sudo pkill -f " + '"' + self.attack_script_name + '"')
-            self.attack_flow_graph_loaded = False
-
-        elif self.attack_flow_graph_loaded:
-            self.attackflowtoexec.stop()
-            self.attackflowtoexec.wait()
-
-            if hasattr(self.attackflowtoexec, "fuzzer_fuzzer_0_0"):
-                self.attackflowtoexec.fuzzer_fuzzer_0_0.stop_event.set()
-
-            del self.attackflowtoexec
-            self.attack_flow_graph_loaded = False
-
-
-    def runFlowGraphThread(self, stop_event, flow_graph_filename, variable_names, variable_values):
-        """Run the remaining legacy headless attack flow graph used by Fuzzing."""
-        try:
-            try:
-                self.attackFlowGraphStop(None)
-            except Exception:
-                pass
-
-            if self.local_remote == "remote":
-                for index, variable_name in enumerate(variable_names):
-                    if "filepath" in variable_name:
-                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
-
-            loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
-            self.attackflowtoexec = getattr(loadedmod, class_name)()
-            self.attackflowtoexec.start()
-            asyncio.run(self.flowGraphStarted("Attack"))
-            self.attack_flow_graph_loaded = True
-            self.attackflowtoexec.wait()
-            asyncio.run(self.flowGraphFinished("Attack"))
-
-        except Exception as e:
-            asyncio.run(self.flowGraphStarted("Attack"))
-            asyncio.run(self.flowGraphFinished("Attack"))
-            asyncio.run(self.flowGraphError(str(e)))
-
-
-    def runFlowGraphGUI_Thread(self, stop_event, flow_graph_filename, variable_names, variable_values):
-        """Run the remaining legacy GUI attack flow graph used by Fuzzing."""
-        try:
-            if self.local_remote == "remote":
-                for index, variable_name in enumerate(variable_names):
-                    if "filepath" in variable_name:
-                        variable_values[index] = self.replaceUsername(variable_values[index], os.getenv("USER"))
-
-            filepath = flow_graph_filename
-            flow_graph_filename = flow_graph_filename.rsplit("/", 1)[1]
-            arguments = "".join(
-                f'--{variable_names[index]}="{variable_values[index]}" '
-                for index in range(len(variable_names))
-            )
-            command = f'python3 "{filepath}" {arguments}'
-            subprocess.Popen(command + " &", shell=True)
-            asyncio.run(self.flowGraphStarted("Attack"))
-            self.attack_script_name = flow_graph_filename
-            time.sleep(4.8)
-            self.attack_flow_graph_loaded = True
-
-        except Exception as e:
-            asyncio.run(self.flowGraphStarted("Attack"))
-            asyncio.run(self.flowGraphFinished("Attack"))
-            asyncio.run(self.flowGraphError(str(e)))
-     
 
     ##############  IQ Playback Flow Graphs  #############
     
@@ -2683,89 +2490,6 @@ class SensorNode(object):
                 asyncio.run(self.flowGraphFinished("Sniffer - Message/PDU"))
 
             asyncio.run(self.flowGraphError(str(e)))
-
-
-    #######################  Physical Fuzzing  #########################
-
-
-    def physicalFuzzingThreadStart(self, fuzzing_variables, fuzzing_type, fuzzing_min, fuzzing_max, fuzzing_update_period, fuzzing_seed_step):
-        """ Updates flow graph variables for a running flow graph at a specified rate.
-        """
-        # Wait for Flow Graph to Load
-        while True:
-            if self.attack_flow_graph_loaded == True:
-                break
-            time.sleep(0.1)
-
-        # Get the Update Period
-        try:
-            update_period = float(fuzzing_update_period)
-        except:
-            update_period = 1
-
-        # Initialize Values
-        for n in range(0,len(fuzzing_variables)):
-            variable = str(fuzzing_variables[n])
-
-            if fuzzing_type[n] == "Sequential":
-                # Check if it is a Float
-                if fissure.utils.isFloat((fuzzing_min[n])):
-                    generic_value = float(fuzzing_min[n])
-                # What Happens for a String?
-                else:
-                    generic_value = str(fuzzing_min[n])
-            elif fuzzing_type[n] == "Random":
-                # Check if it is a Float
-                if fissure.utils.isFloat((fuzzing_min[n])):
-                    generic_rg = random.Random(float(fuzzing_seed_step[n]))
-                    generic_value = generic_rg.randrange(float(fuzzing_min[n]),float(fuzzing_max[n]),1)
-                # What Happens for a String?
-                else:
-                    generic_value = str(fuzzing_min[n])
-
-        # Reset Stop Event
-        self.physical_fuzzing_stop_event = False
-
-        # Set Variable Loop
-        while(not self.physical_fuzzing_stop_event):
-
-            # Update Each Checked Variable
-            for n in range(0,len(fuzzing_variables)):
-
-                variable = str(fuzzing_variables[n])
-
-                # Call the Set Function of the Flow Graph
-                self.setVariable("Attack",variable, generic_value)
-                self.logger.info("Set " + variable + " to: {}" .format(generic_value))
-
-                # Generate New Value
-                if fuzzing_type[n] == "Sequential":
-                    # Float
-                    if fissure.utils.isFloat(fuzzing_min[n]):
-                        # Increment
-                        generic_value = generic_value + float(fuzzing_seed_step[n])
-
-                        # Max is Reached
-                        if generic_value > float(fuzzing_max[n]):
-                            generic_value = float(fuzzing_min[n])
-
-                    # What Happens for a String?
-                    else:
-                        generic_value = str(fuzzing_min[n])
-
-                elif fuzzing_type[n] == "Random":
-                    if fissure.utils.isFloat(fuzzing_min[n]):
-                        # New Random Number
-                        generic_value = generic_rg.randrange(float(fuzzing_min[n]),float(fuzzing_max[n]),1)
-                    # What Happens for a String?
-                    else:
-                        generic_value = str(fuzzing_min[n])
-
-            # Sleep at "Update Interval"
-            time.sleep(update_period)
-
-        # Reset Stop Event
-        self.physical_fuzzing_stop_event = False
 
 
     #######################  Autorun Playlists  ##########################
