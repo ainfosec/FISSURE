@@ -75,7 +75,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="iconSize">
     <size>
@@ -28328,7 +28328,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_ta_targets">
       <attribute name="title">
@@ -31381,614 +31381,30 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_attack_packet_crafter">
+     <widget class="QWidget" name="tab_ta_scapy">
       <attribute name="title">
-       <string>Packet Crafter</string>
+       <string>Scapy</string>
       </attribute>
-      <widget class="QPushButton" name="pushButton_packet_all_binary">
+      <widget class="QStackedWidget" name="stackedWidget_ta_scapy">
        <property name="geometry">
         <rect>
-         <x>140</x>
-         <y>455</y>
-         <width>80</width>
-         <height>27</height>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>815</height>
         </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>All Binary</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_all_hex">
-       <property name="geometry">
-        <rect>
-         <x>225</x>
-         <y>455</y>
-         <width>80</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>All Hex</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBox_packet_subcategory">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>460</x>
-         <y>10</y>
-         <width>310</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
        </property>
        <property name="currentIndex">
-        <number>-1</number>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_248">
-       <property name="geometry">
-        <rect>
-         <x>365</x>
-         <y>15</y>
-         <width>91</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Packet Type:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_assemble">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>455</y>
-         <width>100</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Assemble</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_packet_default_length_total">
-       <property name="geometry">
-        <rect>
-         <x>1020</x>
-         <y>460</y>
-         <width>75</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="tableWidget1_attack_packet_editor">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>70</y>
-         <width>1090</width>
-         <height>380</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="cornerButtonEnabled">
-        <bool>false</bool>
-       </property>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>5</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>24</number>
-       </attribute>
-       <attribute name="verticalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Type</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Data</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Length</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Default</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-      </widget>
-      <widget class="QLabel" name="label1_134">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>1090</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Packet Editor</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
         <number>0</number>
        </property>
-      </widget>
-      <widget class="QLabel" name="label2_95">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>15</y>
-         <width>66</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Protocol:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_packet_current_length_total">
-       <property name="geometry">
-        <rect>
-         <x>945</x>
-         <y>460</y>
-         <width>75</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QStackedWidget" name="stackedWidget_packet">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>490</y>
-         <width>1215</width>
-         <height>285</height>
-        </rect>
-       </property>
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <widget class="QWidget" name="page">
-        <widget class="QPushButton" name="pushButton_packet_save_as">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>205</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Save As</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_open">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>175</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Open</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_append">
-         <property name="geometry">
-          <rect>
-           <x>235</x>
-           <y>120</y>
-           <width>98</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Append</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_85">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>125</y>
-           <width>136</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Number of Packets:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_packet_number_of_messages">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>120</y>
-           <width>78</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit1_packet_assembled">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>1090</width>
-           <height>86</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit1_packet_constructed">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>175</y>
-           <width>1090</width>
-           <height>86</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_comma_separated">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>60</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>\x00,</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_comma_separated2">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>90</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>0x00,</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_pattern1">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>30</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>\x00</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_183">
+       <widget class="QWidget" name="page_ta_scapy_controls">
+        <widget class="QFrame" name="frame_ta_scapy_source">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>1090</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Assembled Packet</string>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_243">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>155</y>
-           <width>1090</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Constructed Sequence</string>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_2">
-        <widget class="Line" name="line3_47">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>1220</width>
-           <height>2</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_12">
-         <property name="geometry">
-          <rect>
-           <x>417</x>
-           <y>45</y>
-           <width>381</width>
-           <height>236</height>
+           <width>350</width>
+           <height>450</height>
           </rect>
          </property>
          <property name="frameShape">
@@ -31997,466 +31413,825 @@ p, li { white-space: pre-wrap; }
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QPushButton" name="pushButton_packet_scapy_start">
+         <widget class="QLabel" name="label_ta_scapy_source_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Packet Source (Presets)</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_source_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEdit_ta_scapy_source_search">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>330</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QTreeWidget" name="treeWidget_ta_scapy_source_presets">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>80</y>
+            <width>330</width>
+            <height>360</height>
+           </rect>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_scapy_transmit">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>470</y>
+           <width>690</width>
+           <height>300</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_scapy_transmit_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Transmit</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_transmit_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>5</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_transmit_start_stop">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="geometry">
            <rect>
-            <x>60</x>
-            <y>200</y>
-            <width>125</width>
-            <height>27</height>
+            <x>442</x>
+            <y>85</y>
+            <width>160</width>
+            <height>36</height>
            </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
           </property>
           <property name="text">
            <string>Start</string>
           </property>
          </widget>
-         <widget class="QTextEdit" name="textEdit_packet_scapy_interval">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="QLabel" name="label_ta_scapy_transmit_settings">
           <property name="geometry">
            <rect>
-            <x>90</x>
-            <y>105</y>
-            <width>90</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_packet_scapy_refresh">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>265</x>
-            <y>135</y>
-            <width>106</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Refresh</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_packet_scapy_interval">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>-15</x>
-            <y>110</y>
-            <width>100</width>
+            <x>10</x>
+            <y>40</y>
+            <width>335</width>
             <height>17</height>
            </rect>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
+          <property name="text">
+           <string>Settings</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_transmit_controls">
+          <property name="geometry">
+           <rect>
+            <x>365</x>
+            <y>40</y>
+            <width>315</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Controls</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_ta_scapy_transmit_interfaces">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>85</y>
+            <width>335</width>
+            <height>115</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_transmit_interface_refresh">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>317</x>
+            <y>55</y>
+            <width>27</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_59">
+          <property name="geometry">
+           <rect>
+            <x>65</x>
+            <y>205</y>
+            <width>55</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Method:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_74">
+          <property name="geometry">
+           <rect>
+            <x>65</x>
+            <y>240</y>
+            <width>75</width>
+            <height>17</height>
+           </rect>
           </property>
           <property name="text">
            <string>Interval (s):</string>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
          </widget>
-         <widget class="QComboBox" name="comboBox_packet_scapy_interface">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="QCheckBox" name="checkBox_ta_scapy_transmit_loop">
           <property name="geometry">
            <rect>
-            <x>90</x>
-            <y>135</y>
-            <width>171</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_packet_scapy_view">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>-15</x>
-            <y>80</y>
-            <width>100</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>View:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_packet_scapy_show">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>75</y>
-            <width>125</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>packet.show()</string>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="checkBox_packet_scapy_loop">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>165</y>
-            <width>99</width>
-            <height>22</height>
+            <x>235</x>
+            <y>269</y>
+            <width>80</width>
+            <height>23</height>
            </rect>
           </property>
           <property name="text">
            <string>Loop</string>
           </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
          </widget>
-         <widget class="QLabel" name="label2_packet_scapy_interface">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="QComboBox" name="comboBox_ta_scapy_transmit_method">
           <property name="geometry">
            <rect>
-            <x>-15</x>
-            <y>140</y>
-            <width>100</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Interface:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_167">
-          <property name="geometry">
-           <rect>
-            <x>-15</x>
-            <y>50</y>
-            <width>100</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Loaded:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_packet_scapy_loaded">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>50</y>
-            <width>176</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>None</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_packet_scapy_load">
-          <property name="geometry">
-           <rect>
-            <x>130</x>
-            <y>15</y>
-            <width>125</width>
+            <x>140</x>
+            <y>205</y>
+            <width>130</width>
             <height>27</height>
            </rect>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Load Data</string>
+         </widget>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ta_scapy_transmit_interval">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>237</y>
+            <width>69</width>
+            <height>26</height>
+           </rect>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_packet_scapy_ls">
-          <property name="enabled">
-           <bool>false</bool>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_operation_id_label">
+          <property name="geometry">
+           <rect>
+            <x>435</x>
+            <y>180</y>
+            <width>85</width>
+            <height>17</height>
+           </rect>
           </property>
+          <property name="text">
+           <string>Operation ID:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_started_label">
+          <property name="geometry">
+           <rect>
+            <x>435</x>
+            <y>205</y>
+            <width>85</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Started:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_packets_sent_label">
+          <property name="geometry">
+           <rect>
+            <x>435</x>
+            <y>230</y>
+            <width>85</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Packets Sent:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_set_rate_label">
+          <property name="geometry">
+           <rect>
+            <x>435</x>
+            <y>255</y>
+            <width>85</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Sent Rate:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_status_label">
+          <property name="geometry">
+           <rect>
+            <x>435</x>
+            <y>155</y>
+            <width>85</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_75">
+          <property name="geometry">
+           <rect>
+            <x>65</x>
+            <y>270</y>
+            <width>70</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Count:</string>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="spinBox_ta_scapy_transmit_count">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>267</y>
+            <width>69</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>1000000</number>
+          </property>
+         </widget>
+         <widget class="Line" name="line1_10">
+          <property name="geometry">
+           <rect>
+            <x>355</x>
+            <y>40</y>
+            <width>3</width>
+            <height>260</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_status">
+          <property name="geometry">
+           <rect>
+            <x>525</x>
+            <y>155</y>
+            <width>160</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_operation_id">
+          <property name="geometry">
+           <rect>
+            <x>525</x>
+            <y>180</y>
+            <width>160</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_started">
+          <property name="geometry">
+           <rect>
+            <x>525</x>
+            <y>205</y>
+            <width>160</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_packets_sent">
+          <property name="geometry">
+           <rect>
+            <x>525</x>
+            <y>230</y>
+            <width>160</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_scapy_transmit_set_rate">
+          <property name="geometry">
+           <rect>
+            <x>525</x>
+            <y>255</y>
+            <width>160</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_scapy_stack">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>10</y>
+           <width>350</width>
+           <height>450</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_scapy_stack_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Packet Stack</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_stack_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_ta_scapy_stack_layers">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>330</width>
+            <height>330</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_stack_add_layer">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>385</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Add Layer</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_stack_move_up">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>415</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Move Up</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_stack_move_down">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>415</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Move Down</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_stack_remove_layer">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>385</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Remove Layer</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_stack_clear_all">
           <property name="geometry">
            <rect>
             <x>220</x>
-            <y>75</y>
-            <width>125</width>
+            <y>415</y>
+            <width>100</width>
             <height>27</height>
            </rect>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
           <property name="text">
-           <string>ls(packet)</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_packet_scapy_stop">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>205</x>
-            <y>200</y>
-            <width>125</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Stop</string>
+           <string>Clear All</string>
           </property>
          </widget>
         </widget>
-        <widget class="QLabel" name="label1_166">
+        <widget class="QFrame" name="frame_ta_scapy_layers">
          <property name="geometry">
           <rect>
-           <x>417</x>
-           <y>25</y>
-           <width>381</width>
-           <height>20</height>
+           <x>730</x>
+           <y>10</y>
+           <width>480</width>
+           <height>450</height>
           </rect>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_scapy_layers_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Layer Fields</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_fields_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_39">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>60</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Editing:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_ta_scapy_layers_editing">
+          <property name="geometry">
+           <rect>
+            <x>75</x>
+            <y>55</y>
+            <width>320</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_ta_scapy_layers_fields">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>85</y>
+            <width>460</width>
+            <height>325</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_layers_reset_layer">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>415</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Reset Layer</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_ta_scapy_output">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>470</y>
+           <width>500</width>
+           <height>300</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_ta_scapy_output_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Output</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_ta_scapy_output_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QTabWidget" name="tabWidget_ta_scapy_output">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>45</y>
+            <width>480</width>
+            <height>215</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_hexdump">
+           <attribute name="title">
+            <string>Hexdump</string>
+           </attribute>
+           <widget class="QLabel" name="label2_40">
+            <property name="geometry">
+             <rect>
+              <x>5</x>
+              <y>165</y>
+              <width>75</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Byte Count:</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_ta_scapy_output_hexdump_byte_count">
+            <property name="geometry">
+             <rect>
+              <x>85</x>
+              <y>165</y>
+              <width>100</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>—</string>
+            </property>
+           </widget>
+           <widget class="QPlainTextEdit" name="plainTextEdit_ta_scapy_output_hexdump">
+            <property name="geometry">
+             <rect>
+              <x>-1</x>
+              <y>-1</y>
+              <width>481</width>
+              <height>160</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_python">
+           <attribute name="title">
+            <string>Python</string>
+           </attribute>
+           <widget class="QPlainTextEdit" name="plainTextEdit_ta_scapy_output_python">
+            <property name="geometry">
+             <rect>
+              <x>-1</x>
+              <y>-1</y>
+              <width>481</width>
+              <height>188</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_output_save_as">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>265</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Save As</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_scapy_output_copy">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>265</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Copy</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_ta_scapy_no_node">
+        <widget class="QLabel" name="label_ta_scapy_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_ta_scapy_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
          </property>
          <property name="font">
           <font>
-           <family>Ubuntu</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="text">
-          <string>Scapy Injection</string>
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
+        <widget class="QLabel" name="label2_ta_scapy_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to configure packets and transmit over interfaces for Scapy.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_ta_scapy_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_ta_scapy_empty_icon</zorder>
+        <zorder>label2_ta_scapy_no_node_selected</zorder>
+        <zorder>label2_ta_scapy_select_a_node</zorder>
+        <zorder>label_ta_scapy_select_sensor_node_image</zorder>
        </widget>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_restore_defaults">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>455</y>
-         <width>125</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Restore Defaults</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_calculate_crcs">
-       <property name="geometry">
-        <rect>
-         <x>470</x>
-         <y>455</y>
-         <width>115</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Calculate CRCs</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_27">
-       <property name="geometry">
-        <rect>
-         <x>910</x>
-         <y>460</y>
-         <width>36</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Total:</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBox_packet_protocols">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>10</y>
-         <width>290</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_import">
-       <property name="geometry">
-        <rect>
-         <x>310</x>
-         <y>455</y>
-         <width>75</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Import</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_export">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>455</y>
-         <width>75</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Export</string>
-       </property>
       </widget>
      </widget>
     </widget>
@@ -32464,7 +32239,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>10</y>
+       <y>11</y>
        <width>55</width>
        <height>17</height>
       </rect>
@@ -32488,7 +32263,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>5</y>
+       <y>6</y>
        <width>350</width>
        <height>27</height>
       </rect>
@@ -32510,7 +32285,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>415</x>
-       <y>5</y>
+       <y>6</y>
        <width>120</width>
        <height>27</height>
       </rect>
@@ -36269,7 +36044,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -40105,7 +39880,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_archive_download">
         <attribute name="title">
@@ -41695,6 +41470,788 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>Packet Crafter</string>
+      </attribute>
+      <widget class="QComboBox" name="comboBox_packet_protocols">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>10</y>
+         <width>290</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_all_binary">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>455</y>
+         <width>80</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>All Binary</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_packet_current_length_total">
+       <property name="geometry">
+        <rect>
+         <x>945</x>
+         <y>460</y>
+         <width>75</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_packet_default_length_total">
+       <property name="geometry">
+        <rect>
+         <x>1020</x>
+         <y>460</y>
+         <width>75</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox_packet_subcategory">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>10</y>
+         <width>310</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_calculate_crcs">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>455</y>
+         <width>115</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Calculate CRCs</string>
+       </property>
+      </widget>
+      <widget class="QStackedWidget" name="stackedWidget_packet">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>490</y>
+         <width>1215</width>
+         <height>285</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="page">
+        <widget class="QPushButton" name="pushButton_packet_save_as">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>205</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Save As</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_open">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>175</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Open</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_append">
+         <property name="geometry">
+          <rect>
+           <x>235</x>
+           <y>120</y>
+           <width>98</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Append</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_85">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>125</y>
+           <width>136</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Packets:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit_packet_number_of_messages">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>120</y>
+           <width>78</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit1_packet_assembled">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>1090</width>
+           <height>86</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit1_packet_constructed">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>175</y>
+           <width>1090</width>
+           <height>86</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_comma_separated">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>60</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>\x00,</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_comma_separated2">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>90</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>0x00,</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_pattern1">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>30</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>\x00</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label1_183">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1090</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Assembled Packet</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label1_243">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>155</y>
+           <width>1090</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Constructed Sequence</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_2">
+        <widget class="Line" name="line3_47">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>1220</width>
+           <height>2</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QFrame" name="frame1_12">
+         <property name="geometry">
+          <rect>
+           <x>417</x>
+           <y>45</y>
+           <width>381</width>
+           <height>236</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QPushButton" name="pushButton_packet_open_in_scapy">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>105</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Open in Scapy</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="label1_166">
+         <property name="geometry">
+          <rect>
+           <x>417</x>
+           <y>25</y>
+           <width>381</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Scapy Injection</string>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label2_27">
+       <property name="geometry">
+        <rect>
+         <x>910</x>
+         <y>460</y>
+         <width>36</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Total:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label1_134">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>1090</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Ubuntu</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Packet Editor</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_assemble">
+       <property name="geometry">
+        <rect>
+         <x>710</x>
+         <y>455</y>
+         <width>100</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Assemble</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_import">
+       <property name="geometry">
+        <rect>
+         <x>310</x>
+         <y>455</y>
+         <width>75</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Import</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_95">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>15</y>
+         <width>66</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Protocol:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_248">
+       <property name="geometry">
+        <rect>
+         <x>365</x>
+         <y>15</y>
+         <width>91</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Packet Type:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_export">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>455</y>
+         <width>75</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Export</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_restore_defaults">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>455</y>
+         <width>125</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Restore Defaults</string>
+       </property>
+      </widget>
+      <widget class="QTableWidget" name="tableWidget1_attack_packet_editor">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>1090</width>
+         <height>380</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>5</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>24</number>
+       </attribute>
+       <attribute name="verticalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Data</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Length</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Default</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_all_hex">
+       <property name="geometry">
+        <rect>
+         <x>225</x>
+         <y>455</y>
+         <width>80</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>All Hex</string>
+       </property>
       </widget>
      </widget>
     </widget>

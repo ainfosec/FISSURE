@@ -246,6 +246,11 @@ ACTION_TAGS = {
         "tsi.detector.type.network",
         "tsi.detector.mode.request",
     ],
+    "scapy_transmit": [
+        "All",
+        "scapy.transmit",
+        "packet.transmit",
+    ],
 }
 
 
@@ -2723,6 +2728,102 @@ async def iq_inspection_file(
         component,
         PLUGIN_NAME,
         "iq_inspection_file.py",
+        op_params,
+        node_uid,
+    )
+
+
+scapy_transmit_schema = {
+    "params": [
+        {
+            "name": "packet_hex",
+            "label": "Packet Hex",
+            "type": "string",
+            "default": "",
+            "description": "Serialized packet bytes as hexadecimal.",
+        },
+        {
+            "name": "root_layer",
+            "label": "Root Layer",
+            "type": "string",
+            "default": "Ether",
+            "description": "Scapy class used to rebuild the packet, such as Ether, RadioTap, or IP.",
+        },
+        {
+            "name": "interface",
+            "label": "Interface",
+            "type": "string",
+            "default": "",
+            "description": "Network interface on the executing Sensor Node.",
+        },
+        {
+            "name": "method",
+            "label": "Method",
+            "type": "string",
+            "default": "Auto",
+            "options": [
+                "Auto",
+                "sendp (Layer 2)",
+                "send (Layer 3)",
+            ],
+        },
+        {
+            "name": "interval",
+            "label": "Interval (s)",
+            "type": "number",
+            "default": 0.1,
+            "min": 0.0,
+            "max": 3600.0,
+            "step": 0.1,
+            "decimals": 3,
+        },
+        {
+            "name": "count",
+            "label": "Count",
+            "type": "int",
+            "default": 1,
+            "min": 1,
+            "max": 1000000000,
+        },
+        {
+            "name": "loop",
+            "label": "Loop",
+            "type": "string",
+            "default": "false",
+            "options": [
+                "false",
+                "true",
+            ],
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Scapy packet transmission",
+        },
+    ]
+}
+async def scapy_transmit(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """Transmit a serialized Scapy packet on the executing Sensor Node."""
+    op_params = dict(parameters or {})
+
+    op_params.setdefault(
+        "operation_id",
+        str(uuid.uuid4()),
+    )
+    op_params.setdefault(
+        "requester",
+        "plugin_action",
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "scapy_transmit.py",
         op_params,
         node_uid,
     )

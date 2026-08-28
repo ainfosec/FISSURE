@@ -4,6 +4,7 @@ import fissure.utils
 import fissure.utils.hardware
 from fissure.utils import plugin
 from fissure.utils.artifacts import ArtifactManager
+from fissure.utils import scapy_compat
 import logging
 import os
 import shutil
@@ -363,43 +364,104 @@ async def snifferFlowGraphStop(component: object, parameter=""):
         await component.flowGraphFinished("Sniffer - Message/PDU")
 
 
-async def startScapy(component: object, interface="", interval=0, loop=False, operating_system=""):
-    """
-    Start a new Scapy operation.
-    """
-    # Start Transmitting
-    if len(interface) > 0:
-        scapy_send_directory = os.path.join(fissure.utils.TOOLS_DIR)
+async def refreshScapyInterfaces(component: object):
+    """Return the Sensor Node's Scapy-visible network interfaces to HIPRFISR."""
+    interfaces = scapy_compat.get_interfaces()
 
-        if fissure.utils.get_default_expect_terminal(operating_system) == "gnome-terminal":
-            subprocess.Popen(
-                "gnome-terminal -- sudo python2 scapy_send.py " + interface + " " + interval + " " + loop,
-                cwd=scapy_send_directory,
-                shell=True,
-            )
-        elif fissure.utils.get_default_expect_terminal(operating_system) == "qterminal":
-            subprocess.Popen(
-                "qterminal -e sudo python2 scapy_send.py " + interface + " " + interval + " " + loop,
-                cwd=scapy_send_directory,
-                shell=True,
-            )
-        elif fissure.utils.get_default_expect_terminal(operating_system) == "lxterminal":
-            subprocess.Popen(
-                "lxterminal -e sudo python2 scapy_send.py " + interface + " " + interval + " " + loop,
-                cwd=scapy_send_directory,
-                shell=True,
-            )
-            
-    else:
-        component.logger.error("Specify wireless interface for Scapy")
+    parameters = {
+        "node_uid": str(getattr(component, "uuid", "") or ""),
+        "interfaces": interfaces,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "refreshScapyInterfacesResults",
+        fissure.comms.MessageFields.PARAMETERS: parameters,
+    }
+
+    await component.hiprfisr_socket.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+    )
 
 
-async def stopScapy(component: object):
-    """
-    Stop the currently running Scapy operation.
-    """
-    # Stop the Thread
-    os.system('sudo pkill -f "python2 scapy"')
+async def startScapyTransmission(
+    component: object,
+    operation_id="",
+    interface="",
+    method="",
+    interval=0.1,
+    count=1,
+    loop=False,
+    packet_hex="",
+    root_layer="Ether",
+):
+    """Start a Scapy transmission operation on this Sensor Node."""
+    operation_id = str(operation_id or "").strip()
+
+    async def progress_callback(
+            operation_id="",
+            state="",
+            message="",
+            packets_sent=0,
+            set_rate="",
+            started="",
+        ):
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+                fissure.comms.MessageFields.MESSAGE_NAME: "scapyTransmissionStatus",
+                fissure.comms.MessageFields.PARAMETERS: {
+                    "node_uid": str(getattr(component, "uuid", "") or ""),
+                    "operation_id": str(operation_id or ""),
+                    "state": str(state or ""),
+                    "message": str(message or ""),
+                    "packets_sent": int(packets_sent or 0),
+                    "set_rate": str(set_rate or ""),
+                    "started": str(started or ""),
+                },
+            }
+
+            await component.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+
+    if not operation_id:
+        await progress_callback(
+            operation_id="",
+            state="error",
+            message="Missing operation ID.",
+        )
+        return
+
+    parameters = {
+        "operation_id": operation_id,
+        "requester": "scapy_tab",
+        "packet_hex": str(packet_hex or ""),
+        "root_layer": str(root_layer or "Ether"),
+        "interface": str(interface or ""),
+        "method": str(method or ""),
+        "interval": float(interval),
+        "count": int(count),
+        "loop": bool(loop),
+        "description": "Scapy packet transmission",
+        "progress_callback": progress_callback,
+    }
+
+    launched_operation_id = await component.run_plugin_operation(
+        component,
+        "Base",
+        "scapy_transmit.py",
+        parameters,
+        str(getattr(component, "uuid", "") or ""),
+    )
+
+    if launched_operation_id is None:
+        await progress_callback(
+            operation_id=operation_id,
+            state="error",
+            message="Could not start the Scapy transmit operation.",
+        )
 
 
 async def setVariable(component: object, flow_graph="", variable="", value=""):

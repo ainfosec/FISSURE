@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-27
+
+Rebuild Scapy around selected-node packet crafting and transmission
+
+### Added
+
+- Added the rebuilt Scapy workflow under Targets & Actions with packet presets, editable layer stacks, per-layer field editors, searchable Add Layer support, live Hexdump/Python output, interface selection, send/sendp/Auto transmit modes, count/loop/interval controls, and operation status/progress.
+- Added a Scapy compatibility layer to normalize layer discovery, field handling, packet serialization, interface discovery, and version-specific API differences so FISSURE can support multiple installed Scapy versions without scattering compatibility checks through the Dashboard.
+- Added selected-Sensor-Node interface discovery for both local and remote nodes, with remote interface queries routed through the Dashboard/HIPRFISR/Sensor Node path instead of assuming Dashboard-local interfaces.
+- Added Scapy transmission as a Sensor Node operation with operation IDs, progress updates, packet counts, send rate, Start/Stop lifecycle handling, and the selected node responsible for the actual network interface and packet transmission.
+- Added Packet Crafter → Scapy handoff so Library-defined packets and other crafted byte sequences can be opened in the Scapy workspace, edited/transmitted through the same path, and decoded independently by tools such as Wireshark even when Scapy has no native packet class for the protocol.
+- Added a declarative `scapy_presets.py` catalog with curated Wi-Fi, Ethernet/IPv4, and IPv6 starting packets, runtime filtering for unsupported Scapy layers, and generic nested-layer support for presets such as DNS.
+- Added generic Scapy `FlagsField` editing using the flag names exposed by the installed Scapy runtime, including multi-select checkbox popups, readable selected-flag values, preservation of unknown bits, and monitor-aware popup placement.
+
+### Changed
+
+- Moved Scapy packet handling away from hardcoded per-preset compatibility logic so normal presets are simple layer/field definitions while `scapy_compat.py` and the generic preset builder own runtime compatibility.
+- Reworked the Scapy transmit UI around the selected Sensor Node, including node/interface gating, automatic local/remote interface refresh, compact persistent Operation IDs with full UUID tooltips, short status summaries with full-message tooltips, and state-aware Start/Stop presentation.
+- Consolidated Packet Crafter Scapy integration around a single Open in Scapy action instead of maintaining a second set of Scapy load/show/interface/transmit controls inside Packet Crafter.
+- Replaced the legacy Dashboard/HIPRFISR/Sensor Node `startScapy` / `stopScapy` path and Python 2 `temp.cap` sender with the current Sensor Node operation lifecycle and Base Scapy transmit operation.
+- Removed the obsolete Packet Crafter Scapy controls, legacy `scapy_send.py` helper, and temporary `temp.cap` staging workflow now superseded by the rebuilt Scapy workspace.
+
 ## 2026-8-25
 
 Rebuild Fuzzing around protocol plugin actions

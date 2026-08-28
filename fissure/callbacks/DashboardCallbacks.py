@@ -29,6 +29,7 @@ from fissure.Dashboard.Slots import (
     LogTabSlots,
     MenuBarSlots,
     PDTabSlots,
+    ScapyTabSlots,
     SensorNodesTabSlots,
     SensorNodesPluginsTabSlots,
     SequentialActionTabSlots,
@@ -3226,3 +3227,39 @@ async def dashboardArtifactTransferStatus(
             transfer_id,
             message,
         )
+
+
+async def refreshScapyInterfacesResults(
+    component: object,
+    node_uid="",
+    interfaces=None,
+):
+    """Populate Scapy interfaces returned by the selected Sensor Node."""
+    ScapyTabSlots.handle_scapy_interface_results(
+        component.frontend,
+        node_uid=str(node_uid or ""),
+        interfaces=interfaces or [],
+    )
+
+
+async def scapyTransmissionStatus(
+    component: object,
+    node_uid="",
+    operation_id="",
+    state="",
+    message="",
+    packets_sent=0,
+    set_rate="",
+    started="",
+):
+    """Update the Scapy tab from Sensor Node transmission state."""
+    ScapyTabSlots.handle_scapy_transmission_status(
+        component.frontend,
+        node_uid=str(node_uid or ""),
+        operation_id=str(operation_id or ""),
+        state=str(state or ""),
+        message=str(message or ""),
+        packets_sent=int(packets_sent or 0),
+        set_rate=str(set_rate or ""),
+        started=str(started or ""),
+    )

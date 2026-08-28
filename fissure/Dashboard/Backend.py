@@ -1646,42 +1646,61 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def startScapy(self, node_uid="", interface="", interval=0, loop=False, operating_system=""):
-        """
-        Signals to Sensor Node to start Scapy.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "interface": interface,
-                "interval": interval,
-                "loop": loop,
-                "operating_system": operating_system,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "startScapy",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    async def refreshScapyInterfaces(self, node_uid=""):
+        """Request Scapy-visible interfaces from the selected Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
 
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "refreshScapyInterfaces",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": str(node_uid or ""),
+            },
+        }
 
-    async def stopScapy(self, node_uid=""):
-        """
-        Signals to Sensor Node to stop Scapy.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "stopScapy",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+    
+
+    async def startScapyTransmission(
+        self,
+        node_uid="",
+        operation_id="",
+        interface="",
+        method="",
+        interval=0.1,
+        count=1,
+        loop=False,
+        packet_hex="",
+    ):
+        """Start a Scapy transmission on the selected Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "startScapyTransmission",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": str(node_uid or ""),
+                "operation_id": str(operation_id or ""),
+                "interface": str(interface or ""),
+                "method": str(method or ""),
+                "interval": float(interval),
+                "count": int(count),
+                "loop": bool(loop),
+                "packet_hex": str(packet_hex or ""),
+            },
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )    
 
 
     async def retrieveDatabaseCache(self, refresh_frontend_widgets=False):

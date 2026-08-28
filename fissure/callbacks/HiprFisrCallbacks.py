@@ -1414,55 +1414,127 @@ async def snifferFlowGraphStop(component: object, node_uid="", parameter=""):
     )
 
 
-async def startScapy(component: object, node_uid="", interface="", interval=0, loop=False, operating_system=""):
-    """
-    Signals to Sensor Node to start Scapy.
-    """
-    # Send Message
-    PARAMETERS = {
-        "interface": interface,
-        "interval": interval,
-        "loop": loop,
-        "operating_system": operating_system,
-    }
+async def refreshScapyInterfaces(component: object, node_uid=""):
+    """Ask one Sensor Node to enumerate its Scapy-visible interfaces."""
+    node_uid = str(node_uid or "").strip()
+
+    identity = component.nodes.get(node_uid, {}).get("identity", None)
+    if identity is None:
+        component.logger.error(
+            f"Could not resolve identity for sensor node UUID {node_uid}"
+        )
+        return
+
     msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "startScapy",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "refreshScapyInterfaces",
     }
 
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
     await component.sensor_node_router.send_msg(
         fissure.comms.MessageTypes.COMMANDS,
         msg,
-        target_ids=[identity]
+        target_ids=[identity],
     )
 
 
-async def stopScapy(component: object, node_uid=""):
-    """Signals to Sensor Node to stop Scapy."""
-    # Send Message
+async def refreshScapyInterfacesResults(
+    component: object,
+    node_uid="",
+    interfaces=None,
+):
+    """Forward Sensor Node Scapy interface results to the Dashboard."""
     msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "stopScapy",  # ,
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "refreshScapyInterfacesResults",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": str(node_uid or ""),
+            "interfaces": interfaces or [],
+        },
     }
 
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def startScapyTransmission(
+    component: object,
+    node_uid="",
+    operation_id="",
+    interface="",
+    method="",
+    interval=0.1,
+    count=1,
+    loop=False,
+    packet_hex="",
+):
+    """Forward a Scapy transmission request to one Sensor Node."""
+    node_uid = str(node_uid or "").strip()
+    identity = component.nodes.get(node_uid, {}).get("identity", None)
+
     if identity is None:
+        component.logger.error(
+            f"Could not resolve identity for sensor node UUID {node_uid}"
+        )
         return
-    
-    # Send through ROUTER
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "startScapyTransmission",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "operation_id": str(operation_id or ""),
+            "interface": str(interface or ""),
+            "method": str(method or ""),
+            "interval": float(interval),
+            "count": int(count),
+            "loop": bool(loop),
+            "packet_hex": str(packet_hex or ""),
+        },
+    }
+
     await component.sensor_node_router.send_msg(
         fissure.comms.MessageTypes.COMMANDS,
         msg,
-        target_ids=[identity]
-    )    
+        target_ids=[identity],
+    )
+
+
+async def scapyTransmissionStatus(
+    component: object,
+    node_uid="",
+    operation_id="",
+    state="",
+    message="",
+    packets_sent=0,
+    set_rate="",
+    started="",
+):
+    """Forward Scapy transmission state from a Sensor Node to the Dashboard."""
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "scapyTransmissionStatus",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "node_uid": str(node_uid or ""),
+            "operation_id": str(operation_id or ""),
+            "state": str(state or ""),
+            "message": str(message or ""),
+            "packets_sent": int(packets_sent or 0),
+            "set_rate": str(set_rate or ""),
+            "started": str(started or ""),
+        },
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
 async def setVariable(component: object, node_uid="", flow_graph="", variable="", value=""):

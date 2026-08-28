@@ -3218,3 +3218,130 @@ QLabel#label_ta_fuzzing_empty_icon {
     border-radius: 24px;
     padding: 6px;
 }
+
+
+
+QFrame#frame_ta_scapy_source,
+QFrame#frame_ta_scapy_stack,
+QFrame#frame_ta_scapy_layers,
+QFrame#frame_ta_scapy_output,
+QFrame#frame_ta_scapy_transmit {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_ta_scapy_source_badge,
+QLabel#label_ta_scapy_stack_badge,
+QLabel#label_ta_scapy_fields_badge,
+QLabel#label_ta_scapy_output_badge,
+QLabel#label_ta_scapy_transmit_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_ta_scapy_source_title,
+QLabel#label_ta_scapy_stack_title,
+QLabel#label_ta_scapy_layers_title,
+QLabel#label_ta_scapy_output_title,
+QLabel#label_ta_scapy_transmit_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QPlainTextEdit#plainTextEdit_ta_scapy_output_hexdump,
+QPlainTextEdit#plainTextEdit_ta_scapy_output_python {
+    font: 9pt "Ubuntu Mono";
+}
+
+QLabel#label_ta_scapy_select_sensor_node_image {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label_ta_scapy_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QLabel#label_ta_scapy_transmit_settings,
+QLabel#label_ta_scapy_transmit_controls {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 9pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   Targets & Actions - Scapy
+   ========================================================== */
+
+QPushButton#pushButton_ta_scapy_transmit_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_ta_scapy_transmit_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_ta_scapy_transmit_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_ta_scapy_transmit_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_ta_scapy_transmit_start_stop:disabled,
+QPushButton#pushButton_ta_scapy_transmit_start_stop[running="true"]:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}

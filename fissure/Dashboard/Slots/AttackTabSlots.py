@@ -4,12 +4,9 @@ import fissure.utils
 import qasync
 import yaml
 import binascii
-import sys
 import crcmod
 from scipy import signal as signal2
-from io import StringIO
-from scapy.all import Dot11, RadioTap, sendp, ls, wrpcap, Dot11Deauth, Dot11ProbeReq, IP, UDP, LLC, SNAP, ARP, Ether, ICMP
-from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
+from scapy.all import Dot11, RadioTap, Dot11Deauth, Dot11ProbeReq, IP, UDP, LLC, SNAP, ARP, Ether, ICMP
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1088,64 +1085,9 @@ def _slotPacketAppendClicked(dashboard: QtCore.QObject):
         fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a Valid Multiplier (Counting Number)")
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotPacketScapyShowClicked(dashboard: QtCore.QObject):
-    """ 
-    Calls the Scapy function '.show()' on a loaded packet.
-    """
-    # Show Loaded Data
-    if dashboard.scapy_data != None:
-        capture = StringIO()
-        save_stdout = sys.stdout
-        sys.stdout = capture
-        dashboard.scapy_data[0].show()
-        sys.stdout = save_stdout
-
-        msgBox = MyMessageBox(my_text = capture.getvalue())
-        msgBox.exec_()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotPacketScapyRefreshClicked(dashboard: QtCore.QObject):
-    """ 
-    Refreshes the list of wireless interfaces available for Scapy injection.
-    """
-    # Update Interface Comboboxes
-    get_interfaces = os.listdir("/sys/class/net/")
-    dashboard.ui.comboBox_packet_scapy_interface.clear()
-    for n in get_interfaces:
-        dashboard.ui.comboBox_packet_scapy_interface.addItem(n)
-
-    # Select the Last Interface by Default
-    dashboard.ui.comboBox_packet_scapy_interface.setCurrentIndex(dashboard.ui.comboBox_packet_scapy_interface.count()-1)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotPacketScapyStartClicked(dashboard: QtCore.QObject):
-    """ 
-    Runs the Scapy .sendp() command.
-    """
-    # Get Parameters
-    get_iface = str(dashboard.ui.comboBox_packet_scapy_interface.currentText())
-    get_interval = str(dashboard.ui.textEdit_packet_scapy_interval.toPlainText())
-    if dashboard.ui.checkBox_packet_scapy_loop.isChecked():
-        get_loop = "1"
-    else:
-        get_loop = "0"
-
-    # Start Transmitting
-    if len(get_iface) > 0:
-        # Send the Message
-        await dashboard.backend.startScapy(dashboard.selected_node_uid, get_iface, get_interval, get_loop, dashboard.backend.os_info)
-    else:
-        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Specify wireless interface.", width=100, height=20)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
-    """ 
-    Loads the information from the top half of the packet crafter and assembles a Scapy packet.
-    """
+def _buildPacketCrafterScapyPacket(dashboard: QtCore.QObject):
+    """Build and return the current Packet Crafter Scapy packet without touching legacy Scapy UI."""
+    packet = None
     # Get Frame Type
     get_type = str(dashboard.ui.comboBox_packet_subcategory.currentText())
 
@@ -1186,20 +1128,20 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         get_category = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[3]) + 3) // 4, int(get_bin[3], 2))))
         get_action = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[4]) + 3) // 4, int(get_bin[4], 2))))
         get_element = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
-        dashboard.scapy_data = RadioTap()/Dot11(type=0, subtype=13, addr1=get_dest_mac, addr2=get_source_mac, addr3=get_bssid_mac)/get_category/get_action/get_element
+        packet = RadioTap()/Dot11(type=0, subtype=13, addr1=get_dest_mac, addr2=get_source_mac, addr3=get_bssid_mac)/get_category/get_action/get_element
 
     elif "CTS" == get_type:
         get_recv_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
         get_type_subtype = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[1]) + 3) // 4, int(get_bin[1], 2))))
         get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[2]) + 3) // 4, int(get_bin[2], 2))))
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_duration/get_recv_mac
+        packet = RadioTap()/get_type_subtype/get_duration/get_recv_mac
 
     elif "Deauthentication" == get_type:
         get_target_mac = '%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))
         get_target_mac = get_target_mac[0:2] + ":" + get_target_mac[2:4] + ":" + get_target_mac[4:6] + ":" + get_target_mac[6:8] + ":" + get_target_mac[8:10] + ":" + get_target_mac[10:12]
         get_ap_mac = '%0*X' % ((len(get_bin[1]) + 3) // 4, int(get_bin[1], 2))
         get_ap_mac = get_ap_mac[0:2] + ":" + get_ap_mac[2:4] + ":" + get_ap_mac[4:6] + ":" + get_ap_mac[6:8] + ":" + get_ap_mac[8:10] + ":" + get_ap_mac[10:12]
-        dashboard.scapy_data = RadioTap()/Dot11(type=0, subtype=12, addr1=get_target_mac, addr2=get_ap_mac, addr3=get_ap_mac)/Dot11Deauth(reason=7)
+        packet = RadioTap()/Dot11(type=0, subtype=12, addr1=get_target_mac, addr2=get_ap_mac, addr3=get_ap_mac)/Dot11Deauth(reason=7)
 
     elif "Null" == get_type:
         get_dest_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1209,22 +1151,22 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         get_flags = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[4]) + 3) // 4, int(get_bin[4], 2))))
         get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
         get_fragment_sequence = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[6]) + 3) // 4, int(get_bin[6], 2))))
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_dest_mac/get_source_mac/get_bssid_mac/get_fragment_sequence
+        packet = RadioTap()/get_type_subtype/get_flags/get_duration/get_dest_mac/get_source_mac/get_bssid_mac/get_fragment_sequence
 
     elif "Probe Request" == get_type:
         get_source_mac = '%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))
         get_source_mac = get_source_mac[0:2] + ":" + get_source_mac[2:4] + ":" + get_source_mac[4:6] + ":" + get_source_mac[6:8] + ":" + get_source_mac[8:10] + ":" + get_source_mac[10:12]
         get_target_mac = '%0*X' % ((len(get_bin[1]) + 3) // 4, int(get_bin[1], 2))
         get_target_mac = get_target_mac[0:2] + ":" + get_target_mac[2:4] + ":" + get_target_mac[4:6] + ":" + get_target_mac[6:8] + ":" + get_target_mac[8:10] + ":" + get_target_mac[10:12]
-        dashboard.scapy_data = RadioTap()/Dot11(type=0, subtype=4, addr1=get_target_mac, addr2=get_source_mac)/Dot11ProbeReq("00" * 1)
-        #dashboard.scapy_data = RadioTap()/Dot11(type=0, subtype=0100, addr2=get_target_mac)/Dot11ProbeReq("00" * 1)  # "subtype" doesn't register in this format
+        packet = RadioTap()/Dot11(type=0, subtype=4, addr1=get_target_mac, addr2=get_source_mac)/Dot11ProbeReq("00" * 1)
+        #packet = RadioTap()/Dot11(type=0, subtype=0100, addr2=get_target_mac)/Dot11ProbeReq("00" * 1)  # "subtype" doesn't register in this format
 
     elif "RTS" == get_type:
         get_recv_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
         get_tx_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[1]) + 3) // 4, int(get_bin[1], 2))))
         get_type_subtype = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[2]) + 3) // 4, int(get_bin[2], 2))))
         get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[3]) + 3) // 4, int(get_bin[3], 2))))
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_duration/get_recv_mac/get_tx_mac
+        packet = RadioTap()/get_type_subtype/get_duration/get_recv_mac/get_tx_mac
 
     elif "UDP from AP" == get_type:
         get_addr1_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1253,7 +1195,7 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         udp_bytes[UDP].dport = int(get_udp_dest_port)
 
         # Flag DS bits: 01 (From Ap), Addr1=Destination STA, Addr2=BSSID, Addr3=Source STA
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr2_mac/get_addr1_mac/get_addr1_mac/get_fragment_sequence/llc_bytes/udp_bytes/get_udp_data
+        packet = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr2_mac/get_addr1_mac/get_addr1_mac/get_fragment_sequence/llc_bytes/udp_bytes/get_udp_data
 
     elif "UDP to AP" == get_type:
         get_addr1_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1282,8 +1224,8 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         udp_bytes[UDP].dport = int(get_udp_dest_port)
 
         # Flag DS bits: 01 (From Ap), Addr1=Destination STA, Addr2=BSSID, Addr3=Source STA
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr1_mac/get_addr2_mac/get_addr3_mac/get_fragment_sequence/llc_bytes/udp_bytes/get_udp_data
-        #print(dashboard.scapy_data[0].show())
+        packet = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr1_mac/get_addr2_mac/get_addr3_mac/get_fragment_sequence/llc_bytes/udp_bytes/get_udp_data
+        #print(packet[0].show())
 
     elif "ARP Response - Wifi" == get_type:
         get_addr1_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1315,7 +1257,7 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         arp_bytes[ARP].hwdst = get_hwdst
         arp_bytes[ARP].pdst = get_pdst
 
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr3_mac/get_addr1_mac/get_addr2_mac/get_fragment_sequence/LLC()/SNAP()/arp_bytes
+        packet = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr3_mac/get_addr1_mac/get_addr2_mac/get_fragment_sequence/LLC()/SNAP()/arp_bytes
 
     elif "ARP Response - Ethernet" == get_type:
         get_hwtype = str(dashboard.ui.tableWidget1_attack_packet_editor.item(0,1).text())
@@ -1339,7 +1281,7 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         arp_bytes[ARP].hwdst = get_hwdst
         arp_bytes[ARP].pdst = get_pdst
 
-        dashboard.scapy_data = Ether()/arp_bytes
+        packet = Ether()/arp_bytes
 
     elif "ICMP" == get_type:
         get_source_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1365,7 +1307,7 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         scapy_bytes[ICMP].id = get_icmp_id
         scapy_bytes[ICMP].seq = get_icmp_seq
 
-        dashboard.scapy_data = scapy_bytes
+        packet = scapy_bytes
 
     elif "UDP to AP QoS" == get_type:
         get_addr1_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
@@ -1395,45 +1337,10 @@ def _slotPacketScapyLoadClicked(dashboard: QtCore.QObject):
         udp_bytes[UDP].dport = int(get_udp_dest_port)
 
         # Flag DS bits: 01 (From Ap), Addr1=Destination STA, Addr2=BSSID, Addr3=Source STA
-        dashboard.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr1_mac/get_addr2_mac/get_addr3_mac/get_fragment_sequence/get_qos_control/llc_bytes/udp_bytes/get_udp_data
-        #print(dashboard.scapy_data[0].show())
+        packet = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr1_mac/get_addr2_mac/get_addr3_mac/get_fragment_sequence/get_qos_control/llc_bytes/udp_bytes/get_udp_data
+        #print(packet[0].show())
 
-
-    # Set Loaded Text
-    dashboard.ui.label2_packet_scapy_loaded.setText(get_type)
-
-    # Enable Controls
-    dashboard.ui.label2_packet_scapy_view.setEnabled(True)
-    dashboard.ui.pushButton_packet_scapy_show.setEnabled(True)
-    dashboard.ui.pushButton_packet_scapy_ls.setEnabled(True)
-    dashboard.ui.label2_packet_scapy_interval.setEnabled(True)
-    dashboard.ui.textEdit_packet_scapy_interval.setEnabled(True)
-    dashboard.ui.label2_packet_scapy_interface.setEnabled(True)
-    dashboard.ui.comboBox_packet_scapy_interface.setEnabled(True)
-    dashboard.ui.pushButton_packet_scapy_refresh.setEnabled(True)
-    dashboard.ui.checkBox_packet_scapy_loop.setEnabled(True)
-    dashboard.ui.pushButton_packet_scapy_start.setEnabled(True)
-    dashboard.ui.pushButton_packet_scapy_stop.setEnabled(True)
-
-    # Write to PCAP
-    wrpcap(os.path.join(fissure.utils.FISSURE_ROOT, "Crafted Packets", "Scapy", "temp.cap"), dashboard.scapy_data)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotPacketScapyLsClicked(dashboard: QtCore.QObject):
-    """ 
-    Calls the Scapy function 'ls' on a loaded packet.
-    """
-    # Show Loaded Data
-    if dashboard.scapy_data != None:
-        capture = StringIO()
-        save_stdout = sys.stdout
-        sys.stdout = capture
-        ls(dashboard.scapy_data[0])
-        sys.stdout = save_stdout
-
-        msgBox = MyMessageBox(my_text = capture.getvalue(), width=800, height=600)
-        msgBox.exec_()
+    return packet
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1485,15 +1392,6 @@ def _slotPacketPattern1Clicked(dashboard: QtCore.QObject):
             output_string = output_string + get_hex[n:n+2] + '\\x'
 
         dashboard.ui.textEdit1_packet_assembled.setPlainText(output_string[:-2])
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotPacketScapyStopClicked(dashboard: QtCore.QObject):
-    """ 
-    Kills all running Scapy processes.
-    """
-    # Send the Message
-    await dashboard.backend.stopScapy(dashboard.selected_node_uid)
 
 
 @QtCore.pyqtSlot(QtCore.QObject, int, int)
@@ -1696,3 +1594,28 @@ def _slotPacketExportClicked(dashboard: QtCore.QObject):
 
     except Exception as e:
         dashboard.logger.error(f"Export Error: {e}")
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotPacketOpenInScapyClicked(dashboard: QtCore.QObject):
+    """Build the current Packet Crafter packet and open it in the Scapy tab."""
+    from fissure.Dashboard.Slots import ScapyTabSlots
+
+    try:
+        packet = _buildPacketCrafterScapyPacket(dashboard)
+
+        if packet is None:
+            fissure.Dashboard.UI_Components.Qt5.errorMessage(
+                "Could not build a Scapy packet from the current Packet Crafter fields."
+            )
+            return
+
+        ScapyTabSlots._load_scapy_packet(dashboard, packet)
+
+        dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_attack)
+        dashboard.ui.tabWidget_attack_attack.setCurrentWidget(dashboard.ui.tab_ta_scapy)
+
+    except Exception as exc:
+        fissure.Dashboard.UI_Components.Qt5.errorMessage(
+            f"Could not open packet in Scapy:\n{exc}"
+        )
