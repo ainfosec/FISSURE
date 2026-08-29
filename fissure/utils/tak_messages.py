@@ -306,8 +306,10 @@ async def send(
             event_node = ET.SubElement(fiss, event_type)
             _serialize_payload(event_node, data, skip_keys={"event_type"})
 
-        # _set_point_suppressed(msg)
-        _set_point_pin(msg, lat, lon, alt)  # Include lat/lon/hae but do not plot
+        if message.get("suppress_point") or lat is None or lon is None:
+            _set_point_suppressed(msg)
+        else:
+            _set_point_pin(msg, lat, lon, alt)
 
         return await _dispatch_cot(
             component,

@@ -870,6 +870,26 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    async def refreshSensorNodeActivity(self, node_uid="", log_limit=100):
+        """Request one bounded read-only Activity snapshot from the selected Sensor Node."""
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "node_uid": node_uid,
+            "log_limit": log_limit,
+        }
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "refreshSensorNodeActivity",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
     async def deleteSensorNodeFile(self, node_uid="", sensor_node_file=""):
         """
         Deletes a file/folder on the sensor node.
@@ -2644,6 +2664,34 @@ class DashboardBackend:
                 await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    async def tacticalTargetRecommendation(
+        self,
+        target_id,
+        mode="add",
+        recommendation=None,
+        recommendation_id="",
+    ):
+        """Add/remove one recommended action on an authoritative Target."""
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "target_id": target_id,
+            "mode": mode,
+            "recommendation": recommendation or {},
+            "recommendation_id": recommendation_id or "",
+        }
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "targetRecommendation",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+        
     async def tacticalPromoteSoiToTarget(
         self,
         target_id,

@@ -287,56 +287,34 @@ class OperationMain(Operation):
         alt: Optional[float] = None,
         remarks_extra: Optional[Dict[str, Any]] = None,
     ) -> None:
-        remarks_payload = {
-            "kind": "alert",
-            "event_type": "alert",
-            "node_uid": self.node_uid,
-            "source_id": self.source_id,
-            "message": message,
-        }
-        if remarks_extra:
-            remarks_payload.update(remarks_extra)
-
-        if self.alert_callback:
-            try:
-                await self._call_with_timeout(
-                    self.alert_callback,
-                    self.node_uid,
-                    self.opid,
-                    message,
-                    self.logger,
-                )
-            except Exception as e:
-                self.logger.warning(f"alert_callback failed: {e}")
-
-        if not self.tak_cot_callback:
+        if not self.alert_callback:
             return
 
-        tak_msg = {
-            "kind": "alert",
-            "event_type": "alert",
-            "msg_type": "event",
+        alert_payload = {
             "uid": uid or f"wifi-oui-alert-{int(time.time() * 1000)}",
-            "remarks": json.dumps(remarks_payload),
-            "tak_icon": "b-t-f-r",
-            "opid": self.opid,
-            "operation_id": self.opid,
             "alert_kind": alert_kind,
             "alert_summary": alert_summary or message,
+            "message": message,
             "node_uid": self.node_uid,
             "source_id": self.source_id,
-            "lat": lat if lat is not None else True,
-            "lon": lon if lon is not None else True,
-            "alt": alt if alt is not None else True,
-            "time": True,
+            "operation_id": self.opid,
+            "opid": self.opid,
             "plot_pin": False,
-            "data": remarks_payload,
         }
 
+        if lat is not None:
+            alert_payload["lat"] = float(lat)
+        if lon is not None:
+            alert_payload["lon"] = float(lon)
+        if alt is not None:
+            alert_payload["alt"] = float(alt)
+        if remarks_extra:
+            alert_payload.update(remarks_extra)
+
         try:
-            await self._call_with_timeout(self.tak_cot_callback, tak_msg)
+            await self._call_with_timeout(self.alert_callback, alert_payload)
         except Exception as e:
-            self.logger.warning(f"tak_cot_callback alert emit failed: {e}")
+            self.logger.warning(f"alert_callback failed: {e}")
 
     @staticmethod
     def _normalize_bssid(bssid: str) -> str:

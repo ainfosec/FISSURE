@@ -67,31 +67,24 @@ class OperationMain(Operation):
     async def run(self) -> None:
         while not self._stop:
             now_text = str(time.time())
-            alert_text = f"Dummy Alert: {now_text}"
 
-            await self.alert_callback(self.node_uid, self.opid, alert_text, self.logger)
-
-            if self.plot_pin:
-                msg_type = "pin"
-                tak_icon = "a-h-G-E-S"
-            else:
-                msg_type = "event"
-                tak_icon = "b-t-f-r"
-
-            tak_msg = {
-                "msg_type": msg_type,
+            alert_payload = {
                 "uid": self.uid,
-                "remarks": json.dumps({"timestamp": now_text}),
+                "alert_kind": "dummy_alert",
+                "alert_summary": "Dummy alert",
+                "message": f"Dummy Alert: {now_text}",
+                "node_uid": self.node_uid,
+                "operation_id": self.opid,
+                "opid": self.opid,
+                "plot_pin": self.plot_pin,
                 "lat": True,
                 "lon": True,
                 "alt": True,
                 "time": True,
-                "tak_icon": tak_icon,
-                "opid": self.opid,
-                "alert_kind": "dummy_alert",
-                "alert_summary": "Dummy alert",
+                "tak_icon": "a-h-G-E-S" if self.plot_pin else "b-t-f-r",
+                "timestamp": now_text,
             }
-            await self.tak_cot_callback(tak_msg)
+            await self.alert_callback(alert_payload)
 
             end_time = time.time() + self.period_s
             while not self._stop and time.time() < end_time:

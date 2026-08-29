@@ -76,16 +76,29 @@ class OperationMain(Operation):
 
             timestamp = str(time.time())
             uid = f"dummy_alert_burst{i}"
+            alert_payload = {
+                "uid": uid,
+                "alert_kind": "dummy_alert_burst",
+                "alert_summary": f"Dummy alert burst {i}/{self.count}",
+                "message": f"Dummy Alert Burst {i}: {timestamp}",
+                "node_uid": self.node_uid,
+                "operation_id": self.opid,
+                "opid": self.opid,
+                "plot_pin": self.plot_pin,
+                "lat": True,
+                "lon": True,
+                "alt": True,
+                "time": True,
+                "tak_icon": "a-h-G-E-S" if self.plot_pin else "b-t-f-r",
+                "burst_index": i,
+                "burst_total": self.count,
+                "timestamp": timestamp,
+            }
 
             try:
                 await asyncio.wait_for(
-                    self.alert_callback(
-                        self.node_uid,
-                        self.opid,
-                        f"Dummy Alert Burst {i}: {timestamp}",
-                        self.logger
-                    ),
-                    timeout=cb_timeout_s
+                    self.alert_callback(alert_payload),
+                    timeout=cb_timeout_s,
                 )
             except asyncio.TimeoutError:
                 self.logger.error(f"alert_callback timed out (>{cb_timeout_s}s) on burst {i}.")
@@ -94,50 +107,9 @@ class OperationMain(Operation):
             except Exception:
                 self.logger.exception(f"alert_callback failed on burst {i}.")
 
-            if self.plot_pin:
-                msg_type = "pin"
-                tak_icon = "a-h-G-E-S"
-            else:
-                msg_type = "event"
-                tak_icon = "b-t-f-r"
-
-            tak_msg = {
-                "msg_type": msg_type,
-                "uid": uid,
-
-                # Human-readable only
-                "remarks": f"Dummy alert burst {i}/{self.count}",
-
-                "lat": True,
-                "lon": True,
-                "alt": True,
-                "time": True,
-                "tak_icon": tak_icon,
-
-                # Framework operation id (internal correlation)
-                "opid": self.opid,
-
-                # Structured alert fields
-                "alert_kind": "dummy_alert_burst",
-                "alert_summary": f"Dummy alert burst {i}/{self.count}",
-                "node_uid": self.node_uid,
-
-                "burst_index": i,
-                "burst_total": self.count,
-                "timestamp": timestamp,
-            }
-
-            try:
-                await asyncio.wait_for(self.tak_cot_callback(tak_msg), timeout=cb_timeout_s)
-            except asyncio.TimeoutError:
-                self.logger.error(f"tak_cot_callback timed out (>{cb_timeout_s}s) on burst {i}.")
-            except asyncio.CancelledError:
-                raise
-            except Exception:
-                self.logger.exception(f"tak_cot_callback failed on burst {i}.")
-
             self.logger.info(
-                f"Sent Dummy Alert Burst {i}/{self.count} (UID {uid}, msg_type={msg_type}, tak_icon={tak_icon})"
+                f"Sent Dummy Alert Burst {i}/{self.count} "
+                f"(UID {uid}, plot_pin={self.plot_pin})"
             )
 
             end_time = time.time() + float(self.interval_seconds)

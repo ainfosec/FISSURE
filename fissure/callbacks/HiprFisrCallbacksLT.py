@@ -349,26 +349,32 @@ async def autorunPlaylistStopLT(component: object, node_uid=""):
     
 
 async def alertReturnLT(component: object, node_uid="", alert_text=""):
-    """
-    Forwards alertReturn Message to the Dashboard.
-    """
-    # Classify Signals by Frequency
-    classification_summary = fissure.utils.library.classifyFrequencyFromTextDirect(alert_text)
-    if classification_summary:
-        alert_text = f"{alert_text}\n{classification_summary}"
-    component.logger.info(alert_text)  # TODO: Provide cleaned up console text for alerts
+    """Convert a compact Meshtastic Sensor Node alert into structured CoT."""
+    raw_text = str(alert_text or "").strip()
 
-    # Forward to Dashboard
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "alert_text": alert_text,
+    if "|" in raw_text:
+        alert_kind, alert_summary = raw_text.split("|", 1)
+        alert_kind = alert_kind.strip() or "plugin_alert"
+        alert_summary = alert_summary.strip() or alert_kind
+    else:
+        alert_kind = "plugin_alert"
+        alert_summary = raw_text or "Sensor Node alert"
+
+    payload = {
+        "msg_type": "event",
+        "uid": f"lt-alert-{node_uid or 'unknown'}-{int(time.time() * 1000)}",
+        "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "tak_icon": "b-t-f-r",
+        "alert_kind": alert_kind,
+        "alert_summary": alert_summary,
+        "node_uid": str(node_uid or "").strip(),
+        "suppress_point": True,
     }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "alertReturnLT",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+    await fissure.utils.tak_messages.send(
+        component,
+        payload,
+    )
     
     
 # async def takPlotLT(component: object, msg=[]):
@@ -432,27 +438,6 @@ async def alertReturnLT(component: object, node_uid="", alert_text=""):
 #         component.logger.error(f"Error sending COT to TAK (LT): {e}")
 #         # tb = traceback.format_exc()
 #         # component.logger.debug(tb)
-    
-
-async def exploitLT(component: object, msg=[]):
-    """"
-    Forwards the necesarry information to the proper exploit flow graph.
-    """
-    PARAMETERS = {
-        "node_uid": str(msg[0]),
-        "protocol": str(msg[1]),
-        "modulation": str(msg[2]),
-        "hardware": str(msg[3]),
-        "type": str(msg[4]),
-        "attack": str(msg[5]),
-        "variables": str(msg[6]),
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "exploitReturnLT",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 async def takReturnLT(component: object, msg=[]):

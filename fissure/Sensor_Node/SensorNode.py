@@ -430,43 +430,151 @@ class SensorNode(object):
         return node_uuid
 
 
-    async def send_alert(self, node_uid: str, opid: str, message: str, logger: None = None) -> None:
-        """
-        Send an alert message.
+    async def send_alert(self, node_uid="", opid="", message="", logger=None) -> None:
+        """Publish one structured FISSURE alert through the existing CoT path.
 
-        This method is meant to be provided as a callback for plugin operations to send alert messages.
-
-        Parameters
-        ----------
-        node_uid : str
-            Sensor node UID
-        opid : str
-            The operation ID. Unused placeholder for future use.
-        message : str
-            The alert message.
-        logger : None
-            Unused placeholder for debugging.
+        The preferred callback form is a single alert dictionary. The legacy
+        ``(node_uid, opid, message, logger)`` form remains accepted so existing
+        plugin operations continue to work while they are migrated.
         """
-        PARAMETERS = {
-            "node_uid": node_uid,
-            "alert_text": message
-        }
-        if self.network_type == "IP":
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "alertReturn",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        alert = {}
+        legacy_message = ""
+
+        if isinstance(node_uid, dict):
+            alert = dict(node_uid)
+            node_uid = alert.get("node_uid", "")
+            opid = alert.get("opid") or alert.get("operation_id") or opid
+        elif isinstance(message, dict):
+            alert = dict(message)
+        else:
+            legacy_message = str(message or "").strip()
+            if legacy_message:
+                try:
+                    parsed_message = json.loads(legacy_message)
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    parsed_message = None
+
+                if isinstance(parsed_message, dict):
+                    alert = dict(parsed_message)
+                else:
+                    alert = {"message": legacy_message}
+
+        framework_opid = str(
+            alert.get("opid")
+            or opid
+            or ""
+        ).strip()
+        operation_id = str(
+            alert.get("operation_id")
+            or framework_opid
+            or ""
+        ).strip()
+
+        alert_kind = str(
+            alert.get("alert_kind")
+            or alert.get("type")
+            or "plugin_alert"
+        ).strip() or "plugin_alert"
+
+        alert_summary = str(
+            alert.get("alert_summary")
+            or alert.get("summary")
+            or alert.get("message")
+            or alert.get("description")
+            or alert.get("name")
+            or legacy_message
+            or alert_kind
+        ).strip()
+
+        artifact_id = str(alert.get("artifact_id") or "").strip()
+        uid = str(alert.get("uid") or f"alert-{uuid.uuid4()}").strip()
+
+        plot_pin_value = alert.get("plot_pin", False)
+        if isinstance(plot_pin_value, str):
+            plot_pin = plot_pin_value.strip().lower() in {
+                "true", "1", "yes", "y", "on"
             }
-        elif self.network_type == "Meshtastic":
-            msg = {
+        else:
+            plot_pin = bool(plot_pin_value)
+
+        timestamp = alert.get("time")
+        if timestamp in (None, "", True):
+            timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        elif isinstance(timestamp, str):
+            timestamp = timestamp.replace(" ", "T")
+
+        if self.network_type == "Meshtastic":
+            compact_alert = f"{alert_kind}|{alert_summary}"[:100]
+            msg_out = {
                 fissure.comms.MessageFields.SOURCE: self.assigned_id,
                 fissure.comms.MessageFields.MESSAGE_NAME: "alertReturnLT",
                 fissure.comms.MessageFields.PARAMETERS: {
-                    "node_uid": node_uid,
-                    "alert_text": PARAMETERS["alert_text"][:100]
-                }
+                    "node_uid": self.uuid,
+                    "alert_text": compact_alert,
+                },
             }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+            await self.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg_out,
+            )
+            return
+
+        if self.network_type != "IP":
+            self.logger.error(f"Unknown network type for alert: {self.network_type}")
+            return
+
+        payload = {
+            "msg_type": "pin" if plot_pin else "event",
+            "uid": uid,
+            "time": timestamp,
+            "tak_icon": str(
+                alert.get("tak_icon")
+                or ("a-h-G-E-S" if plot_pin else "b-t-f-r")
+            ),
+            "alert_kind": alert_kind,
+            "alert_summary": alert_summary,
+            "node_uid": self.uuid,
+            "remarks": str(alert.get("remarks") or alert_summary),
+            "callsign": str(alert.get("callsign") or alert_summary),
+        }
+
+        if framework_opid:
+            payload["opid"] = framework_opid
+        if operation_id:
+            payload["operation_id"] = operation_id
+
+        if artifact_id:
+            payload["artifact_id"] = artifact_id
+
+        if plot_pin:
+            lat = alert.get("lat", True)
+            lon = alert.get("lon", True)
+            alt = alert.get("alt", True)
+
+            if lat is True:
+                lat = self.gps_position.get("latitude", 0.0)
+            if lon is True:
+                lon = self.gps_position.get("longitude", 0.0)
+            if alt is True:
+                alt = self.gps_position.get("altitude", 0.0)
+
+            payload["lat"] = 0.0 if lat is None else lat
+            payload["lon"] = 0.0 if lon is None else lon
+            payload["alt"] = 0.0 if alt is None else alt
+        else:
+            payload["suppress_point"] = True
+
+        msg_out = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "takReturn",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "payload": payload,
+            },
+        }
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg_out,
+        )
 
 
     async def send_detection(self, detection: dict) -> None:
@@ -584,65 +692,23 @@ class SensorNode(object):
 
 
     async def send_tak_cot(self, msg: dict) -> None:
+        """Send a generic TAK pin, track, or event from a plugin operation.
+
+        FISSURE alerts use ``alert_callback`` / ``send_alert()`` instead. This
+        callback intentionally does not pass alert metadata into the CoT
+        builder, so generic TAK output never becomes an Activity alert.
         """
-        Unified TAK message sender (node → HIPRFISR).
-
-        Plugins send a dictionary containing any of:
-
-            msg = {
-                "msg_type": "pin" | "track" | "event",   # optional, default="pin"
-                "uid": str,                               # required
-                "lat": float | True,                      # True = auto-fill from node GPS
-                "lon": float | True,
-                "alt": float | True,
-                "time": str | True,                       # True = auto-fill now()
-                "remarks": str,
-                "tak_icon": str,                          # TAK icon e.g. "a-h-G-E-S"
-                "opid": str,
-                "data": dict                              # only for event messages
-
-                # Optional alert / evidence fields (pins):
-                "alert_kind": str,
-                "alert_summary": str,
-                "artifact_id": str,
-                "operation_id": str,      # evidence/artifact op id (not self.opid)
-                "node_uid": str,
-
-                # Optional small scalar extras (kept intentionally small):
-                "count": int,
-                "duration_s": float,
-                "fps": float,
-                "frames_written": int,
-                "burst_index": int,
-                "burst_total": int,
-                "timestamp": str,
-                "name": str,
-            }
-
-        Missing fields are ignored.
-        True values for lat/lon/alt/time trigger auto-resolution.
-        """
-        # --------------------------------------------------
-        # Validate minimal required field
-        # --------------------------------------------------
         if "uid" not in msg:
             self.logger.error("send_tak_cot() missing required field: uid")
             return
 
-        # --------------------------------------------------
-        # Resolve msg_type
-        # --------------------------------------------------
         msg_type = msg.get("msg_type")
         if not msg_type:
-            # auto-detect: GPS UPDATE => track
             if msg.get("remarks") == "GPS UPDATE":
                 msg_type = "track"
             else:
                 msg_type = "pin"
 
-        # --------------------------------------------------
-        # Normalize GPS + timestamp (only if fields exist)
-        # --------------------------------------------------
         lat = msg.get("lat")
         if lat is True:
             lat = self.gps_position.get("latitude", 0.0)
@@ -659,20 +725,14 @@ class SensorNode(object):
         if timestamp is True:
             timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         elif isinstance(timestamp, str):
-            timestamp = timestamp.replace(" ", "T")  # safety normalization
+            timestamp = timestamp.replace(" ", "T")
 
-        # --------------------------------------------------
-        # Optional fields (base schema)
-        # --------------------------------------------------
         remarks = msg.get("remarks")
         tak_icon = msg.get("tak_icon")
         opid = msg.get("opid")
-        data = msg.get("data")  # for event messages only
+        data = msg.get("data")
         uid = msg["uid"]
 
-        # --------------------------------------------------
-        # Build payload (include ONLY present fields)
-        # --------------------------------------------------
         payload = {"msg_type": msg_type, "uid": uid}
 
         if lat is not None:
@@ -692,19 +752,7 @@ class SensorNode(object):
         if data is not None:
             payload["data"] = data
 
-        # --------------------------------------------------
-        # Pass-through extra fields (used by TAK utility layer)
-        # Keep this intentionally small + scalar.
-        # --------------------------------------------------
         passthrough_keys = {
-            # pin alert structure
-            "alert_kind",
-            "alert_summary",
-            "artifact_id",
-            "operation_id",
-            "node_uid",
-
-            # optional lightweight extras
             "name",
             "count",
             "duration_s",
@@ -713,30 +761,23 @@ class SensorNode(object):
             "burst_index",
             "burst_total",
             "timestamp",
+            "suppress_point",
         }
 
-        for k in passthrough_keys:
-            if k in msg and msg[k] is not None:
-                payload[k] = msg[k]
+        for key in passthrough_keys:
+            if key in msg and msg[key] is not None:
+                payload[key] = msg[key]
 
-        # --------------------------------------------------
-        # IP MODE → send takReturn
-        # --------------------------------------------------
         if self.network_type == "IP":
             msg_out = {
                 fissure.comms.MessageFields.IDENTIFIER: self.identifier,
                 fissure.comms.MessageFields.MESSAGE_NAME: "takReturn",
                 fissure.comms.MessageFields.PARAMETERS: {
-                    "payload": payload
+                    "payload": payload,
                 },
             }
 
-        # --------------------------------------------------
-        # MESHTASTIC MODE → legacy LT list format
-        # (does NOT support arbitrary extra fields)
-        # --------------------------------------------------
         elif self.network_type == "Meshtastic":
-
             if lat is None or lon is None or alt is None:
                 self.logger.error("Meshtastic TAK requires lat/lon/alt.")
                 return
@@ -764,9 +805,10 @@ class SensorNode(object):
             return
 
         await self.hiprfisr_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS, msg_out
+            fissure.comms.MessageTypes.COMMANDS,
+            msg_out,
         )
-    
+
 
     async def send_soi_update(
         self,
@@ -996,6 +1038,41 @@ class SensorNode(object):
         self.logger.info(f"SensorNode send_target_patch called with target_id={target_id}")
 
 
+    async def send_recommendation(self, target_id: str, recommendation: dict) -> None:
+        """Send one structured recommended follow-on action to HIPRFISR."""
+        target_id = str(target_id or "").strip()
+        if not target_id:
+            self.logger.error("send_recommendation missing target_id")
+            return
+        if not isinstance(recommendation, dict):
+            self.logger.error("send_recommendation recommendation must be a dict")
+            return
+
+        recommendation = dict(recommendation)
+        recommendation.setdefault("node_uid", self.uuid)
+
+        if self.network_type != "IP":
+            self.logger.warning("Target recommendations are currently supported only on IP Sensor Nodes.")
+            return
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "targetRecommendation",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "target_id": target_id,
+                "mode": "add",
+                "recommendation": recommendation,
+            },
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        self.logger.info(
+            "SensorNode send_recommendation called with target_id=%s plugin=%s action=%s",
+            target_id,
+            recommendation.get("plugin", ""),
+            recommendation.get("action", ""),
+        )
+
+
     async def _notify_hiprfisr_of_artifact(self, artifact_id: str) -> None:
         """Notify HIPRFISR of a new artifact (async helper method).
         
@@ -1208,6 +1285,7 @@ class SensorNode(object):
         parameters["status_callback"] = self.publish_status_to_hiprfisr
         parameters["target_callback"] = self.send_target_patch  #self.send_target_update
         parameters["soi_callback"] = self.send_soi_update
+        parameters["recommendation_callback"] = self.send_recommendation
         parameters["artifact_manager"] = self.artifact_manager
         parameters["logger"] = self.logger
 
@@ -1273,6 +1351,7 @@ class SensorNode(object):
             "plugin": plugin,
             "operation": operation,
             "parameters": parameters,
+            "user_parameters": user_parameters,
             "resources": resources,
             "status": operation_inst.running,
             "stop": operation_inst.stop,

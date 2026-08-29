@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-29
+
+Modernize Sensor Node activity and target action recommendations
+
+### Added
+
+- Added the Sensor Nodes → Activity workspace as a read-only node snapshot with existing node-state summary information, current plugin operations, selected-operation parameters/resources, structured alerts, and a bounded recent INFO/WARNING/ERROR log view without introducing polling or additional heartbeat traffic.
+- Added on-demand Sensor Node Activity snapshots using the existing operation registry and event log, including clean user-parameter capture for display, declared resource inspection, selected-node log filtering, and manual refresh for current activity/history details.
+- Added first-class Target Recommended Actions with a new plugin operation callback, authoritative HIPRFISR Target storage, recommendation IDs/deduplication, reasons and parameter overrides, and Target history entries for recommendation creation/removal.
+- Added Recommended Actions and History views to the Targets workspace, including selected-recommendation details, parameter payload inspection, full history entry details, and normal Target refresh persistence through the existing Target CoT synchronization path.
+- Added Stage Action support so a Target recommendation can populate the normal Single Action workflow with its plugin, action, compatible hardware selection, real action schema, and discovered parameter overrides without executing automatically.
+- Added a Dummy recommendation action for exercising the complete recommendation → Target → Stage Action workflow.
+
+### Changed
+
+- Reorganized Sensor Node operational visibility around Activity, reusing existing node state, TAK/structured alerts, operation bookkeeping, and log data instead of maintaining separate legacy status/alert history mechanisms.
+- Reworked plugin alerts into structured FISSURE alerts that continue through the existing CoT transport, appear in Tactical and Sensor Node Activity, and remain distinct from generic pin/track/event output produced through `tak_cot_callback`.
+- Migrated legacy listener-produced alert text onto the structured event-style alert path so secondary-channel callbacks continue reaching the Dashboard without relying on the old Sensor Nodes Alerts mechanism.
+- Replaced the legacy Sensor Node exploit-recommendation workflow with Target-owned Recommended Actions tied directly to plugin/action names and optional discovered parameter values, preserving the old “one action recommends the next” workflow within the current action architecture.
+- Removed the obsolete Sensor Nodes Alerts, Exploits, and Reports tabs and their Dashboard/HIPRFISR return paths, counters, staging/export controls, and legacy `exploit` / `exploitReturn` / `snreport` message handling now superseded by structured alerts, Target recommendations, and purpose-built artifacts/integrations.
+- Updated the Targets workspace layout and light/dark/custom styling for the new Details, Recommended Actions, and History views, including compact details text, recommendation staging controls, selected-detail sections, table sizing, and expanded history inspection.
+
 ## 2026-8-27
 
 Rebuild Scapy around selected-node packet crafting and transmission

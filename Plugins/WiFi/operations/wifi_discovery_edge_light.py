@@ -297,59 +297,34 @@ class OperationMain(Operation):
         alt: Optional[float] = None,
         remarks_extra: Optional[Dict[str, Any]] = None,
     ) -> None:
-        remarks_payload = {
+        if not self.alert_callback:
+            return
+
+        alert_payload = {
+            "uid": uid or f"wifi-alert-{int(time.time() * 1000)}",
+            "alert_kind": alert_kind,
+            "alert_summary": alert_summary or message,
             "message": message,
-            "kind": "alert",
-            "event_type": "alert",
             "node_uid": self.node_uid,
             "source_id": self.source_id,
             "operation_id": self.opid,
-        }
-        if remarks_extra:
-            remarks_payload.update(remarks_extra)
-
-        if self.alert_callback:
-            try:
-                await self._call_callback(self.alert_callback, self.node_uid, self.opid, message, self.logger)
-            except Exception as e:
-                self.logger.warning(f"alert_callback failed: {e}")
-
-        if not self.tak_cot_callback:
-            return
-
-        tak_msg = {
-            "msg_type": "event",
-            "uid": uid or f"wifi-alert-{int(time.time() * 1000)}",
-            "remarks": json.dumps(remarks_payload),
-            "tak_icon": "b-t-f-r",
             "opid": self.opid,
-            "kind": "alert",
-            "event_type": "alert",
-            "alert_kind": alert_kind,
-            "alert_summary": alert_summary or message,
-            "node_uid": self.node_uid,
-            "source_id": self.source_id,
-            "data": remarks_payload,
+            "plot_pin": False,
         }
 
-        if lat is not None and lon is not None:
-            tak_msg["point"] = {
-                "lat": float(lat),
-                "lon": float(lon),
-                "hae": float(alt or 0.0),
-                "ce": 25.0,
-                "le": 25.0,
-            }
-        else:
-            tak_msg["lat"] = True
-            tak_msg["lon"] = True
-            tak_msg["alt"] = True
-            tak_msg["time"] = True
+        if lat is not None:
+            alert_payload["lat"] = float(lat)
+        if lon is not None:
+            alert_payload["lon"] = float(lon)
+        if alt is not None:
+            alert_payload["alt"] = float(alt)
+        if remarks_extra:
+            alert_payload.update(remarks_extra)
 
         try:
-            await self._call_callback(self.tak_cot_callback, tak_msg)
+            await self._call_callback(self.alert_callback, alert_payload)
         except Exception as e:
-            self.logger.warning(f"tak_cot_callback alert emit failed: {e}")
+            self.logger.warning(f"alert_callback failed: {e}")
 
     def _load_gain(self) -> None:
         try:

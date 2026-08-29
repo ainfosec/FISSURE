@@ -369,12 +369,6 @@ class OperationMain(Operation):
             trigger_stats=trigger_stats,
         )
 
-        await self._emit_tak_pin(
-            artifact_id=artifact_id,
-            captured=captured,
-            trigger_stats=trigger_stats,
-        )
-
     async def _watch_for_motion(self, cap):
         start = time.time()
         prev_gray = None
@@ -477,83 +471,42 @@ class OperationMain(Operation):
         captured: int,
         trigger_stats: Dict[str, Any],
     ) -> None:
-        if not self.emit_alert or not self.alert_callback:
+        if not (self.emit_alert or self.emit_tak_pin) or not self.alert_callback:
             return
 
         try:
-            payload = {
-                "type": "motion_alert",
-                "kind": "alert",
+            alert_payload = {
+                "uid": f"motion_{artifact_id}",
+                "alert_kind": "motion_alert",
+                "alert_summary": f"Motion detected (photos={captured})",
+                "message": f"Motion detected (photos={captured})",
                 "node_uid": self.node_uid,
                 "source_id": self.source_id,
                 "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
+                "operation_id": self.operation_id or self.opid,
                 "opid": self.opid,
+                "name": self.artifact_name,
                 "count": captured,
                 "motion": trigger_stats,
                 "sensitivity": self.sensitivity,
                 "description": self.description,
-            }
-
-            await asyncio.wait_for(
-                self.alert_callback(
-                    self.node_uid,
-                    self.opid,
-                    json.dumps(payload),
-                    self.logger,
-                ),
-                timeout=2.0,
-            )
-
-        except asyncio.CancelledError:
-            raise
-
-        except Exception:
-            self.logger.exception("alert_callback failed for motion_alert")
-
-    async def _emit_tak_pin(
-        self,
-        *,
-        artifact_id,
-        captured: int,
-        trigger_stats: Dict[str, Any],
-    ) -> None:
-        if not self.emit_tak_pin or not self.tak_cot_callback:
-            return
-
-        try:
-            short_id = str(artifact_id)[:8]
-            tak_msg = {
-                "msg_type": "pin",
-                "uid": f"motion_{artifact_id}",
-                "remarks": f"Motion detected [{short_id}] (photos={captured})",
+                "plot_pin": self.emit_tak_pin,
                 "lat": True,
                 "lon": True,
                 "alt": True,
                 "time": True,
                 "tak_icon": self.tak_icon,
-                "opid": self.opid,
-                "alert_kind": "motion_alert",
-                "alert_summary": f"Motion detected (photos={captured})",
-                "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
-                "node_uid": self.node_uid,
-                "source_id": self.source_id,
-                "name": self.artifact_name,
-                "motion_area": trigger_stats.get("motion_area"),
-                "big_contours": trigger_stats.get("big_contours"),
             }
 
             await asyncio.wait_for(
-                self.tak_cot_callback(tak_msg),
+                self.alert_callback(alert_payload),
                 timeout=2.0,
             )
 
         except asyncio.CancelledError:
             raise
-
         except Exception:
-            self.logger.exception("tak_cot_callback failed for motion pin")
+            self.logger.exception("alert_callback failed for motion_alert")
 
 
 if __name__ == "__main__":

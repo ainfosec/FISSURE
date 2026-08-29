@@ -91,58 +91,42 @@ def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotLogSaveAllClicked(dashboard: QtCore.QObject):
-    """
-    Saves all mission data for the session to a new "log" file.
-    """
-    # Select a Filepath
+    """Save selected session log content to a new log file."""
     directory = os.path.join(fissure.utils.LOG_DIR, "Session Logs")
 
-    # Open the Save Dialog
     dialog = QtWidgets.QFileDialog()
     dialog.setDirectory(directory)
     dialog.setFilter(dialog.filter() | QtCore.QDir.Hidden)
-    dialog.setDefaultSuffix('log')
+    dialog.setDefaultSuffix("log")
     dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
-    dialog.setNameFilters(['Log Files (*.log)'])
+    dialog.setNameFilters(["Log Files (*.log)"])
+
     if dialog.exec_() == QtWidgets.QDialog.Accepted:
         fname = str(dialog.selectedFiles()[0])
     else:
         fname = ""
 
-    # Valid File
-    if fname:
-        # Add .log Extension
-        if fname[-4:] != ".log":
-            fname = fname + ".log"
+    if not fname:
+        return
 
-        # Write to File
-        new_file = open(fname,'w')
-        event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
-        with open(event_log_filepath) as mylogfile:
+    if not fname.endswith(".log"):
+        fname += ".log"
 
-            # Write the Current System Log Contents
-            if dashboard.ui.checkBox_log_system_log.isChecked():
-                new_file.write("#########################################################################\n")
-                new_file.write("############################## System Log ###############################\n")
-                new_file.write("#########################################################################\n")
+    event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
+
+    with open(fname, "w") as new_file:
+        if dashboard.ui.checkBox_log_system_log.isChecked():
+            new_file.write("#########################################################################\n")
+            new_file.write("############################## System Log ###############################\n")
+            new_file.write("#########################################################################\n")
+            with open(event_log_filepath) as mylogfile:
                 new_file.write(mylogfile.read())
 
-            # Write the Alerts:
-            if dashboard.ui.checkBox_log_alerts.isChecked():
-                new_file.write("#########################################################################\n")
-                new_file.write("################################ Alerts #################################\n")
-                new_file.write("#########################################################################\n")
-                new_file.write(dashboard.ui.textEdit2_sensor_nodes_alerts.toPlainText())
-
-            # Write the Session Notes:
-            if dashboard.ui.checkBox_log_session_notes.isChecked():
-                new_file.write("#########################################################################\n")
-                new_file.write("############################# Session Notes #############################\n")
-                new_file.write("#########################################################################\n")
-                new_file.write(dashboard.ui.textEdit1_log_notes.toPlainText())
-
-            # Close the File
-            new_file.close()
+        if dashboard.ui.checkBox_log_session_notes.isChecked():
+            new_file.write("#########################################################################\n")
+            new_file.write("############################# Session Notes #############################\n")
+            new_file.write("#########################################################################\n")
+            new_file.write(dashboard.ui.textEdit1_log_notes.toPlainText())
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

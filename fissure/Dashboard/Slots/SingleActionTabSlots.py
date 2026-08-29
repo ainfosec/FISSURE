@@ -25,6 +25,7 @@ def initialize_single_action_tab(dashboard: QtCore.QObject):
     dashboard.single_action_current_schema = {}
     dashboard.single_action_customized = False
     dashboard.single_action_query_pending = False
+    dashboard.single_action_pending_recommendation = None
 
     dashboard.single_action_start_pending = False
     dashboard.single_action_running = False
@@ -383,6 +384,9 @@ def handle_single_action_action_query_results(
     else:
         dashboard.ui.label_ta_single_action_setup_info.setText("No Dashboard-compatible plugin actions were returned by this Sensor Node.")
 
+    if isinstance(getattr(dashboard, "single_action_pending_recommendation", None), dict):
+        asyncio.create_task(_continue_staged_single_action_recommendation(dashboard))
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotSingleActionHardwareChanged(dashboard: QtCore.QObject):
@@ -436,6 +440,197 @@ def _slotSingleActionActionChanged(dashboard: QtCore.QObject):
     dashboard.single_action_customized = False
     dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(False)
     _clear_single_action_parameter_widgets(dashboard)
+
+
+def _set_single_action_parameter_widget_value(widget, value):
+    if isinstance(widget, QtWidgets.QComboBox):
+        index = widget.findText(str(value), QtCore.Qt.MatchExactly)
+        if index >= 0:
+            widget.setCurrentIndex(index)
+        return
+    if isinstance(widget, QtWidgets.QDoubleSpinBox):
+        widget.setValue(float(value))
+        return
+    if isinstance(widget, QtWidgets.QSpinBox):
+        widget.setValue(int(float(value)))
+        return
+    if isinstance(widget, QtWidgets.QCheckBox):
+        if isinstance(value, str):
+            value = value.strip().lower() in {"true", "1", "yes", "on", "enabled"}
+        widget.setChecked(bool(value))
+        return
+    if isinstance(widget, QtWidgets.QLineEdit):
+        widget.setText(str(value))
+
+
+def _apply_single_action_parameter_overrides(dashboard: QtCore.QObject, overrides: dict):
+    if not isinstance(overrides, dict):
+        return
+    for name, value in overrides.items():
+        record = (getattr(dashboard, "single_action_parameter_widgets", {}) or {}).get(str(name))
+        if not isinstance(record, dict):
+            dashboard.logger.warning(f"Recommended parameter '{name}' is not present in the selected action schema.")
+            continue
+        widget = record.get("widget")
+        if widget is None:
+            continue
+        try:
+            _set_single_action_parameter_widget_value(widget, value)
+        except Exception as error:
+            dashboard.logger.warning(f"Could not stage recommended parameter {name}={value}: {error}")
+
+
+def _single_action_catalog_record(dashboard: QtCore.QObject, plugin_name: str, action_name: str):
+    for record in getattr(dashboard, "single_action_action_catalog", []) or []:
+        if not isinstance(record, dict):
+            continue
+        if (
+            str(record.get("plugin") or "").strip() == plugin_name
+            and str(record.get("action") or "").strip() == action_name
+        ):
+            return record
+    return None
+
+
+def _select_hardware_for_staged_action(dashboard: QtCore.QObject, action_record: dict):
+    combo = dashboard.ui.comboBox_ta_single_action_hardware
+    required = [
+        str(value or "").strip()
+        for value in (action_record.get("hardware") or [])
+        if str(value or "").strip()
+    ]
+
+    if not required:
+        for index in range(combo.count()):
+            data = combo.itemData(index)
+            if isinstance(data, dict) and data.get("mode") == "none":
+                combo.setCurrentIndex(index)
+                return
+        return
+
+    compatible_indexes = []
+    for index in range(combo.count()):
+        data = combo.itemData(index)
+        if not isinstance(data, dict) or data.get("mode") != "hardware":
+            continue
+        hardware_type = str(data.get("hardware_type") or "").strip()
+        if any(_single_action_hardware_matches(value, hardware_type) for value in required):
+            compatible_indexes.append(index)
+
+    current_index = combo.currentIndex()
+    if current_index in compatible_indexes:
+        return
+    if len(compatible_indexes) == 1:
+        combo.setCurrentIndex(compatible_indexes[0])
+        return
+
+    combo.setCurrentIndex(0)
+
+
+async def _continue_staged_single_action_recommendation(dashboard: QtCore.QObject):
+    recommendation = getattr(dashboard, "single_action_pending_recommendation", None)
+    if not isinstance(recommendation, dict):
+        return
+
+    plugin_name = str(recommendation.get("plugin") or "").strip()
+    action_name = str(recommendation.get("action") or "").strip()
+    action_record = _single_action_catalog_record(dashboard, plugin_name, action_name)
+    if action_record is None:
+        dashboard.single_action_pending_recommendation = None
+        dashboard.ui.label_ta_single_action_setup_info.setText(
+            f"Recommended action is not available on this Sensor Node: {plugin_name}: {action_name}"
+        )
+        return
+
+    _refresh_single_action_hardware_filter(dashboard)
+    _select_hardware_for_staged_action(dashboard, action_record)
+    _filter_single_action_action_catalog(dashboard)
+
+    if action_record not in (getattr(dashboard, "single_action_filtered_actions", []) or []):
+        dashboard.single_action_pending_recommendation = None
+        dashboard.ui.label_ta_single_action_setup_info.setText(
+            f"Recommended action is not compatible with the selected Sensor Node hardware: {plugin_name}: {action_name}"
+        )
+        return
+
+    plugin_combo = dashboard.ui.comboBox_ta_single_action_plugin
+    plugin_index = plugin_combo.findData(plugin_name)
+    if plugin_index < 0:
+        dashboard.single_action_pending_recommendation = None
+        return
+    plugin_combo.setCurrentIndex(plugin_index)
+    _populate_single_action_actions(dashboard)
+
+    action_combo = dashboard.ui.comboBox_ta_single_action_action
+    selected_index = -1
+    for index in range(action_combo.count()):
+        record = action_combo.itemData(index)
+        if not isinstance(record, dict):
+            continue
+        if (
+            str(record.get("plugin") or "").strip() == plugin_name
+            and str(record.get("action") or "").strip() == action_name
+        ):
+            selected_index = index
+            break
+
+    if selected_index < 0:
+        dashboard.single_action_pending_recommendation = None
+        return
+
+    action_combo.setCurrentIndex(selected_index)
+    _slotSingleActionActionChanged(dashboard)
+    dashboard.ui.pushButton_ta_single_action_customize.setEnabled(False)
+    dashboard.ui.pushButton_ta_single_action_customize.setText("Loading...")
+    dashboard.ui.label_ta_single_action_setup_info.setText(
+        f"Staging recommendation: {plugin_name}: {action_name}"
+    )
+
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    await dashboard.backend.queryPluginActionSchema(
+        node_uid,
+        plugin_name,
+        action_name,
+        context=ACTION_SCHEMA_CONTEXT,
+    )
+
+
+async def stage_single_action_recommendation(dashboard: QtCore.QObject, recommendation: dict):
+    """Stage a Target recommendation into the normal Single Action workflow."""
+    if not isinstance(recommendation, dict):
+        return
+    if _single_action_active(dashboard):
+        dashboard.statusBar().showMessage("Stop the active Single Action before staging a recommendation.", 5000)
+        return
+    if not _single_action_selected_node_available(dashboard):
+        dashboard.statusBar().showMessage("Select a Sensor Node before staging a recommendation.", 5000)
+        return
+
+    plugin_name = str(recommendation.get("plugin") or "").strip()
+    action_name = str(recommendation.get("action") or "").strip()
+    if not plugin_name or not action_name:
+        return
+
+    dashboard.single_action_pending_recommendation = dict(recommendation)
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+
+    if (
+        str(getattr(dashboard, "single_action_action_catalog_node_uid", "") or "").strip() != node_uid
+        or not getattr(dashboard, "single_action_action_catalog", [])
+    ):
+        dashboard.single_action_query_pending = True
+        dashboard.ui.pushButton_ta_single_action_query.setEnabled(False)
+        dashboard.ui.pushButton_ta_single_action_query.setText("Querying...")
+        dashboard.ui.label_ta_single_action_setup_info.setText("Loading recommended action...")
+        await dashboard.backend.queryPluginActions(
+            node_uid,
+            context=ACTION_QUERY_CONTEXT,
+            scope="all_plugins",
+            exclude_tags=["ui.fuzzing"],
+        )
+        return
+
+    await _continue_staged_single_action_recommendation(dashboard)
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -582,6 +777,20 @@ def handle_single_action_action_schema(
         _single_action_selected_node_available(dashboard) and not _single_action_active(dashboard)
     )
 
+    pending = getattr(dashboard, "single_action_pending_recommendation", None)
+    if isinstance(pending, dict):
+        pending_plugin = str(pending.get("plugin") or "").strip()
+        pending_action = str(pending.get("action") or "").strip()
+        if pending_plugin == plugin_name and pending_action == action_name:
+            _apply_single_action_parameter_overrides(
+                dashboard,
+                pending.get("parameters") or {},
+            )
+            dashboard.single_action_pending_recommendation = None
+            dashboard.ui.label_ta_single_action_setup_info.setText(
+                f"Staged recommendation: {plugin_name}: {action_name}"
+            )
+            
 
 def _single_action_parameter_value(widget):
     """Return the current Python value from one Single Action parameter editor."""

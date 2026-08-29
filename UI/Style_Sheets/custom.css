@@ -2262,6 +2262,77 @@ QLabel#label_sensor_nodes_fn_empty_icon {
 
 
 /* ==========================================================
+   Sensor Nodes - Activity
+   ========================================================== */
+
+QLabel#label_sensor_nodes_activity_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_sensor_nodes_activity_summary,
+QFrame#frame_sensor_nodes_activity_current_activity,
+QFrame#frame_sensor_nodes_activity_alerts,
+QFrame#frame_sensor_nodes_activity_log {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sensor_nodes_activity_summary,
+QLabel#label_sensor_nodes_activity_current_activity,
+QLabel#label_sensor_nodes_activity_alerts,
+QLabel#label_sensor_nodes_activity_log {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_sensor_nodes_activity_parameters,
+QWidget#scrollAreaWidgetContents_sensor_nodes_activity_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_sensor_nodes_activity_parameters {
+    border: 1px solid @color13;
+}
+
+QLabel[uiRole="activityParameterLabel"] {
+    font: 9pt "Ubuntu";
+}
+
+QLabel[uiRole="activityParameterValue"] {
+    font: 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sensor_nodes_activity_log_refresh {
+    color: white;
+    font-weight: bold;
+    border: 1px solid #0B355E;
+    border-radius: 4px;
+    padding: 4px 14px;
+    background-color: #174A7E;
+}
+
+QPushButton#pushButton_sensor_nodes_activity_log_refresh:hover {
+    background-color: #1F5F9E;
+}
+
+QPushButton#pushButton_sensor_nodes_activity_log_refresh:pressed {
+    background-color: #0E365F;
+}
+
+QPushButton#pushButton_sensor_nodes_activity_log_refresh:disabled {
+    color: #B8B8B8;
+    background-color: #D6D6D6;
+    border-color: #B0B0B0;
+}
+
+/* ==========================================================
    Sensor Nodes - Autorun Workflow
    ========================================================== */
 
@@ -2491,6 +2562,108 @@ QTextEdit#textEdit_ta_targets_notes:disabled {
     border: 1px solid @color1;
 }
 
+/* Target details body */
+QLabel#label_ta_targets_info_details {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    font: 9pt "Ubuntu";
+}
+
+/* Local Target detail tabs need more width than the global 132 px tabs. */
+QTabWidget#tabWidget_ta_targets > QTabBar::tab {
+    width: 180px;
+}
+
+/* Recommendation inspector */
+QFrame#frame_ta_targets_recommended_actions {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label_ta_targets_recommended_actions_details,
+QLabel#label_ta_targets_history_details {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    font: bold 10pt "Ubuntu";
+}
+
+QLabel#label2_ta_targets_recommended_actions_plugin_label,
+QLabel#label2_ta_targets_recommended_actions_action_label,
+QLabel#label2_ta_targets_recommended_actions_reason_label,
+QLabel#label2_ta_targets_recommended_actions_parameters_label {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label2_ta_targets_recommended_actions_plugin,
+QLabel#label2_ta_targets_recommended_actions_action,
+QLabel#label2_ta_targets_recommended_actions_reason {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    font: 9pt "Ubuntu";
+}
+
+QPlainTextEdit#plainTextEdit_ta_targets_recommended_actions_parameters,
+QPlainTextEdit#plainTextEdit_ta_targets_history_details {
+    padding: 4px;
+    font: 9pt "Ubuntu";
+}
+
+/* Stage Action is a staging/query operation, not an execution/start control. */
+QPushButton#pushButton_ta_targets_recommended_actions_stage {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_ta_targets_recommended_actions_stage:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_ta_targets_recommended_actions_stage:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_ta_targets_recommended_actions_stage:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
 
 /* ==========================================================
    Targets & Actions - Single Action

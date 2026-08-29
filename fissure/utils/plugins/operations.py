@@ -14,20 +14,26 @@ from typing import Dict, Any, Union, Callable
 from fissure.Sensor_Node.utils.resources import Resource
 from fissure.utils.artifacts import ArtifactManager, get_artifact_manager
 
-_base_params = ['self', 'node_uid', 'logger', 'alert_callback', 'tak_cot_callback', 'detection_callback', 'status_callback', 'target_callback', 'soi_callback', 'artifact_manager']
+_base_params = [
+    'self', 
+    'node_uid', 
+    'logger', 
+    'alert_callback', 
+    'tak_cot_callback', 
+    'detection_callback', 
+    'status_callback', 
+    'target_callback', 
+    'soi_callback', 
+    'recommendation_callback', 
+    'artifact_manager'
+]
 
-async def send_alert(node_uid: str, opid: str, message: str, logger=logging.getLogger(__name__)) -> None:
-    """Placeholder for alert callback if none is provided.
+async def send_alert(node_uid="", opid="", message="", logger=logging.getLogger(__name__)) -> None:
+    """Placeholder alert callback used when an operation runs outside a Sensor Node."""
+    if isinstance(node_uid, dict):
+        logger.info(f"Alert: {node_uid}")
+        return
 
-    Parameters
-    ----------
-    node_uid : str
-        The sensor node UID
-    opid : str
-        The operation ID
-    message : str
-        The alert message.
-    """
     logger.info(f"Alert {node_uid}, {opid}: {message}")
 
 
@@ -79,6 +85,10 @@ async def send_target(node_uid, opid, target_dict, logger=None):
 async def send_soi(node_uid, opid, soi_dict, logger=None):
     if logger:
         logger.info(f"[soi] {node_uid} {opid}: {soi_dict}")
+
+async def send_recommendation(target_id, recommendation, logger=None):
+    if logger:
+        logger.info(f"[recommendation] target={target_id}: {recommendation}")
 
 def setup_decorator(func):
     async def wrapper(self) -> bool:
@@ -225,6 +235,7 @@ class Operation(object):
             status_callback: Union[Callable, None] = None, 
             target_callback: Union[Callable, None] = None, 
             soi_callback: Union[Callable, None] = None, 
+            recommendation_callback: Union[Callable, None] = None, 
             artifact_manager: Union[ArtifactManager, None] = None
         ) -> None:
         """Initialize the Operation class.
@@ -246,7 +257,9 @@ class Operation(object):
         target_callback : Union[Callable, None], optional
             Callback function for reporting targets to TAK and Dashboard
         soi_callback : Union[Callable, None], optional
-            Callback function for reporting SOIs to TAK and Dashboard               
+            Callback function for reporting SOIs to TAK and Dashboard
+        recommendation_callback : Union[Callable, None], optional
+            Callback function for attaching recommended follow-on actions to Targets
         artifact_manager : Union[ArtifactManager, None], optional
             ArtifactManager instance for managing artifacts, by default None to use the global artifact manager
         """
@@ -264,13 +277,16 @@ class Operation(object):
         if target_callback is None:
             target_callback = send_target
         if soi_callback is None:
-            soi_callback = send_soi                
+            soi_callback = send_soi
+        if recommendation_callback is None:
+            recommendation_callback = send_recommendation
         self.alert_callback = alert_callback
         self.tak_cot_callback = tak_cot_callback
         self.detection_callback = detection_callback
         self.status_callback = status_callback
         self.target_callback = target_callback
         self.soi_callback = soi_callback
+        self.recommendation_callback = recommendation_callback
         if artifact_manager is not None:
             self.artifact_manager = artifact_manager
         else:

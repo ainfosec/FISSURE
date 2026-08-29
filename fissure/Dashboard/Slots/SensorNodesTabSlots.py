@@ -8,7 +8,6 @@ import qasync
 import time
 import asyncio
 import ast
-import csv
 import re
 from fissure.utils.selected_node_utils import (
     selected_node_is_local,
@@ -16,6 +15,507 @@ from fissure.utils.selected_node_utils import (
     selected_node_is_ip,
     selected_node_is_meshtastic,
 )
+
+
+def initialize_sensor_nodes_activity_controls(dashboard: QtCore.QObject):
+    """Initialize the read-only Sensor Node Activity view."""
+    dashboard.sensor_nodes_activity_last_node_uid = ""
+    dashboard.sensor_nodes_activity_operations = {}
+    dashboard.sensor_nodes_activity_unread_alerts = 0
+
+    current_table = dashboard.ui.tableWidget_sensor_nodes_activity_current_activity
+    current_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    current_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    current_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+    current_table.verticalHeader().setVisible(False)
+    current_header = current_table.horizontalHeader()
+    current_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    current_header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+    current_header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+    current_header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+    current_header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+
+    alerts_table = dashboard.ui.tableWidget_sensor_nodes_activity_alerts
+    alerts_table.setColumnCount(3)
+    alerts_table.setHorizontalHeaderLabels(["Time", "Type", "Summary"])
+    alerts_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    alerts_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    alerts_table.verticalHeader().setVisible(False)
+    alerts_header = alerts_table.horizontalHeader()
+    alerts_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    alerts_header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+    alerts_header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+    log_table = dashboard.ui.tableWidget_sensor_nodes_activity_log
+    log_table.setColumnCount(3)
+    log_table.setHorizontalHeaderLabels(["Time", "Level", "Message"])
+    log_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    log_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    log_table.verticalHeader().setVisible(False)
+    log_header = log_table.horizontalHeader()
+    log_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    log_header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+    log_header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+    resources_table = dashboard.ui.tableWidget_sensor_nodes_activity_resources
+    resources_table.setColumnCount(3)
+    resources_table.setHorizontalHeaderLabels(["Type", "Name", "Identifier"])
+    resources_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    resources_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    resources_table.verticalHeader().setVisible(False)
+    resources_header = resources_table.horizontalHeader()
+    resources_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    resources_header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+    resources_header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+    dashboard.ui.tabWidget_sensor_nodes_activity_parameters_resources.setCurrentIndex(0)
+    dashboard.ui.label2_sensor_nodes_activity_current_activity_status.setText("")
+    dashboard.ui.label2_sensor_nodes_activity_alerts_status.setText("")
+    dashboard.ui.label2_sensor_nodes_activity_log_status.setText("")
+
+    select_node_icon_path = os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")
+    if os.path.isfile(select_node_icon_path):
+        select_node_pixmap = QtGui.QPixmap(select_node_icon_path)
+        dashboard.ui.label_sensor_nodes_activity_select_sensor_node_image.setPixmap(select_node_pixmap)
+        dashboard.ui.label_sensor_nodes_activity_select_sensor_node_image.setScaledContents(False)
+        dashboard.ui.label_sensor_nodes_activity_select_sensor_node_image.setAlignment(QtCore.Qt.AlignCenter)
+
+    _clear_sensor_nodes_activity_parameters(dashboard)
+    _update_sensor_nodes_activity_unread_badges(dashboard)
+    update_sensor_nodes_activity_selected_node_gate(dashboard)
+
+
+def _sensor_nodes_activity_uid_matches(first_uid: str, second_uid: str) -> bool:
+    """Return True when two full/short Sensor Node UID forms refer to the same node."""
+    first_uid = str(first_uid or "").strip()
+    second_uid = str(second_uid or "").strip()
+
+    if not first_uid or not second_uid:
+        return False
+
+    return (
+        first_uid == second_uid
+        or first_uid.endswith(second_uid)
+        or second_uid.endswith(first_uid)
+    )
+
+
+def _sensor_nodes_activity_is_visible(dashboard: QtCore.QObject) -> bool:
+    """Return True when Sensor Nodes > Activity is the page the operator can see."""
+    sensor_nodes_index = dashboard.ui.tabWidget.indexOf(dashboard.ui.tab_sensors)
+    activity_index = dashboard.ui.tabWidget_sensor_nodes.indexOf(dashboard.ui.tab_activity)
+
+    return (
+        sensor_nodes_index >= 0
+        and activity_index >= 0
+        and dashboard.ui.tabWidget.currentIndex() == sensor_nodes_index
+        and dashboard.ui.tabWidget_sensor_nodes.currentIndex() == activity_index
+    )
+
+
+def _update_sensor_nodes_activity_unread_badges(dashboard: QtCore.QObject):
+    """Mirror the Activity unread-alert count onto Activity and Sensor Nodes tabs."""
+    unread = max(0, int(getattr(dashboard, "sensor_nodes_activity_unread_alerts", 0) or 0))
+
+    activity_index = dashboard.ui.tabWidget_sensor_nodes.indexOf(dashboard.ui.tab_activity)
+    if activity_index >= 0:
+        activity_text = "Activity" if unread == 0 else f"Activity ({unread})"
+        dashboard.ui.tabWidget_sensor_nodes.tabBar().setTabText(activity_index, activity_text)
+
+    sensor_nodes_index = dashboard.ui.tabWidget.indexOf(dashboard.ui.tab_sensors)
+    if sensor_nodes_index >= 0:
+        sensor_nodes_text = "Sensor Nodes" if unread == 0 else f"Sensor Nodes ({unread})"
+        dashboard.ui.tabWidget.tabBar().setTabText(sensor_nodes_index, sensor_nodes_text)
+
+
+def _clear_sensor_nodes_activity_unread(dashboard: QtCore.QObject):
+    """Mark Activity alerts as read without clearing the alert rows."""
+    dashboard.sensor_nodes_activity_unread_alerts = 0
+    _update_sensor_nodes_activity_unread_badges(dashboard)
+
+
+def _clear_sensor_nodes_activity_parameters(dashboard: QtCore.QObject):
+    """Clear the read-only parameter detail area."""
+    contents = dashboard.ui.scrollAreaWidgetContents_sensor_nodes_activity_parameters
+    layout = contents.layout()
+
+    if layout is None:
+        layout = QtWidgets.QGridLayout(contents)
+        contents.setLayout(layout)
+
+    while layout.count():
+        item = layout.takeAt(0)
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+
+    layout.setContentsMargins(10, 10, 10, 10)
+    layout.setHorizontalSpacing(12)
+    layout.setVerticalSpacing(6)
+    layout.setColumnStretch(0, 2)
+    layout.setColumnStretch(1, 3)
+    layout.setAlignment(QtCore.Qt.AlignTop)
+
+
+def _clear_sensor_nodes_activity_details(dashboard: QtCore.QObject):
+    """Clear the selected operation parameter/resource details."""
+    _clear_sensor_nodes_activity_parameters(dashboard)
+    dashboard.ui.tableWidget_sensor_nodes_activity_resources.setRowCount(0)
+
+
+def _clear_sensor_nodes_activity_snapshot(dashboard: QtCore.QObject):
+    """Clear node-specific Activity content when the selected node changes."""
+    dashboard.sensor_nodes_activity_operations = {}
+    dashboard.sensor_nodes_activity_unread_alerts = 0
+    dashboard.ui.tableWidget_sensor_nodes_activity_current_activity.setRowCount(0)
+    dashboard.ui.tableWidget_sensor_nodes_activity_resources.setRowCount(0)
+    dashboard.ui.tableWidget_sensor_nodes_activity_log.setRowCount(0)
+    dashboard.ui.tableWidget_sensor_nodes_activity_alerts.setRowCount(0)
+    dashboard.ui.label2_sensor_nodes_activity_current_activity_status.setText("")
+    dashboard.ui.label2_sensor_nodes_activity_alerts_status.setText("")
+    dashboard.ui.label2_sensor_nodes_activity_log_status.setText("")
+    _clear_sensor_nodes_activity_parameters(dashboard)
+    _update_sensor_nodes_activity_unread_badges(dashboard)
+
+
+def update_sensor_nodes_activity_selected_node_gate(dashboard: QtCore.QObject):
+    """Show Activity controls only when the dashboard has an online selected node."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    node_state = (getattr(dashboard, "node_states", {}) or {}).get(node_uid, {}) or {}
+
+    has_selected_node = bool(node_uid)
+    if has_selected_node and isinstance(node_state, dict) and node_state.get("connected") is False:
+        has_selected_node = False
+
+    dashboard.ui.stackedWidget_sensor_nodes_activity.setCurrentWidget(
+        dashboard.ui.page_sensor_nodes_activity_controls
+        if has_selected_node
+        else dashboard.ui.page_sensor_nodes_activity_no_node
+    )
+
+    if not has_selected_node:
+        dashboard.sensor_nodes_activity_last_node_uid = ""
+        return
+
+    if dashboard.sensor_nodes_activity_last_node_uid != node_uid:
+        dashboard.sensor_nodes_activity_last_node_uid = node_uid
+        _clear_sensor_nodes_activity_snapshot(dashboard)
+
+    update_sensor_nodes_activity_summary(dashboard)
+
+
+def update_sensor_nodes_activity_summary(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    node: dict = None,
+):
+    """Populate Node Summary from existing Dashboard node state only."""
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    callback_uid = str(node_uid or "").strip()
+
+    if not selected_uid:
+        return
+
+    if callback_uid and not _sensor_nodes_activity_uid_matches(selected_uid, callback_uid):
+        return
+
+    if not isinstance(node, dict):
+        node = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid, {}) or {}
+
+    selected_settings = getattr(dashboard, "selected_node_settings", {}) or {}
+    sensor_settings = selected_settings.get("Sensor Node", {}) or {}
+
+    nickname = str(
+        node.get("nickname")
+        or sensor_settings.get("nickname")
+        or selected_uid.split("-")[0]
+    ).strip()
+
+    connected = node.get("connected")
+    status = str(node.get("status") or "Unknown").strip()
+    if connected is False:
+        status = "Disconnected"
+
+    network_type = str(
+        node.get("network_type")
+        or sensor_settings.get("network_type")
+        or ""
+    ).strip()
+    node_ip = str(
+        node.get("node_ip_address")
+        or node.get("ip")
+        or getattr(dashboard, "selected_node_ip", "")
+        or ""
+    ).strip()
+
+    if selected_node_is_local(dashboard):
+        connection = "Local Process"
+    elif network_type.lower() == "ip":
+        connection = f"IP — {node_ip}" if node_ip and node_ip.lower() != "unknown" else "IP"
+    elif network_type:
+        connection = network_type
+    else:
+        connection = "—"
+
+    version = str(node.get("version") or "—").strip() or "—"
+    autorun_state = str(node.get("autorun_state") or "Idle").strip() or "Idle"
+
+    last_seen = node.get("last_seen")
+    heartbeat_text = "—"
+    try:
+        if last_seen is not None:
+            heartbeat_text = datetime.datetime.fromtimestamp(float(last_seen)).strftime("%H:%M:%S")
+    except (TypeError, ValueError, OSError, OverflowError):
+        heartbeat_text = str(last_seen or "—")
+
+    dashboard.ui.label2_sensor_nodes_activity_summary_name.setText(nickname or "—")
+    dashboard.ui.label2_sensor_nodes_activity_summary_status.setText(status or "—")
+    dashboard.ui.label2_sensor_nodes_activity_summary_connection.setText(connection)
+    dashboard.ui.label2_sensor_nodes_activity_summary_version.setText(version)
+    dashboard.ui.label2_sensor_nodes_activity_summary_autorun.setText(autorun_state)
+    dashboard.ui.label2_sensor_nodes_activity_summary_heartbeat.setText(heartbeat_text)
+
+
+def _populate_sensor_nodes_activity_details(dashboard: QtCore.QObject, operation: dict):
+    """Populate Parameters and Resources for the selected active operation."""
+    _clear_sensor_nodes_activity_details(dashboard)
+
+    if not isinstance(operation, dict):
+        return
+
+    contents = dashboard.ui.scrollAreaWidgetContents_sensor_nodes_activity_parameters
+    layout = contents.layout()
+    parameters = operation.get("parameters") or []
+
+    for row, parameter in enumerate(parameters):
+        if not isinstance(parameter, dict):
+            continue
+
+        name_label = QtWidgets.QLabel(str(parameter.get("name") or ""))
+        value_label = QtWidgets.QLabel(str(parameter.get("value") or ""))
+        name_label.setProperty("uiRole", "activityParameterLabel")
+        value_label.setProperty("uiRole", "activityParameterValue")
+        name_label.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        value_label.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        value_label.setWordWrap(True)
+        value_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        layout.addWidget(name_label, row, 0)
+        layout.addWidget(value_label, row, 1)
+
+    resources = operation.get("resources") or []
+    resources_table = dashboard.ui.tableWidget_sensor_nodes_activity_resources
+    resources_table.setRowCount(len(resources))
+
+    for row, resource in enumerate(resources):
+        if not isinstance(resource, dict):
+            resource = {}
+
+        values = [
+            str(resource.get("type") or ""),
+            str(resource.get("name") or ""),
+            str(resource.get("identifier") or ""),
+        ]
+        for column, value in enumerate(values):
+            resources_table.setItem(row, column, QtWidgets.QTableWidgetItem(value))
+
+    resources_table.resizeRowsToContents()
+
+
+def populate_sensor_nodes_activity_snapshot(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operations: list = None,
+    log_entries: list = None,
+):
+    """Populate Current Activity and Recent Log from one on-demand Sensor Node snapshot."""
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not _sensor_nodes_activity_uid_matches(selected_uid, node_uid):
+        return
+
+    operations = operations or []
+    log_entries = log_entries or []
+    dashboard.sensor_nodes_activity_operations = {
+        str(operation.get("operation_id") or ""): operation
+        for operation in operations
+        if isinstance(operation, dict) and str(operation.get("operation_id") or "").strip()
+    }
+
+    current_table = dashboard.ui.tableWidget_sensor_nodes_activity_current_activity
+    current_table.blockSignals(True)
+    current_table.setRowCount(len(operations))
+
+    for row, operation in enumerate(operations):
+        if not isinstance(operation, dict):
+            operation = {}
+
+        start_time = operation.get("start_time")
+        started_text = ""
+        try:
+            if start_time:
+                started_text = datetime.datetime.fromtimestamp(
+                    float(start_time)
+                ).strftime("%H:%M:%S")
+        except (TypeError, ValueError, OSError, OverflowError):
+            started_text = str(start_time or "")
+
+        values = [
+            str(operation.get("plugin") or ""),
+            str(operation.get("activity") or ""),
+            str(operation.get("operation_id") or ""),
+            started_text,
+            str(operation.get("owner") or ""),
+        ]
+
+        for column, value in enumerate(values):
+            current_table.setItem(row, column, QtWidgets.QTableWidgetItem(value))
+
+    current_table.blockSignals(False)
+    current_table.resizeRowsToContents()
+
+    operation_count = len(operations)
+    dashboard.ui.label2_sensor_nodes_activity_current_activity_status.setText(
+        f"{operation_count} operation{'s' if operation_count != 1 else ''} running"
+    )
+
+    if operation_count:
+        current_table.selectRow(0)
+        _slotSensorNodesActivityCurrentSelectionChanged(dashboard)
+    else:
+        _clear_sensor_nodes_activity_details(dashboard)
+
+    log_table = dashboard.ui.tableWidget_sensor_nodes_activity_log
+    log_table.setRowCount(len(log_entries))
+
+    for row, entry in enumerate(log_entries):
+        if not isinstance(entry, dict):
+            entry = {}
+
+        values = [
+            str(entry.get("time") or ""),
+            str(entry.get("level") or ""),
+            str(entry.get("message") or ""),
+        ]
+        for column, value in enumerate(values):
+            log_table.setItem(row, column, QtWidgets.QTableWidgetItem(value))
+
+    log_table.resizeRowsToContents()
+
+    dashboard.ui.label2_sensor_nodes_activity_log_status.setText(
+        f"Showing {len(log_entries)} matching entr{'y' if len(log_entries) == 1 else 'ies'}"
+    )
+
+
+def append_sensor_nodes_activity_alert(dashboard: QtCore.QObject, alert_record: dict):
+    """Mirror one structured FISSURE alert into Activity for the selected node."""
+    if not isinstance(alert_record, dict):
+        return
+
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    alert_node_uid = str(alert_record.get("node_uid") or "").strip()
+
+    if not _sensor_nodes_activity_uid_matches(selected_uid, alert_node_uid):
+        return
+
+    raw_time = str(alert_record.get("time") or "").strip()
+    display_time = raw_time
+
+    if raw_time:
+        try:
+            iso_time = raw_time
+            if iso_time.endswith("Z"):
+                iso_time = iso_time[:-1] + "+00:00"
+
+            alert_datetime = datetime.datetime.fromisoformat(iso_time)
+            if alert_datetime.tzinfo is not None:
+                alert_datetime = alert_datetime.astimezone()
+
+            display_time = alert_datetime.strftime("%H:%M:%S")
+        except (TypeError, ValueError):
+            display_time = raw_time
+
+    values = [
+        display_time,
+        str(alert_record.get("type") or ""),
+        str(alert_record.get("summary") or ""),
+    ]
+
+    table = dashboard.ui.tableWidget_sensor_nodes_activity_alerts
+    table.insertRow(0)
+
+    for column, value in enumerate(values):
+        table.setItem(0, column, QtWidgets.QTableWidgetItem(value))
+
+    while table.rowCount() > 100:
+        table.removeRow(table.rowCount() - 1)
+
+    table.resizeRowsToContents()
+
+    dashboard.ui.label2_sensor_nodes_activity_alerts_status.setText(
+        f"{table.rowCount()} alert{'s' if table.rowCount() != 1 else ''} this session"
+    )
+
+    if _sensor_nodes_activity_is_visible(dashboard):
+        _clear_sensor_nodes_activity_unread(dashboard)
+    else:
+        dashboard.sensor_nodes_activity_unread_alerts = (
+            int(getattr(dashboard, "sensor_nodes_activity_unread_alerts", 0) or 0) + 1
+        )
+        _update_sensor_nodes_activity_unread_badges(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesActivityCurrentSelectionChanged(dashboard: QtCore.QObject):
+    """Show details for the selected active operation without making another node request."""
+    table = dashboard.ui.tableWidget_sensor_nodes_activity_current_activity
+    row = table.currentRow()
+
+    if row < 0:
+        _clear_sensor_nodes_activity_details(dashboard)
+        return
+
+    operation_id_item = table.item(row, 2)
+    operation_id = str(operation_id_item.text() if operation_id_item is not None else "").strip()
+    operation = (getattr(dashboard, "sensor_nodes_activity_operations", {}) or {}).get(operation_id)
+    _populate_sensor_nodes_activity_details(dashboard, operation)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSensorNodesActivityRefreshClicked(dashboard: QtCore.QObject):
+    """Request one bounded Activity snapshot for the selected IP/local Sensor Node."""
+    node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not node_uid:
+        return
+
+    if selected_node_is_meshtastic(dashboard):
+        dashboard.ui.tableWidget_sensor_nodes_activity_current_activity.setRowCount(0)
+        dashboard.ui.tableWidget_sensor_nodes_activity_log.setRowCount(0)
+        _clear_sensor_nodes_activity_details(dashboard)
+        dashboard.ui.label2_sensor_nodes_activity_current_activity_status.setText(
+            "Snapshot not requested over Meshtastic"
+        )
+        dashboard.ui.label2_sensor_nodes_activity_log_status.setText(
+            "Recent Log not requested over Meshtastic"
+        )
+        return
+
+    dashboard.ui.label2_sensor_nodes_activity_current_activity_status.setText("Refreshing...")
+    dashboard.ui.label2_sensor_nodes_activity_log_status.setText("Refreshing...")
+    await dashboard.backend.refreshSensorNodeActivity(node_uid, log_limit=100)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesActivityAlertsClearClicked(dashboard: QtCore.QObject):
+    """Clear the non-persistent Activity alert display."""
+    dashboard.ui.tableWidget_sensor_nodes_activity_alerts.setRowCount(0)
+    dashboard.ui.label2_sensor_nodes_activity_alerts_status.setText("Cleared")
+    _clear_sensor_nodes_activity_unread(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesActivityTabVisibilityChanged(dashboard: QtCore.QObject):
+    """Mark Activity alerts read whenever the Activity page becomes visible."""
+    if _sensor_nodes_activity_is_visible(dashboard):
+        _clear_sensor_nodes_activity_unread(dashboard)
 
 
 def initialize_sensor_nodes_autorun_controls(dashboard: QtCore.QObject):
@@ -1587,130 +2087,6 @@ async def _slotSensorNodesFileNavigationLocalTransferClicked(dashboard: QtCore.Q
     )
 
 
-def update_sensor_node_title(dashboard: QtCore.QObject, change: int):
-    # get current number
-    current_text = dashboard.ui.tabWidget.tabBar().tabText(6)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    new_count = max([0, current_count + change])
-    if new_count == 0:
-        new_text = base_text.strip()
-    else:
-        new_text = f"{base_text.strip()} ({new_count})"
-    dashboard.ui.tabWidget.tabBar().setTabText(6, new_text)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAlertsClearClicked(dashboard: QtCore.QObject):
-    """ 
-    Clears the Alerts text edit and resets the tab color.
-    """
-    # Clear
-    dashboard.ui.textEdit2_sensor_nodes_alerts.clear()
-
-    # get count from current title
-    current_text = dashboard.ui.tabWidget_sensor_nodes.tabBar().tabText(3)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    # Reset Alerts Tab Text
-    dashboard.ui.tabWidget_sensor_nodes.tabBar().setTabText(3,"Alerts")
-
-    # Update Sensor Nodes Tab Text
-    update_sensor_node_title(dashboard, -current_count)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesAlertsSaveClicked(dashboard: QtCore.QObject):
-    """ 
-    Saves the alerts to a text file.
-    """
-    # Define the default directory
-    directory = os.path.join(fissure.utils.LOG_DIR, "Session Logs")
-
-    # Open the Save File Dialog
-    dialog = QtWidgets.QFileDialog()
-    dialog.setDirectory(directory)
-    dialog.setFilter(dialog.filter() | QtCore.QDir.Hidden)
-    dialog.setDefaultSuffix('txt')
-    dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
-    dialog.setNameFilters(['Text Files (*.txt)'])
-    
-    if dialog.exec_() == QtWidgets.QDialog.Accepted:
-        # Get the selected file path
-        fname = dialog.selectedFiles()[0]
-
-        # Ensure the file has the correct extension
-        if not fname.lower().endswith(".txt"):
-            fname += ".txt"
-
-        try:
-            # Write the text content to the file
-            with open(fname, 'w', encoding='utf-8') as new_file:
-                new_file.write(dashboard.ui.textEdit2_sensor_nodes_alerts.toPlainText())
-            print(f"File saved successfully at: {fname}")
-        except Exception as e:
-            print(f"Error saving file: {e}")
-    else:
-        print("File save dialog was canceled.")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesExploitsClearClicked(dashboard: QtCore.QObject):
-    """ 
-    Clears the Listed Exploits text edit and resets the tab color.
-    """
-    tableWidget_exploits: QtWidgets.QTableWidget = dashboard.ui.tableWidget_exploits
-
-    # Clear
-    row_count = tableWidget_exploits.rowCount()
-    tableWidget_exploits.setRowCount(0)
-
-    tableWidget_exploits.horizontalHeader().setVisible(True) # set header visible in code; qt designer always sets to false
-
-    # Reset Alerts Tab Text
-    dashboard.ui.tabWidget_sensor_nodes.tabBar().setTabText(4,"Exploits")
-
-    # Reset Sensor Nodes Tab Text
-    update_sensor_node_title(dashboard, -row_count)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesReportsClearClicked(dashboard: QtCore.QObject):
-    """ 
-    Clears the Listed Reports and resets the tab color.
-    """
-    tableWidget_reports: QtWidgets.QTableWidget = dashboard.ui.tableWidget_reports
-
-    # Clear
-    row_count = tableWidget_reports.rowCount()
-    tableWidget_reports.setRowCount(0)
-
-    # Reset Tab Text
-    dashboard.ui.tabWidget_sensor_nodes.tabBar().setTabText(5,"Reports")
-
-    # Reset Sensor Nodes Tab Text
-    update_sensor_node_title(dashboard, -row_count)
-    #dashboard.ui.tabWidget.tabBar().setTabText(6,"Sensor Nodes")
-
-
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSensorNodesListenersMeshtasticInfoClicked(dashboard: QtCore.QObject):
     """ 
@@ -2037,68 +2413,6 @@ def _slotSensorNodesListenersFilesystemFilepathBrowseClicked(dashboard: QtCore.Q
     except:
         pass
 
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesReportsSaveClicked(dashboard: QtCore.QObject):
-    """ 
-    Saves the reports from `tableWidget_reports` to a .txt or .csv file.
-    """
-    # Define the default directory
-    directory = os.path.join(fissure.utils.LOG_DIR, "Session Logs")
-
-    # Open the Save File Dialog
-    dialog = QtWidgets.QFileDialog()
-    dialog.setDirectory(directory)
-    dialog.setFilter(dialog.filter() | QtCore.QDir.Hidden)
-    dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
-    dialog.setNameFilters(["Text Files (*.txt)", "CSV Files (*.csv)"])
-
-    if dialog.exec_() == QtWidgets.QDialog.Accepted:
-        # Get the selected file path
-        fname = dialog.selectedFiles()[0]
-
-        # Get the selected filter (CSV or TXT)
-        selected_filter = dialog.selectedNameFilter()
-
-        # Ensure the correct file extension based on the selected filter
-        if "CSV Files" in selected_filter:
-            file_format = "csv"
-            if not fname.lower().endswith(".csv"):
-                fname += ".csv"
-        else:
-            file_format = "txt"
-            if not fname.lower().endswith(".txt"):
-                fname += ".txt"
-
-        try:
-            # Extract data from tableWidget_reports
-            table = dashboard.ui.tableWidget_reports
-            row_count = table.rowCount()
-            col_count = table.columnCount()
-
-            if file_format == "txt":
-                with open(fname, "w", encoding="utf-8") as file:
-                    for row in range(row_count):
-                        row_data = []
-                        for col in range(col_count):
-                            item = table.item(row, col)
-                            row_data.append(item.text() if item else "")
-                        file.write(" | ".join(row_data) + "\n")  # Format for readability
-            else:  # CSV format
-                with open(fname, "w", newline="", encoding="utf-8") as file:
-                    writer = csv.writer(file)
-                    # Write header row (if available)
-                    headers = [table.horizontalHeaderItem(col).text() if table.horizontalHeaderItem(col) else f"Column {col+1}" for col in range(col_count)]
-                    writer.writerow(headers)
-                    # Write table rows
-                    for row in range(row_count):
-                        writer.writerow([table.item(row, col).text() if table.item(row, col) else "" for col in range(col_count)])
-
-            dashboard.logger.info(f"File saved successfully at: {fname}")
-        except Exception as e:
-            dashboard.logger.error(f"Error saving file: {e}")
-    else:
-        dashboard.logger.debug("File save dialog was canceled.")
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSensorNodesPluginSelected(dashboard: QtCore.QObject):

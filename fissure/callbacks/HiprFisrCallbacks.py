@@ -280,9 +280,7 @@ async def disconnect(component: object):
 
 
 async def enableDisableListener(component: object, listener_type="", listener_name="", parameters={}):
-    """
-    Creates a listener if it does not exist and then toggles its enable/disable status.
-    """
+    """Create a listener if needed and toggle its enable/disable status."""
     loop = asyncio.get_running_loop()
 
     if listener_type == "Meshtastic":
@@ -298,26 +296,24 @@ async def enableDisableListener(component: object, listener_type="", listener_na
     elif listener_type == "TCP/UDP":
         ListenerClass = TCPUDPListener
     elif listener_type == "MQTT":
-        ListenerClass = MQTTListener        
+        ListenerClass = MQTTListener
     else:
         component.logger.error(f"Unknown listener type '{listener_type}'")
         return
 
     if listener_name not in component.alert_listeners:
-        # Create a new Listener if it does not exist
         listener = ListenerClass(
-            component, 
-            listener_name, 
-            parameters, 
-            loop, 
-            alert_callback=alertReturn
+            component,
+            listener_name,
+            parameters,
+            loop,
+            alert_callback=listenerAlertReturn,
         )
         component.alert_listeners[listener_name] = listener
         component.logger.info(f"Created new {listener_type} Listener: {listener_name}")
     else:
         listener = component.alert_listeners[listener_name]
 
-    # Toggle enable/disable status
     if listener.is_active():
         listener.disable()
         component.logger.info(f"Listener '{listener_name}' disabled.")
@@ -327,7 +323,6 @@ async def enableDisableListener(component: object, listener_type="", listener_na
         component.logger.info(f"Listener '{listener_name}' enabled.")
         status = "Enabled"
 
-    # Send Status to Dashboard
     PARAMETERS = {
         "listener_name": listener_name,
         "status": status,
@@ -338,7 +333,10 @@ async def enableDisableListener(component: object, listener_type="", listener_na
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
     if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
 async def deleteListener(component: object, listener_name=""):
@@ -2334,6 +2332,57 @@ async def refreshSensorNodeFilesResults(
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+async def refreshSensorNodeActivityResults(
+    component: object,
+    node_uid="",
+    operations=None,
+    log_entries=None,
+):
+    """Forward one Sensor Node Activity snapshot to the Dashboard."""
+    PARAMETERS = {
+        "node_uid": node_uid,
+        "operations": operations or [],
+        "log_entries": log_entries or [],
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "refreshSensorNodeActivityResults",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def refreshSensorNodeActivity(component: object, node_uid="", log_limit=100):
+    """Request one bounded Activity snapshot from an IP/local Sensor Node."""
+    node = (component.nodes or {}).get(node_uid, {}) or {}
+    identity = node.get("identity")
+
+    if identity is None:
+        component.logger.warning(
+            f"Could not refresh Sensor Node Activity; no identity for {node_uid}."
+        )
+        return
+
+    PARAMETERS = {
+        "log_limit": log_limit,
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "refreshSensorNodeActivity",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
+
+
 async def flowGraphError(component: object, node_uid="", error=""):
     """
     Forwards the flow graph error message to the Dashboard.
@@ -2586,37 +2635,25 @@ async def findGPS_CoordinatesResults(component: object, coordinates=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def alertReturn(component: object, node_uid="", alert_text=""):
-    """
-    Forwards alertReturn Message to the Dashboard.
-    """
-    # # Classify Signals by Frequency
-    # classification_summary = fissure.utils.library.classifyFrequencyFromTextDirect(alert_text, False)
-    # if classification_summary:
-    #     alert_text = f"{alert_text}\n{classification_summary}"
-    # component.logger.info(alert_text)  # TODO: Provide cleaned up console text for alerts
+async def listenerAlertReturn(component: object, node_uid="", alert_text=""):
+    """Convert a listener check-in into a structured event-style FISSURE alert."""
+    summary = str(alert_text or "").strip() or "Listening post check-in received"
 
-    # Get Nickname
-    node_record = component.nodes.get(node_uid, {})
-    node_nickname = (
-        node_record.get("nickname")
-        or node_record.get("settings", {}).get("Sensor Node", {}).get("nickname")
-        or ""
+    payload = {
+        "msg_type": "event",
+        "uid": f"listener-alert-{uuid.uuid4()}",
+        "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "tak_icon": "b-t-f-r",
+        "alert_kind": "listening_post",
+        "alert_summary": summary,
+        "node_uid": str(node_uid or "").strip(),
+        "suppress_point": True,
+    }
+
+    await fissure.utils.tak_messages.send(
+        component,
+        payload,
     )
-
-    # Forward to Dashboard
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "node_nickname": node_nickname,
-        "alert_text": alert_text,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "alertReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 async def detectionReturn(
@@ -2985,45 +3022,6 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
     }
 
     return target_id, patch, history_entry
-
-
-async def exploit(component: object, node_uid: str, protocol:str, modulation:str, hardware:str, type:str, attack:str, variables:str):
-    """"
-    Forwards the necessary information to the proper exploit flow graph.
-    """
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "protocol": protocol,
-        "modulation": modulation,
-        "hardware": hardware,
-        "type": type,
-        "attack": attack,
-        "variables": variables,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "exploitReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def snreport(component: object, node_uid:str, text:str):
-    """"
-    Forwards the necessary information to the proper exploit flow graph.
-    """
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "text": text,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "snreport",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 async def gpsBeaconEnableDisableIP_Return(component: object, gps_tak_beacon_status: bool):
@@ -6495,6 +6493,12 @@ def _normalize_target_record(
         record["history"] = []
 
     if not isinstance(
+        record.get("recommendations"),
+        list,
+    ):
+        record["recommendations"] = []        
+
+    if not isinstance(
         record.get("artifact_ids"),
         list,
     ):
@@ -7097,6 +7101,10 @@ async def targetPatch(
             record.get("history") or [],
             default=str,
         ),
+        "recommendations_json": json.dumps(
+            record.get("recommendations") or [],
+            default=str,
+        ),
         "geolocation_status": geo.get(
             "status",
             "idle",
@@ -7134,6 +7142,132 @@ async def targetPatch(
             "lon": out_lon,
             "alt": out_hae,
         },
+    )
+
+
+async def targetRecommendation(
+    component: object,
+    target_id="",
+    mode="add",
+    recommendation=None,
+    recommendation_id="",
+):
+    """Add or remove a structured recommended action on an authoritative Target."""
+    target_id = str(target_id or "").strip()
+    mode = str(mode or "add").strip().lower()
+    recommendation = recommendation if isinstance(recommendation, dict) else {}
+    recommendation_id = str(
+        recommendation_id
+        or recommendation.get("recommendation_id")
+        or ""
+    ).strip()
+
+    if not target_id or target_id not in (getattr(component, "targets", {}) or {}):
+        component.logger.warning(f"Ignoring Target recommendation for unknown target: {target_id}")
+        return
+
+    target = component.targets.get(target_id) or {}
+    current = [dict(value) for value in (target.get("recommendations") or []) if isinstance(value, dict)]
+
+    if mode == "remove":
+        if not recommendation_id:
+            return
+        updated = [
+            value for value in current
+            if str(value.get("recommendation_id") or "").strip() != recommendation_id
+        ]
+        if len(updated) == len(current):
+            return
+
+        history_entry = {
+            "event": "recommended_action_removed",
+            "recommendation_id": recommendation_id,
+            "requester": "dashboard",
+        }
+        await targetPatch(
+            component,
+            target_id=target_id,
+            patch={"recommendations": updated},
+            history_entry=history_entry,
+            artifact_id="",
+        )
+        return
+
+    plugin_name = str(recommendation.get("plugin") or "").strip()
+    action_name = str(recommendation.get("action") or "").strip()
+    if not plugin_name or not action_name:
+        component.logger.warning("Ignoring Target recommendation without plugin/action.")
+        return
+
+    parameters = recommendation.get("parameters") or {}
+    if not isinstance(parameters, dict):
+        parameters = {}
+
+    normalized = dict(recommendation)
+    normalized["plugin"] = plugin_name
+    normalized["action"] = action_name
+    normalized["parameters"] = dict(parameters)
+    normalized["reason"] = str(normalized.get("reason") or "").strip()
+    normalized.setdefault(
+        "timestamp",
+        datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    )
+
+    match_index = None
+    if recommendation_id:
+        for index, existing in enumerate(current):
+            if str(existing.get("recommendation_id") or "").strip() == recommendation_id:
+                match_index = index
+                break
+
+    if match_index is None:
+        candidate_key = (
+            plugin_name,
+            action_name,
+            json.dumps(parameters, sort_keys=True, default=str),
+            normalized["reason"],
+        )
+        for index, existing in enumerate(current):
+            existing_key = (
+                str(existing.get("plugin") or "").strip(),
+                str(existing.get("action") or "").strip(),
+                json.dumps(existing.get("parameters") or {}, sort_keys=True, default=str),
+                str(existing.get("reason") or "").strip(),
+            )
+            if existing_key == candidate_key:
+                # An analysis action may encounter the same condition repeatedly.
+                # Keep one recommendation instead of growing the Target forever.
+                return
+
+    if not recommendation_id:
+        recommendation_id = str(uuid.uuid4())
+    normalized["recommendation_id"] = recommendation_id
+
+    if match_index is None:
+        current.append(normalized)
+    else:
+        current[match_index] = normalized
+
+    history_entry = {
+        "event": "action_recommended",
+        "recommendation_id": recommendation_id,
+        "plugin": plugin_name,
+        "action": action_name,
+        "reason": normalized["reason"],
+        "source_operation_id": str(
+            normalized.get("operation_id")
+            or normalized.get("source_operation_id")
+            or ""
+        ).strip(),
+        "node_uid": str(normalized.get("node_uid") or "").strip(),
+    }
+
+    await targetPatch(
+        component,
+        target_id=target_id,
+        patch={"recommendations": current},
+        history_entry=history_entry,
+        artifact_id="",
     )
 
 
@@ -7228,6 +7362,11 @@ async def sendTargetsListTak(
                 ),
                 "history_json": json.dumps(
                     target.get("history")
+                    or [],
+                    default=str,
+                ),
+                "recommendations_json": json.dumps(
+                    target.get("recommendations")
                     or [],
                     default=str,
                 ),

@@ -25,6 +25,7 @@ ACTION_TAGS = {
     ],
     "dummy_soi": ["All"],
     "dummy_target": ["All"],
+    "dummy_recommendation": ["All"],
     "dummy_status": ["All"],
     "dummy_cot_types": ["All"],
 }
@@ -360,6 +361,46 @@ dummy_status_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Dummy Status"},
     ]
 }
+
+dummy_recommendation_schema = {
+    "params": [
+        {
+            "name": "target_id",
+            "label": "Target ID",
+            "type": "string",
+            "default": "",
+            "description": "Target that should receive the recommended action.",
+        },
+        {
+            "name": "reason",
+            "label": "Reason",
+            "type": "string",
+            "default": "Dummy analysis identified a useful follow-on action",
+        },
+        {"name": "interval_seconds", "label": "Recommended Interval (s)", "type": "number", "default": 3},
+        {"name": "count", "label": "Recommended Count", "type": "number", "default": 3},
+        {
+            "name": "plot_pin",
+            "label": "Recommended Plot Pin",
+            "type": "string",
+            "default": "false",
+            "options": ["true", "false"],
+        },
+    ]
+}
+async def dummy_recommendation(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    component.logger.info(f"Dummy Recommendation action with parameters: {parameters}")
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "dummy_recommendation.py",
+        parameters,
+        node_uid,
+    )
 
 async def dummy_status(
     component: SensorNode,

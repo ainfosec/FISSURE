@@ -156,7 +156,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Plugins")
         self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Operations")
         self.remove_tab_by_text(self.ui.tabWidget_library, "Plugin Manager")
-        self.ui.pushButton_sensor_nodes_exploit_run.setVisible(False)
 
         # Load FISSURE Logo
         self.ui.label_diagram.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "logo.png")))
@@ -993,6 +992,7 @@ class Dashboard(QtWidgets.QMainWindow):
             ]
         )
 
+        SensorNodesTabSlots.initialize_sensor_nodes_activity_controls(self)
         SensorNodesTabSlots.initialize_sensor_nodes_autorun_controls(self)
         SensorNodesTabSlots.initialize_sensor_nodes_file_navigation_controls(self)
 
@@ -1779,6 +1779,7 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureSensorNodeHardware(self):
         """Update Sensor Node tab state for the selected Sensor Node."""
+        SensorNodesTabSlots.update_sensor_nodes_activity_selected_node_gate(self)
         SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
 
         # Do not retrieve plugins for Meshtastic automatically.
@@ -4115,16 +4116,6 @@ def connect_targets_slots(dashboard: Dashboard):
         dashboard.ui.comboBox_ta_target.currentIndexChanged.connect(
             lambda: TargetsTabSlots._slotTargetContextChanged(dashboard)
         )
-        dashboard.ui.textEdit_ta_targets_search.textChanged.connect(
-            lambda: TargetsTabSlots._slotTargetsSearchChanged(dashboard)
-        )
-
-        dashboard.ui.tableWidget1_ta_targets.itemSelectionChanged.connect(
-            lambda: TargetsTabSlots._slotTargetsRowSelectionChanged(dashboard)
-        )
-        dashboard.ui.tableWidget1_ta_targets.itemDoubleClicked.connect(
-            lambda _item: TargetsTabSlots._slotTargetsOpenInTacticalClicked(dashboard)
-        )
 
         dashboard.ui.pushButton_ta_targets_refresh.clicked.connect(
             lambda: TargetsTabSlots._slotTargetsRefreshClicked(dashboard)
@@ -4144,6 +4135,29 @@ def connect_targets_slots(dashboard: Dashboard):
         dashboard.ui.pushButton_ta_targets_download_data.clicked.connect(
             lambda: TargetsTabSlots._slotTargetsDownloadDataClicked(dashboard)
         )
+        dashboard.ui.pushButton_ta_targets_recommended_actions_stage.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsRecommendedActionStageClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_recommended_actions_remove.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsRecommendedActionRemoveClicked(dashboard)
+        )
+
+        dashboard.ui.tableWidget1_ta_targets.itemSelectionChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsRowSelectionChanged(dashboard)
+        )
+        dashboard.ui.tableWidget1_ta_targets.itemDoubleClicked.connect(
+            lambda _item: TargetsTabSlots._slotTargetsOpenInTacticalClicked(dashboard)
+        )
+        dashboard.ui.tableWidget_ta_targets_history.itemSelectionChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsHistorySelectionChanged(dashboard)
+        )
+        dashboard.ui.tableWidget_ta_targets_recommended_actions.itemSelectionChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsRecommendedActionSelectionChanged(dashboard)
+        )
+
+        dashboard.ui.textEdit_ta_targets_search.textChanged.connect(
+            lambda: TargetsTabSlots._slotTargetsSearchChanged(dashboard)
+        )        
 
 
 def connect_single_action_slots(dashboard: Dashboard):
@@ -4439,6 +4453,21 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
 
     # Push Button
+    dashboard.ui.pushButton_sensor_nodes_activity_alerts_clear.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesActivityAlertsClearClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_activity_log_refresh.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesActivityRefreshClicked(dashboard)
+    )
+    dashboard.ui.tableWidget_sensor_nodes_activity_current_activity.itemSelectionChanged.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesActivityCurrentSelectionChanged(dashboard)
+    )
+    dashboard.ui.tabWidget.currentChanged.connect(
+        lambda _index: SensorNodesTabSlots._slotSensorNodesActivityTabVisibilityChanged(dashboard)
+    )
+    dashboard.ui.tabWidget_sensor_nodes.currentChanged.connect(
+        lambda _index: SensorNodesTabSlots._slotSensorNodesActivityTabVisibilityChanged(dashboard)
+    )    
     dashboard.ui.pushButton_sensor_nodes_fn_local_delete.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalDeleteClicked(dashboard)
     )
@@ -4469,18 +4498,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_sensor_nodes_fn_local_transfer.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalTransferClicked(dashboard)
     )
-    dashboard.ui.pushButton_sensor_nodes_alerts_clear.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAlertsClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_alerts_save.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesAlertsSaveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_exploits_clear.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesExploitsClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_reports_clear.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesReportsClearClicked(dashboard)
-    )
     dashboard.ui.pushButton_sensor_nodes_listeners_meshtastic_info.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesListenersMeshtasticInfoClicked(dashboard)
     )
@@ -4504,9 +4521,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_listeners_serial_info.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesListenersMeshtasticInfoClicked(dashboard)  # Reuse function
-    )
-    dashboard.ui.pushButton_sensor_nodes_reports_save.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesReportsSaveClicked(dashboard)
     )
     dashboard.ui.pushButton_sensor_nodes_autorun_query.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunQueryClicked(dashboard)

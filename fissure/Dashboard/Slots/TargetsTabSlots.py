@@ -8,30 +8,24 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import fissure.utils
 
 from fissure.Dashboard.TargetDataController import build_target_data_folder
-from fissure.Dashboard.Slots import TacticalTabSlots
+from fissure.Dashboard.Slots import TacticalTabSlots, SingleActionTabSlots
 
 
 def initialize_targets_tab(dashboard: QtCore.QObject):
     """Initialize the Targets workspace and shared Targets & Actions context."""
     dashboard.selected_targets_actions_target_id = None
     dashboard.pending_targets_actions_target_id = None
+    dashboard.selected_target_recommendation_id = None
 
     table = dashboard.ui.tableWidget1_ta_targets
     table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
     table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
     table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-
     table.resizeColumnsToContents()
     table.resizeRowsToContents()
-    table.horizontalHeader().setStretchLastSection(False)
     table.horizontalHeader().setStretchLastSection(True)
 
-    refresh_icon_path = os.path.join(
-        fissure.utils.UI_DIR,
-        "Icons",
-        "refresh.png",
-    )
-
+    refresh_icon_path = os.path.join(fissure.utils.UI_DIR, "Icons", "refresh.png")
     if os.path.isfile(refresh_icon_path):
         refresh_button = dashboard.ui.pushButton_ta_targets_refresh
         refresh_button.setIcon(QtGui.QIcon(refresh_icon_path))
@@ -40,10 +34,7 @@ def initialize_targets_tab(dashboard: QtCore.QObject):
         refresh_button.setIconSize(QtCore.QSize(18, 18))
 
     details_scroll = dashboard.ui.scrollArea_ta_targets_info
-
-    details_scroll = dashboard.ui.scrollArea_ta_targets_info
     details_label = dashboard.ui.label_ta_targets_info_details
-
     for widget in [details_scroll, details_scroll.viewport(), details_scroll.widget(), details_label]:
         if widget is None:
             continue
@@ -57,12 +48,51 @@ def initialize_targets_tab(dashboard: QtCore.QObject):
     details_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
     details_label.setWordWrap(True)
 
+    recommendation_table = dashboard.ui.tableWidget_ta_targets_recommended_actions
+    recommendation_table.setColumnCount(3)
+    recommendation_table.setHorizontalHeaderLabels(["Plugin", "Action", "Reason"])
+    recommendation_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    recommendation_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+    recommendation_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    recommendation_table.setWordWrap(False)
+    recommendation_table.setTextElideMode(QtCore.Qt.ElideRight)
+    recommendation_table.verticalHeader().setVisible(False)
+
+    recommendation_header = recommendation_table.horizontalHeader()
+    recommendation_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    recommendation_header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+    recommendation_header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+
+    dashboard.ui.plainTextEdit_ta_targets_recommended_actions_parameters.setReadOnly(True)
+    dashboard.ui.label2_ta_targets_recommended_actions_reason.setWordWrap(True)
+
+    history_table = dashboard.ui.tableWidget_ta_targets_history
+    history_table.setColumnCount(4)
+    history_table.setHorizontalHeaderLabels(["Time", "Event", "Source", "Details"])
+    history_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    history_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+    history_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    history_table.setWordWrap(False)
+    history_table.setTextElideMode(QtCore.Qt.ElideRight)
+    history_table.verticalHeader().setVisible(False)
+
+    history_header = history_table.horizontalHeader()
+    history_header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+    history_header.setSectionResizeMode(1, QtWidgets.QHeaderView.Interactive)
+    history_header.setSectionResizeMode(2, QtWidgets.QHeaderView.Interactive)
+    history_header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+    history_header.resizeSection(1, 145)
+    history_header.resizeSection(2, 185)
+
+    dashboard.ui.plainTextEdit_ta_targets_history_details.setReadOnly(True)
+
     dashboard.ui.comboBox_ta_target.clear()
     dashboard.ui.comboBox_ta_target.addItem("No Target", None)
+    dashboard.ui.tabWidget_ta_targets.setCurrentWidget(dashboard.ui.tab_targets_details)
 
     clear_target_details(dashboard)
     refresh_targets_view(dashboard)
-
+    
 
 def _target_id(target: dict):
     return str(target.get("target_id") or target.get("uid") or target.get("id") or "").strip()
@@ -338,6 +368,163 @@ def _target_details_html(target: dict):
     return "<br>".join(lines)
 
 
+def _target_recommendations(target: dict):
+    recommendations = target.get("recommendations") or []
+    return [dict(value) for value in recommendations if isinstance(value, dict)]
+
+
+def _history_source(entry: dict):
+    plugin_name = str(entry.get("plugin") or "").strip()
+    action_name = str(entry.get("action") or "").strip()
+    if plugin_name and action_name:
+        return f"{plugin_name}: {action_name}"
+    if plugin_name:
+        return plugin_name
+
+    requester = str(
+        entry.get("requester_callsign")
+        or entry.get("requester")
+        or entry.get("node_uid")
+        or ""
+    ).strip()
+    return requester or "Dashboard"
+
+
+def _history_summary(entry: dict):
+    skip = {
+        "timestamp", "event", "plugin", "action", "node_uid",
+        "requester", "requester_uid", "requester_callsign",
+    }
+    parts = []
+    for key, value in entry.items():
+        if key in skip or value in [None, "", [], {}]:
+            continue
+        if isinstance(value, (dict, list)):
+            value_text = json.dumps(value, default=str, separators=(",", ":"))
+        else:
+            value_text = str(value)
+        if len(value_text) > 80:
+            value_text = value_text[:77] + "..."
+        parts.append(f"{key}={value_text}")
+        if len(parts) >= 3:
+            break
+    return ", ".join(parts)
+
+
+def _clear_recommendation_details(dashboard: QtCore.QObject):
+    dashboard.selected_target_recommendation_id = None
+    dashboard.ui.label2_ta_targets_recommended_actions_plugin.setText("—")
+    dashboard.ui.label2_ta_targets_recommended_actions_action.setText("—")
+    dashboard.ui.label2_ta_targets_recommended_actions_reason.setText("—")
+    dashboard.ui.plainTextEdit_ta_targets_recommended_actions_parameters.clear()
+    dashboard.ui.pushButton_ta_targets_recommended_actions_stage.setEnabled(False)
+    dashboard.ui.pushButton_ta_targets_recommended_actions_remove.setEnabled(False)
+
+
+def _populate_recommendation_details(dashboard: QtCore.QObject, recommendation: dict):
+    if not isinstance(recommendation, dict):
+        _clear_recommendation_details(dashboard)
+        return
+
+    recommendation_id = str(recommendation.get("recommendation_id") or "").strip()
+    dashboard.selected_target_recommendation_id = recommendation_id or None
+    dashboard.ui.label2_ta_targets_recommended_actions_plugin.setText(
+        str(recommendation.get("plugin") or "—")
+    )
+    dashboard.ui.label2_ta_targets_recommended_actions_action.setText(
+        str(recommendation.get("action") or "—")
+    )
+    dashboard.ui.label2_ta_targets_recommended_actions_reason.setText(
+        str(recommendation.get("reason") or "—")
+    )
+    dashboard.ui.plainTextEdit_ta_targets_recommended_actions_parameters.setPlainText(
+        json.dumps(recommendation.get("parameters") or {}, indent=2, sort_keys=True, default=str)
+    )
+    dashboard.ui.pushButton_ta_targets_recommended_actions_stage.setEnabled(
+        bool(recommendation.get("plugin") and recommendation.get("action"))
+    )
+    dashboard.ui.pushButton_ta_targets_recommended_actions_remove.setEnabled(bool(recommendation_id))
+
+
+def populate_target_recommendations(dashboard: QtCore.QObject, target: dict):
+    table = dashboard.ui.tableWidget_ta_targets_recommended_actions
+    previous_id = str(getattr(dashboard, "selected_target_recommendation_id", "") or "").strip()
+    recommendations = _target_recommendations(target)
+
+    table.blockSignals(True)
+    table.setRowCount(0)
+    selected_row = None
+
+    for recommendation in reversed(recommendations):
+        row = table.rowCount()
+        table.insertRow(row)
+        recommendation_id = str(recommendation.get("recommendation_id") or "").strip()
+        values = [
+            str(recommendation.get("plugin") or ""),
+            str(recommendation.get("action") or ""),
+            str(recommendation.get("reason") or ""),
+        ]
+        for column, value in enumerate(values):
+            item = QtWidgets.QTableWidgetItem(value)
+            item.setData(QtCore.Qt.UserRole, dict(recommendation))
+            table.setItem(row, column, item)
+        if recommendation_id and recommendation_id == previous_id:
+            selected_row = row
+
+    table.blockSignals(False)
+    table.resizeRowsToContents()
+
+    if selected_row is None and table.rowCount() > 0:
+        selected_row = 0
+
+    if selected_row is not None:
+        table.selectRow(selected_row)
+        table.setCurrentCell(selected_row, 0)
+        item = table.item(selected_row, 0)
+        _populate_recommendation_details(
+            dashboard,
+            item.data(QtCore.Qt.UserRole) if item is not None else {},
+        )
+    else:
+        _clear_recommendation_details(dashboard)
+
+
+def populate_target_history(dashboard: QtCore.QObject, target: dict):
+    table = dashboard.ui.tableWidget_ta_targets_history
+    history = target.get("history") or []
+    history = [dict(value) for value in history if isinstance(value, dict)]
+
+    table.blockSignals(True)
+    table.setRowCount(0)
+
+    for entry in reversed(history):
+        row = table.rowCount()
+        table.insertRow(row)
+        values = [
+            TacticalTabSlots.format_tactical_time(entry.get("timestamp") or ""),
+            str(entry.get("event") or "history"),
+            _history_source(entry),
+            _history_summary(entry),
+        ]
+        for column, value in enumerate(values):
+            item = QtWidgets.QTableWidgetItem(str(value))
+            item.setData(QtCore.Qt.UserRole, dict(entry))
+            table.setItem(row, column, item)
+
+    table.blockSignals(False)
+    table.resizeRowsToContents()
+
+    if table.rowCount() > 0:
+        table.selectRow(0)
+        table.setCurrentCell(0, 0)
+        item = table.item(0, 0)
+        dashboard.ui.plainTextEdit_ta_targets_history_details.setPlainText(
+            json.dumps(item.data(QtCore.Qt.UserRole) or {}, indent=2, sort_keys=True, default=str)
+        )
+    else:
+        dashboard.ui.plainTextEdit_ta_targets_history_details.clear()
+
+
 def populate_target_details(dashboard: QtCore.QObject, target: dict, preserve_notes=False):
     """Populate the Targets page for the current Targets & Actions context."""
     if not isinstance(target, dict) or not target:
@@ -350,6 +537,8 @@ def populate_target_details(dashboard: QtCore.QObject, target: dict, preserve_no
     dashboard.ui.label_ta_targets_info_title.setText(_target_display_label(target))
     dashboard.ui.label_ta_targets_info_status.setText(_target_state(target) or "unknown")
     dashboard.ui.label_ta_targets_info_details.setText(_target_details_html(target))
+    populate_target_recommendations(dashboard, target)
+    populate_target_history(dashboard, target)
 
     if not preserve_notes:
         dashboard.ui.textEdit_ta_targets_notes.setPlainText(str(target.get("notes") or ""))
@@ -369,6 +558,10 @@ def clear_target_details(dashboard: QtCore.QObject):
     dashboard.ui.label_ta_targets_info_details.setText("")
     dashboard.ui.textEdit_ta_targets_notes.clear()
     dashboard.ui.textEdit_ta_targets_notes.setEnabled(False)
+    dashboard.ui.tableWidget_ta_targets_recommended_actions.setRowCount(0)
+    dashboard.ui.tableWidget_ta_targets_history.setRowCount(0)
+    dashboard.ui.plainTextEdit_ta_targets_history_details.clear()
+    _clear_recommendation_details(dashboard)
     dashboard.ui.pushButton_ta_targets_save_notes.setEnabled(False)
     dashboard.ui.pushButton_ta_targets_open_soi.setEnabled(False)
     dashboard.ui.pushButton_ta_targets_download_data.setEnabled(False)
@@ -525,3 +718,57 @@ async def _slotTargetsDownloadDataClicked(dashboard: QtCore.QObject):
         button.setEnabled(getattr(dashboard, "selected_targets_actions_target_id", None) == target_id)
 
 
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTargetsRecommendedActionSelectionChanged(dashboard: QtCore.QObject):
+    table = dashboard.ui.tableWidget_ta_targets_recommended_actions
+    row = table.currentRow()
+    if row < 0:
+        _clear_recommendation_details(dashboard)
+        return
+    item = table.item(row, 0)
+    recommendation = item.data(QtCore.Qt.UserRole) if item is not None else {}
+    _populate_recommendation_details(dashboard, recommendation)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTargetsRecommendedActionStageClicked(dashboard: QtCore.QObject):
+    table = dashboard.ui.tableWidget_ta_targets_recommended_actions
+    row = table.currentRow()
+    if row < 0:
+        return
+    item = table.item(row, 0)
+    recommendation = item.data(QtCore.Qt.UserRole) if item is not None else {}
+    if not isinstance(recommendation, dict):
+        return
+
+    dashboard.ui.tabWidget_attack_attack.setCurrentWidget(dashboard.ui.tab_single_action)
+    await SingleActionTabSlots.stage_single_action_recommendation(dashboard, recommendation)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTargetsRecommendedActionRemoveClicked(dashboard: QtCore.QObject):
+    target_id = str(getattr(dashboard, "selected_targets_actions_target_id", "") or "").strip()
+    recommendation_id = str(getattr(dashboard, "selected_target_recommendation_id", "") or "").strip()
+    if not target_id or not recommendation_id:
+        return
+
+    dashboard.ui.pushButton_ta_targets_recommended_actions_remove.setEnabled(False)
+    await dashboard.backend.tacticalTargetRecommendation(
+        target_id=target_id,
+        mode="remove",
+        recommendation_id=recommendation_id,
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTargetsHistorySelectionChanged(dashboard: QtCore.QObject):
+    table = dashboard.ui.tableWidget_ta_targets_history
+    row = table.currentRow()
+    if row < 0:
+        dashboard.ui.plainTextEdit_ta_targets_history_details.clear()
+        return
+    item = table.item(row, 0)
+    entry = item.data(QtCore.Qt.UserRole) if item is not None else {}
+    dashboard.ui.plainTextEdit_ta_targets_history_details.setPlainText(
+        json.dumps(entry or {}, indent=2, sort_keys=True, default=str)
+    )

@@ -241,54 +241,29 @@ class OperationMain(Operation):
         alert_summary: str = "",
         remarks_extra: Optional[Dict[str, Any]] = None,
     ) -> None:
+        if not self.alert_callback:
+            return
+
         ts = time.time()
-        payload = {
-            "kind": "alert",
-            "event_type": "alert",
+        alert_payload = {
+            "uid": uid or f"wifi-logger-alert-{int(ts * 1000)}",
+            "alert_kind": alert_kind,
+            "alert_summary": alert_summary or message,
+            "message": message,
             "node_uid": self.node_uid,
             "source_id": self.source_id,
             "operation_id": self.opid,
             "opid": self.opid,
-            "alert_kind": alert_kind,
-            "alert_summary": alert_summary or message,
-            "message": message,
+            "plot_pin": False,
             "timestamp": ts,
         }
         if remarks_extra:
-            payload.update(remarks_extra)
-
-        if self.alert_callback:
-            try:
-                await self._bounded_callback(self.alert_callback, self.node_uid, self.opid, message, self.logger)
-            except Exception as e:
-                self.logger.warning(f"alert_callback failed: {e}")
-
-        if not self.tak_cot_callback:
-            return
+            alert_payload.update(remarks_extra)
 
         try:
-            tak_msg = {
-                "msg_type": "event",
-                "uid": uid or f"wifi-logger-alert-{int(ts * 1000)}",
-                "remarks": json.dumps(payload),
-                "tak_icon": "b-t-f-r",
-                "opid": self.opid,
-                "kind": "alert",
-                "event_type": "alert",
-                "alert_kind": alert_kind,
-                "alert_summary": alert_summary or message,
-                "node_uid": self.node_uid,
-                "source_id": self.source_id,
-                "lat": True,
-                "lon": True,
-                "alt": True,
-                "time": True,
-                "plot_pin": False,
-                "data": payload,
-            }
-            await self._bounded_callback(self.tak_cot_callback, tak_msg)
+            await self._bounded_callback(self.alert_callback, alert_payload)
         except Exception as e:
-            self.logger.warning(f"tak_cot_callback alert emit failed: {e}")
+            self.logger.warning(f"alert_callback failed: {e}")
 
     @staticmethod
     def _normalize_bssid(bssid: str) -> str:

@@ -633,16 +633,8 @@ class OperationMain(Operation):
         payload: Dict[str, Any],
         enabled: bool = False,
     ) -> None:
-        """
-        Optionally publish a normal alert message.
-
-        Disabled by default because Conditioner output is primarily consumed as
-        artifact metadata by the Dashboard poller.
-        """
-        if not enabled:
-            return
-
-        if not getattr(self, "alert_callback", None):
+        """Optionally publish a structured FISSURE alert."""
+        if not enabled or not getattr(self, "alert_callback", None):
             return
 
         try:
@@ -650,22 +642,31 @@ class OperationMain(Operation):
             frequency_mhz = payload.get("frequency_mhz", "")
 
             if frequency_mhz != "":
-                message = (
+                summary = (
                     f"Signal conditioning complete: "
                     f"{file_count} file(s), {frequency_mhz} MHz"
                 )
             else:
-                message = (
-                    f"Signal conditioning complete: "
-                    f"{file_count} file(s)"
-                )
+                summary = f"Signal conditioning complete: {file_count} file(s)"
+
+            alert_payload = {
+                "uid": str(payload.get("uid") or f"conditioner-{getattr(self, 'opid', '')}"),
+                "alert_kind": "signal_conditioning_artifact",
+                "alert_summary": summary,
+                "message": summary,
+                "node_uid": self.node_uid,
+                "operation_id": getattr(self, "opid", ""),
+                "opid": getattr(self, "opid", ""),
+                "plot_pin": False,
+            }
+
+            artifact_id = payload.get("artifact_id")
+            if artifact_id:
+                alert_payload["artifact_id"] = artifact_id
 
             await invoke_callback(
                 self.alert_callback,
-                self.node_uid,
-                getattr(self, "opid", ""),
-                message,
-                self.logger,
+                alert_payload,
                 timeout=2.0,
             )
 
@@ -677,16 +678,8 @@ class OperationMain(Operation):
         payload: Dict[str, Any],
         enabled: bool = False,
     ) -> None:
-        """
-        Optionally publish a TAK/CoT event.
-
-        Disabled by default. This is not needed for Conditioner table
-        population.
-        """
-        if not enabled:
-            return
-
-        if not getattr(self, "tak_cot_callback", None):
+        """Optionally publish a generic TAK event separate from FISSURE alerts."""
+        if not enabled or not getattr(self, "tak_cot_callback", None):
             return
 
         try:
@@ -698,23 +691,25 @@ class OperationMain(Operation):
             file_count = int(payload.get("file_count", 0) or 0)
             frequency_mhz = payload.get("frequency_mhz", "")
 
+            event_data = {
+                "event_type": "signal_conditioning",
+                "node_uid": self.node_uid,
+                "operation_id": getattr(self, "opid", ""),
+                "frequency_mhz": frequency_mhz,
+                "file_count": file_count,
+            }
+
             tak_msg = {
                 "msg_type": "event",
                 "uid": uid,
-                "remarks": json.dumps(payload),
+                "remarks": json.dumps(event_data),
                 "lat": True,
                 "lon": True,
                 "alt": True,
                 "time": True,
                 "tak_icon": "b-t-f-r",
                 "opid": getattr(self, "opid", ""),
-                "node_uid": self.node_uid,
-                "alert_kind": "signal_conditioning_artifact",
-                "alert_summary": (
-                    f"Signal conditioning complete: {file_count} file(s)"
-                ),
-                "frequency_mhz": frequency_mhz,
-                "file_count": file_count,
+                "data": event_data,
             }
 
             await invoke_callback(

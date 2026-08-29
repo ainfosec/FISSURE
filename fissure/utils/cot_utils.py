@@ -6,6 +6,7 @@ from fissure.Dashboard.Slots import (
     TacticalTabSlots,
     TargetsTabSlots,
     IQDataTabSlots,
+    SensorNodesTabSlots,
     TSITabSlots,
 )
 
@@ -65,6 +66,7 @@ def parse_cot_xml(raw_xml):
         "target_artifact_ids": [],
         "target_artifact_links": [],
         "target_history": [],
+        "target_recommendations": [],        
         "node_uid": None,
         "ssid": None,
         "bssid": None,
@@ -160,6 +162,21 @@ def parse_cot_xml(raw_xml):
             cot_message["alert_summary"] = (
                 fissure_alert.findtext(
                     "summary"
+                )
+            )
+            cot_message["node_uid"] = (
+                fissure_alert.findtext(
+                    "node_uid"
+                )
+            )
+            cot_message["operation_id"] = (
+                fissure_alert.findtext(
+                    "operation_id"
+                )
+            )
+            cot_message["artifact_id"] = (
+                fissure_alert.findtext(
+                    "artifact_id"
                 )
             )
 
@@ -311,6 +328,11 @@ def parse_cot_xml(raw_xml):
                     "target_history",
                     [],
                 ),
+                (
+                    "recommendations_json",
+                    "target_recommendations",
+                    [],
+                ),                
             )
 
             for (
@@ -579,6 +601,9 @@ def cot_to_tactical_alert_record(cot_message):
         "time": cot_message.get("time") or "",
         "summary": cot_message.get("alert_summary") or "",
         "callsign": cot_message.get("callsign") or uid,
+        "node_uid": cot_message.get("node_uid") or "",
+        "operation_id": cot_message.get("operation_id") or "",
+        "artifact_id": cot_message.get("artifact_id") or "",
         "lat": cot_message.get("lat"),
         "lon": cot_message.get("lon"),
         "raw_xml": cot_message.get("raw_xml"),
@@ -805,6 +830,17 @@ def cot_to_tactical_target_record(
     ):
         history = []
 
+    recommendations = cot_message.get(
+        "target_recommendations",
+        [],
+    )
+
+    if not isinstance(
+        recommendations,
+        list,
+    ):
+        recommendations = []
+
     latest_artifact_id = str(
         cot_message.get(
             "artifact_id",
@@ -926,6 +962,8 @@ def cot_to_tactical_target_record(
             artifact_links,
         "history":
             history,
+        "recommendations":
+            recommendations,
 
         "raw_xml":
             cot_message.get(
@@ -963,6 +1001,11 @@ def handle_tactical_alert_message(dashboard, cot_message):
         )
 
     TacticalTabSlots.update_tactical_alert_row(
+        frontend,
+        alert_record,
+    )
+
+    SensorNodesTabSlots.append_sensor_nodes_activity_alert(
         frontend,
         alert_record,
     )

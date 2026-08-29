@@ -527,6 +527,21 @@ async def refreshSensorNodeFilesResults(
     component.frontend.ui.tableWidget_sensor_nodes_fn_files.resizeRowsToContents()
 
 
+async def refreshSensorNodeActivityResults(
+    component: object,
+    node_uid="",
+    operations=None,
+    log_entries=None,
+):
+    """Populate the read-only Sensor Nodes Activity snapshot."""
+    SensorNodesTabSlots.populate_sensor_nodes_activity_snapshot(
+        component.frontend,
+        node_uid=node_uid,
+        operations=operations or [],
+        log_entries=log_entries or [],
+    )
+
+
 async def fileDownloaded(component: object):
     """ 
     Refreshes the local file list after downloading a file.
@@ -1633,152 +1648,6 @@ async def responsePluginProtocolParameters(component: object, plugin_name: str, 
         tableWidget_protocol_packet_type.setRowCount(0)
 
 
-async def update_sensor_node_title(component: object, change: int):
-    # get current number
-    current_text = component.frontend.ui.tabWidget.tabBar().tabText(6)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    new_count = max([0, current_count + change])
-    new_text = f"{base_text.strip()} ({new_count})"
-    component.frontend.ui.tabWidget.tabBar().setTabText(6, new_text)
-
-
-async def alertReturn(component: object, node_uid="", node_nickname="", alert_text=""):
-    """
-    Updates the Sensor Nodes Alert tab with a new alert.
-    """
-    # Get Sensor Node Label
-    short_uid = str(node_uid or "").split("-")[0]
-
-    if node_nickname and short_uid:
-        node_label = f"{node_nickname} {short_uid}"
-    elif node_nickname:
-        node_label = node_nickname
-    elif short_uid:
-        node_label = short_uid
-    else:
-        node_label = "Unknown Node"
-
-    # Generate a timestamp
-    timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
-    sensor_node_text = f"[{node_label}]"
-    formatted_message = f"{timestamp} {sensor_node_text} {alert_text}"
-
-    # Append the message
-    current_content = component.frontend.ui.textEdit2_sensor_nodes_alerts.toPlainText()
-    updated_content = current_content + "\n" + formatted_message if current_content else formatted_message
-
-    component.frontend.ui.textEdit2_sensor_nodes_alerts.setPlainText(updated_content)
-    component.frontend.ui.textEdit2_sensor_nodes_alerts.verticalScrollBar().setValue(
-        component.frontend.ui.textEdit2_sensor_nodes_alerts.verticalScrollBar().maximum()
-    )
-
-    # Calculate Alert Total
-    current_text = component.frontend.ui.tabWidget_sensor_nodes.tabBar().tabText(2)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    new_count = current_count + 1
-    new_text = f"{base_text.strip()} ({new_count})"
-
-    # Update Alert Tab with Count
-    component.frontend.ui.tabWidget_sensor_nodes.tabBar().setTabText(2, new_text)
-
-    # Update Sensor Nodes Tab with Count
-    await update_sensor_node_title(component, 1)
-
-
-async def exploitReturn(component: object, node_uid: str, protocol:str, modulation:str, hardware:str, type:str, attack:str, variables:str):
-    """ 
-    Updates the Sensor Nodes Exploit tab with a new alert.
-    """
-    # Append the message
-    row_position = component.frontend.ui.tableWidget_exploits.rowCount()
-    component.frontend.ui.tableWidget_exploits.insertRow(row_position)
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 0, QTableWidgetItem(protocol))
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 1, QTableWidgetItem(modulation))
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 2, QTableWidgetItem(hardware))
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 3, QTableWidgetItem(type))
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 4, QTableWidgetItem(attack))
-    component.frontend.ui.tableWidget_exploits.setItem(row_position, 5, QTableWidgetItem(str(variables)))
-    component.frontend.ui.tableWidget_exploits.resizeColumnsToContents()
-
-    # Calculate Alert Total
-    current_text = component.frontend.ui.tabWidget_sensor_nodes.tabBar().tabText(3)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    new_count = current_count + 1
-    new_text = f"{base_text.strip()} ({new_count})"
-
-    # Update Alert Tab with Count
-    #component.frontend.ui.tabWidget_sensor_nodes.tabBar().setTabText(2, new_text)
-    
-    # Update Epxloits Tab with Count
-    component.frontend.ui.tabWidget_sensor_nodes.tabBar().setTabText(3, new_text)
-    
-    # Update Sensor Nodes Tab with Count
-    await update_sensor_node_title(component, 1)
-
-
-async def snreport(component: object, node_uid: str, text:str):
-    """
-    Updates the Sensor Nodes Report tab with a new report.
-    """
-    # Append the message
-    tableWidget_reports: QtWidgets.QTableWidget = component.frontend.ui.tableWidget_reports
-    row_position = component.frontend.ui.tableWidget_reports.rowCount()
-    component.frontend.ui.tableWidget_reports.insertRow(row_position)
-    component.frontend.ui.tableWidget_reports.setItem(row_position, 0, QTableWidgetItem('\n'.join(text)))
-    component.frontend.ui.tableWidget_reports.resizeRowsToContents()
-
-    # Calculate Reports Total
-    current_text = component.frontend.ui.tabWidget_sensor_nodes.tabBar().tabText(4)
-    if "(" in current_text and ")" in current_text:
-        base_text, count = current_text.rsplit("(", 1)
-        count = count.rstrip(")")
-        try:
-            current_count = int(count)
-        except ValueError:
-            current_count = 0
-    else:
-        base_text = current_text
-        current_count = 0
-
-    new_count = current_count + 1
-    new_text = f"{base_text.strip()} ({new_count})"
-
-    # update tab title
-    component.frontend.ui.tabWidget_sensor_nodes.tabBar().setTabText(4, new_text)
-
-    await update_sensor_node_title(component, 1)
-
-
 async def findGPS_CoordinatesResults(component: object, coordinates=""):
     """
     Returns the GPS coordinate results to the NodeConfigureDialog.
@@ -2078,6 +1947,14 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     ) if selected_uid and node_uid_text else False
 
     if selected_node_changed:
+
+        try:
+            SensorNodesTabSlots.update_sensor_nodes_activity_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update Sensor Nodes Activity from selected-node state: {e}"
+            )
+    
         frontend.selected_node_ip = (
             node.get("node_ip_address")
             or node.get("ip")

@@ -276,11 +276,6 @@ class OperationMain(Operation):
             f"opid={self.operation_id}, count={len(photos)}"
         )
 
-        await self._emit_tak_pin(
-            artifact_id=artifact_id,
-            photo_count=len(photos),
-        )
-
         await self._emit_alert(
             artifact_id=artifact_id,
             photo_count=len(photos),
@@ -313,88 +308,47 @@ class OperationMain(Operation):
 
         return captured
 
-    async def _emit_tak_pin(
-        self,
-        *,
-        artifact_id,
-        photo_count: int,
-    ) -> None:
-        if not self.emit_tak_pin or not self.tak_cot_callback:
-            return
-
-        try:
-            short_id = str(artifact_id)[:8]
-            tak_msg = {
-                "msg_type": "pin",
-                "uid": f"photo_{artifact_id}",
-                "remarks": f"Photo capture [{short_id}] (count={photo_count})",
-                "lat": True,
-                "lon": True,
-                "alt": True,
-                "time": True,
-                "tak_icon": "a-h-G-E-S",
-                "opid": self.opid,
-                "alert_kind": "photo_capture",
-                "alert_summary": f"Photo capture (count={photo_count})",
-                "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
-                "node_uid": self.node_uid,
-                "source_id": self.source_id,
-                "name": self.name,
-            }
-
-            await asyncio.wait_for(
-                self.tak_cot_callback(tak_msg),
-                timeout=2.0,
-            )
-
-            self.logger.info(f"TAK pin emitted for photo artifact_id={artifact_id}")
-
-        except asyncio.CancelledError:
-            raise
-
-        except Exception:
-            self.logger.exception("Failed emitting TAK pin for photo capture")
-
     async def _emit_alert(
         self,
         *,
         artifact_id,
         photo_count: int,
     ) -> None:
-        if not self.emit_alert or not self.alert_callback:
+        if not (self.emit_alert or self.emit_tak_pin) or not self.alert_callback:
             return
 
         try:
-            payload = {
-                "type": "artifact_ready",
-                "kind": "alert",
+            alert_payload = {
+                "uid": f"photo_{artifact_id}",
+                "alert_kind": "photo_capture",
+                "alert_summary": f"Photo capture (count={photo_count})",
+                "message": f"Photo capture (count={photo_count})",
                 "node_uid": self.node_uid,
                 "source_id": self.source_id,
                 "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
+                "operation_id": self.operation_id or self.opid,
                 "opid": self.opid,
                 "name": self.name,
                 "role": "photo_capture_v1",
                 "count": photo_count,
                 "description": self.description,
+                "plot_pin": self.emit_tak_pin,
+                "lat": True,
+                "lon": True,
+                "alt": True,
+                "time": True,
+                "tak_icon": "a-h-G-E-S",
             }
 
             await asyncio.wait_for(
-                self.alert_callback(
-                    self.node_uid,
-                    self.opid,
-                    json.dumps(payload),
-                    self.logger,
-                ),
+                self.alert_callback(alert_payload),
                 timeout=2.0,
             )
 
         except asyncio.CancelledError:
             raise
-
         except Exception:
-            self.logger.exception("alert_callback failed while reporting artifact_ready")
+            self.logger.exception("alert_callback failed while reporting photo_capture")
 
 
 if __name__ == "__main__":

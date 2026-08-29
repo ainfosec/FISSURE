@@ -323,11 +323,6 @@ class OperationMain(Operation):
             frames_written=frames_written,
         )
 
-        await self._emit_tak_pin(
-            artifact_id=artifact_id,
-            frames_written=frames_written,
-        )
-
     def _get_frame_size(self, cap):
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
@@ -369,17 +364,19 @@ class OperationMain(Operation):
         artifact_id,
         frames_written: int,
     ) -> None:
-        if not self.emit_alert or not self.alert_callback:
+        if not (self.emit_alert or self.emit_tak_pin) or not self.alert_callback:
             return
 
         try:
-            payload = {
-                "type": "video_capture",
-                "kind": "alert",
+            alert_payload = {
+                "uid": f"video_{artifact_id}",
+                "alert_kind": "video_capture",
+                "alert_summary": f"Video capture ({self.duration_s:.0f}s)",
+                "message": f"Video capture ({self.duration_s:.0f}s)",
                 "node_uid": self.node_uid,
                 "source_id": self.source_id,
                 "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
+                "operation_id": self.operation_id or self.opid,
                 "opid": self.opid,
                 "name": self.artifact_name,
                 "role": "video_capture_v1",
@@ -387,65 +384,23 @@ class OperationMain(Operation):
                 "fps": self.fps,
                 "frames_written": frames_written,
                 "description": self.description,
-            }
-
-            await asyncio.wait_for(
-                self.alert_callback(
-                    self.node_uid,
-                    self.opid,
-                    json.dumps(payload),
-                    self.logger,
-                ),
-                timeout=2.0,
-            )
-
-        except asyncio.CancelledError:
-            raise
-
-        except Exception:
-            self.logger.exception("alert_callback failed while reporting video_capture")
-
-    async def _emit_tak_pin(
-        self,
-        *,
-        artifact_id,
-        frames_written: int,
-    ) -> None:
-        if not self.emit_tak_pin or not self.tak_cot_callback:
-            return
-
-        try:
-            short_id = str(artifact_id)[:8]
-            tak_msg = {
-                "msg_type": "pin",
-                "uid": f"video_{artifact_id}",
-                "remarks": f"Video capture ({self.duration_s:.0f}s) [{short_id}]",
+                "plot_pin": self.emit_tak_pin,
                 "lat": True,
                 "lon": True,
                 "alt": True,
                 "time": True,
                 "tak_icon": self.tak_icon,
-                "opid": self.opid,
-                "alert_kind": "video_capture",
-                "alert_summary": f"Video capture ({self.duration_s:.0f}s)",
-                "artifact_id": artifact_id,
-                "operation_id": self.operation_id,
-                "node_uid": self.node_uid,
-                "source_id": self.source_id,
-                "name": self.artifact_name,
-                "frames_written": frames_written,
             }
 
             await asyncio.wait_for(
-                self.tak_cot_callback(tak_msg),
+                self.alert_callback(alert_payload),
                 timeout=2.0,
             )
 
         except asyncio.CancelledError:
             raise
-
         except Exception:
-            self.logger.exception("tak_cot_callback failed while emitting video pin")
+            self.logger.exception("alert_callback failed while reporting video_capture")
 
     @staticmethod
     def _remove_partial_file(path: str) -> None:
