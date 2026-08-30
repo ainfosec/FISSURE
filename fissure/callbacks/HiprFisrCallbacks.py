@@ -2274,6 +2274,8 @@ async def sensorNodeFileTransferStatus(
     component: object,
     uuid="",
     transfer_id="",
+    transfer_type="",
+    plugin_name="",
     success=False,
     message="",
     remote_filepath="",
@@ -2283,7 +2285,164 @@ async def sensorNodeFileTransferStatus(
     mib_per_second=0.0,
     refresh_file_list=False,
 ):
-    """Forward Sensor Node binary file-transfer completion to Dashboard."""
+    """
+    Handle Sensor Node binary-transfer completion.
+
+    Generic Dashboard file uploads keep their existing forwarding behavior.
+    HIPRFISR-originated plugin-package uploads are intercepted here and moved
+    into the plugin finalization lifecycle.
+    """
+    transfer_type = str(
+        transfer_type
+        or ""
+    ).strip()
+
+    if transfer_type == "plugin_package_upload":
+        deployments = (
+            _get_plugin_deployments(
+                component
+            )
+        )
+
+        deployment = deployments.get(
+            transfer_id
+        )
+
+        if not isinstance(
+            deployment,
+            dict,
+        ):
+            component.logger.warning(
+                "Ignoring plugin-package transfer status "
+                "for unknown transfer_id=%s",
+                transfer_id,
+            )
+            return
+
+        expected_node_uid = str(
+            deployment.get(
+                "node_uid",
+                "",
+            )
+            or ""
+        )
+        expected_plugin_name = str(
+            deployment.get(
+                "plugin_name",
+                "",
+            )
+            or ""
+        )
+
+        if (
+            uuid != expected_node_uid
+            or plugin_name != expected_plugin_name
+        ):
+            deployments.pop(
+                transfer_id,
+                None,
+            )
+
+            await _cancel_sensor_plugin_deployment(
+                component,
+                deployment,
+            )
+
+            await _send_plugin_deploy_result(
+                component,
+                node_uid=expected_node_uid,
+                plugin_name=expected_plugin_name,
+                transfer_id=transfer_id,
+                success=False,
+                status="Transfer Failed",
+                message=(
+                    "Plugin package transfer status "
+                    "did not match the pending deployment."
+                ),
+            )
+            return
+
+        if not success:
+            deployments.pop(
+                transfer_id,
+                None,
+            )
+
+            await _cancel_sensor_plugin_deployment(
+                component,
+                deployment,
+            )
+
+            await _send_plugin_deploy_result(
+                component,
+                node_uid=expected_node_uid,
+                plugin_name=expected_plugin_name,
+                transfer_id=transfer_id,
+                success=False,
+                status="Transfer Failed",
+                message=str(
+                    message
+                    or "Plugin package transfer failed."
+                ),
+            )
+            return
+
+        node = (
+            (component.nodes or {})
+            .get(
+                expected_node_uid,
+                {},
+            )
+            or {}
+        )
+        identity = node.get(
+            "identity"
+        )
+
+        if identity is None:
+            deployments.pop(
+                transfer_id,
+                None,
+            )
+
+            await _send_plugin_deploy_result(
+                component,
+                node_uid=expected_node_uid,
+                plugin_name=expected_plugin_name,
+                transfer_id=transfer_id,
+                success=False,
+                status="Failed",
+                message=(
+                    "Sensor Node disconnected after "
+                    "receiving the plugin package."
+                ),
+            )
+            return
+
+        PARAMETERS = {
+            "plugin_name":
+                expected_plugin_name,
+            "transfer_id":
+                transfer_id,
+        }
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "finalizePluginDeployment",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
+        }
+
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[
+                identity
+            ],
+        )
+        return
+
     parameters = {
         "node_uid": uuid,
         "transfer_id": transfer_id,
@@ -2298,9 +2457,12 @@ async def sensorNodeFileTransferStatus(
     }
 
     msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "sensorNodeFileTransferStatus",
-        fissure.comms.MessageFields.PARAMETERS: parameters,
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "sensorNodeFileTransferStatus",
+        fissure.comms.MessageFields.PARAMETERS:
+            parameters,
     }
 
     if component.dashboard_connected:
@@ -3275,136 +3437,1011 @@ async def setHeartbeatInterval(component: object, interval=0):
     # )
 
 
-async def checkPlugin(component: object, node_uid: str):  #TODO: fix remote/local check
-    """Check Status of Plugins on Sensor Node
+async def refreshPluginInventory(component: object, node_uid=""):
+    """Request the selected Sensor Node plugin inventory."""
+    node_uid = str(node_uid or "").strip()
+    hub_inventory = plugin.get_local_plugin_inventory()
 
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str, optional
-        Sensor node UID
-    """
-    # Get plugin names
-    plugin_names = plugin.get_local_plugin_names()
+    node = (component.nodes or {}).get(node_uid, {}) or {}
+    identity = node.get("identity")
 
-    if node_uid:
-        # Forward message to sensor node
+    if not node_uid or identity is None:
         PARAMETERS = {
             "node_uid": node_uid,
-            "plugin_names": plugin_names
+            "hub_inventory": hub_inventory,
+            "node_inventory": {},
+            "error": "Selected Sensor Node is unavailable.",
         }
         msg = {
             fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "checkPlugin",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-
-        # Resolve Identity
-        identity = component.nodes[node_uid].get("identity", None)
-        if identity is None:
-            return
-            
-        # Send through ROUTER
-        await component.sensor_node_router.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg,
-            target_ids=[identity]
-        )
-
-    # Sensor node is local to HIPRFISR
-    else:
-        # Get status; deployed is N/A as it is local
-        status = {}
-        run_db_install = False
-        uninstall_plugins = []
-        for plugin_name in plugin_names:
-            # Check if installed
-            installed = plugin.installed(plugin_name)
-
-            # Create status entry
-            status[plugin_name] = {
-                'deployed': 'N/A',
-                'installed': installed
-            }
-
-            if installed and (not plugin_name in component.local_plugins):
-                # Plugin is installed on sensor node but not registered in HIPRFISR; register for installation
-                run_db_install = True
-                await registerPlugin(component, -1, plugin_name)
-
-            elif (not installed) and (plugin_name in component.local_plugins):
-                # Plugin is not installed on sensor node but is registered in hipfisr; deregister and remove from database
-                uninstall_plugins += [plugin_name]
-                await deregisterPlugin(component, -1, plugin_name)
-
-        if len(uninstall_plugins) > 0:
-            # Uninstall plugins from database
-            await uninstallPluginsDatabase(component, -1, uninstall_plugins)
-        if run_db_install:
-            # Install plugins to database
-            await installPluginsDatabase(component, -1, True)
-
-        # return status
-        PARAMETERS = {
-            "plugin_status": status,
-        }
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "checkSensorNodePluginResults",
+            fissure.comms.MessageFields.MESSAGE_NAME: "refreshPluginInventoryResults",
             fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
         }
         if component.dashboard_connected:
-            await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+            await component.dashboard_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+        return
+
+    PARAMETERS = {}
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "refreshPluginInventory",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
 
 
-async def checkSensorNodePluginResults(component: object, node_uid: str, plugin_status: dict):
-    """Handle checkPlugin Response from Sensor Node
+async def refreshPluginInventoryResults(
+    component: object,
+    node_uid="",
+    node_inventory=None,
+):
+    """Combine Hub and Sensor Node plugin inventories and return them to the Dashboard."""
+    PARAMETERS = {
+        "node_uid": node_uid,
+        "hub_inventory": plugin.get_local_plugin_inventory(),
+        "node_inventory": node_inventory or {},
+        "error": "",
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "refreshPluginInventoryResults",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str, optional
-        Sensor node UID
-    plugin_status : dict
-        Status (values) of plugins (keys)
+
+async def repairPluginSetup(component: object, node_uid="", plugin_name=""):
+    """Request setup repair for one plugin on the selected Sensor Node."""
+    node_uid = str(node_uid or "").strip()
+    plugin_name = str(plugin_name or "").strip()
+
+    node = (component.nodes or {}).get(node_uid, {}) or {}
+    identity = node.get("identity")
+
+    if not node_uid or identity is None:
+        PARAMETERS = {
+            "node_uid": node_uid,
+            "plugin_name": plugin_name,
+            "success": False,
+            "status": "Failed",
+            "message": "Selected Sensor Node is unavailable.",
+            "output": "",
+        }
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "repairPluginSetupResults",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        if component.dashboard_connected:
+            await component.dashboard_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+        return
+
+    PARAMETERS = {
+        "plugin_name": plugin_name,
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "repairPluginSetup",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
+
+
+async def repairPluginSetupResults(
+    component: object,
+    node_uid="",
+    plugin_name="",
+    success=False,
+    status="",
+    message="",
+    output="",
+    node_inventory=None,
+):
+    """Forward one Sensor Node setup-repair result to the Dashboard."""
+    PARAMETERS = {
+        "node_uid": node_uid,
+        "plugin_name": plugin_name,
+        "success": bool(success),
+        "status": status,
+        "message": message,
+        "output": output,
+        "hub_inventory": plugin.get_local_plugin_inventory(),
+        "node_inventory": node_inventory,
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "repairPluginSetupResults",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def _send_plugin_deploy_result(
+    component: object,
+    *,
+    node_uid="",
+    plugin_name="",
+    transfer_id="",
+    success=False,
+    status="",
+    message="",
+    output="",
+    node_inventory=None,
+):
+    """Send one Deploy/Update lifecycle result to the Dashboard."""
+    if not component.dashboard_connected:
+        return
+
+    PARAMETERS = {
+        "node_uid": node_uid,
+        "plugin_name": plugin_name,
+        "transfer_id": transfer_id,
+        "success": bool(
+            success
+        ),
+        "status": str(
+            status
+            or ""
+        ),
+        "message": str(
+            message
+            or ""
+        ),
+        "output": str(
+            output
+            or ""
+        ),
+        "hub_inventory": (
+            plugin.get_local_plugin_inventory()
+        ),
+        "node_inventory": node_inventory,
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "deployPluginResults",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    await component.dashboard_socket.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+    )
+
+
+def _get_plugin_deployments(
+    component: object,
+):
+    """Return/create HIPRFISR's pending plugin deployment map."""
+    deployments = getattr(
+        component,
+        "_plugin_deployments",
+        None,
+    )
+
+    if not isinstance(
+        deployments,
+        dict,
+    ):
+        deployments = {}
+        component._plugin_deployments = (
+            deployments
+        )
+
+    return deployments
+
+
+async def _cancel_sensor_plugin_deployment(
+    component: object,
+    deployment: dict,
+):
+    """Release the Sensor Node reservation for a failed transfer."""
+    node_uid = str(
+        deployment.get(
+            "node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    node = (
+        (component.nodes or {})
+        .get(
+            node_uid,
+            {},
+        )
+        or {}
+    )
+    identity = node.get(
+        "identity"
+    )
+
+    if identity is None:
+        return
+
+    PARAMETERS = {
+        "plugin_name": str(
+            deployment.get(
+                "plugin_name",
+                "",
+            )
+            or ""
+        ),
+        "transfer_id": str(
+            deployment.get(
+                "transfer_id",
+                "",
+            )
+            or ""
+        ),
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "cancelPluginDeployment",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[
+            identity
+        ],
+    )
+
+
+async def _stream_hub_plugin_package(
+    component: object,
+    deployment: dict,
+):
+    """Package one Hub plugin and stream it through the binary transfer plane."""
+    node_uid = str(
+        deployment.get(
+            "node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+    plugin_name = str(
+        deployment.get(
+            "plugin_name",
+            "",
+        )
+        or ""
+    ).strip()
+    transfer_id = str(
+        deployment.get(
+            "transfer_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    package = None
+
+    try:
+        package = (
+            plugin.create_plugin_package(
+                plugin_name
+            )
+        )
+
+        package_path = str(
+            package.get(
+                "package_path",
+                "",
+            )
+            or ""
+        )
+        file_size = int(
+            package.get(
+                "file_size",
+                0,
+            )
+            or 0
+        )
+        sha256 = str(
+            package.get(
+                "sha256",
+                "",
+            )
+            or ""
+        )
+
+        hub_manifest = (
+            plugin.get_plugin_manifest(
+                plugin_name
+            )
+        )
+        hub_version = str(
+            hub_manifest.get(
+                "version",
+                "",
+            )
+            or ""
+        )
+
+        router = getattr(
+            component,
+            "artifact_transfer_router",
+            None,
+        )
+
+        if router is None:
+            raise RuntimeError(
+                "HIPRFISR binary transfer router is unavailable"
+            )
+
+        if router.get_sensor_identity(
+            node_uid
+        ) is None:
+            raise RuntimeError(
+                "Remote Sensor Node is not connected "
+                "to the binary transfer plane"
+            )
+
+        await router.send_local_start(
+            node_uid,
+            transfer_id,
+            {
+                "transfer_type":
+                    "plugin_package_upload",
+                "destination_node_uid":
+                    node_uid,
+                "plugin_name":
+                    plugin_name,
+                "hub_version":
+                    hub_version,
+                "filename":
+                    os.path.basename(
+                        package_path
+                    ),
+                "file_size":
+                    file_size,
+                "sha256":
+                    sha256,
+                "refresh_file_list":
+                    False,
+                "chunk_size":
+                    fissure.comms.ARTIFACT_CHUNK_SIZE,
+            },
+        )
+
+        sequence = 0
+        bytes_sent = 0
+
+        with open(
+            package_path,
+            "rb",
+        ) as handle:
+            while True:
+                chunk = handle.read(
+                    fissure.comms.ARTIFACT_CHUNK_SIZE
+                )
+
+                if not chunk:
+                    break
+
+                await router.send_local_chunk(
+                    node_uid,
+                    transfer_id,
+                    sequence,
+                    chunk,
+                )
+
+                sequence += 1
+                bytes_sent += len(
+                    chunk
+                )
+
+                await asyncio.sleep(
+                    0
+                )
+
+        if bytes_sent != file_size:
+            raise RuntimeError(
+                "Hub plugin package changed during transfer"
+            )
+
+        await router.send_local_file_complete(
+            node_uid,
+            transfer_id,
+            {
+                "plugin_name":
+                    plugin_name,
+                "bytes_sent":
+                    bytes_sent,
+                "chunks_sent":
+                    sequence,
+                "sha256":
+                    sha256,
+            },
+        )
+
+        await router.send_local_complete(
+            node_uid,
+            transfer_id,
+            {
+                "plugin_name":
+                    plugin_name,
+                "bytes_sent":
+                    bytes_sent,
+                "chunks_sent":
+                    sequence,
+                "sha256":
+                    sha256,
+            },
+        )
+
+        component.logger.info(
+            "Streamed Hub plugin package "
+            "plugin=%s transfer_id=%s node_uid=%s "
+            "bytes=%s chunks=%s",
+            plugin_name,
+            transfer_id,
+            node_uid,
+            bytes_sent,
+            sequence,
+        )
+
+    except Exception as exc:
+        deployments = (
+            _get_plugin_deployments(
+                component
+            )
+        )
+        deployments.pop(
+            transfer_id,
+            None,
+        )
+
+        try:
+            await _cancel_sensor_plugin_deployment(
+                component,
+                deployment,
+            )
+        except Exception:
+            pass
+
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            transfer_id=transfer_id,
+            success=False,
+            status="Transfer Failed",
+            message=str(
+                exc
+            ),
+        )
+
+    finally:
+        if package:
+            package_path = str(
+                package.get(
+                    "package_path",
+                    "",
+                )
+                or ""
+            )
+
+            if (
+                package_path
+                and os.path.isfile(
+                    package_path
+                )
+            ):
+                try:
+                    os.remove(
+                        package_path
+                    )
+                except OSError:
+                    pass
+
+
+async def deployPlugin(
+    component: object,
+    node_uid="",
+    plugin_name="",
+):
     """
-    pass  # TODO: replace component.sensor_nodes
+    Begin one Hub -> remote Sensor Node Deploy/Update lifecycle.
 
-    # # Align database to sensor node
-    # run_db_install = False
-    # uninstall_plugins = []
-    # for plugin_name in plugin_status.keys():
-    #     installed = plugin_status.get(plugin_name).get('installed')
-    #     if installed and (not plugin_name in component.sensor_nodes[sensor_node_id].plugins):
-    #         # Plugin is installed on sensor node but not registered in hipfisr; register for installation
-    #         run_db_install = True
-    #         await registerPlugin(component, sensor_node_id, plugin_name)
+    No package bytes are sent until the remote Sensor Node explicitly prepares.
+    """
+    node_uid = str(
+        node_uid
+        or ""
+    ).strip()
+    plugin_name = str(
+        plugin_name
+        or ""
+    ).strip()
 
-    #     elif (not installed) and (plugin_name in component.sensor_nodes[sensor_node_id].plugins):
-    #         # Plugin is not installed on sensor node but is registered in hipfisr; deregister and remove from database
-    #         uninstall_plugins += [plugin_name]
-    #         await deregisterPlugin(component, sensor_node_id, plugin_name)
+    hub_inventory = (
+        plugin.get_local_plugin_inventory()
+    )
 
-    # if len(uninstall_plugins) > 0:
-    #     # Uninstall plugins from database
-    #     await uninstallPluginsDatabase(component, sensor_node_id, uninstall_plugins)
-    # if run_db_install:
-    #     # Install plugins to database
-    #     await installPluginsDatabase(component, sensor_node_id, True)
+    hub_plugin_entry = (
+        hub_inventory.get(
+            plugin_name,
+            {},
+        )
+        or {}
+    )
 
-    # # Forward results to Dashboard
-    # PARAMETERS = {
-    #     "plugin_status": plugin_status,
-    # }
-    # msg = {
-    #     fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-    #     fissure.comms.MessageFields.MESSAGE_NAME: "checkSensorNodePluginResults",
-    #     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    # }
-    # if component.dashboard_connected:
-        # await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    required_plugins = [
+        str(required_plugin).strip()
+        for required_plugin in (
+            hub_plugin_entry.get(
+                "required_plugins",
+                [],
+            )
+            or []
+        )
+        if str(required_plugin).strip()
+    ]
+
+    if plugin_name not in hub_inventory:
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            success=False,
+            status="Failed",
+            message=(
+                f"Hub plugin is not deployed: "
+                f"{plugin_name}"
+            ),
+        )
+        return
+
+    node = (
+        (component.nodes or {})
+        .get(
+            node_uid,
+            {},
+        )
+        or {}
+    )
+
+    identity = node.get(
+        "identity"
+    )
+
+    if identity is None:
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            success=False,
+            status="Failed",
+            message=(
+                "Selected Sensor Node is unavailable."
+            ),
+        )
+        return
+
+    if str(
+        node.get(
+            "network_type",
+            "",
+        )
+        or ""
+    ).strip().lower() != "ip":
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            success=False,
+            status="Failed",
+            message=(
+                "Plugin deployment currently requires "
+                "an IP Sensor Node."
+            ),
+        )
+        return
+
+    deployments = (
+        _get_plugin_deployments(
+            component
+        )
+    )
+
+    for pending in deployments.values():
+        if not isinstance(
+            pending,
+            dict,
+        ):
+            continue
+
+        if (
+            pending.get(
+                "node_uid"
+            )
+            == node_uid
+            and pending.get(
+                "plugin_name"
+            )
+            == plugin_name
+        ):
+            await _send_plugin_deploy_result(
+                component,
+                node_uid=node_uid,
+                plugin_name=plugin_name,
+                success=False,
+                status="Blocked",
+                message=(
+                    f"{plugin_name} already has "
+                    "a deployment in progress."
+                ),
+            )
+            return
+
+    transfer_id = str(
+        uuid.uuid4()
+    )
+
+    deployment = {
+        "node_uid":
+            node_uid,
+        "plugin_name":
+            plugin_name,
+        "transfer_id":
+            transfer_id,
+        "started_at":
+            time.time(),
+    }
+
+    deployments[
+        transfer_id
+    ] = deployment
+
+    PARAMETERS = {
+        "plugin_name":
+            plugin_name,
+        "transfer_id":
+            transfer_id,
+        "required_plugins":
+            required_plugins,
+    }
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "preparePluginDeployment",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[
+                identity
+            ],
+        )
+
+    except Exception as exc:
+        deployments.pop(
+            transfer_id,
+            None,
+        )
+
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            transfer_id=transfer_id,
+            success=False,
+            status="Failed",
+            message=(
+                "Could not prepare Sensor Node "
+                f"for plugin deployment: {exc}"
+            ),
+        )
+
+
+async def preparePluginDeploymentResults(
+    component: object,
+    node_uid="",
+    plugin_name="",
+    transfer_id="",
+    success=False,
+    message="",
+):
+    """Stream package bytes only after the remote Sensor Node approves."""
+    deployments = (
+        _get_plugin_deployments(
+            component
+        )
+    )
+
+    deployment = deployments.get(
+        transfer_id
+    )
+
+    if not isinstance(
+        deployment,
+        dict,
+    ):
+        component.logger.warning(
+            "Ignoring unknown plugin deployment preparation "
+            "transfer_id=%s",
+            transfer_id,
+        )
+        return
+
+    if (
+        deployment.get(
+            "node_uid"
+        )
+        != node_uid
+        or deployment.get(
+            "plugin_name"
+        )
+        != plugin_name
+    ):
+        deployments.pop(
+            transfer_id,
+            None,
+        )
+
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            transfer_id=transfer_id,
+            success=False,
+            status="Failed",
+            message=(
+                "Plugin deployment preparation "
+                "did not match the pending request."
+            ),
+        )
+        return
+
+    if not success:
+        deployments.pop(
+            transfer_id,
+            None,
+        )
+
+        await _send_plugin_deploy_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            transfer_id=transfer_id,
+            success=False,
+            status="Blocked",
+            message=str(
+                message
+                or "Sensor Node rejected plugin deployment."
+            ),
+        )
+        return
+
+    await _stream_hub_plugin_package(
+        component,
+        deployment,
+    )
+
+
+async def finalizePluginDeploymentResults(
+    component: object,
+    node_uid="",
+    plugin_name="",
+    transfer_id="",
+    success=False,
+    status="",
+    message="",
+    output="",
+    node_inventory=None,
+):
+    """Complete one pending deployment and return the refreshed inventory."""
+    deployments = (
+        _get_plugin_deployments(
+            component
+        )
+    )
+
+    deployments.pop(
+        transfer_id,
+        None,
+    )
+
+    await _send_plugin_deploy_result(
+        component,
+        node_uid=node_uid,
+        plugin_name=plugin_name,
+        transfer_id=transfer_id,
+        success=success,
+        status=status,
+        message=message,
+        output=output,
+        node_inventory=node_inventory,
+    )
+
+
+async def _send_plugin_remove_result(
+    component: object,
+    *,
+    node_uid="",
+    plugin_name="",
+    success=False,
+    status="",
+    message="",
+    output="",
+    node_inventory=None,
+):
+    """Send one managed Remove result and current Hub inventory to Dashboard."""
+    if not component.dashboard_connected:
+        return
+
+    PARAMETERS = {
+        "node_uid": node_uid,
+        "plugin_name": plugin_name,
+        "success": bool(
+            success
+        ),
+        "status": str(
+            status
+            or ""
+        ),
+        "message": str(
+            message
+            or ""
+        ),
+        "output": str(
+            output
+            or ""
+        ),
+        "hub_inventory": (
+            plugin.get_local_plugin_inventory()
+        ),
+        "node_inventory": node_inventory,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "removeManagedPluginResults",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    await component.dashboard_socket.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+    )
+
+
+async def removeManagedPlugin(
+    component: object,
+    node_uid="",
+    plugin_name="",
+):
+    """Request managed plugin removal on the selected Sensor Node."""
+    node_uid = str(
+        node_uid
+        or ""
+    ).strip()
+
+    plugin_name = str(
+        plugin_name
+        or ""
+    ).strip()
+
+    node = (
+        (component.nodes or {})
+        .get(
+            node_uid,
+            {},
+        )
+        or {}
+    )
+
+    identity = node.get(
+        "identity"
+    )
+
+    if identity is None:
+        await _send_plugin_remove_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            success=False,
+            status="Failed",
+            message="Selected Sensor Node is unavailable.",
+        )
+        return
+
+    PARAMETERS = {
+        "plugin_name":
+            plugin_name,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "removeManagedPlugin",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[
+                identity
+            ],
+        )
+
+    except Exception as exc:
+        await _send_plugin_remove_result(
+            component,
+            node_uid=node_uid,
+            plugin_name=plugin_name,
+            success=False,
+            status="Failed",
+            message=(
+                f"Could not request plugin removal: {exc}"
+            ),
+        )
+
+
+async def removeManagedPluginResults(
+    component: object,
+    node_uid="",
+    plugin_name="",
+    success=False,
+    status="",
+    message="",
+    output="",
+    node_inventory=None,
+):
+    """Forward one managed plugin-removal result to the Dashboard."""
+    await _send_plugin_remove_result(
+        component,
+        node_uid=node_uid,
+        plugin_name=plugin_name,
+        success=success,
+        status=status,
+        message=message,
+        output=output,
+        node_inventory=node_inventory,
+    )
 
 
 async def savePlugin(component: object, plugin_name: str, plugin_data: str):
@@ -3485,329 +4522,6 @@ async def sendPlugin(component: object, plugin_name: str) -> None:
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
-async def transferPlugins(component: object, node_uid: str, plugin_names: List[str], install: bool=False):
-    """Send Plugin to Sensor Node
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_names : str
-        Plugin names with file extension or no extension if folder
-    install : bool
-        Install plugin after transfer
-    """
-    plugins = []
-    for plugin_name in plugin_names:
-        pathname = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if os.path.exists(pathname):
-            zip_filename = None
-
-            if not os.path.isfile(pathname):
-                # zip directory
-                shutil.make_archive(pathname, "zip", pathname)
-                zip_filename = filename = pathname + ".zip"
-                plugin_name += '.zip'
-            else:
-                filename = pathname
-
-            # Read file
-            try:
-                with open(filename, "rb") as f:
-                    plugin_data = f.read()
-                plugin_data = binascii.hexlify(plugin_data)
-                plugin_data = plugin_data.decode("utf-8").upper()
-            except:
-                component.logger.error("Error reading file: " + str(filename))
-                return
-            
-            # Append to plugin data
-            plugins += [(plugin_name, plugin_data)]
-
-            # Delete the .zip File
-            if not zip_filename is None:
-                os.system('rm "' + zip_filename + '"')
-
-    # Send File
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "plugins": plugins,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-        fissure.comms.MessageFields.MESSAGE_NAME: "transferPlugins" if not install else "transferPluginsInstall",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def installPlugins(component: object, node_uid: str, plugin_names: List[str]):  # TODO fix local/remote check
-    """Install Plugins to Sensor Node
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_names : List[str]
-        Plugin names
-    """
-    if node_uid:
-        # Install through sensor node
-        PARAMETERS = {
-            "plugin_names": plugin_names,
-        }
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "installPlugins",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-
-        # Resolve Identity
-        identity = component.nodes[node_uid].get("identity", None)
-        if identity is None:
-            return
-        
-        # Send through ROUTER
-        await component.sensor_node_router.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg,
-            target_ids=[identity]
-        )        
-
-    else:
-        # Install Locally
-        for plugin_name in plugin_names:
-            # Run Installation
-            plugin.install(plugin_name)
-
-            # Register in HIPRFISR
-            await registerPlugin(component, -1, plugin_name)
-
-        # Install to Database
-        await installPluginsDatabase(component, -1, True)
-
-
-async def registerPlugin(component: object, node_uid: str, plugin_name: str):
-    """Register Plugin in HIPRFISR Sensor Node Plugin List
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_name : str
-        Plugin name
-    """
-    pass  # TODO: replace component.sensor_nodes
-    
-    # if sensor_node_id > -1:
-    #     if not plugin_name in component.sensor_nodes[sensor_node_id].plugins:
-    #         # Add plugin to list for sensor node
-    #         component.sensor_nodes[sensor_node_id].plugins += [plugin_name]
-    # else:
-    #     if not plugin_name in component.local_plugins:
-    #         # Add plugin to list for hiprfisr
-    #         component.local_plugins += [plugin_name]
-
-
-async def deregisterPlugin(component: object, node_uid: str, plugin_name: str):
-    """Remove Plugin from HIPRFISR Sensor Node Plugin List
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_name : str
-        Plugin name
-    """
-    pass  # TODO: replace component.sensor_nodes
-
-    # if sensor_node_id > -1:
-    #     if plugin_name in component.sensor_nodes[sensor_node_id].plugins:
-    #         # Remove plugin from list for sensor node
-    #         component.sensor_nodes[sensor_node_id].plugins.remove(plugin_name)
-    # else:
-    #     if plugin_name in component.local_plugins:
-    #         # Remove plugin from list for hiprfisr
-    #         component.local_plugins.remove(plugin_name)
-
-
-async def installPluginsDatabase(component: object, node_uid: str, refresh_frontend_widgets: bool=True):
-    """Install Plugin in Database
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    refresh_frontend_widgets : bool, optional
-        Update dashboard UI widgets after installation, by default True
-    """
-    pass  # TODO: replace component.sensor_nodes
-
-    # # Get registered active plugins list
-    # if sensor_node_id > -1:
-    #     plugins = component.sensor_nodes[sensor_node_id].plugins
-    # else:
-    #     plugins = component.local_plugins
-
-    # # Install plugins to database
-    # plugin.modify_database(component.logger, plugins, 'add')
-
-    # # Update database cache and dashboard
-    # await retrieveDatabaseCache(component, refresh_frontend_widgets)
-
-    # # Update plugin table list
-    # await checkPlugin(component, sensor_node_id)
-
-
-async def uninstallPluginsDatabase(component: object, node_uid: str, plugin_names: List[str]):
-    """Uninstall Plugin from Database
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_names : List[str]
-        Plugin names
-    """
-    # Uninstall plugins from database
-    plugin.modify_database(component.logger, plugin_names, 'remove')
-
-    # Update database cache and dashboard
-    await retrieveDatabaseCache(component, True)
-
-    # Update plugin table\list
-    await checkPlugin(component, node_uid)
-
-
-async def requestPluginsTransferInstall(component: object, node_uid: str, plugin_names: str):
-    """Sensor Node Request for Plugin Transfer then Install
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_names : str
-        Plugin name
-    """
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "plugin_names": plugin_names
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "requestPluginsTransferInstall",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def uninstallPlugins(component: object, node_uid: str, plugin_names: str):  #TODO: fix local/remote check
-    """Uninstall Plugins from Sensor Node
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_names : str
-        Plugin names
-    """
-    if node_uid > -1:
-        # Uninstall through sensor node
-        PARAMETERS = {
-            "plugin_names": plugin_names,
-        }
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "uninstallPlugins",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-
-        # Resolve Identity
-        identity = component.nodes[node_uid].get("identity", None)
-        if identity is None:
-            return
-        
-        # Send through ROUTER
-        await component.sensor_node_router.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg,
-            target_ids=[identity]
-        )
-    
-    else:
-        # Uninstall locally
-        for plugin_name in plugin_names:
-            # run uninstallation
-            plugin.uninstall(plugin_name)
-
-        # Update database and dashboard
-        await uninstallPluginsDatabase(component, -1, plugin_names)
-
-
-async def removePlugin(component: object, node_uid: str, plugin_name: str):
-    """Remove Plugin from Sensor Node
-
-    **WARNING**: This will remove the plugin from the sensor node file system
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin_name : str
-        Plugin name
-    """
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "plugin_name": plugin_name,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "removePlugin",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )    
-    
 
 # async def requestPluginNamesHiprfisr(component: object):
 #     """Handle Request for Plugin Names
@@ -4001,164 +4715,6 @@ async def pluginEditProtocolPktTypes(component: object, protocol_name: str, pkt_
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def plugin_get_operation_parameters(component: object, plugin: str, operation: str):
-    """Get parameters for a plugin operation.
-
-    Parameters
-    ----------
-    component : object
-        Component
-    plugin : str
-        Plugin name
-    operation : str
-        Script relative path within the plugin's install_file directory
-    """
-    # get the plugin path
-    plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin)
-    if not os.path.exists(plugin_path):
-        component.logger.error(f"Plugin {plugin} does not exist in {fissure.utils.PLUGIN_DIR}")
-        return
-
-    # get the operation path
-    operation_path = os.path.join(plugin_path, "operations", operation)
-    if not os.path.exists(operation_path):
-        component.logger.error(f"Operation {operation} does not exist in plugin {plugin}")
-        return
-    
-    # import and run the get_arguments function from the operation script
-    try:
-        spec = importlib.util.spec_from_file_location("operation_module", operation_path)
-        operation_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(operation_module)
-        OperationMain = getattr(operation_module, "OperationMain", None)
-        if OperationMain is not None:
-            if callable(OperationMain.get_arguments):
-                parameters = OperationMain.get_arguments()
-            else:
-                component.logger.error(f"OperationMain.get_arguments function not found in {operation}")
-                return
-        else:
-            component.logger.error(f"OperationMain class not found in {operation}")
-            return
-        if callable(OperationMain.get_resources):
-            resources = OperationMain.get_resources()
-        else:
-            component.logger.warning(f"OperationMain.get_resources function not found in {operation}, resources will not be included")
-            resources = {}
-        if callable(OperationMain.get_interfaces):
-            interfaces = OperationMain.get_interfaces()
-        else:
-            component.logger.warning(f"OperationMain.get_interfaces function not found in {operation}, interfaces will not be included")
-            interfaces = {}
-    except Exception as e:
-        component.logger.error(f"Error importing operation script {operation}: {e}")
-        return
-
-    # cast all values to strings (ensures json serializability)
-    for key, value in parameters.items():
-        for subkey, subvalue in value.items():
-            parameters[key][subkey] = str(subvalue)
-
-    # send the plugin operation parameters to the dashboard
-    PARAMETERS = {
-        "plugin": plugin,
-        "operation": operation,
-        "parameters": parameters,
-        "resources": resources,
-        "interfaces": interfaces
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "responsePluginOperationParameters",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def plugin_get_operations(component: object, plugin: str):
-    """Get operations for a plugin.
-
-    Parameters
-    ----------
-    component : object
-        Component
-    plugin : str
-        Plugin name
-    """
-    # get the plugin path
-    plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin)
-    if not os.path.exists(plugin_path):
-        component.logger.error(f"Plugin {plugin} does not exist in {fissure.utils.PLUGIN_DIR}")
-        return
-    
-    # get the operations path
-    operations_path = os.path.join(plugin_path, "operations")
-    if not os.path.exists(operations_path):
-        component.logger.error(f"Plugin {plugin} does not have an operations directory")
-        return
-    
-    # get the list of operations (python scripts) in the operations directory
-    operations = []
-    for filename in os.listdir(operations_path):
-        if filename.endswith(".py"):
-            operations += [filename]
-
-    # send the plugin operations to the dashboard
-    PARAMETERS = {
-        "plugin": plugin,
-        "operations": operations,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "responsePluginOperations",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def run_plugin_operation(component: object, node_uid: str, plugin: str, operation: str, parameters: dict = {}):
-    """Run a plugin operation on the sensor node.
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    plugin : str
-        Plugin name
-    operation : str
-        Script relative path within the plugin's install_file directory
-    parameters : dict, optional
-        Additional parameters for the operation, by default {}
-    """
-    PARAMETERS = {
-        "plugin": plugin,
-        "operation": operation,
-        "parameters": parameters,
-        "node_uid": node_uid,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "run_plugin_operation",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )    
 
 
 async def stop_plugin_operation(component: object, node_uid: str, operation_id: str):

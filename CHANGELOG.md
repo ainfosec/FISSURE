@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-30
+
+Complete Sensor Node plugin management lifecycle
+
+### Added
+
+- Added the Sensor Nodes → Plugins workspace with selected-node plugin inventory, Hub/Node version comparison, setup/state reporting, plugin details, operation logging, lifecycle status, and explicit Refresh, Deploy/Update, Repair Setup, and Remove controls.
+- Added lightweight `plugin.yaml` manifests and a standard `setup.py` lifecycle contract for plugin metadata and external node setup, including `check`, `install`, and opt-in `cleanup` actions while preserving compatibility with legacy plugins that do not provide either file.
+- Added remote IP plugin deployment over the existing binary transfer channel, with HIPRFISR-side packaging, SHA-256 verification, staged transfer handling, atomic whole-directory replacement, stale-file removal, symlink/path protections, and automatic setup verification after deployment.
+- Added managed plugin removal with Base protection, active-operation guards, optional plugin-owned cleanup, confirmation in the Dashboard, and separate local/shared versus remote-node removal behavior.
+- Added `required_plugins` manifest metadata with deployment preflight checks against the Sensor Node's actual plugin inventory and reverse-dependency protection that prevents removal of a plugin still required by another deployed plugin.
+- Added example manifests and no-op setup hooks to the existing Base, WiFi, Dummy, Mission-01, and X10 plugins so the current plugin set also serves as a template for future plugin development.
+
+### Changed
+
+- Reworked plugin management around the physical `Plugins/` directories as the authoritative Hub and Sensor Node inventories, with independent local enumeration and Dashboard-side union views instead of the legacy installed-file/database bookkeeping model.
+- Defined local-node plugin behavior around the shared Hub plugin tree while reserving Deploy/Update for remote IP Sensor Nodes, allowing local Repair Setup and managed removal without duplicating plugin packages.
+- Replaced legacy plugin deployment semantics with full plugin-directory replacement and explicit setup ownership, keeping FISSURE plugin dependencies in `required_plugins` while leaving Python packages, system packages, OOT modules, helper binaries, and other external requirements to plugin-defined `setup.py`.
+- Removed the obsolete Sensor Nodes Operations interface and legacy Plugins controls, callbacks, transfer/install/uninstall paths, operation-discovery GUI plumbing, and command-channel ZIP/hex transfer behavior now superseded by Actions, Activity, and the managed plugin lifecycle.
+- Updated the Plugins workspace across light, dark, and custom themes with consistent management-button hierarchy, status coloring and legend behavior, details/log/status panels, no-node state presentation, and palette-aware query/utility controls.
+
 ## 2026-8-29
 
 Modernize Sensor Node activity and target action recommendations

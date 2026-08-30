@@ -153,8 +153,6 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionRemember_Configuration.setChecked(False)
 
         # Hide works in progress
-        self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Plugins")
-        self.remove_tab_by_text(self.ui.tabWidget_sensor_nodes, "Operations")
         self.remove_tab_by_text(self.ui.tabWidget_library, "Plugin Manager")
 
         # Load FISSURE Logo
@@ -995,6 +993,7 @@ class Dashboard(QtWidgets.QMainWindow):
         SensorNodesTabSlots.initialize_sensor_nodes_activity_controls(self)
         SensorNodesTabSlots.initialize_sensor_nodes_autorun_controls(self)
         SensorNodesTabSlots.initialize_sensor_nodes_file_navigation_controls(self)
+        SensorNodesPluginsTabSlots.initialize_sensor_nodes_plugins_controls(self)
 
 
     def __init_Library__(self):
@@ -1781,6 +1780,7 @@ class Dashboard(QtWidgets.QMainWindow):
         """Update Sensor Node tab state for the selected Sensor Node."""
         SensorNodesTabSlots.update_sensor_nodes_activity_selected_node_gate(self)
         SensorNodesTabSlots.update_sensor_nodes_autorun_selected_node_gate(self)
+        SensorNodesPluginsTabSlots.update_sensor_nodes_plugins_selected_node_gate(self)
 
         # Do not retrieve plugins for Meshtastic automatically.
         if selected_node_is_ip(self):
@@ -4562,28 +4562,30 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunStartStopClicked(dashboard)
     )
 
-    # create connections for sensor nodes pluginsList tab
-    SensorNodesPluginsTabSlots.connect_plugins_slots(dashboard)
-
-    style = dashboard.style()
-    if style is not None:
-        dashboard.ui.toolButton_plugin_pkgs_hiprfisr_refresh_2.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_BrowserReload))
-
-    # Connect buttons for sensor nodes plugin operations
-    dashboard.ui.pushButton_7.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesOperationRun(dashboard)
+    dashboard.ui.pushButton_sn_plugins_refresh.clicked.connect(
+        lambda: SensorNodesPluginsTabSlots._slotSensorNodesPluginsRefreshClicked(
+            dashboard
+        )
     )
-    dashboard.ui.pushButton_8.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesOperationStop(dashboard)
+    dashboard.ui.tableWidget_sn_plugins_inventory.itemSelectionChanged.connect(
+        lambda: SensorNodesPluginsTabSlots._slotSensorNodesPluginInventorySelectionChanged(
+            dashboard
+        )
     )
-    dashboard.ui.pushButton_9.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesPluginOperationOpen(dashboard)
+    dashboard.ui.pushButton_sn_plugins_inventory_deploy.clicked.connect(
+        lambda: SensorNodesPluginsTabSlots._slotSensorNodesPluginDeployClicked(
+            dashboard
+        )
     )
-    # dashboard.ui.toolButton_plugin_pkgs_hiprfisr_refresh_2.clicked.connect(
-    #     lambda: LibraryTabPluginManagerTabSlots._slot_request_hiprfisr_plugin_list(dashboard)
-    # )
-    dashboard.ui.comboBox_select_plugin.currentIndexChanged.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesPluginSelected(dashboard)
+    dashboard.ui.pushButton_sn_plugins_inventory_repair.clicked.connect(
+        lambda: SensorNodesPluginsTabSlots._slotSensorNodesPluginRepairClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sn_plugins_inventory_remove.clicked.connect(
+        lambda: SensorNodesPluginsTabSlots._slotSensorNodesPluginRemoveClicked(
+            dashboard
+        )
     )
 
 

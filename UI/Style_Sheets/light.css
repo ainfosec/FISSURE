@@ -2367,26 +2367,47 @@ QLabel[uiRole="activityParameterValue"] {
 }
 
 QPushButton#pushButton_sensor_nodes_activity_log_refresh {
-    color: white;
+    color: #FFFFFF;
     font-weight: bold;
-    border: 1px solid #0B355E;
+    border: 1px solid #0B2D52;
     border-radius: 4px;
     padding: 4px 14px;
-    background-color: #174A7E;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
 }
 
 QPushButton#pushButton_sensor_nodes_activity_log_refresh:hover {
-    background-color: #1F5F9E;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
 }
 
 QPushButton#pushButton_sensor_nodes_activity_log_refresh:pressed {
-    background-color: #0E365F;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
 }
 
 QPushButton#pushButton_sensor_nodes_activity_log_refresh:disabled {
-    color: #B8B8B8;
-    background-color: #D6D6D6;
-    border-color: #B0B0B0;
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
 }
 
 /* ==========================================================
@@ -3517,4 +3538,225 @@ QPushButton#pushButton_ta_scapy_transmit_start_stop[running="true"]:disabled {
     color: @color13;
     background-color: @color9;
     border: 1px solid @color13;
+}
+
+/* ==========================================================
+   Sensor Nodes - Plugins
+   ========================================================== */
+
+QLabel#label_sn_plugins_select_sensor_node_image {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label_sn_plugins_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QLabel#label2_sn_plugins_no_node_selected {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label2_sn_plugins_select_a_node {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: 9pt "Ubuntu";
+}
+
+QFrame#frame_sn_plugins_inventory,
+QFrame#frame_sn_plugins_operation_log,
+QFrame#frame_sn_plugins_operation_status,
+QFrame#frame_sn_plugins_details {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sn_plugins_inventory_title,
+QLabel#label_sn_plugins_operation_log_title,
+QLabel#label_sn_plugins_operation_status_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sn_plugins_inventory_subtitle {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QWidget#scrollAreaWidgetContents_sn_plugins_details {
+    color: @color4;
+    background-color: @color2;
+}
+
+
+QPlainTextEdit#plainTextEdit_sn_plugins_operation_log {
+    color: @color4;
+    background-color: #FAFAFA;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    padding: 6px;
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label2_sn_plugins_operation_status_current_operation,
+QLabel#label2_sn_plugins_operation_status_status,
+QLabel#label2_sn_plugins_operation_status_last_update {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label2_sn_plugins_inventory_ready,
+QLabel#label2_sn_plugins_inventory_setup_required,
+QLabel#label2_sn_plugins_inventory_setup_failed,
+QLabel#label2_sn_plugins_inventory_not_deployed,
+QLabel#label2_sn_plugins_inventory_running {
+    background-color: transparent;
+    border: none;
+    font: 9pt "Ubuntu";
+}
+QLabel#label2_sn_plugins_inventory_ready {
+    color: #2EA043;
+}
+
+QLabel#label2_sn_plugins_inventory_setup_required {
+    color: #D98200;
+}
+
+QLabel#label2_sn_plugins_inventory_setup_failed {
+    color: #D9534F;
+}
+
+QLabel#label2_sn_plugins_inventory_not_deployed {
+    color: #808080;
+}
+
+QLabel#label2_sn_plugins_inventory_running {
+    color: #2F80ED;
+}
+
+
+QPushButton#pushButton_sn_plugins_inventory_deploy,
+QPushButton#pushButton_sn_plugins_inventory_repair,
+QPushButton#pushButton_sn_plugins_refresh {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_sn_plugins_inventory_deploy:hover,
+QPushButton#pushButton_sn_plugins_refresh:hover,
+QPushButton#pushButton_sn_plugins_inventory_repair:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_sn_plugins_inventory_deploy:pressed,
+QPushButton#pushButton_sn_plugins_refresh:pressed,
+QPushButton#pushButton_sn_plugins_inventory_repair:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_sn_plugins_inventory_remove {
+    color: #FFFFFF;
+    border: 1px solid #8A0000;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #E64A4A,
+        stop:0.45 #C91F1F,
+        stop:1 #980000
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_sn_plugins_inventory_remove:hover {
+    color: #FFFFFF;
+    border: 1px solid #B00000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #FF5A5A,
+        stop:0.45 #DD2B2B,
+        stop:1 #B00000
+    );
+}
+
+QPushButton#pushButton_sn_plugins_inventory_remove:pressed {
+    color: #FFFFFF;
+    border: 1px solid #650000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #8A0000,
+        stop:1 #650000
+    );
+}
+
+QPushButton#pushButton_sn_plugins_inventory_deploy:disabled,
+QPushButton#pushButton_sn_plugins_inventory_repair:disabled,
+QPushButton#pushButton_sn_plugins_inventory_refresh:disabled,
+QPushButton#pushButton_sn_plugins_inventory_remove:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QScrollArea#scrollArea_sn_plugins_details {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+}
+
+QWidget#scrollAreaWidgetContents_sn_plugins_details {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+}
+
+QScrollArea#scrollArea_sn_plugins_details QLabel {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
 }

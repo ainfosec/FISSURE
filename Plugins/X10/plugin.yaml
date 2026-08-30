@@ -1,0 +1,17 @@
+# FISSURE plugin manifest.
+#
+# name:        Display/plugin name. Keep this aligned with the plugin directory.
+# version:     Increment when the packaged plugin changes so remote nodes can
+#              detect that an update is available.
+# description: Short operator-facing summary shown in Plugin Details.
+#
+# Cleanup is intentionally opt-in. If this plugin later installs resources that
+# should be removed with the plugin, implement setup.py cleanup safely and add:
+#
+# cleanup: true
+#
+# Never use cleanup to remove shared system dependencies used by other plugins.
+
+name: X10
+version: "1.0.5"
+description: X10 protocol actions for packet-field fuzzing and related RF workflows.

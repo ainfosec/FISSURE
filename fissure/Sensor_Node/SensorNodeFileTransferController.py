@@ -12,6 +12,7 @@ from typing import Dict, Optional
 
 import fissure.comms
 import fissure.utils
+from fissure.utils import plugin
 from fissure.comms.ArtifactTransfer import (
     FRAME_CANCEL,
     FRAME_CHUNK,
@@ -24,11 +25,14 @@ from fissure.comms.ArtifactTransfer import (
 
 
 TRANSFER_TYPE_FILE_UPLOAD = "sensor_node_file_upload"
+TRANSFER_TYPE_PLUGIN_PACKAGE = "plugin_package_upload"
 
 
 @dataclass
 class _IncomingFileUpload:
     transfer_id: str
+    transfer_type: str
+    plugin_name: str
     remote_filepath: str
     final_path: str
     part_path: str
@@ -123,20 +127,27 @@ class SensorNodeFileTransferController:
     ) -> None:
         metadata = frame.metadata or {}
 
-        if str(
+        transfer_type = str(
             metadata.get(
                 "transfer_type",
                 "",
             )
             or ""
-        ).strip() != TRANSFER_TYPE_FILE_UPLOAD:
+        ).strip()
+
+        if transfer_type not in {
+            TRANSFER_TYPE_FILE_UPLOAD,
+            TRANSFER_TYPE_PLUGIN_PACKAGE,
+        }:
             self.logger.warning(
                 "Ignoring unsupported Sensor Node transfer START "
                 "transfer_id=%s transfer_type=%s",
                 frame.transfer_id,
-                metadata.get("transfer_type", ""),
+                transfer_type,
             )
-            self.ignored_transfers.add(frame.transfer_id)
+            self.ignored_transfers.add(
+                frame.transfer_id
+            )
             return
 
         destination_node_uid = str(
@@ -157,24 +168,105 @@ class SensorNodeFileTransferController:
             )
             return
 
-        remote_filepath = str(
-            metadata.get(
-                "remote_filepath",
-                "",
-            )
-            or ""
-        ).strip()
+        plugin_name = ""
 
-        try:
-            final_path = self._resolve_destination_path(
-                remote_filepath
+        if transfer_type == TRANSFER_TYPE_PLUGIN_PACKAGE:
+            plugin_name = str(
+                metadata.get(
+                    "plugin_name",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            if (
+                str(
+                    getattr(
+                        self.component,
+                        "local_remote",
+                        "",
+                    )
+                    or ""
+                ).strip().lower()
+                != "remote"
+            ):
+                await self._reject_start(
+                    frame,
+                    "Plugin packages may only be deployed to remote Sensor Nodes",
+                )
+                return
+
+            if (
+                str(
+                    getattr(
+                        self.component,
+                        "network_type",
+                        "",
+                    )
+                    or ""
+                ).strip().lower()
+                != "ip"
+            ):
+                await self._reject_start(
+                    frame,
+                    "Plugin package deployment requires an IP Sensor Node",
+                )
+                return
+
+            reservations = getattr(
+                self.component,
+                "plugin_deployment_reservations",
+                {},
+            ) or {}
+
+            if reservations.get(
+                plugin_name
+            ) != frame.transfer_id:
+                await self._reject_start(
+                    frame,
+                    "Plugin package was not prepared/reserved by this Sensor Node",
+                )
+                return
+
+            try:
+                final_path = (
+                    plugin.get_plugin_package_staging_path(
+                        plugin_name,
+                        frame.transfer_id,
+                        create_folder=True,
+                    )
+                )
+            except Exception as exc:
+                await self._reject_start(
+                    frame,
+                    str(exc),
+                )
+                return
+
+            remote_filepath = (
+                f"/Plugins/.incoming/"
+                f"{os.path.basename(final_path)}"
             )
-        except Exception as exc:
-            await self._reject_start(
-                frame,
-                str(exc),
-            )
-            return
+
+        else:
+            remote_filepath = str(
+                metadata.get(
+                    "remote_filepath",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            try:
+                final_path = self._resolve_destination_path(
+                    remote_filepath
+                )
+            except Exception as exc:
+                await self._reject_start(
+                    frame,
+                    str(exc),
+                )
+                return
 
         parent_folder = os.path.dirname(final_path)
 
@@ -233,6 +325,8 @@ class SensorNodeFileTransferController:
 
         upload = _IncomingFileUpload(
             transfer_id=frame.transfer_id,
+            transfer_type=transfer_type,
+            plugin_name=plugin_name,
             remote_filepath=remote_filepath,
             final_path=final_path,
             part_path=part_path,
@@ -396,10 +490,17 @@ class SensorNodeFileTransferController:
             mib_per_second,
         )
 
+        completion_message = (
+            "Plugin package transfer completed"
+            if upload.transfer_type
+            == TRANSFER_TYPE_PLUGIN_PACKAGE
+            else "File transfer completed"
+        )
+
         await self._send_status(
             frame.transfer_id,
             True,
-            "File transfer completed",
+            completion_message,
             upload,
             elapsed_seconds=elapsed,
             mib_per_second=mib_per_second,
@@ -440,6 +541,23 @@ class SensorNodeFileTransferController:
         message: str,
     ) -> None:
         metadata = frame.metadata or {}
+
+        transfer_type = str(
+            metadata.get(
+                "transfer_type",
+                "",
+            )
+            or ""
+        ).strip()
+
+        plugin_name = str(
+            metadata.get(
+                "plugin_name",
+                "",
+            )
+            or ""
+        ).strip()
+
         remote_filepath = str(
             metadata.get(
                 "remote_filepath",
@@ -448,13 +566,17 @@ class SensorNodeFileTransferController:
             or ""
         ).strip()
 
-        self.ignored_transfers.add(frame.transfer_id)
+        self.ignored_transfers.add(
+            frame.transfer_id
+        )
 
         await self._send_status(
             frame.transfer_id,
             False,
             message,
             None,
+            transfer_type=transfer_type,
+            plugin_name=plugin_name,
             remote_filepath=remote_filepath,
             refresh_file_list=bool(
                 metadata.get(
@@ -462,7 +584,9 @@ class SensorNodeFileTransferController:
                     False,
                 )
             ),
-            remote_folder=os.path.dirname(remote_filepath) or "/",
+            remote_folder=os.path.dirname(
+                remote_filepath
+            ) or "/",
         )
 
     async def _fail_transfer(
@@ -502,6 +626,8 @@ class SensorNodeFileTransferController:
         message: str,
         upload: Optional[_IncomingFileUpload],
         *,
+        transfer_type: str = "",
+        plugin_name: str = "",
         remote_filepath: str = "",
         refresh_file_list: bool = False,
         remote_folder: str = "",
@@ -509,6 +635,8 @@ class SensorNodeFileTransferController:
         mib_per_second: float = 0.0,
     ) -> None:
         if upload is not None:
+            transfer_type = upload.transfer_type
+            plugin_name = upload.plugin_name
             remote_filepath = upload.remote_filepath
             refresh_file_list = upload.refresh_file_list
             remote_folder = upload.remote_folder
@@ -518,6 +646,14 @@ class SensorNodeFileTransferController:
 
         parameters = {
             "transfer_id": transfer_id,
+            "transfer_type": str(
+                transfer_type
+                or ""
+            ),
+            "plugin_name": str(
+                plugin_name
+                or ""
+            ),
             "success": bool(success),
             "message": str(message),
             "remote_filepath": remote_filepath,

@@ -66,7 +66,6 @@ class HiprFisr:
     pd_id: bytes
     pd_connected: bool
     # sensor_nodes: List[SensorNode]
-    local_plugins: List[str] = []
     heartbeats: Dict[str, Union[float, Dict[int, float]]]  # {name: time, name: time, ... sensor_nodes: {node_id: time}}
     callbacks: Dict = {}
     shutdown: bool

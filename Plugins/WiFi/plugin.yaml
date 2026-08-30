@@ -1,0 +1,17 @@
+# FISSURE plugin manifest.
+#
+# name:        Display/plugin name. Keep this aligned with the plugin directory.
+# version:     Increment when the packaged plugin changes so remote nodes can
+#              detect that an update is available.
+# description: Short operator-facing summary shown in Plugin Details.
+#
+# Cleanup is intentionally opt-in. If this plugin later installs resources that
+# should be removed with the plugin, implement setup.py cleanup safely and add:
+#
+# cleanup: true
+#
+# Never use cleanup to remove shared system dependencies used by other plugins.
+
+name: WiFi
+version: "1.0.0"
+description: Wi-Fi discovery and geolocation actions for 802.11 Sensor Node workflows.

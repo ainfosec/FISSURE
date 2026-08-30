@@ -14,6 +14,13 @@ from subprocess import Popen, run
 import traceback
 from typing import List, Dict, Set, Any
 import copy
+import yaml
+import sys
+import hashlib
+import stat
+import tempfile
+import zipfile
+
 
 from fissure.utils import FISSURE_ROOT, PLUGIN_DIR
 from fissure.utils.library import (
@@ -100,6 +107,867 @@ def get_local_plugin_names():
                 # plugin zip file; use root name
                 plugins += [root]
     return plugins
+
+
+def get_plugin_manifest(plugin_name: str) -> Dict[str, Any]:
+    """Read lightweight metadata for one deployed plugin directory."""
+    plugin_name = str(plugin_name or "").strip()
+    plugin_path = os.path.join(PLUGIN_DIR, plugin_name)
+    manifest_path = os.path.join(plugin_path, "plugin.yaml")
+
+    manifest = {}
+    manifest_error = ""
+
+    if os.path.isfile(manifest_path):
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as stream:
+                loaded = yaml.safe_load(stream) or {}
+
+            if isinstance(loaded, dict):
+                manifest = loaded
+            else:
+                manifest_error = "plugin.yaml must contain a mapping."
+
+        except Exception as exc:
+            manifest_error = str(exc)
+
+    cleanup_supported = manifest.get("cleanup", False)
+
+    if isinstance(cleanup_supported, str):
+        cleanup_supported = cleanup_supported.strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+    else:
+        cleanup_supported = bool(cleanup_supported)
+
+    required_plugins_raw = manifest.get(
+        "required_plugins",
+        [],
+    )
+
+    if required_plugins_raw is None:
+        required_plugins = []
+
+    elif isinstance(required_plugins_raw, str):
+        required_plugins = [
+            required_plugins_raw.strip()
+        ] if required_plugins_raw.strip() else []
+
+    elif isinstance(required_plugins_raw, (list, tuple)):
+        required_plugins = []
+
+        for required_plugin in required_plugins_raw:
+            required_plugin = str(
+                required_plugin
+                or ""
+            ).strip()
+
+            if (
+                required_plugin
+                and required_plugin not in required_plugins
+            ):
+                required_plugins.append(
+                    required_plugin
+                )
+
+    else:
+        required_plugins = []
+
+        required_plugins_error = (
+            "required_plugins must be a list of plugin names."
+        )
+
+        if manifest_error:
+            manifest_error = (
+                f"{manifest_error} {required_plugins_error}"
+            )
+        else:
+            manifest_error = required_plugins_error
+
+    return {
+        "name": plugin_name,
+        "manifest_name": str(
+            manifest.get("name") or plugin_name
+        ).strip(),
+        "version": str(
+            manifest.get("version") or ""
+        ).strip(),
+        "description": str(
+            manifest.get("description") or ""
+        ).strip(),
+        "manifest_present": os.path.isfile(manifest_path),
+        "manifest_error": manifest_error,
+        "setup_present": os.path.isfile(
+            os.path.join(plugin_path, "setup.py")
+        ),
+        "cleanup_supported": cleanup_supported,
+        "required_plugins": required_plugins,
+    }
+
+
+def get_local_plugin_inventory() -> Dict[str, Dict[str, Any]]:
+    """Return manifest/setup metadata for plugin directories physically present here."""
+    inventory = {}
+
+    if not os.path.isdir(PLUGIN_DIR):
+        return inventory
+
+    for candidate in sorted(os.listdir(PLUGIN_DIR), key=str.casefold):
+        if candidate.startswith(".") or candidate == "__pycache__":
+            continue
+
+        candidate_path = os.path.join(PLUGIN_DIR, candidate)
+        if not os.path.isdir(candidate_path):
+            continue
+
+        inventory[candidate] = get_plugin_manifest(candidate)
+
+    return inventory
+
+
+async def run_plugin_setup(
+    plugin_name: str,
+    action: str,
+    timeout: float = 30.0,
+) -> Dict[str, Any]:
+    """Run one predefined plugin-owned setup action locally and capture its result."""
+    plugin_name = str(plugin_name or "").strip()
+    action = str(action or "").strip().lower()
+
+    result = {
+        "plugin_name": plugin_name,
+        "action": action,
+        "ok": False,
+        "returncode": None,
+        "status": "Setup Failed",
+        "message": "",
+        "output": "",
+    }
+
+    if action not in {"check", "install", "cleanup"}:
+        result["message"] = f"Unsupported setup action: {action}"
+        return result
+
+    if (
+        not plugin_name
+        or os.path.basename(plugin_name) != plugin_name
+        or plugin_name in {".", ".."}
+    ):
+        result["message"] = "Invalid plugin name."
+        return result
+
+    plugin_root = os.path.realpath(PLUGIN_DIR)
+    plugin_path = os.path.realpath(os.path.join(plugin_root, plugin_name))
+
+    if os.path.dirname(plugin_path) != plugin_root:
+        result["message"] = "Plugin path is outside the Plugins directory."
+        return result
+
+    if not os.path.isdir(plugin_path):
+        result["message"] = f"Plugin is not deployed: {plugin_name}"
+        return result
+
+    setup_path = os.path.realpath(os.path.join(plugin_path, "setup.py"))
+    if os.path.dirname(setup_path) != plugin_path:
+        result["message"] = "Plugin setup path is invalid."
+        return result
+
+    if not os.path.isfile(setup_path):
+        if action == "check":
+            result.update({
+                "ok": True,
+                "returncode": 0,
+                "status": "Ready",
+                "message": "No external setup required.",
+            })
+        else:
+            result["message"] = f"{plugin_name} does not provide setup.py."
+        return result
+
+    try:
+        timeout = max(1.0, float(timeout))
+    except (TypeError, ValueError):
+        timeout = 30.0
+
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+
+    process = None
+
+    try:
+        process = await asyncio.create_subprocess_exec(
+            sys.executable,
+            setup_path,
+            action,
+            cwd=plugin_path,
+            env=env,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+
+        try:
+            stdout, _ = await asyncio.wait_for(
+                process.communicate(),
+                timeout=timeout,
+            )
+        except asyncio.TimeoutError:
+            process.kill()
+            stdout, _ = await process.communicate()
+
+            output = (stdout or b"").decode(
+                errors="replace"
+            ).strip()
+            if len(output) > 65536:
+                output = output[-65536:]
+
+            result.update({
+                "returncode": process.returncode,
+                "status": "Setup Failed",
+                "message": (
+                    f"{action.capitalize()} timed out after "
+                    f"{timeout:g} seconds."
+                ),
+                "output": output,
+            })
+            return result
+
+        output = (stdout or b"").decode(
+            errors="replace"
+        ).strip()
+        if len(output) > 65536:
+            output = output[-65536:]
+
+        returncode = int(process.returncode or 0)
+
+        if action == "check":
+            if returncode == 0:
+                status = "Ready"
+                ok = True
+                message = "Setup check passed."
+            elif returncode == 1:
+                status = "Setup Required"
+                ok = False
+                message = "Setup check reports that setup is required."
+            else:
+                status = "Setup Failed"
+                ok = False
+                message = f"Setup check failed with exit code {returncode}."
+
+        elif action == "install":
+            if returncode == 0:
+                status = "Installed"
+                ok = True
+                message = "Setup install completed."
+            else:
+                status = "Setup Failed"
+                ok = False
+                message = f"Setup install failed with exit code {returncode}."
+
+        else:
+            if returncode == 0:
+                status = "Cleaned"
+                ok = True
+                message = "Plugin cleanup completed."
+            else:
+                status = "Cleanup Failed"
+                ok = False
+                message = f"Plugin cleanup failed with exit code {returncode}."
+
+        result.update({
+            "ok": ok,
+            "returncode": returncode,
+            "status": status,
+            "message": message,
+            "output": output,
+        })
+        return result
+
+    except Exception as exc:
+        result["message"] = f"Could not run {plugin_name} setup {action}: {exc}"
+        return result
+    
+
+_PLUGIN_PACKAGE_EXCLUDED_DIRS = {
+    "__pycache__",
+    ".git",
+    ".pytest_cache",
+    ".mypy_cache",
+    "build",
+    "dist",
+}
+
+_PLUGIN_PACKAGE_EXCLUDED_FILES = {
+    ".DS_Store",
+    ".setup_test_ready",
+}
+
+
+def _validate_plugin_name(plugin_name: str) -> str:
+    """Return one safe canonical plugin-directory name."""
+    plugin_name = str(
+        plugin_name
+        or ""
+    ).strip()
+
+    if (
+        not plugin_name
+        or plugin_name in {".", ".."}
+        or os.path.basename(plugin_name) != plugin_name
+    ):
+        raise ValueError(
+            "Invalid plugin name"
+        )
+
+    return plugin_name
+
+
+def _file_sha256(filepath: str) -> str:
+    """Calculate SHA-256 without loading the entire file into memory."""
+    digest = hashlib.sha256()
+
+    with open(filepath, "rb") as handle:
+        while True:
+            chunk = handle.read(
+                1024 * 1024
+            )
+            if not chunk:
+                break
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def create_plugin_package(
+    plugin_name: str,
+) -> Dict[str, Any]:
+    """
+    Package one Hub plugin directory as a temporary ZIP.
+
+    The ZIP always has exactly one canonical top-level directory:
+        <plugin_name>/...
+    """
+    plugin_name = _validate_plugin_name(
+        plugin_name
+    )
+
+    plugin_path = os.path.realpath(
+        os.path.join(
+            PLUGIN_DIR,
+            plugin_name,
+        )
+    )
+
+    plugin_root = os.path.realpath(
+        PLUGIN_DIR
+    )
+
+    if (
+        os.path.dirname(plugin_path) != plugin_root
+        or not os.path.isdir(plugin_path)
+    ):
+        raise FileNotFoundError(
+            f"Hub plugin is not deployed: {plugin_name}"
+        )
+
+    fd, package_path = tempfile.mkstemp(
+        prefix=f"fissure-plugin-{plugin_name}-",
+        suffix=".zip",
+    )
+    os.close(fd)
+
+    try:
+        with zipfile.ZipFile(
+            package_path,
+            "w",
+            compression=zipfile.ZIP_DEFLATED,
+        ) as archive:
+            for root, dirs, files in os.walk(
+                plugin_path
+            ):
+                dirs[:] = [
+                    dirname
+                    for dirname in dirs
+                    if dirname
+                    not in _PLUGIN_PACKAGE_EXCLUDED_DIRS
+                ]
+
+                for filename in files:
+                    if filename in _PLUGIN_PACKAGE_EXCLUDED_FILES:
+                        continue
+
+                    if filename.endswith(
+                        (
+                            ".pyc",
+                            ".pyo",
+                        )
+                    ):
+                        continue
+
+                    source_path = os.path.join(
+                        root,
+                        filename,
+                    )
+
+                    if os.path.islink(
+                        source_path
+                    ):
+                        raise RuntimeError(
+                            "Plugin packages do not support symbolic links: "
+                            f"{source_path}"
+                        )
+
+                    relative_path = os.path.relpath(
+                        source_path,
+                        plugin_path,
+                    )
+
+                    archive_name = (
+                        plugin_name
+                        + "/"
+                        + relative_path.replace(
+                            os.sep,
+                            "/",
+                        )
+                    )
+
+                    archive.write(
+                        source_path,
+                        archive_name,
+                    )
+
+        return {
+            "plugin_name": plugin_name,
+            "package_path": package_path,
+            "file_size": os.path.getsize(
+                package_path
+            ),
+            "sha256": _file_sha256(
+                package_path
+            ),
+        }
+
+    except Exception:
+        try:
+            os.remove(
+                package_path
+            )
+        except OSError:
+            pass
+        raise
+
+
+def get_plugin_package_staging_path(
+    plugin_name: str,
+    transfer_id: str,
+    create_folder: bool = False,
+) -> str:
+    """Resolve the Sensor Node's private incoming plugin-package path."""
+    plugin_name = _validate_plugin_name(
+        plugin_name
+    )
+
+    transfer_id = str(
+        transfer_id
+        or ""
+    ).strip()
+
+    if (
+        not transfer_id
+        or os.path.basename(transfer_id) != transfer_id
+    ):
+        raise ValueError(
+            "Invalid plugin transfer ID"
+        )
+
+    staging_root = os.path.realpath(
+        os.path.join(
+            PLUGIN_DIR,
+            ".incoming",
+        )
+    )
+
+    if create_folder:
+        os.makedirs(
+            staging_root,
+            exist_ok=True,
+        )
+
+    package_path = os.path.realpath(
+        os.path.join(
+            staging_root,
+            f"{plugin_name}.{transfer_id}.zip",
+        )
+    )
+
+    if os.path.dirname(package_path) != staging_root:
+        raise ValueError(
+            "Invalid plugin staging path"
+        )
+
+    return package_path
+
+
+def _safe_extract_plugin_package(
+    package_path: str,
+    destination_root: str,
+    plugin_name: str,
+) -> str:
+    """Extract one trusted plugin ZIP while rejecting traversal and symlinks."""
+    plugin_name = _validate_plugin_name(
+        plugin_name
+    )
+
+    destination_root = os.path.realpath(
+        destination_root
+    )
+    os.makedirs(
+        destination_root,
+        exist_ok=True,
+    )
+
+    expected_prefix = (
+        plugin_name
+        + "/"
+    )
+
+    with zipfile.ZipFile(
+        package_path,
+        "r",
+    ) as archive:
+        members = archive.infolist()
+
+        if not members:
+            raise RuntimeError(
+                "Plugin package is empty"
+            )
+
+        for member in members:
+            member_name = str(
+                member.filename
+                or ""
+            ).replace(
+                "\\",
+                "/",
+            )
+
+            if not member_name:
+                continue
+
+            if (
+                member_name.startswith("/")
+                or member_name == ".."
+                or member_name.startswith("../")
+                or "/../" in member_name
+            ):
+                raise RuntimeError(
+                    f"Unsafe plugin package member: {member_name}"
+                )
+
+            if not (
+                member_name == plugin_name
+                or member_name.startswith(
+                    expected_prefix
+                )
+            ):
+                raise RuntimeError(
+                    "Plugin package contains files outside "
+                    f"{plugin_name}/: {member_name}"
+                )
+
+            unix_mode = (
+                member.external_attr
+                >> 16
+            )
+
+            if stat.S_ISLNK(
+                unix_mode
+            ):
+                raise RuntimeError(
+                    "Plugin packages do not support symbolic links: "
+                    f"{member_name}"
+                )
+
+            target_path = os.path.realpath(
+                os.path.join(
+                    destination_root,
+                    *[
+                        part
+                        for part in member_name.split("/")
+                        if part
+                    ],
+                )
+            )
+
+            if os.path.commonpath(
+                [
+                    destination_root,
+                    target_path,
+                ]
+            ) != destination_root:
+                raise RuntimeError(
+                    f"Unsafe plugin package path: {member_name}"
+                )
+
+            if member.is_dir():
+                os.makedirs(
+                    target_path,
+                    exist_ok=True,
+                )
+                continue
+
+            os.makedirs(
+                os.path.dirname(
+                    target_path
+                ),
+                exist_ok=True,
+            )
+
+            with archive.open(
+                member,
+                "r",
+            ) as source_handle:
+                with open(
+                    target_path,
+                    "wb",
+                ) as destination_handle:
+                    shutil.copyfileobj(
+                        source_handle,
+                        destination_handle,
+                    )
+
+            permission_bits = (
+                unix_mode
+                & 0o777
+            )
+
+            if permission_bits:
+                try:
+                    os.chmod(
+                        target_path,
+                        permission_bits,
+                    )
+                except OSError:
+                    pass
+
+    extracted_plugin_path = os.path.join(
+        destination_root,
+        plugin_name,
+    )
+
+    if not os.path.isdir(
+        extracted_plugin_path
+    ):
+        raise RuntimeError(
+            "Plugin package did not contain its expected "
+            f"{plugin_name}/ directory"
+        )
+
+    return extracted_plugin_path
+
+
+def deploy_staged_plugin_package(
+    plugin_name: str,
+    transfer_id: str,
+) -> Dict[str, Any]:
+    """
+    Atomically replace one deployed plugin directory from its verified staged ZIP.
+
+    External setup/cleanup is intentionally NOT performed here.
+    """
+    plugin_name = _validate_plugin_name(
+        plugin_name
+    )
+
+    package_path = get_plugin_package_staging_path(
+        plugin_name,
+        transfer_id,
+        create_folder=False,
+    )
+
+    if not os.path.isfile(
+        package_path
+    ):
+        raise FileNotFoundError(
+            "Staged plugin package was not found"
+        )
+
+    deploy_root = os.path.realpath(
+        os.path.join(
+            PLUGIN_DIR,
+            ".deploy",
+        )
+    )
+    os.makedirs(
+        deploy_root,
+        exist_ok=True,
+    )
+
+    extraction_root = tempfile.mkdtemp(
+        prefix=(
+            f"{plugin_name}."
+            f"{transfer_id}."
+        ),
+        dir=deploy_root,
+    )
+
+    plugin_path = os.path.realpath(
+        os.path.join(
+            PLUGIN_DIR,
+            plugin_name,
+        )
+    )
+
+    backup_path = os.path.realpath(
+        os.path.join(
+            deploy_root,
+            f"{plugin_name}.{transfer_id}.old",
+        )
+    )
+
+    old_moved = False
+    new_installed = False
+
+    try:
+        extracted_plugin_path = (
+            _safe_extract_plugin_package(
+                package_path,
+                extraction_root,
+                plugin_name,
+            )
+        )
+
+        if os.path.exists(
+            backup_path
+        ):
+            if os.path.isdir(
+                backup_path
+            ):
+                shutil.rmtree(
+                    backup_path
+                )
+            else:
+                os.remove(
+                    backup_path
+                )
+
+        if os.path.isdir(
+            plugin_path
+        ):
+            os.replace(
+                plugin_path,
+                backup_path,
+            )
+            old_moved = True
+
+        os.replace(
+            extracted_plugin_path,
+            plugin_path,
+        )
+        new_installed = True
+
+        if old_moved and os.path.isdir(
+            backup_path
+        ):
+            shutil.rmtree(
+                backup_path
+            )
+
+        manifest = get_plugin_manifest(
+            plugin_name
+        )
+
+        return {
+            "plugin_name": plugin_name,
+            "version": str(
+                manifest.get("version")
+                or ""
+            ),
+            "manifest_present": bool(
+                manifest.get(
+                    "manifest_present"
+                )
+            ),
+            "setup_present": bool(
+                manifest.get(
+                    "setup_present"
+                )
+            ),
+        }
+
+    except Exception:
+        if (
+            not new_installed
+            and old_moved
+            and os.path.isdir(
+                backup_path
+            )
+            and not os.path.exists(
+                plugin_path
+            )
+        ):
+            try:
+                os.replace(
+                    backup_path,
+                    plugin_path,
+                )
+            except OSError:
+                pass
+
+        raise
+
+    finally:
+        shutil.rmtree(
+            extraction_root,
+            ignore_errors=True,
+        )
+
+        if os.path.isdir(
+            backup_path
+        ):
+            shutil.rmtree(
+                backup_path,
+                ignore_errors=True,
+            )
+
+
+def remove_local_plugin_directory(plugin_name: str) -> None:
+    """Delete one deployed plugin directory from this FISSURE installation."""
+    plugin_name = _validate_plugin_name(
+        plugin_name
+    )
+
+    if plugin_name.casefold() == "base":
+        raise RuntimeError(
+            "The Base plugin cannot be removed."
+        )
+
+    plugin_root = os.path.realpath(
+        PLUGIN_DIR
+    )
+
+    plugin_path = os.path.realpath(
+        os.path.join(
+            plugin_root,
+            plugin_name,
+        )
+    )
+
+    if os.path.dirname(plugin_path) != plugin_root:
+        raise RuntimeError(
+            "Plugin path is outside the Plugins directory."
+        )
+
+    if not os.path.isdir(plugin_path):
+        raise FileNotFoundError(
+            f"Plugin is not deployed: {plugin_name}"
+        )
+
+    shutil.rmtree(
+        plugin_path
+    )
 
 
 def _normalize_action_tags(tags) -> Set[str]:
@@ -806,206 +1674,6 @@ def register_delegated_actions(
 #         reader = csv.reader(f,dialect='unix',quotechar="'")
 #         for row in reader:
 #             _ = function(conn, *row[1:])
-
-
-# def modify_database(logger: logging.getLogger=logging.getLogger(__name__), plugin_names:List[str] = None, action:str='add'):
-#     """Modify PostgreSQL Database
-
-#     Modify tables in the PostgreSQL database using rows in CSV files. Expected tables are in `fissure.utils.plugins.TABLES_FUNCTIONS`.
-
-#     Parameters
-#     ----------
-#     conn : connection
-#         Database connection
-#     paths : str
-#         Path(s) to csv files
-#     action : str, optional
-#         Action to apply from set {'add', 'remove'}, by default 'add'
-
-#     Raises
-#     ------
-#     RuntimeError
-#         _description_
-#     """
-#     # Parse Action
-#     if action.lower() == 'add':
-#         fcn_idx = 1
-#     elif action.lower() == 'remove':
-#         fcn_idx = 2
-#     else:
-#         logger.error('`action` must be in set {"add", "remove"}')
-
-#     for plugin_name in plugin_names:
-#         # Apply Changes to Database
-#         conn = openDatabaseConnection()
-#         try:
-#             for functions in TABLES_FUNCTIONS:
-#                 apply_csv_to_table(conn, os.path.join(PLUGIN_DIR, plugin_name, 'tables/', functions[0]), functions[fcn_idx])
-#         except:
-#             logger.error('Failure to apply action "' + str(action) + '" to the database for plugin ' + str(plugin_name))
-#         finally:
-#             conn.close()
-
-
-# def install(plugin: str):
-#     """Install Plugin
-
-#     Copies files from the `PLUGIN_DIR`/`plugin`/install_files directory into the main FISSURE file structure.
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-#     """
-#     # Copy flow graph library files into directory
-#     # Get install files directory path
-#     install_files = os.path.join(PLUGIN_DIR, plugin, 'install_files')
-
-#     # Copy Files to FISSURE Directories
-#     shutil.copytree(install_files, FISSURE_ROOT, symlinks=True, dirs_exist_ok=True)
-
-
-# def installed(plugin: str) -> bool:
-#     """Check if Plugin is Installed
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-
-#     Returns
-#     -------
-#     bool
-#         True if files within FISSURE match plugin files, False otherwise
-#     """
-#     if os.path.exists(os.path.join(PLUGIN_DIR, plugin)):
-#         return _installed(os.path.join(PLUGIN_DIR, plugin, 'install_files'), FISSURE_ROOT)
-#     else:
-#         return False
-
-
-# def _installed(path1: os.PathLike, path2: os.PathLike) -> bool:
-#     """Recursive Installed File Check
-
-#     Intended to be used with `installed`. `path1` is the baseline for files expected to be in `path2` to meet installed criteria.
-
-#     Parameters
-#     ----------
-#     path1 : os.PathLike
-#         Baseline path
-#     path2 : os.PathLike
-#         Target path
-
-#     Returns
-#     -------
-#     bool
-#         True if files and file structure of `path1` are within `path2`, False otherwise
-#     """
-#     path1_list = os.listdir(path1)
-#     path2_list = os.listdir(path2)
-#     for item in path1_list:
-#         path1_path = os.path.join(path1, item)
-#         path2_path = os.path.join(path2, item)
-#         if not item in path2_list:
-#             # Item Path not in path2
-#             return False
-#         elif os.path.isdir(path1_path):
-#             # Item is a Directory
-#             if not os.path.isdir(path2_path):
-#                 # Item is not a Directory in path2
-#                 return False
-#             elif not _installed(path1_path, path2_path):
-#                 # Recursive Search Found Differences
-#                 return False
-#         else:
-#             # path1 Item is a File
-#             if not filecmp.cmp(path1_path, path2_path):
-#                 # Files Fail Comparison
-#                 return False
-
-#     return True
-
-
-# def uninstall(plugin: str):
-#     """Uninstall Plugin
-
-#     Removes files in the main FISSURE file structure that are identified based on files in the `plugin_path`/install_files directory.
-
-#     **WARNING:** No name mangling is used. If a file is the same as one in FISSURE or another plugin it will be removed.
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-#     """
-#     plugin_path = os.path.join(PLUGIN_DIR, plugin, 'install_files')
-#     if os.path.exists(plugin_path):
-#         _uninstall(plugin_path, FISSURE_ROOT)
-
-
-# def _uninstall(path1: os.PathLike, path2: os.PathLike):
-#     """Recursive Uninstall Plugin Function
-
-#     Intended to be used with `uninstall`. `path1` is the baseline for files expected to be uninstalled from `path2`.
-
-#     Parameters
-#     ----------
-#     path1 : os.PathLike
-#         Baseline path
-#     path2 : os.PathLike
-#         Target path
-#     """
-#     path1_list = os.listdir(path1)
-#     for item in path1_list:
-#         path1_path = os.path.join(path1, item)
-#         path2_path = os.path.join(path2, item)
-#         if os.path.isdir(path1_path) and os.path.isdir(path2_path):
-#             if _uninstall(path1_path, path2_path):
-#                 os.rmdir(path2_path)
-#         elif os.path.exists(path2_path):
-#             if filecmp.cmp(path1_path, path2_path):
-#                 os.remove(path2_path)
-#     return len(os.listdir(path2)) == 0 # indicate if directory is empty
-
-
-# def remove(plugin: str):
-#     """Remove Plugin from File System
-
-#     **WARNING:** No name mangling is used. If a file is the same as one in FISSURE or another plugin it will be removed.
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-#     """
-#     plugin_path = os.path.join(PLUGIN_DIR, plugin)
-#     if os.path.exists(plugin_path):
-#         uninstall(plugin)
-#         shutil.rmtree(os.path.join(PLUGIN_DIR, plugin))
-
-
-# def install_to_database(plugin: str):
-#     """Plugin to install to the database
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-#     """
-#     plugin_path = os.path.join(PLUGIN_DIR, plugin)
-#     run(['python', os.path.join(plugin_path, 'installer.py'), '-i'])
-
-
-# def remove_from_database(plugin: str):
-#     """Plugin to remove from the database
-
-#     Parameters
-#     ----------
-#     plugin : str
-#         Plugin name
-#     """
-#     plugin_path = os.path.join(PLUGIN_DIR, plugin)
-#     run(['python', os.path.join(plugin_path, 'installer.py'), '-u'])
 
 
 def get_action_schema(plugin: str, action_name: str,

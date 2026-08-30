@@ -97,6 +97,7 @@ class ArtifactTransferRouter:
         self._transfer_destinations: Dict[str, bytes] = {}
         self._local_transfers: set[str] = set()
         self._closed = False
+        self._send_lock = asyncio.Lock()
 
         self._initialize_auth()
 
@@ -141,6 +142,142 @@ class ArtifactTransferRouter:
 
     def get_sensor_identity(self, node_uid: str) -> Optional[bytes]:
         return self._sensor_identities.get(node_uid)
+
+    async def _send_router_multipart(
+        self,
+        frames: list[bytes],
+    ) -> None:
+        """Serialize ROUTER writes made by routed and HIPRFISR-local transfers."""
+        if self._closed:
+            raise RuntimeError(
+                "Artifact transfer router is closed"
+            )
+
+        async with self._send_lock:
+            await self.socket.send_multipart(
+                frames
+            )
+
+
+    async def _send_local_to_sensor(
+        self,
+        node_uid: str,
+        payload: list[bytes],
+    ) -> None:
+        """Send one HIPRFISR-originated binary frame to a registered Sensor Node."""
+        node_uid = str(
+            node_uid
+            or ""
+        ).strip()
+
+        destination = self._sensor_identities.get(
+            node_uid
+        )
+
+        if destination is None:
+            raise RuntimeError(
+                "Sensor Node binary transfer peer is unavailable"
+            )
+
+        await self._send_router_multipart(
+            [
+                destination,
+                *payload,
+            ]
+        )
+
+
+    async def send_local_start(
+        self,
+        node_uid: str,
+        transfer_id: str,
+        metadata: Dict[str, Any],
+    ) -> None:
+        """Send one HIPRFISR-originated START frame to a Sensor Node."""
+        await self._send_local_to_sensor(
+            node_uid,
+            [
+                FRAME_START,
+                transfer_id.encode("utf-8"),
+                _encode_json(metadata),
+            ],
+        )
+
+
+    async def send_local_chunk(
+        self,
+        node_uid: str,
+        transfer_id: str,
+        sequence: int,
+        data: bytes,
+    ) -> None:
+        """Send one HIPRFISR-originated CHUNK frame to a Sensor Node."""
+        await self._send_local_to_sensor(
+            node_uid,
+            [
+                FRAME_CHUNK,
+                transfer_id.encode("utf-8"),
+                int(sequence).to_bytes(
+                    8,
+                    "big",
+                    signed=False,
+                ),
+                data,
+            ],
+        )
+
+
+    async def send_local_file_complete(
+        self,
+        node_uid: str,
+        transfer_id: str,
+        metadata: Dict[str, Any],
+    ) -> None:
+        """Send one HIPRFISR-originated FILE_COMPLETE frame to a Sensor Node."""
+        await self._send_local_to_sensor(
+            node_uid,
+            [
+                FRAME_FILE_COMPLETE,
+                transfer_id.encode("utf-8"),
+                _encode_json(metadata),
+            ],
+        )
+
+
+    async def send_local_complete(
+        self,
+        node_uid: str,
+        transfer_id: str,
+        metadata: Dict[str, Any],
+    ) -> None:
+        """Send one HIPRFISR-originated COMPLETE frame to a Sensor Node."""
+        await self._send_local_to_sensor(
+            node_uid,
+            [
+                FRAME_COMPLETE,
+                transfer_id.encode("utf-8"),
+                _encode_json(metadata),
+            ],
+        )
+
+
+    async def send_local_cancel(
+        self,
+        node_uid: str,
+        transfer_id: str,
+        message: str = "Cancelled",
+    ) -> None:
+        """Send one HIPRFISR-originated CANCEL frame to a Sensor Node."""
+        await self._send_local_to_sensor(
+            node_uid,
+            [
+                FRAME_CANCEL,
+                transfer_id.encode("utf-8"),
+                _encode_json({
+                    "message": str(message),
+                }),
+            ],
+        )
 
     async def receive_and_route(
         self,
@@ -269,7 +406,7 @@ class ArtifactTransferRouter:
             return sender_identity, decoded
 
         try:
-            await self.socket.send_multipart(
+            await self._send_router_multipart(
                 [
                     destination,
                     *payload,
@@ -323,8 +460,15 @@ class ArtifactTransferRouter:
             return
 
         self._registered[identity] = {"role": role, "node_uid": node_uid}
-        await self.socket.send_multipart(
-            [identity, FRAME_REGISTERED, _encode_json({"role": role, "node_uid": node_uid})]
+        await self._send_router_multipart(
+            [
+                identity,
+                FRAME_REGISTERED,
+                _encode_json({
+                    "role": role,
+                    "node_uid": node_uid,
+                }),
+            ]
         )
         self.logger.info(
             "Registered artifact transfer peer role=%s node_uid=%s",
@@ -377,13 +521,20 @@ class ArtifactTransferRouter:
             f"Unknown artifact transfer frame kind: {kind!r}"
         )
 
-    async def send_error(self, identity: bytes, transfer_id: str, message: str) -> None:
-        await self.socket.send_multipart(
+    async def send_error(
+        self,
+        identity: bytes,
+        transfer_id: str,
+        message: str,
+    ) -> None:
+        await self._send_router_multipart(
             [
                 identity,
                 FRAME_ERROR,
                 transfer_id.encode("utf-8"),
-                _encode_json({"message": message}),
+                _encode_json({
+                    "message": message,
+                }),
             ]
         )
 

@@ -34838,125 +34838,647 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Plugins</string>
       </attribute>
-      <widget class="QPushButton" name="pluginsPushButtonDeploy">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QStackedWidget" name="stackedWidget_sn_plugins">
        <property name="geometry">
         <rect>
-         <x>390</x>
-         <y>390</y>
-         <width>111</width>
-         <height>31</height>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>815</height>
         </rect>
        </property>
-       <property name="text">
-        <string>Deploy</string>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-      </widget>
-      <widget class="QPushButton" name="pluginsPushButtonRefresh">
-       <property name="geometry">
-        <rect>
-         <x>270</x>
-         <y>390</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pluginsPushButtonRemove">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>510</x>
-         <y>390</y>
-         <width>121</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Remove</string>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="pluginsTable">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>841</width>
-         <height>371</height>
-        </rect>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <property name="sortingEnabled">
-        <bool>true</bool>
-       </property>
-       <attribute name="horizontalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderCascadingSectionResizes">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>270</number>
-       </attribute>
-       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>true</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Deployed</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Installed</string>
-        </property>
-       </column>
-      </widget>
-      <widget class="QPushButton" name="pluginsPushButtonInstall">
-       <property name="geometry">
-        <rect>
-         <x>640</x>
-         <y>390</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Install</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pluginsPushButtonUninstall">
-       <property name="geometry">
-        <rect>
-         <x>750</x>
-         <y>390</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Uninstall</string>
-       </property>
+       <widget class="QWidget" name="page_sn_plugins_controls">
+        <widget class="QFrame" name="frame_sn_plugins_operation_status">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>570</y>
+           <width>325</width>
+           <height>235</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sn_plugins_operation_status_title">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>5</y>
+            <width>235</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Operation Status</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_491">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>95</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_operation_status_status">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>95</y>
+            <width>190</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_operation_status_current_operation">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>70</y>
+            <width>190</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_493">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>70</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Current Operation:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_operation_status_last_update">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>150</y>
+            <width>190</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_494">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>150</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Last Update:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_495">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>123</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Progress:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="progressBar_sn_plugins_operation_status">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>125</y>
+            <width>185</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sn_plugins_inventory">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>550</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sn_plugins_inventory_title">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>5</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Plugin Inventory</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sn_plugins_inventory_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>25</y>
+            <width>700</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Hub shows plugins available on the HIPRFISR. Node show plugins present on the selected Sensor Node.</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sn_plugins_inventory">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>1180</width>
+            <height>405</height>
+           </rect>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Plugin</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Hub Version</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Node Version</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Setup Status</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>State</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Location</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_inventory_ready">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>465</y>
+            <width>50</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ready</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sn_plugins_inventory_deploy">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>500</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Deploy / Update</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sn_plugins_inventory_repair">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>180</x>
+            <y>500</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Repair Setup</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sn_plugins_inventory_remove">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>350</x>
+            <y>500</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_inventory_setup_required">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>465</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Setup Required</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_inventory_setup_failed">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>465</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Setup Failed</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_inventory_not_deployed">
+          <property name="geometry">
+           <rect>
+            <x>305</x>
+            <y>465</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Not Deployed</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sn_plugins_inventory_running">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>465</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Running</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sn_plugins_refresh">
+          <property name="geometry">
+           <rect>
+            <x>1050</x>
+            <y>15</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sn_plugins_operation_log">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>570</y>
+           <width>520</width>
+           <height>235</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sn_plugins_operation_log">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>500</width>
+            <height>195</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sn_plugins_operation_log_title">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>5</y>
+            <width>500</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Operation Log</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sn_plugins_details">
+         <property name="geometry">
+          <rect>
+           <x>875</x>
+           <y>570</y>
+           <width>335</width>
+           <height>235</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QScrollArea" name="scrollArea_sn_plugins_details">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>332</width>
+            <height>215</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_sn_plugins_details">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>330</width>
+             <height>213</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_sn_plugins_no_node">
+        <widget class="QLabel" name="label_sn_plugins_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sn_plugins_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sn_plugins_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to configure plugins.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sn_plugins_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_sn_plugins_empty_icon</zorder>
+        <zorder>label_sn_plugins_select_sensor_node_image</zorder>
+        <zorder>label2_sn_plugins_no_node_selected</zorder>
+        <zorder>label2_sn_plugins_select_a_node</zorder>
+       </widget>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_19">
@@ -36451,135 +36973,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </column>
        </widget>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="tab_24">
-      <attribute name="title">
-       <string>Operations</string>
-      </attribute>
-      <widget class="QWidget" name="horizontalLayoutWidget_2">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>1191</width>
-         <height>791</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="2,1">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QToolButton" name="toolButton_plugin_pkgs_hiprfisr_refresh_2">
-              <property name="toolTip">
-               <string>Refresh List</string>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBox_select_plugin"/>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBox_select_plugin_op"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_9">
-              <property name="toolTip">
-               <string>Dummy button to simulate selecting and opening a plugin script</string>
-              </property>
-              <property name="text">
-               <string>Open</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_7">
-              <property name="text">
-               <string>Run</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="label1_operations_2">
-            <property name="text">
-             <string>Parameters</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="tableWidget_plugin_op_params"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label1_operations_3">
-            <property name="text">
-             <string>Resources</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="tableWidget_plugin_op_resources"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label1_operations_4">
-            <property name="text">
-             <string>Interfaces</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="tableWidget_plugin_op_interfaces"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <item>
-           <widget class="QLabel" name="label1_operations">
-            <property name="text">
-             <string>Operations</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_8">
-            <property name="text">
-             <string>Stop</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListWidget" name="listWidget_operations">
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="isWrapping" stdset="0">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
       </widget>
      </widget>
     </widget>
@@ -39794,7 +40187,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QTabWidget" name="tab_plugin_local_hiprfisr">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_22">
            <attribute name="title">
