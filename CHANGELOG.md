@@ -3,6 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-8-30
 
+Replace legacy listeners with HIPRFISR Listening Posts
+
+### Added
+
+- Added the Targets & Actions → Listening Posts workspace with persisted post definitions, runtime status, Auto Start, selected-post details, Recent Activity, explicit Add/Edit/Remove/Refresh/Start/Stop controls, and direct access to Listening Post test scripts.
+- Added HIPRFISR-owned Listening Post management backed by `YAML/listening_posts.yaml`, including create/update/start/stop/delete/query operations, bounded runtime activity, startup Auto Start handling, and clean shutdown of active posts.
+- Added Listening Post implementations for TCP/UDP, MQTT, ZMQ SUB, Website Poller, Serial Port, Filesystem, and Meshtastic behind a common receive/lifecycle interface.
+- Added structured Listening Post alerts with exact `target_id` association so valid returned messages can append Listening Post entries to existing Target history while unmatched or unknown target IDs remain unassociated.
+- Added updated Listening Post test utilities and setup instructions under `Tools/Listening_Post_Test_Scripts` covering all supported transport types and target-associated callback examples.
+
+### Changed
+
+- Moved the listener concept out of Sensor Nodes and renamed it Listening Posts to reflect HIPRFISR-hosted return/status channels that can support multiple targets without being tied to a specific Sensor Node.
+- Replaced the legacy Dashboard-table-owned listener lifecycle with authoritative HIPRFISR state, persisted definitions, explicit lifecycle commands, live status/activity updates, and restart-safe Auto Start behavior.
+- Reworked returned listener messages to use the current structured alert path and Target history instead of the removed legacy Sensor Node alert mechanism, while limiting external association metadata to explicit `target_id`.
+- Removed the obsolete Sensor Nodes → Listeners tab, legacy listener callbacks/state, `alert_listeners` bookkeeping, and the old `fissure/Listeners` package after validating the new Listening Posts path end to end.
+- Updated Listening Posts behavior for bounded Recent Activity clearing, MQTT error-state handling, delayed Filesystem new-file reads, bounded Website Poller duplicate tracking, and Meshtastic configuration that no longer exposes an unused baud-rate value.
+- Updated the Listening Posts workspace across light, dark, and custom themes with current FISSURE card styling, palette-aware utility controls, destructive Remove styling, and dynamic green Start/red Stop treatment.
+
+## 2026-8-30
+
 Complete Sensor Node plugin management lifecycle
 
 ### Added

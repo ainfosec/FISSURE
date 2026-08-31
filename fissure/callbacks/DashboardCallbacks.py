@@ -24,6 +24,7 @@ from fissure.Dashboard.Slots import (
     FuzzingTabSlots,
     IQDataTabSlots,
     LibraryTabSlots,
+    ListeningPostsTabSlots,
     LogTabSlots,
     MenuBarSlots,
     PDTabSlots,
@@ -896,6 +897,49 @@ async def retrieveDatabaseCacheReturn(component: object, database_return={}, ref
         await libraryUpdateFinished(component)
 
 
+async def queryListeningPostsReturn(
+    component: object,
+    posts=None,
+    error="",
+):
+    """Populate the Targets & Actions Listening Posts workspace."""
+    ListeningPostsTabSlots.populate_listening_posts(
+        component.frontend,
+        posts=posts or [],
+        error=error,
+    )
+
+
+async def listeningPostOperationReturn(
+    component: object,
+    action="",
+    post_id="",
+    success=False,
+    message="",
+    posts=None,
+):
+    """Apply one Listening Post create/update/start/stop/delete result."""
+    ListeningPostsTabSlots.handle_listening_post_operation_result(
+        component.frontend,
+        action=action,
+        post_id=post_id,
+        success=success,
+        message=message,
+        posts=posts or [],
+    )
+
+
+async def listeningPostUpdate(
+    component: object,
+    post=None,
+):
+    """Apply one live HIPRFISR Listening Post status/activity update."""
+    ListeningPostsTabSlots.handle_listening_post_update(
+        component.frontend,
+        post=post or {},
+    )
+
+
 async def refreshPluginInventoryResults(
     component: object,
     node_uid="",
@@ -1494,58 +1538,6 @@ async def findGPS_CoordinatesResults(component: object, coordinates=""):
 
     # Enable the Find Button
     component.frontend.popups["NodeConfigureDialog"].pushButton_find.setEnabled(True)
-
-
-async def enableDisableListenerReturn(component: object, listener_name="", status=""):
-    """
-    Sets the new status for the listener with a matching name in the table.
-    """
-    # Access the table widget
-    table = component.frontend.ui.tableWidget_sensor_nodes_listeners
-    name_column_index = 2  # Assuming "Name" is in column 2 (index 2)
-    status_column_index = 0  # Assuming "Status" is in column 0 (index 0)
-
-    # Find the row with the matching name
-    for row in range(table.rowCount()):
-        item = table.item(row, name_column_index)
-        if item and item.text() == listener_name:
-            status_item = QtWidgets.QTableWidgetItem(status)
-            status_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            
-            # Set the status in the "Status" column
-            table.setItem(row, status_column_index, status_item)
-            # print(f"Updated status for '{listener_name}' to '{status}' in row {row}.")
-            break
-    else:
-        component.logger.error(f"No matching listener found for name '{listener_name}'.")
-
-
-async def deleteListenerReturn(component: object, listener_name=""):
-    """
-    Sets the new status for the listener with a matching name in the table.
-    """
-    # Access the table widget
-    table = component.frontend.ui.tableWidget_sensor_nodes_listeners
-    name_column_index = 2  # Assuming "Name" is in column 2 (index 2)
-
-    # Find and remove the row with the matching name
-    for row in range(table.rowCount()):
-        item = table.item(row, name_column_index)
-        if item and item.text() == listener_name:
-            # Remove row, select the next row, if available
-            selected_items = table.selectedItems()
-            selected_row = selected_items[0].row()
-
-            table.removeRow(row)
-
-            new_row_count = table.rowCount()
-            if new_row_count > 0:
-                # Select the next row, or the last row if at the end
-                new_row = min(selected_row, new_row_count - 1)
-                table.selectRow(new_row)
-            break
-    else:
-        component.logger.error(f"No matching listener found in the table for name '{listener_name}'.")
 
 
 async def gpsBeaconEnableDisableIP_Return(component: object, gps_tak_beacon_status: bool):

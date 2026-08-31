@@ -1,0 +1,35 @@
+MESHTASTIC LISTENING POST QUICK TEST
+
+Requires Meshtastic hardware.
+
+Recommended setup:
+    Radio A -> HIPRFISR Listening Post
+    Radio B -> test sender
+
+Dashboard setup for Radio A:
+
+    Name: Meshtastic Test
+    Type: Meshtastic
+    Auto Start: Off
+    Serial Port: /dev/ttyUSB0
+
+Start the Listening Post.
+
+From the machine connected to Radio B:
+
+    python3 meshtastic_send_test.py --port /dev/ttyUSB1
+
+Target-associated version:
+
+    python3 meshtastic_send_test.py \
+      --port /dev/ttyUSB1 \
+      --target-id '<REAL_TARGET_ID>'
+
+Expected:
+    - Radio A receives the Meshtastic text packet.
+    - Recent Activity gets [RECV].
+    - Structured Listening Post alert is produced.
+    - Valid target_id adds Target History.
+
+Do not try to open the same Meshtastic serial radio from the Listening Post and
+the sender utility at the same time.

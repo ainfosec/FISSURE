@@ -1,0 +1,44 @@
+SERIAL PORT LISTENING POST QUICK TEST
+
+1. Install socat if needed:
+
+    sudo apt-get install socat
+
+2. Create linked PTYs:
+
+    socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+Example output:
+    /dev/pts/5
+    /dev/pts/6
+
+Leave socat running.
+
+3. Dashboard setup using the FIRST PTY:
+
+    Name: Serial Test
+    Type: Serial Port
+    Auto Start: Off
+    Serial Port: /dev/pts/5
+    Baud Rate: 9600
+
+If needed for this temporary test:
+
+    chmod 666 /dev/pts/5 /dev/pts/6
+
+4. Start the Listening Post.
+
+5. Send from the OTHER PTY:
+
+    python3 serial_send_test.py --port /dev/pts/6
+
+Target-associated version:
+
+    python3 serial_send_test.py \
+      --port /dev/pts/6 \
+      --target-id '<REAL_TARGET_ID>'
+
+Expected:
+    - Recent Activity gets [RECV].
+    - Normal structured Listening Post alert is produced.
+    - Valid target_id adds Target History.

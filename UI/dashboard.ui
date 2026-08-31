@@ -28675,7 +28675,7 @@ p, li { white-space: pre-wrap; }
          </rect>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_targets_details">
          <attribute name="title">
@@ -32574,6 +32574,341 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_listening_posts">
+      <attribute name="title">
+       <string>Listening Posts</string>
+      </attribute>
+      <widget class="QFrame" name="frame_ta_lp_activity">
+       <property name="geometry">
+        <rect>
+         <x>510</x>
+         <y>425</y>
+         <width>700</width>
+         <height>345</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QPlainTextEdit" name="plainTextEdit_ta_lp_activity">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>35</y>
+          <width>680</width>
+          <height>300</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_ta_lp_activity_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>5</y>
+          <width>500</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Recent Activity</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_activity_clear">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>5</y>
+          <width>100</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame_ta_lp_setup">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>1200</width>
+         <height>405</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label_ta_lp_setup_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>5</y>
+          <width>240</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Listening Posts</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_ta_lp_setup_subtitle">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>25</y>
+          <width>600</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Listening Posts run on the HIPRFISR Hub. Auto Start posts launch automatically with HIPRFISR.</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget_ta_lp_setup">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>55</y>
+          <width>1180</width>
+          <height>300</height>
+         </rect>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Status</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Auto Start</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Endpoint</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_start_stop">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>1015</x>
+          <y>360</y>
+          <width>160</width>
+          <height>36</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Start</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_refresh">
+        <property name="geometry">
+         <rect>
+          <x>1050</x>
+          <y>15</y>
+          <width>135</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Refresh</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_add">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>360</y>
+          <width>100</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Add</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_edit">
+        <property name="geometry">
+         <rect>
+          <x>115</x>
+          <y>360</y>
+          <width>100</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Edit</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_remove">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>360</y>
+          <width>100</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_ta_lp_test_scripts">
+        <property name="geometry">
+         <rect>
+          <x>430</x>
+          <y>360</y>
+          <width>100</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Test Scripts</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame_ta_lp_details">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>425</y>
+         <width>490</width>
+         <height>345</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label_ta_lp_details_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>5</y>
+          <width>235</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Listening Post Details</string>
+        </property>
+       </widget>
+       <widget class="QScrollArea" name="scrollArea_ta_lp_details">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>35</y>
+          <width>490</width>
+          <height>310</height>
+         </rect>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents_ta_lp_details">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>488</width>
+           <height>308</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
     </widget>
     <widget class="QLabel" name="label2_231">
      <property name="geometry">
@@ -35478,1500 +35813,6 @@ p, li { white-space: pre-wrap; }
         <zorder>label_sn_plugins_select_sensor_node_image</zorder>
         <zorder>label2_sn_plugins_no_node_selected</zorder>
         <zorder>label2_sn_plugins_select_a_node</zorder>
-       </widget>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="tab_19">
-      <attribute name="title">
-       <string>Listeners</string>
-      </attribute>
-      <widget class="QLabel" name="label1_256">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>1195</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>New Listener</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label1_257">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>190</y>
-         <width>1195</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Saved Listeners</string>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame1_94">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>1195</width>
-         <height>150</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_save">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>115</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_name">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>40</y>
-          <width>240</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="tabChangesFocus">
-         <bool>true</bool>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_79">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>45</y>
-          <width>75</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>9</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Name:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_sensor_nodes_listeners_type">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>10</y>
-          <width>240</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>Meshtastic</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>ZMQ SUB</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Website Poller</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Serial Port</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TCP/UDP</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Filesystem</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>MQTT</string>
-         </property>
-        </item>
-       </widget>
-       <widget class="QLabel" name="label2_84">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>15</y>
-          <width>75</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>9</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Type:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QStackedWidget" name="stackedWidget_sensor_nodes_listeners">
-        <property name="geometry">
-         <rect>
-          <x>365</x>
-          <y>5</y>
-          <width>825</width>
-          <height>140</height>
-         </rect>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="page_18">
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_meshtastic_baud_rate">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>35</y>
-            <width>75</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;115200&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_116">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Serial Port:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_117">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>40</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Baud Rate:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_meshtastic_serial_port">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>5</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_meshtastic_info">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>230</x>
-            <y>5</y>
-            <width>90</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Info</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_20">
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_zmq_port">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>35</y>
-            <width>100</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_119">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>IP Address:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_129">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>40</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Port:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_zmq_ip_address">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>5</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_zmq_topic">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>65</y>
-            <width>100</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_131">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>70</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Topic Filter:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_21">
-         <widget class="QLabel" name="label2_112">
-          <property name="geometry">
-           <rect>
-            <x>25</x>
-            <y>10</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Website URL:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_website_url">
-          <property name="geometry">
-           <rect>
-            <x>105</x>
-            <y>5</y>
-            <width>720</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_website_interval">
-          <property name="geometry">
-           <rect>
-            <x>105</x>
-            <y>35</y>
-            <width>75</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_114">
-          <property name="geometry">
-           <rect>
-            <x>-30</x>
-            <y>40</y>
-            <width>130</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Check Interval (s):</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_22">
-         <widget class="QLabel" name="label2_166">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>40</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Baud Rate:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_serial_serial_port">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>5</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_170">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Serial Port:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_serial_baud_rate">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>35</y>
-            <width>75</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;115200&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_serial_info">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>230</x>
-            <y>5</y>
-            <width>90</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Info</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_23">
-         <widget class="QLabel" name="label2_171">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>70</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Port:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_tcp_udp_ip_address">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>35</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_172">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>40</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>IP Address:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_tcp_udp_port">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>65</y>
-            <width>100</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_sensor_nodes_listeners_tcp_udp_protocol">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>5</y>
-            <width>60</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <item>
-           <property name="text">
-            <string>TCP</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>UDP</string>
-           </property>
-          </item>
-         </widget>
-         <widget class="QLabel" name="label2_176">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Protocol:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_24">
-         <widget class="QLabel" name="label2_138">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>85</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Monitor Type:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QStackedWidget" name="stackedWidget_sensor_nodes_listeners_filesytem">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>30</y>
-            <width>820</width>
-            <height>90</height>
-           </rect>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="page_29">
-           <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_filesystem_pattern">
-            <property name="geometry">
-             <rect>
-              <x>90</x>
-              <y>35</y>
-              <width>75</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;*.txt&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_134">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>40</y>
-              <width>75</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>9</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>File Pattern:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_133">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>75</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>9</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Folder:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_filesytem_folder">
-            <property name="geometry">
-             <rect>
-              <x>90</x>
-              <y>5</y>
-              <width>500</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_filesystem_folder_browse">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>595</x>
-              <y>5</y>
-              <width>90</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Browse</string>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="page_30">
-           <widget class="QLabel" name="label2_140">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>75</width>
-              <height>17</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>9</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Filepath:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_filesystem_filepath">
-            <property name="geometry">
-             <rect>
-              <x>90</x>
-              <y>5</y>
-              <width>500</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_filesytem_filepath_browse">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>595</x>
-              <y>5</y>
-              <width>90</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <family>Ubuntu</family>
-              <pointsize>11</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text">
-             <string>Browse</string>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-         <widget class="QComboBox" name="comboBox_sensor_nodes_listeners_filesystem_type">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>5</y>
-            <width>120</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <item>
-           <property name="text">
-            <string>New Files</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>File Changes</string>
-           </property>
-          </item>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="page_19">
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_mqtt_broker_address">
-          <property name="geometry">
-           <rect>
-            <x>95</x>
-            <y>5</y>
-            <width>710</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_183">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>90</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Broker Address:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_mqtt_port">
-          <property name="geometry">
-           <rect>
-            <x>95</x>
-            <y>35</y>
-            <width>100</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_184">
-          <property name="geometry">
-           <rect>
-            <x>15</x>
-            <y>40</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Port:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_185">
-          <property name="geometry">
-           <rect>
-            <x>15</x>
-            <y>70</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Topic:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_mqtt_topic">
-          <property name="geometry">
-           <rect>
-            <x>95</x>
-            <y>65</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_186">
-          <property name="geometry">
-           <rect>
-            <x>15</x>
-            <y>100</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Username:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_mqtt_username">
-          <property name="geometry">
-           <rect>
-            <x>95</x>
-            <y>95</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_187">
-          <property name="geometry">
-           <rect>
-            <x>260</x>
-            <y>100</y>
-            <width>75</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>9</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Password:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QTextEdit" name="textEdit_sensor_nodes_listeners_mqtt_password">
-          <property name="geometry">
-           <rect>
-            <x>340</x>
-            <y>95</y>
-            <width>150</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabChangesFocus">
-           <bool>true</bool>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </widget>
-       </widget>
-       <widget class="Line" name="line2_50">
-        <property name="geometry">
-         <rect>
-          <x>350</x>
-          <y>1</y>
-          <width>2</width>
-          <height>148</height>
-         </rect>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QFrame" name="frame1_96">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>210</y>
-         <width>1195</width>
-         <height>350</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_edit">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>315</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Edit</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_delete">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>315</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_listeners_enable_disable">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>315</y>
-          <width>120</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Enable/Disable</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_sensor_nodes_listeners">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>1175</width>
-          <height>300</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-        <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>120</number>
-        </attribute>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Status</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Name</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Parameters</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </column>
        </widget>
       </widget>
      </widget>

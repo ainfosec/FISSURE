@@ -1,0 +1,51 @@
+MQTT LISTENING POST QUICK TEST
+
+Preferred deterministic setup: local Mosquitto broker.
+
+Install if needed:
+
+    sudo apt-get install mosquitto mosquitto-clients
+
+Run a temporary foreground broker if one is not already running:
+
+    mosquitto -v
+
+Dashboard setup:
+
+    Name: MQTT Test
+    Type: MQTT
+    Auto Start: Off
+    Broker Address: localhost
+    Port: 1883
+    Topic: fissure/alerts
+    Username:
+    Password:
+
+Start the Listening Post.
+
+Publish:
+
+    python3 mqtt_publish_test.py
+
+or:
+
+    mosquitto_pub -h localhost -p 1883 -t fissure/alerts \
+      -m '{"alert_text":"MQTT Listening Post test"}'
+
+Target-associated version:
+
+    python3 mqtt_publish_test.py --target-id '<REAL_TARGET_ID>'
+
+Expected:
+    - Connection/subscription activity appears.
+    - Publication on fissure/alerts produces [RECV].
+    - Unrelated MQTT topics do not.
+
+Optional public-broker test:
+
+    python3 mqtt_publish_test.py \
+      --host test.mosquitto.org \
+      --port 1883 \
+      --topic fissure/alerts
+
+A public broker is not recommended as the primary regression test.

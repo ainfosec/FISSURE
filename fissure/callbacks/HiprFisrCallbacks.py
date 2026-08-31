@@ -29,15 +29,6 @@ import traceback
 import zmq
 from datetime import datetime, timezone
 import uuid
-from fissure.Listeners import (
-    MeshtasticListener,
-    FilesystemListener,
-    ZMQSubscriberListener,
-    WebsitePollerListener,
-    SerialPortListener,
-    TCPUDPListener,
-    MQTTListener
-)
 
 
 """ HiprFisr Specific Callback Functions """
@@ -279,59 +270,43 @@ async def disconnect(component: object):
     component.connect_loop = True
 
 
-async def enableDisableListener(component: object, listener_type="", listener_name="", parameters={}):
-    """Create a listener if needed and toggle its enable/disable status."""
-    loop = asyncio.get_running_loop()
+async def queryListeningPosts(
+    component: object,
+):
+    """Return the authoritative HIPRFISR Listening Post inventory."""
+    error = ""
+    posts = []
 
-    if listener_type == "Meshtastic":
-        ListenerClass = MeshtasticListener
-    elif listener_type == "Filesystem":
-        ListenerClass = FilesystemListener
-    elif listener_type == "ZMQ SUB":
-        ListenerClass = ZMQSubscriberListener
-    elif listener_type == "Website Poller":
-        ListenerClass = WebsitePollerListener
-    elif listener_type == "Serial Port":
-        ListenerClass = SerialPortListener
-    elif listener_type == "TCP/UDP":
-        ListenerClass = TCPUDPListener
-    elif listener_type == "MQTT":
-        ListenerClass = MQTTListener
-    else:
-        component.logger.error(f"Unknown listener type '{listener_type}'")
-        return
-
-    if listener_name not in component.alert_listeners:
-        listener = ListenerClass(
-            component,
-            listener_name,
-            parameters,
-            loop,
-            alert_callback=listenerAlertReturn,
+    try:
+        posts = (
+            component
+            .listening_post_manager
+            .snapshot()
         )
-        component.alert_listeners[listener_name] = listener
-        component.logger.info(f"Created new {listener_type} Listener: {listener_name}")
-    else:
-        listener = component.alert_listeners[listener_name]
 
-    if listener.is_active():
-        listener.disable()
-        component.logger.info(f"Listener '{listener_name}' disabled.")
-        status = "Disabled"
-    else:
-        listener.enable()
-        component.logger.info(f"Listener '{listener_name}' enabled.")
-        status = "Enabled"
+    except Exception as exc:
+        error = str(
+            exc
+        )
+
+        component.logger.error(
+            f"Could not query Listening Posts: {exc}"
+        )
 
     PARAMETERS = {
-        "listener_name": listener_name,
-        "status": status,
+        "posts": posts,
+        "error": error,
     }
+
     msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "enableDisableListenerReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "queryListeningPostsReturn",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
     }
+
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(
             fissure.comms.MessageTypes.COMMANDS,
@@ -339,29 +314,282 @@ async def enableDisableListener(component: object, listener_type="", listener_na
         )
 
 
-async def deleteListener(component: object, listener_name=""):
-    """
-    Deletes an existing listener.
-    """
-    # Delete the Listener
-    if listener_name in component.alert_listeners:
-        # Stop and delete the listener
-        listener = component.alert_listeners[listener_name]
-        listener.disable()
-        del component.alert_listeners[listener_name]
-        component.logger.info(f"Listener '{listener_name}' deleted and stopped.")
-    else:
-        component.logger.error(f"No listener found with name '{listener_name}' to delete.")
+async def saveListeningPost(
+    component: object,
+    definition=None,
+):
+    """Create or update one stopped persisted Listening Post definition."""
+    success = False
+    message = ""
+    post_id = ""
 
-    # Update Dashboard
-    PARAMETERS = {"listener_name": listener_name}
+    try:
+        post_id = (
+            await component
+            .listening_post_manager
+            .create_or_update(
+                definition
+                or {}
+            )
+        )
+
+        success = True
+        message = "Listening Post saved."
+
+    except Exception as exc:
+        message = str(
+            exc
+        )
+
+        component.logger.error(
+            f"Could not save Listening Post: {exc}"
+        )
+
+    PARAMETERS = {
+        "action": "save",
+        "post_id": post_id,
+        "success": success,
+        "message": message,
+        "posts": (
+            component
+            .listening_post_manager
+            .snapshot()
+        ),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "listeningPostOperationReturn",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def startListeningPost(
+    component: object,
+    post_id="",
+):
+    """Start one persisted Listening Post on HIPRFISR."""
+    success = False
+    message = ""
+
+    post_id = str(
+        post_id
+        or ""
+    ).strip()
+
+    try:
+        await (
+            component
+            .listening_post_manager
+            .start(
+                post_id
+            )
+        )
+
+        success = True
+        message = "Listening Post started."
+
+    except Exception as exc:
+        message = str(
+            exc
+        )
+
+        component.logger.error(
+            f"Could not start Listening Post: {exc}"
+        )
+
+    PARAMETERS = {
+        "action": "start",
+        "post_id": post_id,
+        "success": success,
+        "message": message,
+        "posts": (
+            component
+            .listening_post_manager
+            .snapshot()
+        ),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "listeningPostOperationReturn",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def stopListeningPost(
+    component: object,
+    post_id="",
+):
+    """Stop one running HIPRFISR Listening Post."""
+    success = False
+    message = ""
+
+    post_id = str(
+        post_id
+        or ""
+    ).strip()
+
+    try:
+        await (
+            component
+            .listening_post_manager
+            .stop(
+                post_id
+            )
+        )
+
+        success = True
+        message = "Listening Post stopped."
+
+    except Exception as exc:
+        message = str(
+            exc
+        )
+
+        component.logger.error(
+            f"Could not stop Listening Post: {exc}"
+        )
+
+    PARAMETERS = {
+        "action": "stop",
+        "post_id": post_id,
+        "success": success,
+        "message": message,
+        "posts": (
+            component
+            .listening_post_manager
+            .snapshot()
+        ),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "listeningPostOperationReturn",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def clearListeningPostActivity(component: object, post_id=""):
+    """Clear one Listening Post's bounded Recent Activity buffer."""
+    success = False
+    message = ""
+    post_id = str(post_id or "").strip()
+
+    try:
+        await component.listening_post_manager.clear_activity(post_id)
+        success = True
+    except Exception as exc:
+        message = str(exc)
+        component.logger.error(f"Could not clear Listening Post activity: {exc}")
+
+    PARAMETERS = {
+        "action": "clear",
+        "post_id": post_id,
+        "success": success,
+        "message": message,
+        "posts": component.listening_post_manager.snapshot(),
+    }
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "deleteListenerReturn",
+        fissure.comms.MessageFields.MESSAGE_NAME: "listeningPostOperationReturn",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
+
     if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+        
+
+async def deleteListeningPost(
+    component: object,
+    post_id="",
+):
+    """Delete one stopped persisted Listening Post definition."""
+    success = False
+    message = ""
+
+    post_id = str(
+        post_id
+        or ""
+    ).strip()
+
+    try:
+        await (
+            component
+            .listening_post_manager
+            .delete(
+                post_id
+            )
+        )
+
+        success = True
+        message = "Listening Post removed."
+
+    except Exception as exc:
+        message = str(
+            exc
+        )
+
+        component.logger.error(
+            f"Could not remove Listening Post: {exc}"
+        )
+
+    PARAMETERS = {
+        "action": "delete",
+        "post_id": post_id,
+        "success": success,
+        "message": message,
+        "posts": (
+            component
+            .listening_post_manager
+            .snapshot()
+        ),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "listeningPostOperationReturn",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
 async def pingIP(component: object, node_uid: str):
@@ -2795,27 +3023,6 @@ async def findGPS_CoordinatesResults(component: object, coordinates=""):
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def listenerAlertReturn(component: object, node_uid="", alert_text=""):
-    """Convert a listener check-in into a structured event-style FISSURE alert."""
-    summary = str(alert_text or "").strip() or "Listening post check-in received"
-
-    payload = {
-        "msg_type": "event",
-        "uid": f"listener-alert-{uuid.uuid4()}",
-        "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-        "tak_icon": "b-t-f-r",
-        "alert_kind": "listening_post",
-        "alert_summary": summary,
-        "node_uid": str(node_uid or "").strip(),
-        "suppress_point": True,
-    }
-
-    await fissure.utils.tak_messages.send(
-        component,
-        payload,
-    )
 
 
 async def detectionReturn(

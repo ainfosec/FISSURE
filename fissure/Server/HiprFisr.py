@@ -22,6 +22,7 @@ from fissure.utils.tak_server import TakReceiver
 import pytak
 from fissure.utils.artifacts import ArtifactTracker
 from fissure.Server.HiprFisrArtifactTransferController import HiprFisrArtifactTransferController
+from fissure.ListeningPosts import ListeningPostManager
 
 
 HEARTBEAT_LOOP_DELAY = 0.1  # Seconds
@@ -69,7 +70,6 @@ class HiprFisr:
     heartbeats: Dict[str, Union[float, Dict[int, float]]]  # {name: time, name: time, ... sensor_nodes: {node_id: time}}
     callbacks: Dict = {}
     shutdown: bool
-    alert_listeners: Dict = {}
     tak_mode: str
     tak_connected: bool
 
@@ -171,6 +171,9 @@ class HiprFisr:
 
         # Initialize artifact tracker
         self.artifact_tracker = ArtifactTracker(logger=self.logger)
+
+        # HIPRFISR owns persisted Listening Post definitions and runtime services.
+        self.listening_post_manager = ListeningPostManager(self)
 
         # Dedicated binary artifact-transfer router. This is intentionally
         # separate from the normal command and heartbeat channels.
@@ -376,6 +379,9 @@ class HiprFisr:
         artifact_transfer_task = asyncio.create_task(self.artifact_transfer_loop())
         self.child_tasks.append(artifact_transfer_task)
 
+        # Start persisted HIPRFISR-hosted Listening Posts marked for Auto Start.
+        await self.listening_post_manager.start_autostart()
+
         # Load TAK config
         from fissure.utils.common import get_fissure_config
         fissure_config = get_fissure_config()
@@ -442,6 +448,9 @@ class HiprFisr:
         # ---------------------------------------------------------
         # Cleanup
         # ---------------------------------------------------------
+        # Stop Listening Posts before tearing down component communications.
+        await self.listening_post_manager.shutdown()
+
         # Stop TAK Client
         await self.stop_tak_client()
 

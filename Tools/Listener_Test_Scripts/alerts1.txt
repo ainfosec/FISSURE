@@ -1,3 +1,0 @@
-{"sendor_node_id": 0, "alert_text": "aasfdsafsadfas"}
-{"sendor_node_id": 0, "alert_text": "sdfgsfdg"}
-{"sendor_node_id": 0, "alert_text": "sdfgsfdg"}

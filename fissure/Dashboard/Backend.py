@@ -2027,34 +2027,115 @@ class DashboardBackend:
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, find_gps_cmd)
 
 
-    async def enableDisableListener(self, listener_type="", listener_name="", parameters={}):
-        """
-        Creates a listener if it does not exist and then toggles its enable/disable status.
-        """
-        PARAMETERS = {
-            "listener_type": listener_type,
-            "listener_name": listener_name,
-            "parameters": parameters
+    async def queryListeningPosts(self):
+        """Request the authoritative HIPRFISR Listening Post inventory."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "queryListeningPosts",
+            fissure.comms.MessageFields.PARAMETERS:
+                {},
         }
-        listener_cmd = {
-            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-            fissure.comms.MessageFields.MESSAGE_NAME: "enableDisableListener",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, listener_cmd)
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
-    async def deleteListener(self, listener_name=""):
-        """
-        Deletes an existing listener.
-        """
-        PARAMETERS = {"listener_name": listener_name}
-        listener_cmd = {
-            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-            fissure.comms.MessageFields.MESSAGE_NAME: "deleteListener",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    async def saveListeningPost(
+        self,
+        definition=None,
+    ):
+        """Create or update one persisted HIPRFISR Listening Post."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "saveListeningPost",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "definition": definition or {},
+            },
         }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, listener_cmd)
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+    async def startListeningPost(
+        self,
+        post_id="",
+    ):
+        """Start one persisted Listening Post on HIPRFISR."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "startListeningPost",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "post_id": post_id,
+            },
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+    async def stopListeningPost(
+        self,
+        post_id="",
+    ):
+        """Stop one running Listening Post on HIPRFISR."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "stopListeningPost",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "post_id": post_id,
+            },
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+    async def clearListeningPostActivity(self, post_id=""):
+        """Clear the bounded HIPRFISR Recent Activity buffer for one Listening Post."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "clearListeningPostActivity",
+            fissure.comms.MessageFields.PARAMETERS: {"post_id": post_id},
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+        
+    async def deleteListeningPost(
+        self,
+        post_id="",
+    ):
+        """Delete one stopped persisted Listening Post."""
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "deleteListeningPost",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "post_id": post_id,
+            },
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
     async def connectToSensorNodeMeshtastic(self, node_uid, serial_port, serial_baud_rate):

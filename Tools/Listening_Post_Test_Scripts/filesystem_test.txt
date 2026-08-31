@@ -1,0 +1,55 @@
+FILESYSTEM LISTENING POST QUICK TEST
+
+NEW FILES
+---------
+
+Dashboard setup:
+    Name: Filesystem New Files
+    Type: Filesystem
+    Auto Start: Off
+    Watch Mode: New Files
+    Folder: /tmp/fissure-listening-post
+    File Pattern: *.txt
+
+Terminal setup:
+    mkdir -p /tmp/fissure-listening-post
+    rm -f /tmp/fissure-listening-post/*
+
+Start the Listening Post, then create a NEW file:
+
+    echo '{"alert_text":"Filesystem new-file test"}' \
+      > /tmp/fissure-listening-post/test1.txt
+
+Target-associated version:
+
+    echo '{"target_id":"<REAL_TARGET_ID>","alert_text":"Filesystem target callback"}' \
+      > /tmp/fissure-listening-post/test2.txt
+
+Expected:
+    - Recent Activity gets one [RECV] per non-empty line.
+    - Matching files created after Start are processed.
+    - Files not matching *.txt are ignored.
+
+
+FILE CHANGES
+------------
+
+Terminal setup:
+    mkdir -p /tmp/fissure-listening-post
+    touch /tmp/fissure-listening-post/returns.txt
+
+Dashboard setup:
+    Name: Filesystem File Changes
+    Type: Filesystem
+    Auto Start: Off
+    Watch Mode: File Changes
+    File Path: /tmp/fissure-listening-post/returns.txt
+
+Start the Listening Post, then APPEND:
+
+    echo '{"alert_text":"Filesystem append test"}' \
+      >> /tmp/fissure-listening-post/returns.txt
+
+Expected:
+    - Only appended lines are emitted.
+    - Existing content present when the post starts is not replayed.

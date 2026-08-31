@@ -1,5 +1,0 @@
-For TCP:
-    echo '{"sensor_node_id": 0, "alert_text": "Test alert over TCP"}' | nc localhost 55555
-
-For UDP:
-    echo '{"sensor_node_id": 0, "alert_text": "Test alert over UDP"}' | nc -u localhost 55555

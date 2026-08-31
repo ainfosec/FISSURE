@@ -11,6 +11,7 @@ from fissure.Dashboard.Slots import (
     IQDataTabSlots,
     LibraryTabSlots,
     LibraryTabPluginManagerTabSlots,
+    ListeningPostsTabSlots,
     LogTabSlots,
     MenuBarSlots,
     PDTabSlots,
@@ -762,6 +763,7 @@ class Dashboard(QtWidgets.QMainWindow):
     def __init_Attack__(self):
         """Initialize Targets & Actions and Packet Crafter workflows."""
         TargetsTabSlots.initialize_targets_tab(self)
+        ListeningPostsTabSlots.initialize_listening_posts_tab(self)
         SingleActionTabSlots.initialize_single_action_tab(self)
         SequentialActionTabSlots.initialize_sequential_actions_tab(self)
         FuzzingTabSlots.initialize_fuzzing_tab(self)
@@ -769,14 +771,22 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Packet Crafter
         self.ui.textEdit_packet_number_of_messages.setPlainText("1")
-
         protocols = fissure.utils.library.getProtocols(self.backend.library)
         self.ui.comboBox_packet_protocols.clear()
         protocols_with_packet_types = []
+
         for protocol in protocols:
-            if len(fissure.utils.library.getPacketTypes(self.backend.library, protocol)) > 0:
+            if len(
+                fissure.utils.library.getPacketTypes(
+                    self.backend.library,
+                    protocol,
+                )
+            ) > 0:
                 protocols_with_packet_types.append(protocol)
-        self.ui.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
+
+        self.ui.comboBox_packet_protocols.addItems(
+            sorted(protocols_with_packet_types)
+        )
         self.scapy_data = None
 
 
@@ -2119,10 +2129,10 @@ class DashboardScreen(UI_Types.Dashboard):
         connect_slots(dashboard=dashboardFrontend)
 
 
-def connect_slots(dashboard: Dashboard):
-    """
-    Contains the connect functions for all the signals and slots
-    """
+def connect_slots(
+    dashboard: Dashboard,
+):
+    """Contains the connect functions for all the signals and slots."""
     connect_menuBar_slots(dashboard)
     connect_top_bar_slots(dashboard)
     connect_dashboard_slots(dashboard)
@@ -2131,6 +2141,7 @@ def connect_slots(dashboard: Dashboard):
     connect_pd_slots(dashboard)
     connect_iq_slots(dashboard)
     connect_targets_slots(dashboard)
+    connect_listening_posts_slots(dashboard)
     connect_single_action_slots(dashboard)
     connect_sequential_action_slots(dashboard)
     connect_fuzzing_slots(dashboard)
@@ -2141,8 +2152,12 @@ def connect_slots(dashboard: Dashboard):
     connect_library_slots(dashboard)
     connect_log_slots(dashboard)
 
-    dashboard.signals.ComponentStatus.connect(StatusBarSlots.update_component_status)
-    dashboard.signals.Shutdown.connect(lambda: wait_for_backend_shutdown(dashboard))
+    dashboard.signals.ComponentStatus.connect(
+        StatusBarSlots.update_component_status
+    )
+    dashboard.signals.Shutdown.connect(
+        lambda: wait_for_backend_shutdown(dashboard)
+    )
 
 
 def connect_top_bar_slots(dashboard: Dashboard):
@@ -4160,6 +4175,39 @@ def connect_targets_slots(dashboard: Dashboard):
         )        
 
 
+def connect_listening_posts_slots(
+    dashboard: Dashboard,
+):
+    dashboard.ui.pushButton_ta_lp_add.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_edit.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsEditClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_remove.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsRemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_refresh.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsRefreshClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_start_stop.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_activity_clear.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsActivityClearClicked(dashboard)
+    )
+    dashboard.ui.pushButton_ta_lp_test_scripts.clicked.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsTestScriptsClicked(dashboard)
+    )
+
+    dashboard.ui.tableWidget_ta_lp_setup.itemSelectionChanged.connect(
+        lambda: ListeningPostsTabSlots._slotListeningPostsSelectionChanged(dashboard)
+    )
+    dashboard.ui.tabWidget_attack_attack.currentChanged.connect(
+        lambda _index: ListeningPostsTabSlots._slotListeningPostsTabChanged(dashboard)
+    )
+
+
 def connect_single_action_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_ta_single_action_hardware.currentIndexChanged.connect(lambda: SingleActionTabSlots._slotSingleActionHardwareChanged(dashboard))
     dashboard.ui.comboBox_ta_single_action_plugin.currentIndexChanged.connect(lambda: SingleActionTabSlots._slotSingleActionPluginChanged(dashboard))
@@ -4436,12 +4484,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_sensor_nodes_fn_folder.currentIndexChanged.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationFolderChanged(dashboard)
     )
-    dashboard.ui.comboBox_sensor_nodes_listeners_type.currentIndexChanged.connect(
-        dashboard.ui.stackedWidget_sensor_nodes_listeners.setCurrentIndex
-    )
-    dashboard.ui.comboBox_sensor_nodes_listeners_filesystem_type.currentIndexChanged.connect(
-        dashboard.ui.stackedWidget_sensor_nodes_listeners_filesytem.setCurrentIndex
-    )
     dashboard.ui.comboBox_sensor_nodes_autorun_hardware.currentIndexChanged.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunHardwareChanged(dashboard)
     )
@@ -4497,30 +4539,6 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_transfer.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalTransferClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_meshtastic_info.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersMeshtasticInfoClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_save.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersSaveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_edit.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersEditClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_delete.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersDeleteClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_enable_disable.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersEnableDisableClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_filesystem_folder_browse.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersFilesystemFolderBrowseClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_filesytem_filepath_browse.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersFilesystemFilepathBrowseClicked(dashboard)
-    )
-    dashboard.ui.pushButton_sensor_nodes_listeners_serial_info.clicked.connect(
-        lambda: SensorNodesTabSlots._slotSensorNodesListenersMeshtasticInfoClicked(dashboard)  # Reuse function
     )
     dashboard.ui.pushButton_sensor_nodes_autorun_query.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesAutorunQueryClicked(dashboard)

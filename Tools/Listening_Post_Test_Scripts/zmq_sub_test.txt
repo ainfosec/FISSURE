@@ -1,0 +1,28 @@
+ZMQ SUB LISTENING POST QUICK TEST
+
+Dashboard setup:
+
+    Name: ZMQ Test
+    Type: ZMQ SUB
+    Auto Start: Off
+    IP Address: localhost
+    Port: 55555
+    Topic Filter: alerts
+
+Start the Listening Post FIRST.
+
+Then run:
+
+    python3 zmq_pub_test.py
+
+Target-associated version:
+
+    python3 zmq_pub_test.py --target-id '<REAL_TARGET_ID>'
+
+The publisher sends:
+
+    alerts {"alert_text":"ZMQ Listening Post test"}
+
+Expected:
+    - Recent Activity gets [RECV].
+    - The configured topic prefix is stripped before FISSURE parses the JSON.

@@ -1,0 +1,32 @@
+WEBSITE POLLER LISTENING POST QUICK TEST
+
+1. Start the local test server:
+
+    python3 website_poller_server.py
+
+2. Dashboard setup:
+
+    Name: Website Test
+    Type: Website Poller
+    Auto Start: Off
+    URL: http://localhost:8080
+    Check Interval (s): 2
+
+3. Start the Listening Post.
+
+4. Add a message:
+
+    curl -X POST http://localhost:8080 \
+      -H 'Content-Type: application/json' \
+      -d '{"alert_text":"Website Poller test"}'
+
+Target-associated version:
+
+    curl -X POST http://localhost:8080 \
+      -H 'Content-Type: application/json' \
+      -d '{"target_id":"<REAL_TARGET_ID>","alert_text":"Website target callback"}'
+
+Expected:
+    - New message appears within roughly the poll interval.
+    - The server returns all accumulated messages.
+    - The Listening Post emits each unique line only once during that run.
