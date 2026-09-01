@@ -3695,92 +3695,92 @@ async def _slotPD_BitSlicingPlotEntropyClicked(dashboard: QtCore.QObject):
     await dashboard.backend.findEntropy(get_message_length, get_preamble)
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotPD_DissectorsConstructClicked(dashboard: QtCore.QObject, preview = False):
-    """ 
-    Adds a new packet dissector to the library and the Dissectors folder and Wireshark Lua Default folder.
-    """
-    try:
-        my_error = "Input error."
+# @qasync.asyncSlot(QtCore.QObject)
+# async def _slotPD_DissectorsConstructClicked(dashboard: QtCore.QObject, preview = False):
+#     """ 
+#     Adds a new packet dissector to the library and the Dissectors folder and Wireshark Lua Default folder.
+#     """
+#     try:
+#         my_error = "Input error."
 
-        # Get Values
-        get_filter_name = str(dashboard.ui.textEdit_pd_dissectors_filter_name.toPlainText())
-        get_tree_name = str(dashboard.ui.textEdit_pd_dissectors_tree_name.toPlainText())
-        get_udp_port = str(dashboard.ui.textEdit_pd_dissectors_udp_port.toPlainText())
+#         # Get Values
+#         get_filter_name = str(dashboard.ui.textEdit_pd_dissectors_filter_name.toPlainText())
+#         get_tree_name = str(dashboard.ui.textEdit_pd_dissectors_tree_name.toPlainText())
+#         get_udp_port = str(dashboard.ui.textEdit_pd_dissectors_udp_port.toPlainText())
 
-        # Check Filter Name Format
-        good_chars = []
-        good_chars.extend(range(48,58))  # Numbers
-        good_chars.extend(range(97,123))  # Lower-Case Letters
-        good_chars.append(45)  # '-'
-        good_chars.append(95)  # '_'
-        good_chars.append(46)  # '.'
-        if any(ord(x) not in good_chars for x in get_filter_name):
-            my_error = "Filter Name must not contain upper-case letters, numbers, spaces, or symbols other than '-', '_', and '.'."
-            raise NameError
-    except:
-        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, my_error)
+#         # Check Filter Name Format
+#         good_chars = []
+#         good_chars.extend(range(48,58))  # Numbers
+#         good_chars.extend(range(97,123))  # Lower-Case Letters
+#         good_chars.append(45)  # '-'
+#         good_chars.append(95)  # '_'
+#         good_chars.append(46)  # '.'
+#         if any(ord(x) not in good_chars for x in get_filter_name):
+#             my_error = "Filter Name must not contain upper-case letters, numbers, spaces, or symbols other than '-', '_', and '.'."
+#             raise NameError
+#     except:
+#         ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, my_error)
 
-    # Get the Table Values
-    get_display_names = []
-    get_filter_names = []
-    get_types = []
-    get_bases = []
-    get_bitmasks = []
-    get_buffer_locations = []
-    for row in range(0,dashboard.ui.tableWidget_pd_dissectors.rowCount()):
-        get_display_names.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,0).text()))
-        get_filter_names.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,1).text()).replace('-','_'))  # Variable names cannot have '-'
-        get_types.append(str(dashboard.ui.tableWidget_pd_dissectors.cellWidget(row,2).currentText()))
-        get_bases.append(str(dashboard.ui.tableWidget_pd_dissectors.cellWidget(row,3).currentText()))
-        if len(str(dashboard.ui.tableWidget_pd_dissectors.item(row,4).text())) == 0:
-            get_bitmasks.append('nil')
-        else:
-            get_bitmasks.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,4).text()))
-        get_buffer_locations.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,5).text()))
+#     # Get the Table Values
+#     get_display_names = []
+#     get_filter_names = []
+#     get_types = []
+#     get_bases = []
+#     get_bitmasks = []
+#     get_buffer_locations = []
+#     for row in range(0,dashboard.ui.tableWidget_pd_dissectors.rowCount()):
+#         get_display_names.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,0).text()))
+#         get_filter_names.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,1).text()).replace('-','_'))  # Variable names cannot have '-'
+#         get_types.append(str(dashboard.ui.tableWidget_pd_dissectors.cellWidget(row,2).currentText()))
+#         get_bases.append(str(dashboard.ui.tableWidget_pd_dissectors.cellWidget(row,3).currentText()))
+#         if len(str(dashboard.ui.tableWidget_pd_dissectors.item(row,4).text())) == 0:
+#             get_bitmasks.append('nil')
+#         else:
+#             get_bitmasks.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,4).text()))
+#         get_buffer_locations.append(str(dashboard.ui.tableWidget_pd_dissectors.item(row,5).text()))
 
-    # Assemble the Text
-    dissector_text = 'custom_protocol = Proto("' + get_filter_name + '", "' + get_filter_name + '")\n\n'
-    field_list = ''
-    for n in range(0,len(get_filter_names)):
-        dissector_text = dissector_text + get_filter_names[n] + ' = ProtoField.new("' + get_display_names[n] + '", "' + get_filter_name + '.' + get_filter_names[n] + '", ' + get_types[n] + ', nil, ' + get_bases[n] + ', ' + get_bitmasks[n] + ')\n'
-        field_list = field_list + get_filter_names[n] + ', '
+#     # Assemble the Text
+#     dissector_text = 'custom_protocol = Proto("' + get_filter_name + '", "' + get_filter_name + '")\n\n'
+#     field_list = ''
+#     for n in range(0,len(get_filter_names)):
+#         dissector_text = dissector_text + get_filter_names[n] + ' = ProtoField.new("' + get_display_names[n] + '", "' + get_filter_name + '.' + get_filter_names[n] + '", ' + get_types[n] + ', nil, ' + get_bases[n] + ', ' + get_bitmasks[n] + ')\n'
+#         field_list = field_list + get_filter_names[n] + ', '
 
-    dissector_text = dissector_text + '\ncustom_protocol.fields = {' + field_list[:-2] + '}\n\n'
-    dissector_text = dissector_text + 'function custom_protocol.dissector(buffer, pinfo, tree)\n'
-    dissector_text = dissector_text + '  length = buffer:len()\n'
-    dissector_text = dissector_text + '  if length == 0 then return end\n\n'
-    dissector_text = dissector_text + '  pinfo.cols.protocol = custom_protocol.name\n\n'
-    dissector_text = dissector_text + '  local subtree = tree:add(custom_protocol, buffer(), "' + get_tree_name + '")\n'
-    for n in range(0,len(get_filter_names)):
-        dissector_text = dissector_text + '\n  subtree:add_le(' + get_filter_names[n] + ', buffer' + get_buffer_locations[n] + ')'
-    dissector_text = dissector_text + '\nend\n\n'
-    dissector_text = dissector_text + 'local udp_port = DissectorTable.get("udp.port")\n'
-    dissector_text = dissector_text + 'udp_port:add(' + get_udp_port + ', custom_protocol)'
+#     dissector_text = dissector_text + '\ncustom_protocol.fields = {' + field_list[:-2] + '}\n\n'
+#     dissector_text = dissector_text + 'function custom_protocol.dissector(buffer, pinfo, tree)\n'
+#     dissector_text = dissector_text + '  length = buffer:len()\n'
+#     dissector_text = dissector_text + '  if length == 0 then return end\n\n'
+#     dissector_text = dissector_text + '  pinfo.cols.protocol = custom_protocol.name\n\n'
+#     dissector_text = dissector_text + '  local subtree = tree:add(custom_protocol, buffer(), "' + get_tree_name + '")\n'
+#     for n in range(0,len(get_filter_names)):
+#         dissector_text = dissector_text + '\n  subtree:add_le(' + get_filter_names[n] + ', buffer' + get_buffer_locations[n] + ')'
+#     dissector_text = dissector_text + '\nend\n\n'
+#     dissector_text = dissector_text + 'local udp_port = DissectorTable.get("udp.port")\n'
+#     dissector_text = dissector_text + 'udp_port:add(' + get_udp_port + ', custom_protocol)'
 
-    # Preview Dissector (Clicked)
-    if preview == True:
-        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, dissector_text, width=1950)
+#     # Preview Dissector (Clicked)
+#     if preview == True:
+#         ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, dissector_text, width=1950)
 
-    # Save the File
-    else:
-        # Select a Filepath
-        directory = os.path.join(fissure.utils.FISSURE_ROOT, "Dissectors")
-        file_name = await fissure.Dashboard.UI_Components.Qt5.async_save_file_dialog(dashboard, directory, 'lua', 'Lua Dissectors (*.lua)')
+#     # Save the File
+#     else:
+#         # Select a Filepath
+#         directory = os.path.join(fissure.utils.FISSURE_ROOT, "Dissectors")
+#         file_name = await fissure.Dashboard.UI_Components.Qt5.async_save_file_dialog(dashboard, directory, 'lua', 'Lua Dissectors (*.lua)')
 
-        # Valid file
-        if file_name:
-            with open(file_name, "w") as file:
-                file.write(dissector_text)
+#         # Valid file
+#         if file_name:
+#             with open(file_name, "w") as file:
+#                 file.write(dissector_text)
 
-            # Update Library
-            get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
-            get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
-            if get_protocol and get_packet_type:
-                dissector_file = os.path.basename(file_name)
-                dissector_port = int(get_udp_port)
-                new_dissector = [dissector_file, dissector_port]
-                await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], new_dissector)
+#             # Update Library
+#             get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
+#             get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
+#             if get_protocol and get_packet_type:
+#                 dissector_file = os.path.basename(file_name)
+#                 dissector_port = int(get_udp_port)
+#                 new_dissector = [dissector_file, dissector_port]
+#                 await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], new_dissector)
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -4243,10 +4243,6 @@ def _slotPD_BitSlicingAddToLibraryClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_library_pd_packet.setColumnWidth(4,130)
         dashboard.ui.tableWidget_library_pd_packet.horizontalHeader().setSectionResizeMode(2,QtWidgets.QHeaderView.Stretch)
 
-        # Change the Tab
-        dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_library)
-        dashboard.ui.tabWidget_library.setCurrentWidget(dashboard.ui.tab_protocol_data)
-
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotPD_AddToLibraryIsCRC_Changed(dashboard: QtCore.QObject):
@@ -4305,45 +4301,45 @@ def _slotPD_BitSlicingSearchLibraryClicked(dashboard: QtCore.QObject):
         dashboard.ui.tabWidget_library.setCurrentWidget(dashboard.ui.tab_search)
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotPD_DissectorRemoveClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes the dissector lua file and entry from the library for the packet type.
-    """
-    # Get Values
-    get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
-    get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
-    get_dissector = str(dashboard.ui.comboBox_pd_dissectors_existing_dissectors.currentText())
+# @qasync.asyncSlot(QtCore.QObject)
+# async def _slotPD_DissectorRemoveClicked(dashboard: QtCore.QObject):
+#     """ 
+#     Removes the dissector lua file and entry from the library for the packet type.
+#     """
+#     # Get Values
+#     get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
+#     get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
+#     get_dissector = str(dashboard.ui.comboBox_pd_dissectors_existing_dissectors.currentText())
 
-    # Remove
-    if len(get_protocol) > 0 and len(get_packet_type) > 0 and len(get_dissector) > 0:
-        if get_dissector != "None":
-            dissector_source = os.path.join(fissure.utils.FISSURE_ROOT, "Dissectors", get_dissector)
-            os.system('rm ' + dissector_source)
-        new_dissector = [None, None]
-        await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], [], new_dissector)
+#     # Remove
+#     if len(get_protocol) > 0 and len(get_packet_type) > 0 and len(get_dissector) > 0:
+#         if get_dissector != "None":
+#             dissector_source = os.path.join(fissure.utils.FISSURE_ROOT, "Dissectors", get_dissector)
+#             os.system('rm ' + dissector_source)
+#         new_dissector = [None, None]
+#         await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], [], new_dissector)
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotPD_DissectorApplyClicked(dashboard: QtCore.QObject):
-    """ 
-    Assigns the selected dissector to the selected packet type.
-    """
-    # Update Library
-    get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
-    get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
-    get_dissector_file = str(dashboard.ui.comboBox_pd_dissectors_existing_dissectors.currentText())
-    if len(get_protocol) > 0 and len(get_packet_type) > 0:
-        # Find Port for Existing Dissector
-        get_packet_types = fissure.utils.library.getPacketTypes(dashboard.backend.library, get_protocol)
-        for n in get_packet_types:
-            dissector = fissure.utils.library.getDissector(dashboard.backend.library, get_protocol, n)
-            if get_dissector_file == dissector['Filename']:
-                get_dissector_port = dissector['Port']
-                break
+# @qasync.asyncSlot(QtCore.QObject)
+# async def _slotPD_DissectorApplyClicked(dashboard: QtCore.QObject):
+#     """ 
+#     Assigns the selected dissector to the selected packet type.
+#     """
+#     # Update Library
+#     get_protocol = str(dashboard.ui.comboBox_pd_dissectors_protocol.currentText())
+#     get_packet_type = str(dashboard.ui.comboBox_pd_dissectors_packet_type.currentText())
+#     get_dissector_file = str(dashboard.ui.comboBox_pd_dissectors_existing_dissectors.currentText())
+#     if len(get_protocol) > 0 and len(get_packet_type) > 0:
+#         # Find Port for Existing Dissector
+#         get_packet_types = fissure.utils.library.getPacketTypes(dashboard.backend.library, get_protocol)
+#         for n in get_packet_types:
+#             dissector = fissure.utils.library.getDissector(dashboard.backend.library, get_protocol, n)
+#             if get_dissector_file == dissector['Filename']:
+#                 get_dissector_port = dissector['Port']
+#                 break
 
-        new_dissector = [get_dissector_file, get_dissector_port]
-        await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], [], new_dissector)
+#         new_dissector = [get_dissector_file, get_dissector_port]
+#         await dashboard.backend.addToLibrary(get_protocol, get_packet_type, [], [], [], [], [], [], new_dissector)
 
 
 @qasync.asyncSlot(QtCore.QObject)

@@ -188,24 +188,6 @@ def get_fg_library_dir(os_info: str) -> str:
         return FLOW_GRAPH_LIBRARY_3_10
     
 
-# def get_plugin_fg_library_dir(os_info: str, basepath: str) -> str:
-#     """
-#     Returns the maint-3.8 or maint-3.10 flow graph library directory for a plugin.
-
-#     :param os_info: result of get_os_info()
-#     :type os_info: str
-#     :return: flow graph library directory filepath
-#     :rtype: str
-#     """
-#     # Choose Filepath Based on Operating System
-#     if any(keyword == os_info for keyword in OS_3_8_KEYWORDS):
-#         return os.path.join(basepath, "install_files", "Flow Graph Library", "maint-3.8")
-#     elif any(keyword == os_info for keyword in OS_3_10_KEYWORDS):
-#         return os.path.join(basepath, "install_files", "Flow Graph Library", "maint-3.10")
-#     else:
-#         return os.path.join(basepath, "install_files", "Flow Graph Library", "maint-3.10")
-
-
 def get_default_expect_terminal(os_info: str) -> str:
     """
     Returns qterminal, lxterminal, or gnome-terminal based on operating system.

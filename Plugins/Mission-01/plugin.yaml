@@ -13,7 +13,7 @@
 # Never use cleanup to remove shared system dependencies used by other plugins.
 
 name: Mission-01
-version: "1.0.0"
+version: "1.0.1"
 description: Example mission plugin that composes delegated actions from other plugins with mission-specific actions.
 
 required_plugins:

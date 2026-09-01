@@ -6,7 +6,6 @@ import asyncio
 import fissure.callbacks
 import fissure.comms
 import fissure.utils
-# from fissure.utils.plugin_editor import PluginEditor
 import sys
 import time
 import uuid
@@ -1806,32 +1805,7 @@ class HiprFisr:
 
         except Exception as e:
             self.logger.error(f"Exception while starting TAK containers: {e}")
-
-
-    # def openPluginEditor(self, plugin_name: str):
-    #     self.plugin_editor = PluginEditor(plugin_name)
-
-
-    # # def closePluginEditor(self):
-    # #     self.plugin_editor = None
-
-
-    # # def pluginEditorGetProtocols(self):
-    # #     return self.plugin_editor.get_protocols()
-
-
-    def pluginAddProtocolHiprfisr(self, protocol_name: str):
-        # add protocol (or edit if it already exists)
-        self.plugin_editor.add_protocol(protocol_name)
-        return self.plugin_editor.get_protocol_parameters(protocol_name)
-    
-
-    # def sensorNodeCleanup(self, sensor: SensorNode):
-    #     """
-    #     Closes SensorNode object on exit.
-    #     """
-    #     asyncio.run(sensor.close())
-
+ 
 
     def init_cot_logging(self):
         cfg = self.settings.get("cot_logging", {}) or {}

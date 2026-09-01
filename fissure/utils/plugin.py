@@ -2,15 +2,11 @@
 """Plugin Related Functionality
 """
 import asyncio
-import csv
-import filecmp
 import importlib.util
 import inspect
 import logging
 import os
-from psycopg2.extensions import connection
 import shutil
-from subprocess import Popen, run
 import traceback
 from typing import List, Dict, Set, Any
 import copy
@@ -21,74 +17,8 @@ import stat
 import tempfile
 import zipfile
 
+from fissure.utils import PLUGIN_DIR
 
-from fissure.utils import FISSURE_ROOT, PLUGIN_DIR
-from fissure.utils.library import (
-    openDatabaseConnection,
-    addProtocol,
-    removeProtocol,
-    addModulationType,
-    removeModulationType,
-    addPacketType,
-    removePacketType,
-    addSOI,
-    removeSOI,
-    addDemodulationFlowGraph,
-    removeDemodulationFlowGraph,
-    addAttack,
-    removeAttack,
-)
-
-
-TABLES_FUNCTIONS = [
-    ('attacks.csv', addAttack, removeAttack),
-    ('demodulation_flow_graphs.csv', addDemodulationFlowGraph, removeDemodulationFlowGraph),
-    ('modulation_types.csv', addModulationType, removeModulationType),
-    ('packet_types.csv', addPacketType, removePacketType),
-    ('protocols.csv', addProtocol, removeProtocol),
-    ('soi_data.csv', addSOI, removeSOI)
-]
-
-async def get_fissure_plugin_editor_plugins_path() -> str:
-    """Get the path to the FISSURE Plugin Editor plugins directory.
-
-    Returns
-    -------
-    str
-        Path to the FISSURE Plugin Editor plugins directory.
-    """
-    if shutil.which("fissure-plugin-editor") is not None:
-        proc = await asyncio.create_subprocess_exec(
-            "fissure-plugin-editor", "plugins", "-d",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, _ = await proc.communicate()
-        output = stdout.decode().strip()
-        if output.startswith("Plugins directory:"):
-            return output.split("Plugins directory:")[1].strip()
-        else:
-            return None
-    else:
-        return None
-
-def launch_fissure_plugin_editor() -> bool:
-    """Launch the FISSURE Plugin Editor.
-
-    Returns
-    -------
-    bool
-        True if the editor was launched successfully, False otherwise.
-    """
-    try:
-        # Launch the FISSURE Plugin Editor in a new terminal
-        Popen(["fissure-plugin-editor", "gui"])
-    except FileNotFoundError:
-        return False
-
-    # Check if the process is running
-    result = run(["pgrep", "-f", "fissure-plugin-editor"], capture_output=True)
-    return bool(result.stdout.strip())
 
 def get_local_plugin_names():
     """
@@ -1656,24 +1586,6 @@ def register_delegated_actions(
                     action_name
                 ]
             )
-
-
-# def apply_csv_to_table(conn:connection, file: str, function: object):
-#     """Apply CSV Rows to PostgreSQL Table
-
-#     Parameters
-#     ----------
-#     conn : connection
-#         Database connection
-#     file : str
-#         CSV file
-#     function : object
-#         Function to apply changes
-#     """
-#     with open(file, 'r') as f:
-#         reader = csv.reader(f,dialect='unix',quotechar="'")
-#         for row in reader:
-#             _ = function(conn, *row[1:])
 
 
 def get_action_schema(plugin: str, action_name: str,

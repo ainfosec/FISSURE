@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-1
+
+Clean up Library tabs and Packet Crafter organization
+
+### Changed
+
+- Simplified the Library workspace to Browse, Gallery, Packet Crafter, and Archive by removing the obsolete Add and Plugin Manager tabs and hiding Search until the library, SOI, and protocol lookup model is redesigned.
+- Refined Browse and retained Gallery as the curated visual reference workspace for protocol-related photos, diagrams, signal captures, and learning material.
+- Reorganized Packet Crafter as a Library-owned feature by moving its initialization out of the legacy Targets & Actions path, renaming `AttackTabSlots.py` to `PacketCrafterTabSlots.py`, and updating slot connections/imports without changing packet-building behavior.
+- Kept Packet Crafter backed by the central library/database packet definitions while preserving existing field editing, CRC/check-field calculation, assembly, formatting, sequencing, import/export, and Scapy workflows.
+- Clarified Archive terminology by renaming Downloaded to Local Archive, Download to Online Archive, and Datasets to Dataset Builder while keeping replay and dataset-generation workflows in place.
+- Removed stale Packet Crafter references from legacy Dashboard callback imports and cleaned up related Library initialization/organization after the tab restructuring.
+
 ## 2026-8-30
 
 Replace legacy listeners with HIPRFISR Listening Posts

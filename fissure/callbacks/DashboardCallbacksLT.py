@@ -16,7 +16,6 @@ import datetime
 # from ..Dashboard.Slots import StatusBarSlots  # how do you go from callbacks to slots?
 from fissure.Dashboard.Slots import (
     ArchiveTabSlots,
-    AttackTabSlots,
     DashboardSlots,
     IQDataTabSlots,
     LibraryTabSlots,

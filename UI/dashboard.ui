@@ -35840,457 +35840,6 @@ p, li { white-space: pre-wrap; }
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab_11">
-      <attribute name="title">
-       <string>Browse</string>
-      </attribute>
-      <widget class="QComboBox" name="comboBox_library_browse">
-       <property name="geometry">
-        <rect>
-         <x>205</x>
-         <y>15</y>
-         <width>250</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <item>
-        <property name="text">
-         <string>archive_collection</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>archive_favorites</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>attack_categories</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>attacks</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>conditioner_flow_graphs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>demodulation_flow_graphs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>detector_flow_graphs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>inspection_flow_graphs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>modulation_types</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>packet_types</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>protocols</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>soi_data</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>triggers</string>
-        </property>
-       </item>
-      </widget>
-      <widget class="QPushButton" name="pushButton_library_browse_pgadmin4">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>15</x>
-         <y>780</y>
-         <width>99</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>pgAdmin 4</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_97">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>15</y>
-         <width>200</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>PostgreSQL Database Tables:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="tableWidget1_library_browse">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>1200</width>
-         <height>725</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOn</enum>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::SingleSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <property name="sortingEnabled">
-        <bool>true</bool>
-       </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>155</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-      </widget>
-      <widget class="QPushButton" name="pushButton_library_browse_delete_row">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>780</y>
-         <width>99</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Delete Row</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_library_browse_copy_row">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>225</x>
-         <y>780</y>
-         <width>190</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Copy Row to Plugin Editor</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_library_browse_refresh">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>465</x>
-         <y>15</y>
-         <width>100</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Gallery</string>
-      </attribute>
-      <widget class="QLabel" name="label_library_gallery">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>15</y>
-         <width>860</width>
-         <height>630</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>860</width>
-         <height>630</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label1_140">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>301</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Gallery</string>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame1_40">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>301</width>
-         <height>516</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_library_gallery_open">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>101</x>
-          <y>480</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Open</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_191">
-        <property name="geometry">
-         <rect>
-          <x>-15</x>
-          <y>10</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Protocol:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_library_gallery_protocol">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>10</y>
-          <width>200</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_library_gallery_next">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>150</x>
-          <y>50</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Next</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_library_gallery_previous">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>50</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Previous</string>
-        </property>
-       </widget>
-       <widget class="QListWidget" name="listWidget_library_gallery">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>80</y>
-          <width>280</width>
-          <height>391</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QLabel" name="label2_259">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>545</y>
-         <width>301</width>
-         <height>60</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>To Add Image: 
-&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in 
-./docs/Gallery/ folder</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </widget>
      <widget class="QWidget" name="tab_search">
       <attribute name="title">
        <string>Search</string>
@@ -37308,57 +36857,94 @@ p, li { white-space: pre-wrap; }
        </column>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_protocol_data">
+     <widget class="QWidget" name="tab_11">
       <attribute name="title">
-       <string>Add</string>
+       <string>Browse</string>
       </attribute>
-      <widget class="QLabel" name="label2_100">
+      <widget class="QComboBox" name="comboBox_library_browse">
        <property name="geometry">
         <rect>
-         <x>140</x>
-         <y>30</y>
-         <width>161</width>
-         <height>17</height>
+         <x>95</x>
+         <y>15</y>
+         <width>250</width>
+         <height>25</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Protocol:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
+       <item>
+        <property name="text">
+         <string>archive_collection</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>archive_favorites</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>attack_categories</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>attacks</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>conditioner_flow_graphs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>demodulation_flow_graphs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>detector_flow_graphs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>inspection_flow_graphs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>modulation_types</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>packet_types</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>protocols</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>soi_data</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>triggers</string>
+        </property>
+       </item>
       </widget>
-      <widget class="QPushButton" name="pushButton_library_pd_add_to_library">
+      <widget class="QPushButton" name="pushButton_library_browse_pgadmin4">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
-         <x>530</x>
-         <y>740</y>
-         <width>156</width>
-         <height>47</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Add to Library</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBox_library_pd_protocol">
-       <property name="geometry">
-        <rect>
-         <x>305</x>
-         <y>25</y>
-         <width>256</width>
+         <x>10</x>
+         <y>780</y>
+         <width>100</width>
          <height>27</height>
         </rect>
        </property>
@@ -37368,13 +36954,152 @@ p, li { white-space: pre-wrap; }
          <strikeout>false</strikeout>
         </font>
        </property>
+       <property name="text">
+        <string>pgAdmin 4</string>
+       </property>
       </widget>
-      <widget class="QLabel" name="label1_library_add">
+      <widget class="QLabel" name="label2_97">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>85</y>
-         <width>1195</width>
+         <y>15</y>
+         <width>80</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Library Data:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QTableWidget" name="tableWidget1_library_browse">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>50</y>
+         <width>1220</width>
+         <height>725</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOn</enum>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>155</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+      <widget class="QPushButton" name="pushButton_library_browse_delete_row">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>115</x>
+         <y>780</y>
+         <width>100</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Delete Row</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_library_browse_refresh">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>355</x>
+         <y>14</y>
+         <width>100</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Gallery</string>
+      </attribute>
+      <widget class="QLabel" name="label_library_gallery">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>15</y>
+         <width>860</width>
+         <height>630</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>860</width>
+         <height>630</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label1_140">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>301</width>
          <height>20</height>
         </rect>
        </property>
@@ -37395,15 +37120,182 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>Add New Protocol to Library</string>
+        <string>Gallery</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_library_pd_data_type">
+      <widget class="QFrame" name="frame1_40">
        <property name="geometry">
         <rect>
-         <x>700</x>
-         <y>25</y>
-         <width>256</width>
+         <x>10</x>
+         <y>30</y>
+         <width>301</width>
+         <height>516</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QPushButton" name="pushButton_library_gallery_open">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>101</x>
+          <y>480</y>
+          <width>99</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Open</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label2_191">
+        <property name="geometry">
+         <rect>
+          <x>-15</x>
+          <y>10</y>
+          <width>100</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Protocol:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBox_library_gallery_protocol">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>10</y>
+          <width>200</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_library_gallery_next">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>50</y>
+          <width>99</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Next</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_library_gallery_previous">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>50</y>
+          <width>99</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Previous</string>
+        </property>
+       </widget>
+       <widget class="QListWidget" name="listWidget_library_gallery">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>280</width>
+          <height>391</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label2_259">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>545</y>
+         <width>301</width>
+         <height>60</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>To Add Image: 
+&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in 
+./docs/Gallery/ folder</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>Packet Crafter</string>
+      </attribute>
+      <widget class="QComboBox" name="comboBox_packet_protocols">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>10</y>
+         <width>290</width>
          <height>27</height>
         </rect>
        </property>
@@ -37413,38 +37305,35 @@ p, li { white-space: pre-wrap; }
          <strikeout>false</strikeout>
         </font>
        </property>
-       <item>
-        <property name="text">
-         <string>Modulation Type</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Packet Type</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Signal of Interest</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Demodulation Flow Graph</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Attack</string>
-        </property>
-       </item>
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
       </widget>
-      <widget class="QLabel" name="label2_library_pd_data_type">
+      <widget class="QPushButton" name="pushButton_packet_all_binary">
        <property name="geometry">
         <rect>
-         <x>595</x>
-         <y>30</y>
-         <width>100</width>
+         <x>140</x>
+         <y>455</y>
+         <width>80</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>All Binary</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_packet_current_length_total">
+       <property name="geometry">
+        <rect>
+         <x>945</x>
+         <y>460</y>
+         <width>75</width>
          <height>17</height>
         </rect>
        </property>
@@ -37455,1780 +37344,728 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>Type:</string>
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_packet_default_length_total">
+       <property name="geometry">
+        <rect>
+         <x>1020</x>
+         <y>460</y>
+         <width>75</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox_packet_subcategory">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>10</y>
+         <width>310</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_calculate_crcs">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>455</y>
+         <width>115</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Calculate CRCs</string>
+       </property>
+      </widget>
+      <widget class="QStackedWidget" name="stackedWidget_packet">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>490</y>
+         <width>1215</width>
+         <height>285</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="page">
+        <widget class="QPushButton" name="pushButton_packet_save_as">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>205</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Save As</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_open">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>175</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Open</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_append">
+         <property name="geometry">
+          <rect>
+           <x>235</x>
+           <y>120</y>
+           <width>98</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Append</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_85">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>125</y>
+           <width>136</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Packets:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit_packet_number_of_messages">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>120</y>
+           <width>78</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit1_packet_assembled">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>1090</width>
+           <height>86</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit1_packet_constructed">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>175</y>
+           <width>1090</width>
+           <height>86</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_comma_separated">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>60</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>\x00,</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_comma_separated2">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>90</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>0x00,</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_packet_pattern1">
+         <property name="geometry">
+          <rect>
+           <x>1105</x>
+           <y>30</y>
+           <width>100</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>\x00</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label1_183">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1090</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Assembled Packet</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label1_243">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>155</y>
+           <width>1090</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Constructed Sequence</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_2">
+        <widget class="Line" name="line3_47">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>1220</width>
+           <height>2</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QFrame" name="frame1_12">
+         <property name="geometry">
+          <rect>
+           <x>417</x>
+           <y>45</y>
+           <width>381</width>
+           <height>236</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QPushButton" name="pushButton_packet_open_in_scapy">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>105</y>
+            <width>115</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Open in Scapy</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="label1_166">
+         <property name="geometry">
+          <rect>
+           <x>417</x>
+           <y>25</y>
+           <width>381</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Scapy Injection</string>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label2_27">
+       <property name="geometry">
+        <rect>
+         <x>910</x>
+         <y>460</y>
+         <width>36</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Total:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label1_134">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>1090</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Ubuntu</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Packet Editor</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_assemble">
+       <property name="geometry">
+        <rect>
+         <x>710</x>
+         <y>455</y>
+         <width>100</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Assemble</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_import">
+       <property name="geometry">
+        <rect>
+         <x>310</x>
+         <y>455</y>
+         <width>75</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Import</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label2_95">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>15</y>
+         <width>66</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Protocol:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QStackedWidget" name="stackedWidget2_library_pd">
+      <widget class="QLabel" name="label2_248">
+       <property name="geometry">
+        <rect>
+         <x>365</x>
+         <y>15</y>
+         <width>91</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Packet Type:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_export">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>455</y>
+         <width>75</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Export</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_restore_defaults">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>105</y>
-         <width>1195</width>
-         <height>600</height>
+         <y>455</y>
+         <width>125</width>
+         <height>27</height>
         </rect>
        </property>
-       <property name="currentIndex">
-        <number>0</number>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
        </property>
-       <widget class="QWidget" name="page_12">
-        <widget class="QTextEdit" name="textEdit_library_pd_new_protocol">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>10</y>
-           <width>250</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_pd_new_protocol">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>15</y>
-           <width>141</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>New Protocol Name:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_5">
-        <widget class="QLabel" name="label2_181">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>15</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Modulation Type:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_modulation_type">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>10</y>
-           <width>250</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_6">
-        <widget class="QPushButton" name="pushButton_library_pd_down">
-         <property name="geometry">
-          <rect>
-           <x>1060</x>
-           <y>195</y>
-           <width>105</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Down</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_98">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>15</y>
-           <width>131</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Packet Name:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_packet_name">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>10</y>
-           <width>250</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_library_pd_add_field">
-         <property name="geometry">
-          <rect>
-           <x>1060</x>
-           <y>75</y>
-           <width>105</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Add Field</string>
-         </property>
-        </widget>
-        <widget class="QTableWidget" name="tableWidget_library_pd_packet">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>45</y>
-           <width>1020</width>
-           <height>520</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>61</number>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderMinimumSectionSize">
-          <number>25</number>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Name (Unique)</string>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Length (Bits)</string>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Default Value (Binary)</string>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Is CRC</string>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>CRC Range (Field)</string>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-         </column>
-        </widget>
-        <widget class="QPushButton" name="pushButton_library_pd_remove_field">
-         <property name="geometry">
-          <rect>
-           <x>1060</x>
-           <y>105</y>
-           <width>105</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Remove Field</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_library_pd_up">
-         <property name="geometry">
-          <rect>
-           <x>1060</x>
-           <y>165</y>
-           <width>105</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Up</string>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_7">
-        <widget class="QPushButton" name="pushButton_library_pd_current_soi">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>240</x>
-           <y>285</y>
-           <width>126</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Current SOI</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_148">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>75</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Start Frequency (MHz):</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_frequency">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>40</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_147">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>195</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Continuous:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_pd_soi_continuous">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>190</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="currentIndex">
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>True</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>False</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QLabel" name="label2_145">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>165</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Modulation:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_start_frequency">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>70</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_142">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>45</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string> Center Frequency (MHz):</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_end_frequency">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>100</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_modulation">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>160</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_146">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>135</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bandwidth (MHz):</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_bandwidth">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>130</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_149">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>105</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>End Frequency (MHz):</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_256">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>225</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Notes:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_notes">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>220</y>
-           <width>200</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_257">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>15</y>
-           <width>150</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Subtype/Label:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_soi_subtype">
-         <property name="geometry">
-          <rect>
-           <x>165</x>
-           <y>10</y>
-           <width>400</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_258">
-         <property name="geometry">
-          <rect>
-           <x>570</x>
-           <y>15</y>
-           <width>200</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>(e.g. 802.11b/g/n/ax Channel 1)</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <zorder>textEdit_library_pd_soi_subtype</zorder>
-        <zorder>pushButton_library_pd_current_soi</zorder>
-        <zorder>label2_148</zorder>
-        <zorder>textEdit_library_pd_soi_frequency</zorder>
-        <zorder>label2_147</zorder>
-        <zorder>comboBox_library_pd_soi_continuous</zorder>
-        <zorder>label2_145</zorder>
-        <zorder>textEdit_library_pd_soi_start_frequency</zorder>
-        <zorder>label2_142</zorder>
-        <zorder>textEdit_library_pd_soi_end_frequency</zorder>
-        <zorder>textEdit_library_pd_soi_modulation</zorder>
-        <zorder>label2_146</zorder>
-        <zorder>textEdit_library_pd_soi_bandwidth</zorder>
-        <zorder>label2_149</zorder>
-        <zorder>label2_256</zorder>
-        <zorder>textEdit_library_pd_soi_notes</zorder>
-        <zorder>label2_257</zorder>
-        <zorder>label2_258</zorder>
-       </widget>
-       <widget class="QWidget" name="page_11">
-        <widget class="QComboBox" name="comboBox_library_pd_hardware">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>970</x>
-           <y>10</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>USRP X3x0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP B2x0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>HackRF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RTL2832U</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>802.11x Adapter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP B20xmini</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LimeSDR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>bladeRF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Open Sniffer</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>PlutoSDR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP N2xx</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>bladeRF 2.0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP X410</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPduo</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPdx</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPdx R2</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_pd_modulation_types">
-         <property name="geometry">
-          <rect>
-           <x>685</x>
-           <y>10</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_66">
-         <property name="geometry">
-          <rect>
-           <x>570</x>
-           <y>15</y>
-           <width>110</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Modulation Type:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_library_pd_browse">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>10</y>
-           <width>98</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_pd_demodulation_fg">
-         <property name="geometry">
-          <rect>
-           <x>125</x>
-           <y>10</y>
-           <width>310</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_70">
-         <property name="geometry">
-          <rect>
-           <x>895</x>
-           <y>15</y>
-           <width>70</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Hardware:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_71">
-         <property name="geometry">
-          <rect>
-           <x>435</x>
-           <y>15</y>
-           <width>110</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>(Needs .grc &amp; .py)</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton_library_add_demodulation_fg_stream">
-         <property name="geometry">
-          <rect>
-           <x>245</x>
-           <y>50</y>
-           <width>150</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Stream</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton_library_add_demodulation_fg_tagged_stream">
-         <property name="geometry">
-          <rect>
-           <x>245</x>
-           <y>75</y>
-           <width>150</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Tagged Stream</string>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton_library_add_demodulation_fg_msg_pdu">
-         <property name="geometry">
-          <rect>
-           <x>245</x>
-           <y>100</y>
-           <width>150</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Message/PDU</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_67">
-         <property name="geometry">
-          <rect>
-           <x>89</x>
-           <y>50</y>
-           <width>146</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Output Sink to Sniffer:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_13">
-        <widget class="QLabel" name="label2_library_attacks_new_name2">
-         <property name="geometry">
-          <rect>
-           <x>515</x>
-           <y>255</y>
-           <width>351</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>(Protocol_Modulation_Hardware_AttackName)</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_hardware">
-         <property name="geometry">
-          <rect>
-           <x>110</x>
-           <y>45</y>
-           <width>86</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Hardware:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_attacks_modulation">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>10</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_library_attacks_file">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>165</y>
-           <width>98</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Select</string>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_attacks_file_type">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>130</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <item>
-          <property name="text">
-           <string>Flow Graph</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Flow Graph - GUI</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Python2 Script</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Python3 Script</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_attack_type">
-         <property name="geometry">
-          <rect>
-           <x>100</x>
-           <y>75</y>
-           <width>96</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Attack Type:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_attacks_attack_type">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>70</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <item>
-          <property name="text">
-           <string>Single-Stage</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_attacks_new_name">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>250</y>
-           <width>300</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_library_attacks_filepath">
-         <property name="geometry">
-          <rect>
-           <x>310</x>
-           <y>165</y>
-           <width>600</width>
-           <height>34</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_file_type">
-         <property name="geometry">
-          <rect>
-           <x>55</x>
-           <y>135</y>
-           <width>141</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>File Type:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_attack_template_name">
-         <property name="geometry">
-          <rect>
-           <x>31</x>
-           <y>225</y>
-           <width>165</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Attack Template Name:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_file_select">
-         <property name="geometry">
-          <rect>
-           <x>25</x>
-           <y>170</y>
-           <width>171</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Load *.py or *.msa File:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_new_name">
-         <property name="geometry">
-          <rect>
-           <x>1</x>
-           <y>255</y>
-           <width>195</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>New Flow Graph/Script Name:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_attacks_subcategory">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>100</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_attack_tree_parent">
-         <property name="geometry">
-          <rect>
-           <x>55</x>
-           <y>105</y>
-           <width>141</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Attack Tree Parent:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_library_attacks_modulation">
-         <property name="geometry">
-          <rect>
-           <x>110</x>
-           <y>15</y>
-           <width>86</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Modulation:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_library_attacks_name">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>220</y>
-           <width>300</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_library_attacks_hardware">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>40</y>
-           <width>200</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <item>
-          <property name="text">
-           <string>Computer</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP X3x0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP B2x0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>HackRF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RTL2832U</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>802.11x Adapter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP B20xmini</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>LimeSDR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>BladeRF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Open Sniffer</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>PlutoSDR</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP N2xx</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>bladeRF 2.0</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>USRP X410</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPduo</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPdx</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RSPdx R2</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QCheckBox" name="checkBox_library_attacks_grc_file">
-         <property name="geometry">
-          <rect>
-           <x>200</x>
-           <y>195</y>
-           <width>140</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Include .grc FIle</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </widget>
+       <property name="text">
+        <string>Restore Defaults</string>
+       </property>
       </widget>
-     </widget>
-     <widget class="QWidget" name="tab_plugin_manager">
-      <attribute name="title">
-       <string>Plugin Manager</string>
-      </attribute>
-      <widget class="QWidget" name="verticalLayoutWidget_4">
+      <widget class="QTableWidget" name="tableWidget1_attack_packet_editor">
        <property name="geometry">
         <rect>
-         <x>-1</x>
-         <y>-1</y>
-         <width>1221</width>
-         <height>821</height>
+         <x>10</x>
+         <y>70</y>
+         <width>1090</width>
+         <height>380</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QTabWidget" name="tab_plugin_local_hiprfisr">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="tab_22">
-           <attribute name="title">
-            <string>Local</string>
-           </attribute>
-           <widget class="QWidget" name="verticalLayoutWidget_3">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>1211</width>
-              <height>781</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkg_path_refresh">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>Refresh List</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="textEdit_plugin_pkg_path">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="placeholderText">
-                  <string>&lt;Local Plugin Packages Path&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkg_path_auto">
-                 <property name="toolTip">
-                  <string>Auto-load FISSURE Plugin Editor Directory</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkg_path_manual">
-                 <property name="toolTip">
-                  <string>Manually Choose a Directory</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QTableWidget" name="tableWidget_plugin_pkgs_local">
-               <property name="editTriggers">
-                <set>QAbstractItemView::NoEditTriggers</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_editor">
-                 <property name="toolTip">
-                  <string>Launch the fissure-plugin-editor GUI</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugins_upload">
-                 <property name="toolTip">
-                  <string>Upload Plugin(s) to Central Hub</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-          <widget class="QWidget" name="tab_23">
-           <attribute name="title">
-            <string>Central Hub</string>
-           </attribute>
-           <widget class="QWidget" name="verticalLayoutWidget_5">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>1211</width>
-              <height>771</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
-             <item>
-              <widget class="QTableWidget" name="tableWidget_plugin_pkgs_hiprfisr"/>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_download_dir_auto">
-                 <property name="toolTip">
-                  <string>Auto-load FISSURE Plugin Editor Directory</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_download_dir_manual">
-                 <property name="toolTip">
-                  <string>Manually Choose a Directory</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_plugin_download_dir">
-                 <property name="placeholderText">
-                  <string>&lt;Download Save Path&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkgs_hiprfisr_download">
-                 <property name="toolTip">
-                  <string>Download Plugin(s) to Local</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="Line" name="line">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkgs_hiprfisr_refresh">
-                 <property name="toolTip">
-                  <string>Refresh List</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_plugin_pkgs_hiprfisr_delete">
-                 <property name="toolTip">
-                  <string>Delete Plugin</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </widget>
-        </item>
-       </layout>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>5</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>24</number>
+       </attribute>
+       <attribute name="verticalHeaderStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Type</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Data</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Length</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Default</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+      </widget>
+      <widget class="QPushButton" name="pushButton_packet_all_hex">
+       <property name="geometry">
+        <rect>
+         <x>225</x>
+         <y>455</y>
+         <width>80</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>All Hex</string>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_5">
@@ -39646,7 +38483,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>Downloaded</string>
+        <string>Local Archive</string>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -39678,7 +38515,7 @@ p, li { white-space: pre-wrap; }
        </property>
        <widget class="QWidget" name="tab_archive_download">
         <attribute name="title">
-         <string>Download</string>
+         <string>Online Archive</string>
         </attribute>
         <widget class="QTabWidget" name="tabWidget_archive_download">
          <property name="geometry">
@@ -40839,7 +39676,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_51">
         <attribute name="title">
-         <string>Datasets</string>
+         <string>Dataset Builder</string>
         </attribute>
         <widget class="QTableWidget" name="tableWidget_archive_datasets">
          <property name="geometry">
@@ -41264,788 +40101,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </widget>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="tab_6">
-      <attribute name="title">
-       <string>Packet Crafter</string>
-      </attribute>
-      <widget class="QComboBox" name="comboBox_packet_protocols">
-       <property name="geometry">
-        <rect>
-         <x>70</x>
-         <y>10</y>
-         <width>290</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_all_binary">
-       <property name="geometry">
-        <rect>
-         <x>140</x>
-         <y>455</y>
-         <width>80</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>All Binary</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_packet_current_length_total">
-       <property name="geometry">
-        <rect>
-         <x>945</x>
-         <y>460</y>
-         <width>75</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_packet_default_length_total">
-       <property name="geometry">
-        <rect>
-         <x>1020</x>
-         <y>460</y>
-         <width>75</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBox_packet_subcategory">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>460</x>
-         <y>10</y>
-         <width>310</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_calculate_crcs">
-       <property name="geometry">
-        <rect>
-         <x>470</x>
-         <y>455</y>
-         <width>115</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Calculate CRCs</string>
-       </property>
-      </widget>
-      <widget class="QStackedWidget" name="stackedWidget_packet">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>490</y>
-         <width>1215</width>
-         <height>285</height>
-        </rect>
-       </property>
-       <property name="currentIndex">
-        <number>1</number>
-       </property>
-       <widget class="QWidget" name="page">
-        <widget class="QPushButton" name="pushButton_packet_save_as">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>205</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Save As</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_open">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>175</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Open</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_append">
-         <property name="geometry">
-          <rect>
-           <x>235</x>
-           <y>120</y>
-           <width>98</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Append</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_85">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>125</y>
-           <width>136</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Number of Packets:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_packet_number_of_messages">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>120</y>
-           <width>78</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit1_packet_assembled">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>1090</width>
-           <height>86</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit1_packet_constructed">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>175</y>
-           <width>1090</width>
-           <height>86</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_comma_separated">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>60</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>\x00,</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_comma_separated2">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>90</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>0x00,</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_packet_pattern1">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>30</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>\x00</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_183">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>1090</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Assembled Packet</string>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_243">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>155</y>
-           <width>1090</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Constructed Sequence</string>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_2">
-        <widget class="Line" name="line3_47">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>1220</width>
-           <height>2</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_12">
-         <property name="geometry">
-          <rect>
-           <x>417</x>
-           <y>45</y>
-           <width>381</width>
-           <height>236</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QPushButton" name="pushButton_packet_open_in_scapy">
-          <property name="geometry">
-           <rect>
-            <x>135</x>
-            <y>105</y>
-            <width>115</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Open in Scapy</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QLabel" name="label1_166">
-         <property name="geometry">
-          <rect>
-           <x>417</x>
-           <y>25</y>
-           <width>381</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Scapy Injection</string>
-         </property>
-        </widget>
-       </widget>
-      </widget>
-      <widget class="QLabel" name="label2_27">
-       <property name="geometry">
-        <rect>
-         <x>910</x>
-         <y>460</y>
-         <width>36</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Total:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label1_134">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>1090</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Packet Editor</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_assemble">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>455</y>
-         <width>100</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Assemble</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_import">
-       <property name="geometry">
-        <rect>
-         <x>310</x>
-         <y>455</y>
-         <width>75</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Import</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_95">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>15</y>
-         <width>66</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Protocol:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_248">
-       <property name="geometry">
-        <rect>
-         <x>365</x>
-         <y>15</y>
-         <width>91</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Packet Type:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_export">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>455</y>
-         <width>75</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Export</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_restore_defaults">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>455</y>
-         <width>125</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Restore Defaults</string>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="tableWidget1_attack_packet_editor">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>70</y>
-         <width>1090</width>
-         <height>380</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="cornerButtonEnabled">
-        <bool>false</bool>
-       </property>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>5</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>24</number>
-       </attribute>
-       <attribute name="verticalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Type</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Data</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Length</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Default</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-      </widget>
-      <widget class="QPushButton" name="pushButton_packet_all_hex">
-       <property name="geometry">
-        <rect>
-         <x>225</x>
-         <y>455</y>
-         <width>80</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>All Hex</string>
-       </property>
       </widget>
      </widget>
     </widget>

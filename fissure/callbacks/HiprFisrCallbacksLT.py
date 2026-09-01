@@ -9,7 +9,6 @@ import fissure.utils
 import fissure.utils.library
 from fissure.utils.common import PLUGIN_DIR
 from fissure.utils import plugin
-from fissure.utils import plugin_editor
 import os
 import time
 import yaml
