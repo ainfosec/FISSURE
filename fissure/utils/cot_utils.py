@@ -86,6 +86,7 @@ def parse_cot_xml(raw_xml):
         "soi_model_confidence": None,
         "soi_stage": None,
         "soi_stage_order": None,
+        "soi_record": None,
 
         "artifact_name": None,
         "artifact_timestamp": None,
@@ -482,6 +483,16 @@ def parse_cot_xml(raw_xml):
                 cot_message[
                     "soi_stage_order"
                 ] = None
+
+            record_json = fissure_soi.findtext("record_json")
+
+            if record_json:
+                try:
+                    parsed_record = json.loads(record_json)
+                    if isinstance(parsed_record, dict):
+                        cot_message["soi_record"] = parsed_record
+                except (TypeError, ValueError):
+                    pass
 
         # -----------------------------------------------------------------
         # Artifact Metadata
@@ -1346,9 +1357,12 @@ def handle_tactical_detection_message(dashboard, cot_message):
 
 
 def handle_tactical_soi_message(dashboard, cot_message):
+    """
+    Store one live Tactical SOI update and refresh every Dashboard SOI consumer.
+    """
     frontend = dashboard.frontend
-
     soi_record = cot_to_tactical_soi_record(cot_message)
+
     if not soi_record:
         return
 
@@ -1356,11 +1370,18 @@ def handle_tactical_soi_message(dashboard, cot_message):
         frontend.tactical_sois = {}
 
     soi_key = soi_record["soi_key"]
-
     existing = frontend.tactical_sois.get(soi_key)
-    if existing:
+
+    if isinstance(existing, dict):
         new_stage_order = soi_record.get("stage_order")
         old_stage_order = existing.get("stage_order")
+
+        try:
+            new_stage_order = int(new_stage_order) if new_stage_order is not None else None
+            old_stage_order = int(old_stage_order) if old_stage_order is not None else None
+        except (TypeError, ValueError):
+            new_stage_order = None
+            old_stage_order = None
 
         if (
             new_stage_order is not None
@@ -1372,77 +1393,102 @@ def handle_tactical_soi_message(dashboard, cot_message):
             )
             return
 
+        merged_record = dict(existing)
+        merged_record.update(soi_record)
+        soi_record = merged_record
+
     frontend.tactical_sois[soi_key] = soi_record
+
+    try:
+        TSITabSlots.refresh_sa_sois_table(frontend)
+    except Exception as error:
+        frontend.logger.debug(f"Could not refresh Signal Analysis SOIs from Tactical update: {error}")
+
+    try:
+        TSITabSlots.refresh_tsi_fe_input_sois(frontend)
+        TSITabSlots.refresh_tsi_fe_run_sois(frontend)
+    except Exception as error:
+        frontend.logger.debug(f"Could not refresh Feature Extractor SOIs from Tactical update: {error}")
 
     selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
     soi_node_uid = soi_record.get("node_uid")
 
-    if not selected_node_uid:
+    if not selected_node_uid or soi_node_uid != selected_node_uid:
         return
 
-    if soi_node_uid != selected_node_uid:
-        return
-
-    TacticalTabSlots.update_tactical_node_soi_row(
-        frontend,
-        soi_record,
-    )
-
+    TacticalTabSlots.update_tactical_node_soi_row(frontend, soi_record)
+    
 
 def cot_to_tactical_soi_record(cot_message):
-    node_uid = cot_message.get("soi_node_uid", "")
-    soi_id = cot_message.get("soi_id", "")
+    """
+    Build a Tactical SOI record from the complete canonical record embedded in CoT.
+    """
+    node_uid = str(cot_message.get("soi_node_uid", "") or "")
+    soi_id = str(cot_message.get("soi_id", "") or "")
 
     if not soi_id:
         return None
 
     soi_key = f"{node_uid}:{soi_id}"
+    canonical = cot_message.get("soi_record")
+    record = dict(canonical) if isinstance(canonical, dict) else {}
 
-    frequency_mhz = cot_message.get("soi_frequency_mhz")
-
-    frequency_display = ""
-    if frequency_mhz not in [None, "", "None"]:
-        try:
-            frequency_display = f"{float(frequency_mhz):.3f} MHz"
-        except Exception:
-            frequency_display = str(frequency_mhz)
-
-    model_classification = cot_message.get("soi_model_classification", "")
-    model_confidence = cot_message.get("soi_model_confidence", "")
-
-    model_display = model_classification
-    if model_classification and model_confidence not in [None, "", "None"]:
-        model_display = f"{model_classification} ({model_confidence}%)"
-
-    return {
+    record.update({
         "soi_key": soi_key,
         "uid": cot_message.get("uid"),
         "event_id": cot_message.get("uid"),
-
         "node_uid": node_uid,
         "soi_id": soi_id,
-        "operation_id": cot_message.get("soi_operation_id", ""),
-        "artifact_id": cot_message.get("soi_artifact_id", ""),
+    })
 
-        "frequency_mhz": frequency_mhz,
-        "frequency_display": frequency_display,
-        "status": cot_message.get("soi_status", ""),
-        "time": cot_message.get("time", ""),
-
-        "stage": cot_message.get("soi_stage", ""),
+    updates = {
+        "operation_id": cot_message.get("soi_operation_id"),
+        "artifact_id": cot_message.get("soi_artifact_id"),
+        "frequency_mhz": cot_message.get("soi_frequency_mhz"),
+        "status": cot_message.get("soi_status"),
+        "stage": cot_message.get("soi_stage"),
         "stage_order": cot_message.get("soi_stage_order"),
-
-        "model_classification": model_classification,
-        "model_confidence_pct": model_confidence,
-        "model_classification_display": model_display,
-        "database_classification": cot_message.get("soi_database_classification", ""),
-
-        "lat": cot_message.get("lat"),
-        "lon": cot_message.get("lon"),
-        "hae_m": cot_message.get("hae"),
-
-        "raw_xml": cot_message.get("raw_xml"),
+        "model_classification": cot_message.get("soi_model_classification"),
+        "model_confidence": cot_message.get("soi_model_confidence"),
+        "database_classification": cot_message.get("soi_database_classification"),
     }
+
+    for key, value in updates.items():
+        if value not in (None, "", "None"):
+            record[key] = value
+
+    frequency_mhz = record.get("frequency_mhz")
+    if frequency_mhz not in (None, "", "None"):
+        try:
+            record["frequency_display"] = f"{float(frequency_mhz):.3f} MHz"
+        except Exception:
+            record["frequency_display"] = str(frequency_mhz)
+
+    model_classification = str(record.get("model_classification", "") or "")
+    model_confidence = record.get("model_confidence")
+
+    if model_confidence in (None, "", "None"):
+        model_confidence = record.get("model_confidence_pct")
+
+    record["model_confidence_pct"] = model_confidence
+    record["model_classification_display"] = model_classification
+
+    if model_classification and model_confidence not in (None, "", "None"):
+        record["model_classification_display"] = f"{model_classification} ({model_confidence}%)"
+
+    record["time"] = cot_message.get("time") or record.get("time", "")
+
+    if cot_message.get("lat") is not None:
+        record["lat"] = cot_message.get("lat")
+
+    if cot_message.get("lon") is not None:
+        record["lon"] = cot_message.get("lon")
+
+    if cot_message.get("hae") is not None:
+        record["hae_m"] = cot_message.get("hae")
+
+    record["raw_xml"] = cot_message.get("raw_xml")
+    return record
 
 
 def handle_tactical_artifact_message(dashboard, cot_message):

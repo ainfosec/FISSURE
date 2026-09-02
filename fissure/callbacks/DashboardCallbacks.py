@@ -2133,6 +2133,15 @@ async def sendArtifactsListTakReturn(
                 f"{error}"
             )
 
+    try:
+        TSITabSlots.refresh_sa_sois_selected_details(
+            dashboard
+        )
+    except Exception as error:
+        component.logger.debug(
+            f"Could not refresh Signal Analysis SOI evidence: {error}"
+        )            
+
 
 async def sendSoisListTakReturn(
     component: object,
@@ -2140,11 +2149,10 @@ async def sendSoisListTakReturn(
     sois=None,
 ):
     """
-    Replaces the Dashboard SOI cache for one node with HIPRFISR's
-    authoritative merged SOI records, then refreshes every SOI consumer.
+    Replace the Dashboard SOI cache with HIPRFISR's authoritative records.
 
-    Linked Artifact metadata is also requested because Feature Extractor SOI
-    inputs resolve their files through the shared Artifact cache.
+    A non-empty node_uid replaces one node's records. A blank node_uid is a
+    Signal Analysis global refresh and replaces the entire Dashboard SOI cache.
     """
     frontend = component.frontend
     sois = sois or []
@@ -2153,12 +2161,15 @@ async def sendSoisListTakReturn(
     if not hasattr(frontend, "tactical_sois"):
         frontend.tactical_sois = {}
 
-    stale_keys = [
-        soi_key
-        for soi_key, record in frontend.tactical_sois.items()
-        if isinstance(record, dict)
-        and str(record.get("node_uid", "") or "").strip() == node_uid
-    ]
+    if node_uid:
+        stale_keys = [
+            soi_key
+            for soi_key, record in frontend.tactical_sois.items()
+            if isinstance(record, dict)
+            and str(record.get("node_uid", "") or "").strip() == node_uid
+        ]
+    else:
+        stale_keys = list(frontend.tactical_sois.keys())
 
     for soi_key in stale_keys:
         frontend.tactical_sois.pop(soi_key, None)
@@ -2168,30 +2179,48 @@ async def sendSoisListTakReturn(
         except Exception:
             pass
 
-    for soi in sois:
-        if not isinstance(soi, dict):
-            continue
+    frontend.sa_sois_bulk_refreshing = True
 
-        await soiUpdate(
-            component,
-            soi=soi,
-        )
+    try:
+        for soi in sois:
+            if not isinstance(soi, dict):
+                continue
+
+            await soiUpdate(
+                component,
+                soi=soi,
+            )
+    finally:
+        frontend.sa_sois_bulk_refreshing = False
 
     selected_node_uid = str(
         getattr(frontend, "selected_tactical_node_uid", "")
         or ""
     ).strip()
 
-    if selected_node_uid == node_uid:
+    if selected_node_uid and (
+        not node_uid
+        or selected_node_uid == node_uid
+    ):
         try:
             TacticalTabSlots.rebuild_tactical_node_sois(
                 frontend,
-                node_uid,
+                selected_node_uid,
             )
         except Exception as error:
             component.logger.debug(
                 f"Could not rebuild Tactical SOIs after refresh: {error}"
             )
+
+    try:
+        TSITabSlots.refresh_sa_sois_table(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh Signal Analysis SOIs "
+            f"after authoritative SOI refresh: {error}"
+        )
 
     try:
         TSITabSlots.refresh_tsi_fe_input_sois(
@@ -2661,6 +2690,120 @@ async def soiUpdate(component: object, soi=None):
         frontend,
         record,
     )
+
+    if not getattr(frontend, "sa_sois_bulk_refreshing", False):
+        try:
+            TSITabSlots.refresh_sa_sois_table(
+                frontend
+            )
+        except Exception as error:
+            component.logger.debug(
+                f"Could not refresh Signal Analysis SOIs: {error}"
+            )    
+
+
+async def soiDeleted(
+    component: object,
+    soi_key: str = "",
+    node_uid: str = "",
+    soi_id: str = "",
+    success: bool = False,
+):
+    """Remove a hub-deleted SOI from Dashboard caches and views."""
+    if not success:
+        component.logger.warning(
+            "HIPRFISR could not delete SOI "
+            f"soi_key={soi_key}, soi_id={soi_id}"
+        )
+        return
+
+    frontend = component.frontend
+    soi_key = str(soi_key or "").strip()
+    node_uid = str(node_uid or "").strip()
+    soi_id = str(soi_id or "").strip()
+
+    if not soi_key and soi_id:
+        for candidate_key, record in list(
+            getattr(frontend, "tactical_sois", {}).items()
+        ):
+            if not isinstance(record, dict):
+                continue
+
+            if str(record.get("soi_id", "") or "").strip() != soi_id:
+                continue
+
+            candidate_node_uid = str(
+                record.get("node_uid", "")
+                or ""
+            ).strip()
+
+            if node_uid and candidate_node_uid != node_uid:
+                continue
+
+            soi_key = candidate_key
+            break
+
+    removed = None
+    if soi_key:
+        removed = getattr(frontend, "tactical_sois", {}).pop(
+            soi_key,
+            None,
+        )
+
+        try:
+            frontend.tactical_map.remove_soi(soi_key)
+        except Exception:
+            pass
+
+        if getattr(
+            frontend,
+            "selected_tactical_node_soi_id",
+            None,
+        ) == soi_key:
+            frontend.selected_tactical_node_soi_id = None
+
+    removed_node_uid = str(
+        (removed or {}).get("node_uid", "")
+        or node_uid
+        or ""
+    ).strip()
+
+    selected_node_uid = str(
+        getattr(frontend, "selected_tactical_node_uid", "")
+        or ""
+    ).strip()
+
+    if selected_node_uid and selected_node_uid == removed_node_uid:
+        try:
+            TacticalTabSlots.rebuild_tactical_node_sois(
+                frontend,
+                selected_node_uid,
+            )
+        except Exception as error:
+            component.logger.debug(
+                f"Could not rebuild Tactical SOIs after delete: {error}"
+            )
+
+    try:
+        TSITabSlots.refresh_sa_sois_table(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            f"Could not refresh Signal Analysis SOIs after delete: {error}"
+        )
+
+    try:
+        TSITabSlots.refresh_tsi_fe_input_sois(
+            frontend
+        )
+        TSITabSlots.refresh_tsi_fe_run_sois(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            f"Could not refresh Feature Extractor SOIs after delete: {error}"
+        )
 
 
 async def dashboardArtifactTransferStatus(

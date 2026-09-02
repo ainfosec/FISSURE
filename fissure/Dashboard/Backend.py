@@ -2608,6 +2608,91 @@ class DashboardBackend:
                 msg,
             )
 
+    async def signalAnalysisSoisRefresh(self):
+        """Request HIPRFISR's authoritative SOI set across all nodes."""
+        await self.tacticalNodeSoisRefresh("")
+
+
+    async def signalAnalysisSoiUpdate(
+        self,
+        node_uid,
+        soi_id,
+        frequency_mhz=None,
+        status="",
+        operation_id="",
+        artifact_id="",
+        summary=None,
+        lat=None,
+        lon=None,
+        alt=None,
+        observation_time=None,
+    ):
+        """Send a Dashboard-authored SOI update to HIPRFISR."""
+        if summary is None:
+            summary = {}
+
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "node_uid": node_uid or "",
+            "soi_id": soi_id or "",
+            "frequency_mhz": frequency_mhz,
+            "status": status or "",
+            "operation_id": operation_id or "",
+            "artifact_id": artifact_id or "",
+            "summary": summary,
+            "lat": lat,
+            "lon": lon,
+            "alt": alt,
+            "observation_time": observation_time,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "soiUpdate",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+    async def signalAnalysisSoiDelete(
+        self,
+        soi_key,
+        node_uid="",
+        soi_id="",
+    ):
+        """Delete one hub-backed SOI without deleting linked artifacts."""
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "soi_key": soi_key or "",
+            "node_uid": node_uid or "",
+            "soi_id": soi_id or "",
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "deleteSoi",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
 
     async def tacticalNodeSoisRefresh(self, node_uid):
             """

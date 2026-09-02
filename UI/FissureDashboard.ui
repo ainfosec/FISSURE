@@ -967,7 +967,6 @@
      <addaction name="actionDemo_TSI_Feature_Extractor_Tab"/>
      <addaction name="actionDemo_TSI_Classifier_Tab"/>
      <addaction name="actionDemo_TSI_Direction_Finding_Tab"/>
-     <addaction name="actionDemo_TSI_SOI_Aggregator_Tab"/>
     </widget>
     <widget class="QMenu" name="menuDemo_PD_Tab">
      <property name="enabled">

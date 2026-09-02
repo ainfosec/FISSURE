@@ -163,7 +163,7 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Set Initial Tab Positions
         self.ui.tabWidget.setCurrentIndex(0)
-        self.ui.tabWidget_tsi.setCurrentIndex(0)
+        self.ui.tabWidget_signal_analysis.setCurrentIndex(0)
         self.ui.tabWidget_protocol.setCurrentIndex(0)
         self.ui.tabWidget_attack_attack.setCurrentIndex(0)
         self.ui.tabWidget_archive.setCurrentIndex(0)
@@ -479,8 +479,18 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def __init_TSI__(self):
         """
-        Initializes TSI Tabs on Dashboard launch.
+        Initializes Signal Analysis / legacy TSI tabs on Dashboard launch.
         """
+        try:
+            TSITabSlots.initialize_sa_sois_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize Signal Analysis SOIs "
+                f"controls: {e}"
+            )
+
         try:
             TSITabSlots.initialize_tsi_detector_controls(
                 self
@@ -541,17 +551,6 @@ class Dashboard(QtWidgets.QMainWindow):
             "Kurtosis of Band Power",
             "Relative Spectral Peak per Band",
         ]
-
-        # Legacy SOI Aggregator default.
-        self.ui.textEdit_tsi_soi_browse.setPlainText(
-            str(
-                os.path.join(
-                    fissure.utils.FISSURE_ROOT,
-                    "Conditioner Data",
-                    "Output",
-                )
-            )
-        )
 
         # Legacy Classifier defaults.
         TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(
@@ -1055,6 +1054,9 @@ class Dashboard(QtWidgets.QMainWindow):
         """
         self.window = uic.loadUi(os.path.join(fissure.utils.UI_DIR, "FissureDashboard.ui"))
         self.setMenuBar(self.window.menuBar())
+
+        # Hide Demo menu while the Dashboard is being reorganized.
+        self.window.menuDemo.menuAction().setVisible(False)
 
         # Set Title
         self.setWindowTitle("FISSURE Dashboard")
@@ -2616,7 +2618,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionDemo_TSI_Feature_Extractor_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_FeatureExtractorTabClicked(dashboard))
     dashboard.window.actionDemo_TSI_Classifier_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_ClassifierTabClicked(dashboard))
     dashboard.window.actionDemo_TSI_Direction_Finding_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_DirectionFindingTabClicked(dashboard))
-    dashboard.window.actionDemo_TSI_SOI_Aggregator_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoTSI_SOI_AggregatorTabClicked(dashboard))
     dashboard.window.actionDemo_PD_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoPD_AllClicked(dashboard))
     dashboard.window.actionDemo_Attack_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackAllClicked(dashboard))
     dashboard.window.actionDemo_Attack_Packet_Crafter_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackPacketCrafterTabClicked(dashboard))
@@ -2940,13 +2941,89 @@ def connect_tactical_slots(dashboard: Dashboard):
     
 
 def connect_tsi_slots(dashboard: Dashboard):
+    # Signal Analysis - SOIs
+    dashboard.ui.lineEdit_sa_sois_list_search.textChanged.connect(
+        lambda _text: TSITabSlots._slotSA_SOIsSearchChanged(
+            dashboard
+        )
+    )
+    dashboard.ui.tableWidget_sa_sois_list.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotSA_SOIsListSelectionChanged(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_list_add_soi.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsAddClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_list_edit.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsEditClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_list_delete.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsDeleteClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_list_merge.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsMergeClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_list_refresh.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsRefreshClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_promote_to_target.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsPromoteToTargetClicked(
+            dashboard
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_capture.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsWorkflowClicked(
+            dashboard,
+            "capture",
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_inspect.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsWorkflowClicked(
+            dashboard,
+            "inspection",
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_classify.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsWorkflowClicked(
+            dashboard,
+            "classifier",
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_protocol_discovery.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsWorkflowClicked(
+            dashboard,
+            "protocol_discovery",
+        )
+    )
+    dashboard.ui.pushButton_sa_sois_selected_direction_finding.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsWorkflowClicked(
+            dashboard,
+            "direction_finding",
+        )
+    )
+    dashboard.ui.label_sa_sois_evidence_details.linkActivated.connect(
+        lambda link: TSITabSlots._slotSA_SOIsEvidenceLinkActivated(
+            dashboard,
+            link,
+        )
+    )
+
+
     # Check Box
     dashboard.ui.checkBox_tsi_classifier_training_retrain2_manual.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingRetrain2_ManualChecked(dashboard)
     )
-    dashboard.ui.checkBox_tsi_soi_settings_iq_files.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_SettingsIncludeIQ_FilesChecked(dashboard)
-    )    
 
     # Combo Box
     dashboard.ui.comboBox_tsi_conditioner_input_source.currentIndexChanged.connect(
@@ -3229,33 +3306,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_classifier_classification_results_export.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierClassificationResultsExportClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_soi_aggregate.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_AggregateClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_RemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_remove_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_RemoveAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_edit_statistics.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_EditStatistics(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_soi_pd_list.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_PD_ListClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_pd_list_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_PD_ListAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_library.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_LibraryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_library_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_LibraryAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_soi_browse.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SOI_BrowseClicked(dashboard)
-    ) 
     dashboard.ui.pushButton_tsi_detector_query.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorQueryClicked(dashboard)
     )
@@ -4335,7 +4385,7 @@ def connect_packet_crafter_slots(dashboard: Dashboard):
             col,
         )
     )
-    
+
 
 def connect_archive_slots(dashboard: Dashboard):
     # Combo Box

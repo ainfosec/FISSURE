@@ -3645,7 +3645,7 @@ def _slotArchiveDownloadPlotClicked(dashboard: QtCore.QObject):
 
     # Change to IQ Tab
     dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_tsi)
-    dashboard.ui.tabWidget_tsi.setCurrentWidget(dashboard.ui.tab_iq_data)
+    dashboard.ui.tabWidget_signal_analysis.setCurrentWidget(dashboard.ui.tab_iq_data)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

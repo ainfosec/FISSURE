@@ -6117,6 +6117,9 @@ async def soiUpdate(component: object,
     SensorNode.send_soi_update() resolves True to live node GPS/time values.
     This hub callback receives concrete values and preserves prior values only
     when a field is omitted or empty.
+
+    Merge an SOI update into HIPRFISR's canonical SOI store and emit the
+    resulting record through the Tactical/TAK SOI path.
     """
     if summary is None or not isinstance(summary, dict):
         summary = {}
@@ -6385,22 +6388,6 @@ async def soiUpdate(component: object,
 
     component.sois[soi_key] = record
 
-    parameters = {"soi": record}
-    message = {
-        fissure.comms.MessageFields.IDENTIFIER:
-            component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME:
-            "soiUpdate",
-        fissure.comms.MessageFields.PARAMETERS:
-            parameters,
-    }
-
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            message,
-        )
-
     uid_core = (
         record.get("soi_id")
         or record.get("operation_id")
@@ -6428,6 +6415,7 @@ async def soiUpdate(component: object,
         ),
         "stage": record.get("stage"),
         "stage_order": record.get("stage_order"),
+        "record_json": json.dumps(record, default=str, separators=(",", ":")),
     }
 
     if merged_summary:
@@ -9139,6 +9127,74 @@ async def promoteDetectionToTarget(
         f"Promoted detection to target "
         f"target_id={target_id}, node_uid={node_uid}"
     )
+
+
+async def deleteSoi(
+    component: object,
+    soi_key: str = "",
+    node_uid: str = "",
+    soi_id: str = "",
+):
+    """Delete one authoritative SOI record while preserving artifacts."""
+    soi_key = str(soi_key or "").strip()
+    node_uid = str(node_uid or "").strip()
+    soi_id = str(soi_id or "").strip()
+
+    if not soi_key and soi_id:
+        soi_key = f"{node_uid}:{soi_id}"
+
+    removed = None
+
+    if soi_key:
+        removed = component.sois.pop(soi_key, None)
+
+    if removed is None and soi_id:
+        for candidate_key, candidate in list(component.sois.items()):
+            if not isinstance(candidate, dict):
+                continue
+
+            if str(candidate.get("soi_id", "") or "").strip() != soi_id:
+                continue
+
+            candidate_node_uid = str(
+                candidate.get("node_uid", "")
+                or ""
+            ).strip()
+
+            if node_uid and candidate_node_uid != node_uid:
+                continue
+
+            soi_key = candidate_key
+            removed = component.sois.pop(candidate_key, None)
+            break
+
+    parameters = {
+        "soi_key": soi_key,
+        "node_uid": node_uid,
+        "soi_id": soi_id,
+        "success": removed is not None,
+    }
+
+    message = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "soiDeleted",
+        fissure.comms.MessageFields.PARAMETERS:
+            parameters,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            message,
+        )
+
+    if removed is not None:
+        component.logger.info(
+            "Deleted SOI record "
+            f"soi_key={soi_key}, soi_id={soi_id}"
+        )
 
 
 async def sendSoisListTak(

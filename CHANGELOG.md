@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-2
+
+Redesign Signal Analysis around centralized SOI workflows
+
+### Added
+
+- Added a new Signal Analysis → SOIs workspace with a global searchable/filterable SOI list, selected-SOI summary, manual Add/Edit/Delete/Refresh controls, and direct promotion from an SOI to a Target.
+- Added SOI detail views for the complete normalized Record, linked Evidence, contributing Detections, Analysis, and History, including artifact download/open links and analyst/model/database classification and protocol context.
+- Added direct SOI workflow shortcuts into Capture, Inspection, Classification, Protocol Discovery, and Direction Finding so downstream analysis can start from the selected SOI.
+- Added richer canonical SOI metadata including stable SOI IDs, timestamps, location, stage, notes, classification/protocol results, artifact relationships, and analysis history for use across Tactical and Signal Analysis.
+
+### Changed
+
+- Reorganized Signal Analysis into SOIs, Survey, Detector, Capture, Inspection, Conditioner, Features, Classifier, Protocol Discovery, Direction Finding, and temporary IQ Data tabs, removing the obsolete SOI Aggregator and establishing the new analysis workflow order.
+- Consolidated SOI delivery onto the Tactical path so HIPRFISR no longer sends a separate duplicate Dashboard SOI update path, while preserving the complete normalized SOI record for both Tactical and Signal Analysis views.
+- Refined the Selected SOI summary to emphasize frequency, bandwidth, modulation, classification, protocol, stage, timestamps, location, and notes while moving lower-level provenance and full-record details into the dedicated analysis views.
+- Updated the SOIs workspace styling across the current Dashboard themes with compact tables, workflow/action hierarchy, snapshot placeholder treatment, theme-aware evidence links, and a native scrollable plain-text Record viewer.
+
 ## 2026-9-1
 
 Clean up Library tabs and Packet Crafter organization

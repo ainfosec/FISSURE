@@ -330,7 +330,7 @@ def _slotMenuOptionsClicked(dashboard: QtWidgets.QMainWindow):
         current_tab = dashboard.ui.tabWidget.currentWidget()
 
         if current_tab is dashboard.ui.tab_tsi:
-            current_signal_tab = dashboard.ui.tabWidget_tsi.currentWidget()
+            current_signal_tab = dashboard.ui.tabWidget_signal_analysis.currentWidget()
             if current_signal_tab is dashboard.ui.tab_iq_data:
                 opening_tab = "IQ Data"
             elif current_signal_tab is dashboard.ui.tabWidget_protocol.parentWidget():

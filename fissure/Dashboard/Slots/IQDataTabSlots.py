@@ -5630,7 +5630,7 @@ def _slotIQ_DemodClicked(dashboard: QtCore.QObject):
     elif len(get_value) > 0:
         dashboard.ui.plainTextEdit_pd_bit_viewer_bits.setPlainText(get_value)
         dashboard.ui.tabWidget.setCurrentWidget(dashboard.ui.tab_tsi)
-        dashboard.ui.tabWidget_tsi.setCurrentWidget(dashboard.ui.tabWidget_protocol.parentWidget())
+        dashboard.ui.tabWidget_signal_analysis.setCurrentWidget(dashboard.ui.tabWidget_protocol.parentWidget())
         dashboard.ui.tabWidget_protocol.setCurrentWidget(dashboard.ui.tab_pd_bit_viewer)
     else:
         pass
