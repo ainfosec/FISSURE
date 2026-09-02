@@ -146,43 +146,13 @@ echo "[*] Apptainer FISSURE directory: $APPTAINER_FISSURE_DIR"
 #############################################
 # Install Apptainer Software
 #############################################
-install_apptainer_suid() {
-    echo "[*] Installing Apptainer with setuid support..."
-
-    sudo apt update
-    sudo apt install -y software-properties-common
-
-    if ! grep -Rqs "ppa.launchpadcontent.net/apptainer/ppa" \
-        /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
-        sudo add-apt-repository -y ppa:apptainer/ppa
-    fi
-
-    sudo apt update
-    sudo apt install -y apptainer-suid
-}
-
-if ! command -v apptainer >/dev/null 2>&1; then
-    install_apptainer_suid
-elif ! apptainer buildcfg 2>/dev/null |
-       grep -q '^APPTAINER_SUID_INSTALL=1$'; then
-    echo "[!] Existing Apptainer installation does not have setuid support."
-    install_apptainer_suid
+if command -v apptainer >/dev/null 2>&1 &&
+   apptainer buildcfg 2>/dev/null |
+   grep -q '^APPTAINER_SUID_INSTALL=1$'; then
+    "$INSTALLER_DIR/install_apptainer_package.sh"
 else
-    echo "[✓] Existing Apptainer installation has setuid support."
+    sudo "$INSTALLER_DIR/install_apptainer_package.sh"
 fi
-
-if ! command -v apptainer >/dev/null 2>&1; then
-    echo "[ERROR] Apptainer installation failed."
-    exit 1
-fi
-
-if ! apptainer buildcfg 2>/dev/null |
-     grep -q '^APPTAINER_SUID_INSTALL=1$'; then
-    echo "[ERROR] Apptainer is installed without required setuid support."
-    exit 1
-fi
-
-echo "[✓] $(apptainer version)"
 
 #############################################
 #          Host Preparation (optional)      #
