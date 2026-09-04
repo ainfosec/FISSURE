@@ -369,6 +369,9 @@ class OperationMain(Operation):
             )
 
     async def _run_gui_process(self) -> None:
+        if not await self.wait_for_graphical_display():
+            return
+
         script_path = self._resolve_flow_graph_path()
         command = self._build_command(
             script_path
@@ -381,6 +384,7 @@ class OperationMain(Operation):
 
         self.process = await asyncio.create_subprocess_exec(
             *command,
+            env=self.get_subprocess_environment(),
         )
 
         stopped_by_request = False

@@ -490,6 +490,16 @@ class Dashboard(QtWidgets.QMainWindow):
                 "Could not initialize Signal Analysis SOIs "
                 f"controls: {e}"
             )
+        
+        try:
+            TSITabSlots.initialize_sa_survey_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize Signal Analysis Survey "
+                f"controls: {e}"
+            )
 
         try:
             TSITabSlots.initialize_tsi_detector_controls(
@@ -1479,6 +1489,14 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureTSI_Hardware(self):
         """Refresh TSI selected-node-dependent controls."""
+        try:
+            TSITabSlots.update_sa_survey_selected_node_gate(self)
+        except Exception as e:
+            self.logger.debug(
+                "Could not update Signal Analysis Survey selected-node state: "
+                f"{e}"
+            )
+        
         try:
             TSITabSlots.update_tsi_detector_selected_node_gate(self)
         except Exception as e:
@@ -3019,6 +3037,28 @@ def connect_tsi_slots(dashboard: Dashboard):
         )
     )
 
+    # Signal Analysis - Survey
+    dashboard.ui.comboBox_sa_survey_settings_hardware.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotSA_SurveyHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sa_survey_settings_plugin.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotSA_SurveyPluginChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sa_survey_settings_action.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotSA_SurveyActionChanged(dashboard)
+    )
+    dashboard.ui.pushButton_sa_survey_settings_query.clicked.connect(
+        lambda: TSITabSlots._slotSA_SurveyQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_survey_parameters_customize.clicked.connect(
+        lambda: TSITabSlots._slotSA_SurveyCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_survey_execution_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotSA_SurveyStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_survey_execution_add_soi.clicked.connect(
+        lambda: TSITabSlots._slotSA_SOIsAddClicked(dashboard)
+    )
 
     # Check Box
     dashboard.ui.checkBox_tsi_classifier_training_retrain2_manual.clicked.connect(

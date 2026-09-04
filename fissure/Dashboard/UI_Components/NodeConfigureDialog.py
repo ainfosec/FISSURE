@@ -171,6 +171,7 @@ class NodeConfigureDialog(QtWidgets.QDialog, UI_Types.Node_Configure):
         self.pushButton_add_all.clicked.connect(lambda: NodeConfigureSlots.add_all(self))      
         self.pushButton_hardware_remove.clicked.connect(lambda: NodeConfigureSlots.remove_hardware(self))      
         self.pushButton_remote_actions_ip_ping.clicked.connect(lambda: NodeConfigureSlots.ping(self))
+        self.pushButton_remote_actions_passwordless_ssh.clicked.connect(lambda: NodeConfigureSlots.passwordless_ssh(self))
         self.pushButton_remote_actions_ip_gps_beacon_enable_disable.clicked.connect(lambda: NodeConfigureSlots.ip_gps_beacon_enable_disable(self))
         self.pushButton_remote_actions_ip_reboot.clicked.connect(lambda: NodeConfigureSlots.ip_reboot(self))
         self.pushButton_remote_actions_ip_uptime.clicked.connect(lambda: NodeConfigureSlots.ip_uptime(self))

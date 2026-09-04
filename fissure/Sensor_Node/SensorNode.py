@@ -1273,7 +1273,18 @@ class SensorNode(object):
         self.logger.info(f"Plugin operation resources: {resources}")
 
         # Record user parameters (for UI/reporting/logging only; not sent over air)
-        user_parameters = parameters.copy()
+        execution_context = parameters.get(
+            "_fissure_execution_context",
+            {},
+        )
+        if not isinstance(execution_context, dict):
+            execution_context = {}
+
+        user_parameters = {
+            key: value
+            for key, value in parameters.items()
+            if key != "_fissure_execution_context"
+        }
 
         # -------------------------------------------------------------------------
         # Add callbacks + context for Operation base class
@@ -1297,6 +1308,7 @@ class SensorNode(object):
             init_params = set(init_signature.parameters.keys())
             filtered_parameters = {k: v for k, v in parameters.items() if k in init_params}
             operation_inst = operation_main(**filtered_parameters)
+            operation_inst.execution_context = dict(execution_context)
             requested_operation_id = str(parameters.get("operation_id") or "").strip()
             if requested_operation_id:
                 operation_inst.opid = requested_operation_id

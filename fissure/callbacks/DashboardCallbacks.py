@@ -1190,7 +1190,6 @@ async def responsePluginOperationStopped(
     operation : str
         Operation name
     """
-
     # IQ Playback lifecycle only.
     operation_name = str(
         operation or ""
@@ -1625,6 +1624,17 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         component.logger.debug(
             f"Could not update TSI Conditioner status: {e}"
         )
+
+    try:
+        TSITabSlots.update_sa_survey_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update Survey status from selected node: {e}"
+        )        
 
     try:
         IQDataTabSlots.update_iq_playback_status_from_selected_node(
@@ -2308,6 +2318,15 @@ def queryPluginActionsResults(
                 actions=actions,
             )
         return
+    
+    if context.startswith("sa.survey"):
+        TSITabSlots.handle_sa_survey_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
 
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_query_results(
@@ -2457,6 +2476,16 @@ def queryPluginActionSchemaResults(
                 node_uid=node_uid,
                 parameters=schema.get("params", []),
             )
+        return
+    
+    if context.startswith("sa.survey"):
+        TSITabSlots.handle_sa_survey_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
         return
 
     if context.startswith("tsi.detector"):

@@ -916,6 +916,22 @@
         <string>iwconfig</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="pushButton_remote_actions_passwordless_ssh">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>95</x>
+         <y>80</y>
+         <width>140</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Passwordless SSH</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="page_meshtastic">
       <widget class="QLabel" name="label2_remote_actions_meshtastic_gps_beacon">

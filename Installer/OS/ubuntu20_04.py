@@ -303,6 +303,89 @@ test -f '""" + fissure_directory + """/certificates/clients/client_0.key' &&
 test -f '""" + fissure_directory + """/certificates/clients/client_0.key_secret'
 """,True,'Minimum Install'))
 
+# Xpra
+programs_ubuntu20_04.append(('Xpra',
+"""if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
+    echo "[*] Skipping Xpra installation inside Apptainer."
+else
+    echo "[*] Installing Xpra 5.1.6 from source."
+
+    sudo apt-get update
+
+    sudo apt-get install -y build-essential
+    sudo apt-get install -y python3-dev
+    sudo apt-get install -y python3-setuptools
+    sudo apt-get install -y python3-pip
+    sudo apt-get install -y cython3
+    sudo apt-get install -y pkg-config
+    sudo apt-get install -y wget
+    sudo apt-get install -y xterm
+    sudo apt-get install -y xvfb
+    sudo apt-get install -y xauth
+    sudo apt-get install -y openssh-client
+    sudo apt-get install -y libgtk-3-dev
+    sudo apt-get install -y libx11-dev
+    sudo apt-get install -y libxext-dev
+    sudo apt-get install -y libxfixes-dev
+    sudo apt-get install -y libxdamage-dev
+    sudo apt-get install -y libxcomposite-dev
+    sudo apt-get install -y libxrandr-dev
+    sudo apt-get install -y libxtst-dev
+    sudo apt-get install -y libxi-dev
+    sudo apt-get install -y libxcursor-dev
+    sudo apt-get install -y libxkbfile-dev
+    sudo apt-get install -y libxres-dev
+    sudo apt-get install -y liblz4-dev
+    sudo apt-get install -y libbrotli-dev
+    sudo apt-get install -y libpam0g-dev
+    sudo apt-get install -y libsystemd-dev
+    sudo apt-get install -y libx264-dev
+    sudo apt-get install -y libvpx-dev
+    sudo apt-get install -y libgirepository1.0-dev
+    sudo apt-get install -y python3-gi
+    sudo apt-get install -y python-gi-dev
+    sudo apt-get install -y python3-cairo-dev
+    sudo apt-get install -y libavutil-dev
+    sudo apt-get install -y libavcodec-dev
+    sudo apt-get install -y libavformat-dev
+    sudo apt-get install -y libswscale-dev
+    sudo apt-get install -y libavfilter-dev
+    sudo apt-get install -y libswresample-dev
+    sudo apt-get install -y pandoc
+
+    xpra_install_dir="$HOME/Installed_by_FISSURE/xpra"
+    mkdir -p "$xpra_install_dir"
+
+    rm -rf "$xpra_install_dir/xpra-5.1.6"
+    rm -f "$xpra_install_dir/xpra-5.1.6.tar.gz"
+
+    cd "$xpra_install_dir"
+
+    wget https://github.com/Xpra-org/xpra/archive/refs/tags/v5.1.6.tar.gz \
+        -O xpra-5.1.6.tar.gz
+
+    tar -xzf xpra-5.1.6.tar.gz
+    cd xpra-5.1.6
+
+    python3 setup.py build
+    sudo python3 setup.py install --prefix=/usr/local
+
+    hash -r
+
+    cd "$HOME"
+    rm -rf "$xpra_install_dir/xpra-5.1.6"
+    rm -f "$xpra_install_dir/xpra-5.1.6.tar.gz"
+fi
+
+########## Verify ##########
+if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
+    echo "[*] Skipping Xpra verification inside Apptainer."
+else
+    test -x /usr/local/bin/xpra &&
+    /usr/local/bin/xpra --version 2>&1 | grep -q '5\\.1\\.6'
+fi
+""", False, 'Minimum Install'))
+
 # Auto-Launch Sensor Node
 programs_ubuntu20_04.append(('Auto-Launch Sensor Node',
 f"""mkdir -p "$HOME/.config/autostart"
@@ -1129,14 +1212,22 @@ ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
-programs_ubuntu20_04.append(('QSpectrumAnalyzer (3.1 MB)',
-"""#sudo add-apt-repository -y ppa:myriadrf/drivers
-#sudo apt-get -y update
-sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
-sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-module-hackrf soapysdr-module-lms7
-python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
+programs_ubuntu20_04.append(('QSpectrumAnalyzer (36.00 kB)',
+"""sudo apt-get install -y python3-pip
+sudo apt-get install -y python3-pyqt5
+sudo apt-get install -y python3-numpy
+sudo apt-get install -y python3-scipy
+sudo apt-get install -y python3-soapysdr
+sudo apt-get install -y soapysdr-module-rtlsdr
+sudo apt-get install -y soapysdr-module-airspy
+sudo apt-get install -y soapysdr-module-hackrf
+sudo apt-get install -y soapysdr-module-lms7
+
+python3 -m pip install --user qspectrumanalyzer --break-system-packages
+
 ########## Verify ##########
-ls ~/.local/bin/qspectrumanalyzer
+test -x "$HOME/.local/bin/qspectrumanalyzer" &&
+QT_PREFERRED_BINDING=PyQt5 python3 -c "import Qt; assert Qt.__binding__ == 'PyQt5'; import qspectrumanalyzer"
 """,True,'SDR'))
 
 # GQRX

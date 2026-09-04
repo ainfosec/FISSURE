@@ -266,6 +266,7 @@ class Operation(object):
         # input parameters
         self.node_uid = node_uid
         self.logger = logger
+        self.execution_context = {}
         if alert_callback is None:
             alert_callback = send_alert
         if tak_cot_callback is None:
@@ -313,6 +314,75 @@ class Operation(object):
             if p in params:
                 params.remove(p)
         return f"{self.__class__.__name__}(node_uid={self.node_uid}" + ''.join([f", {p}={getattr(self, p)}" for p in params]) + ")"
+
+
+    def get_subprocess_environment(self) -> Dict[str, str]:
+        """Build a subprocess environment for the operation execution context."""
+        env = os.environ.copy()
+        context = (
+            self.execution_context
+            if isinstance(self.execution_context, dict)
+            else {}
+        )
+
+        if str(context.get("presentation") or "").strip().lower() == "xpra":
+            display = str(context.get("display") or "").strip()
+            if re.fullmatch(r":\d+(?:\.\d+)?", display):
+                env["DISPLAY"] = display
+            env["QT_QPA_PLATFORM"] = "xcb"
+            env.pop("WAYLAND_DISPLAY", None)
+            env.pop("XAUTHORITY", None)
+
+        return env
+
+
+    async def wait_for_graphical_display(
+        self,
+        timeout_s: float = 60.0,
+    ) -> bool:
+        """Wait for an Xpra-backed X11 display before launching a GUI."""
+        context = (
+            self.execution_context
+            if isinstance(self.execution_context, dict)
+            else {}
+        )
+
+        if str(context.get("presentation") or "").strip().lower() != "xpra":
+            return True
+
+        display = str(context.get("display") or "").strip()
+        match = re.fullmatch(r":(\d+)(?:\.\d+)?", display)
+        if not match:
+            raise RuntimeError(
+                f"Invalid Xpra display in execution context: {display!r}"
+            )
+
+        socket_path = f"/tmp/.X11-unix/X{match.group(1)}"
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + max(1.0, float(timeout_s))
+
+        self.logger.info(
+            f"Waiting for graphical display {display} at {socket_path}"
+        )
+
+        while not self._stop:
+            if os.path.exists(socket_path):
+                # Give the X server a moment to finish initialization after
+                # creating its Unix-domain socket.
+                await asyncio.sleep(0.25)
+                self.logger.info(
+                    f"Graphical display {display} is ready."
+                )
+                return True
+
+            if loop.time() >= deadline:
+                raise RuntimeError(
+                    f"Timed out waiting for graphical display {display}."
+                )
+
+            await asyncio.sleep(0.1)
+
+        return False
 
 
     @classmethod

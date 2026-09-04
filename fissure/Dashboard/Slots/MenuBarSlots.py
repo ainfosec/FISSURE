@@ -496,15 +496,31 @@ def _slotMenuKismetClicked(dashboard: QtWidgets.QMainWindow):
 
 @QtCore.pyqtSlot()
 def _slotMenuQSpectrumAnalyzerClicked(dashboard: QtWidgets.QMainWindow):
-    """Opens QSpectrumAnalyzer for viewing RF signals."""
-    # Issue the Command
-    expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
-    if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
-        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
-    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
-        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
-    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
-        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
+    """Open QSpectrumAnalyzer for viewing RF signals."""
+    expect_script_filepath = os.path.join(
+        fissure.utils.TOOLS_DIR,
+        "expect_script",
+    )
+    terminal = fissure.utils.get_default_expect_terminal(
+        dashboard.backend.os_info
+    )
+    command = "env QT_PREFERRED_BINDING=PyQt5 qspectrumanalyzer"
+
+    if terminal == "gnome-terminal":
+        subprocess.Popen(
+            f'gnome-terminal -- {expect_script_filepath} "{command}"',
+            shell=True,
+        )
+    elif terminal == "qterminal":
+        subprocess.Popen(
+            f'qterminal -e {expect_script_filepath} "{command}"',
+            shell=True,
+        )
+    elif terminal == "lxterminal":
+        subprocess.Popen(
+            f'lxterminal -e {expect_script_filepath} "{command}"',
+            shell=True,
+        )
 
 
 @QtCore.pyqtSlot()

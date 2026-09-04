@@ -3537,6 +3537,636 @@
       <attribute name="title">
        <string>Survey</string>
       </attribute>
+      <widget class="QStackedWidget" name="stackedWidget_sa_survey">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>815</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_sa_survey_controls">
+        <widget class="QFrame" name="frame_sa_survey_execution">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>470</y>
+           <width>925</width>
+           <height>335</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_survey_execution_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>235</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Execution</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_execution_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>300</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start or stop the selected survey tool.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_execution_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_survey_execution_start_stop">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>170</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_survey_execution_status_label">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>55</y>
+            <width>85</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_execution_status">
+          <property name="geometry">
+           <rect>
+            <x>105</x>
+            <y>55</y>
+            <width>200</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_execution_operation_id">
+          <property name="geometry">
+           <rect>
+            <x>105</x>
+            <y>90</y>
+            <width>300</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_survey_execution_operation_id_label">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>90</y>
+            <width>85</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Operation ID:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_execution_last_result">
+          <property name="geometry">
+           <rect>
+            <x>415</x>
+            <y>5</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Last Result</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QTextEdit" name="textEdit_sa_survey_execution_result">
+          <property name="geometry">
+           <rect>
+            <x>415</x>
+            <y>30</y>
+            <width>500</width>
+            <height>295</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>false</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_survey_execution_add_soi">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>250</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Add SOI</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_survey_setup">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>395</width>
+           <height>450</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_survey_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Action Selection</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>300</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Choose hardware and a survey action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_492">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>74</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Hardware:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_survey_settings_hardware">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>70</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_setup_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_496">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>204</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_survey_settings_action">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>200</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_survey_settings_query">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>415</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_497">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>139</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Plugin:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_survey_settings_plugin">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>135</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_setup_info">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>260</y>
+            <width>365</width>
+            <height>125</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select an action to view details.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_survey_parameters">
+         <property name="geometry">
+          <rect>
+           <x>415</x>
+           <y>10</y>
+           <width>520</width>
+           <height>450</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_survey_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Parameters</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>350</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Configure parameters for the selected action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_sa_survey_parameters">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>500</width>
+            <height>360</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_sa_survey_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>498</width>
+             <height>358</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_survey_parameters_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>193</x>
+            <y>415</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_survey_tools">
+         <property name="geometry">
+          <rect>
+           <x>945</x>
+           <y>10</y>
+           <width>265</width>
+           <height>795</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_survey_tools_title">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Third-Party Tools</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_survey_tools_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>29</y>
+            <width>240</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Launch compatible external tools.</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_sa_survey_tools">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>245</width>
+            <height>730</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_sa_survey_tools">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>243</width>
+             <height>728</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_sa_survey_no_node">
+        <widget class="QLabel" name="label_sa_survey_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sa_survey_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sa_survey_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to perform RF survey.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sa_survey_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_sa_survey_empty_icon</zorder>
+        <zorder>label_sa_survey_select_sensor_node_image</zorder>
+        <zorder>label2_sa_survey_no_node_selected</zorder>
+        <zorder>label2_sa_survey_select_a_node</zorder>
+       </widget>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_tsi_detector">
       <attribute name="title">

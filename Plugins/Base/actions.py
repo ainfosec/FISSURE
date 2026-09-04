@@ -68,9 +68,11 @@ ACTION_TAGS = {
         "All",
         "iq.inspection",
         "iq.inspection.source.radio",
+        "sa.survey",
         "tactical.inspection",
         "client.dashboard",
         "node.local",
+        "node.remote",
     ],
     "iq_inspection_file": [
         "All",

@@ -11,6 +11,8 @@ import tempfile
 import subprocess
 import serial.tools.list_ports
 import re
+import getpass
+import shutil
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -531,6 +533,317 @@ def map(NodeConfigure: QtCore.QObject):
     # Open the file using xdg-open (respects user's default KML viewer)
     subprocess.run(["xdg-open", temp_kml_path], check=False)
 
+
+async def _passwordless_ssh_test(target: str) -> bool:
+    """Return True when the selected host accepts noninteractive SSH."""
+    ssh_executable = shutil.which("ssh")
+    if not ssh_executable:
+        return False
+
+    process = await asyncio.create_subprocess_exec(
+        ssh_executable,
+        "-o", "BatchMode=yes",
+        "-o", "ConnectTimeout=5",
+        "-o", "StrictHostKeyChecking=accept-new",
+        target,
+        "true",
+        stdin=asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.DEVNULL,
+    )
+
+    return await process.wait() == 0
+
+
+async def _ensure_passwordless_ssh_key(NodeConfigure: QtCore.QObject):
+    """Return the local Ed25519 public key path, creating it when approved."""
+    ssh_dir = os.path.expanduser("~/.ssh")
+    private_key = os.path.join(ssh_dir, "id_ed25519")
+    public_key = private_key + ".pub"
+    ssh_keygen = shutil.which("ssh-keygen")
+
+    if not ssh_keygen:
+        raise RuntimeError("ssh-keygen was not found on the Dashboard.")
+
+    if not os.path.exists(private_key):
+        answer = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(
+            NodeConfigure,
+            (
+                "No ~/.ssh/id_ed25519 SSH key exists on this Dashboard.\n\n"
+                "Create one for passwordless Sensor Node access?\n\n"
+                "The new key will not have a passphrase so FISSURE can use "
+                "it noninteractively."
+            ),
+        )
+
+        if answer != QtWidgets.QMessageBox.Yes:
+            return None
+
+        os.makedirs(ssh_dir, mode=0o700, exist_ok=True)
+        os.chmod(ssh_dir, 0o700)
+
+        process = await asyncio.create_subprocess_exec(
+            ssh_keygen,
+            "-q",
+            "-t", "ed25519",
+            "-N", "",
+            "-f", private_key,
+            stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        _, stderr = await process.communicate()
+
+        if process.returncode != 0:
+            raise RuntimeError(
+                "Could not create the SSH key:\n"
+                + stderr.decode(errors="replace").strip()
+            )
+
+    if not os.path.exists(public_key):
+        process = await asyncio.create_subprocess_exec(
+            ssh_keygen,
+            "-y",
+            "-P", "",
+            "-f", private_key,
+            stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await process.communicate()
+
+        if process.returncode != 0 or not stdout.strip():
+            raise RuntimeError(
+                "The SSH private key exists, but its public key is missing "
+                "and could not be regenerated automatically. If the private "
+                "key is passphrase-protected, restore the matching "
+                "~/.ssh/id_ed25519.pub file or load/configure the key manually."
+            )
+
+        with open(public_key, "wb") as public_key_file:
+            public_key_file.write(stdout.rstrip() + b"\n")
+
+        os.chmod(public_key, 0o644)
+
+    return public_key
+
+
+async def _install_passwordless_ssh_key(
+    target: str,
+    public_key_path: str,
+    password: str,
+):
+    """Install one Dashboard public key on a remote Sensor Node."""
+    ssh_executable = shutil.which("ssh")
+    setsid_executable = shutil.which("setsid")
+
+    if not ssh_executable:
+        raise RuntimeError("ssh was not found on the Dashboard.")
+    if not setsid_executable:
+        raise RuntimeError("setsid was not found on the Dashboard.")
+
+    with open(public_key_path, "r", encoding="utf-8") as public_key_file:
+        public_key = public_key_file.read().strip()
+
+    if not public_key:
+        raise RuntimeError("The local SSH public key is empty.")
+
+    with tempfile.TemporaryDirectory(
+        prefix="fissure-ssh-setup-"
+    ) as auth_dir:
+        os.chmod(auth_dir, 0o700)
+
+        password_path = os.path.join(auth_dir, "password")
+        askpass_path = os.path.join(auth_dir, "askpass.sh")
+
+        with open(password_path, "w", encoding="utf-8") as password_file:
+            password_file.write(password)
+            password_file.write("\n")
+        os.chmod(password_path, 0o600)
+
+        with open(askpass_path, "w", encoding="utf-8") as askpass_file:
+            askpass_file.write(
+                "#!/bin/sh\n"
+                'cat "$FISSURE_SSH_PASSWORD_FILE"\n'
+            )
+        os.chmod(askpass_path, 0o700)
+
+        process_env = os.environ.copy()
+        process_env["SSH_ASKPASS"] = askpass_path
+        process_env["FISSURE_SSH_PASSWORD_FILE"] = password_path
+        process_env.pop("SSH_ASKPASS_REQUIRE", None)
+
+        if not str(process_env.get("DISPLAY") or "").strip():
+            process_env["DISPLAY"] = ":0"
+
+        remote_command = (
+            "umask 077; "
+            "mkdir -p ~/.ssh; "
+            "chmod 700 ~/.ssh; "
+            "touch ~/.ssh/authorized_keys; "
+            "chmod 600 ~/.ssh/authorized_keys; "
+            'IFS= read -r fissure_key; '
+            'grep -qxF "$fissure_key" ~/.ssh/authorized_keys '
+            '|| printf "%s\\n" "$fissure_key" >> ~/.ssh/authorized_keys'
+        )
+
+        process = await asyncio.create_subprocess_exec(
+            setsid_executable,
+            "-w",
+            ssh_executable,
+            "-o", "PubkeyAuthentication=no",
+            "-o", "PasswordAuthentication=yes",
+            "-o", "PreferredAuthentications=password",
+            "-o", "NumberOfPasswordPrompts=1",
+            "-o", "StrictHostKeyChecking=accept-new",
+            target,
+            remote_command,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            env=process_env,
+        )
+
+        stdout, stderr = await process.communicate(
+            (public_key + "\n").encode("utf-8")
+        )
+
+        if process.returncode != 0:
+            error_text = stderr.decode(errors="replace").strip()
+            raise RuntimeError(
+                "Could not install the SSH public key on the Sensor Node."
+                + (f"\n\n{error_text}" if error_text else "")
+            )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def passwordless_ssh(NodeConfigure: QtCore.QObject):
+    """Configure passwordless SSH access for the selected Sensor Node."""
+    dashboard = NodeConfigure.dashboard
+    button = NodeConfigure.pushButton_remote_actions_passwordless_ssh
+    node_ip = str(getattr(NodeConfigure, "ip_address", "") or "").strip()
+    sensor_node_settings = getattr(
+        NodeConfigure,
+        "sensor_node_settings",
+        {},
+    ) or {}
+
+    ssh_username = str(
+        sensor_node_settings.get("ssh_username", "")
+        or getpass.getuser()
+    ).strip()
+
+    if not node_ip or node_ip == "ipc":
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            NodeConfigure,
+            "Passwordless SSH setup is only available for remote IP Sensor Nodes.",
+            width=450,
+            height=160,
+        )
+        return
+
+    if not ssh_username:
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            NodeConfigure,
+            "Could not determine the SSH username for this Sensor Node.",
+            width=450,
+            height=160,
+        )
+        return
+
+    target = f"{ssh_username}@{node_ip}"
+    button.setEnabled(False)
+
+    try:
+        dashboard.logger.info(
+            f"Checking passwordless SSH access to {target}."
+        )
+
+        if await _passwordless_ssh_test(target):
+            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+                NodeConfigure,
+                f"Passwordless SSH is already configured for:\n\n{target}",
+                width=450,
+                height=180,
+            )
+            return
+
+        public_key_path = await _ensure_passwordless_ssh_key(NodeConfigure)
+        if not public_key_path:
+            return
+
+        password = await fissure.Dashboard.UI_Components.Qt5.async_input_dialog(
+            NodeConfigure,
+            "Sensor Node Authentication",
+            f"SSH password for {target}:",
+        )
+
+        if not password:
+            return
+
+        dashboard.logger.info(
+            f"Installing Dashboard SSH public key on {target}."
+        )
+
+        await _install_passwordless_ssh_key(
+            target,
+            public_key_path,
+            password,
+        )
+
+        if await _passwordless_ssh_test(target):
+            dashboard.logger.info(
+                f"Passwordless SSH configured successfully for {target}."
+            )
+
+            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+                NodeConfigure,
+                (
+                    "Passwordless SSH configured successfully.\n\n"
+                    f"{target}\n\n"
+                    "Remote Survey/Xpra sessions can now connect without "
+                    "showing the SSH password prompt."
+                ),
+                width=500,
+                height=220,
+            )
+            return
+
+        dashboard.logger.warning(
+            f"SSH public key was installed on {target}, but "
+            "noninteractive authentication still failed."
+        )
+
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            NodeConfigure,
+            (
+                "The public key was installed on the Sensor Node, but "
+                "passwordless SSH still failed.\n\n"
+                "If ~/.ssh/id_ed25519 already existed and is protected by "
+                "a passphrase, load it into ssh-agent with:\n\n"
+                "ssh-add ~/.ssh/id_ed25519"
+            ),
+            width=520,
+            height=260,
+        )
+
+    except Exception as exc:
+        dashboard.logger.error(
+            f"Passwordless SSH setup failed for {target}: {exc}"
+        )
+
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            NodeConfigure,
+            f"Passwordless SSH setup failed:\n\n{exc}",
+            width=520,
+            height=260,
+        )
+
+    finally:
+        button.setEnabled(True)
+        
 
 @qasync.asyncSlot(QtCore.QObject)
 async def ip_gps_beacon_enable_disable(NodeConfigure: QtCore.QObject):

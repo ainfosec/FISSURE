@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-4
+
+Add remote graphical Survey workflows
+
+### Added
+
+- Added the new Signal Analysis → Survey workspace for exploratory live RF analysis with hardware-aware plugin action discovery, dynamic parameter customization, Start/Stop execution, Add SOI, execution status/results, and curated Third-Party Tools.
+- Added remote graphical Survey support for IP Sensor Nodes using Xpra as a separate presentation channel while keeping plugin execution, lifecycle, status, detections, and results on the normal FISSURE Sensor Node/HIPRFISR path.
+- Added Xpra execution context support for graphical plugin operations, including remote display selection, X11 environment isolation, and Sensor Node display-readiness waiting before GUI launch.
+- Added remote Third-Party Tool launching through Xpra for Universal Radio Hacker, Gqrx, QSpectrumAnalyzer, and Spektrum, including remote PATH handling and per-tool command definitions.
+- Added Passwordless SSH setup under Sensor Node Remote Actions with existing-key detection, optional Ed25519 key creation, secure public-key installation, verification, and password-based fallback when key authentication is not configured.
+- Added Xpra host installation support, including source-built version selection, host-only Apptainer handling, OpenSSH dependencies, verification, and cleanup of installer staging files.
+
+### Changed
+
+- Changed the live IQ inspection action to support both local and remote Sensor Nodes through the same plugin action instead of introducing a separate remote action path.
+- Changed remote Survey authentication to prefer noninteractive SSH key access and otherwise use the Dashboard password dialog with system OpenSSH, avoiding terminal-based password entry.
+- Changed Survey Third-Party Tools into clearer grouped button/description blocks and expanded compatible hardware exposure where supported, including USRP B20xmini/B2x0 for Gqrx and QSpectrumAnalyzer.
+- Changed the Ubuntu 24.04 QSpectrumAnalyzer installer and launch paths to explicitly use PyQt5 compatibility without altering the system-wide Qt binding preference.
+- Changed Apptainer host setup so Xpra remains a host dependency for remote graphical presentation rather than being installed inside the container.
+
+### Fixed
+
+- Fixed QSpectrumAnalyzer startup on Ubuntu 24.04 by forcing the PyQt5 binding required by its Qt5-era interface.
+
 ## 2026-9-2
 
 Redesign Signal Analysis around centralized SOI workflows
