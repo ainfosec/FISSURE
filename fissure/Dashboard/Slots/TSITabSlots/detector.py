@@ -17,6 +17,11 @@ import qasync
 
 import fissure.utils
 from .legacy import _safe_float, _safe_int
+from .survey import (
+    _sa_survey_remote_xpra_enabled,
+    _sa_survey_start_remote_xpra,
+    _schedule_sa_survey_xpra_cleanup,
+)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1604,12 +1609,15 @@ def initialize_tsi_detector_controls(dashboard: QtCore.QObject):
     dashboard.tsi_detector_node_uid = ""
     dashboard.tsi_detector_opid = ""
     dashboard.tsi_detector_waiting_for_opid = False
+    dashboard.tsi_detector_xpra_active = False
 
     dashboard.tsi_detector_blacklist_ranges = getattr(
         dashboard,
         "tsi_detector_blacklist_ranges",
         [],
     )
+
+    dashboard.ui.pushButton_tsi_detector_search.setVisible(False)
 
     clear_tsi_detector_methods(dashboard)
 
@@ -2426,9 +2434,21 @@ def _tsi_detector_set_controls_enabled(
         widget.setEnabled(enabled)
 
 
+def _tsi_detector_cleanup_remote_xpra(
+    dashboard: QtCore.QObject,
+):
+    """Clean up Xpra only when the active display belongs to Detector."""
+    if not getattr(dashboard, "tsi_detector_xpra_active", False):
+        return
+
+    dashboard.tsi_detector_xpra_active = False
+    _schedule_sa_survey_xpra_cleanup(dashboard)
+
+
 def _tsi_detector_set_running(
     dashboard: QtCore.QObject,
     node_uid: str,
+    operation_id: str,
 ):
     """
     Marks the unified detector action as running and updates Card 3/UI state.
@@ -2437,8 +2457,8 @@ def _tsi_detector_set_running(
     """
     dashboard.tsi_detector_running = True
     dashboard.tsi_detector_node_uid = node_uid or ""
-    dashboard.tsi_detector_opid = ""
-    dashboard.tsi_detector_waiting_for_opid = True
+    dashboard.tsi_detector_opid = operation_id or ""
+    dashboard.tsi_detector_waiting_for_opid = False
 
     stack = getattr(dashboard.ui, "stackedWidget_tsi_detector", None)
     if stack is not None:
@@ -2570,6 +2590,7 @@ def update_tsi_detector_status_from_selected_node(
 async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
     """
     Starts/stops the unified TSI Detector action through the plugin action path.
+    Remote IP GUI actions use Xpra only as their presentation channel.
     """
     uid = getattr(dashboard, "selected_node_uid", "") or ""
 
@@ -2581,9 +2602,23 @@ async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
         return
 
     if getattr(dashboard, "tsi_detector_running", False):
+        node_uid = str(getattr(dashboard, "tsi_detector_node_uid", "") or "").strip()
+        operation_id = str(getattr(dashboard, "tsi_detector_opid", "") or "").strip()
+
+        if not node_uid or not operation_id:
+            dashboard.logger.error(
+                "[TSI Detector] Cannot stop detector because its active node or operation ID is missing."
+            )
+            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+                dashboard,
+                "Could not identify the active detector operation to stop.",
+            )
+            return
+
         try:
-            await dashboard.backend.tacticalNodeStop([uid])
+            await dashboard.backend.stopPluginOperation(node_uid, operation_id)
         finally:
+            _tsi_detector_cleanup_remote_xpra(dashboard)
             _tsi_detector_set_stopped(dashboard)
             dashboard.refreshStatusBarText()
         return
@@ -2615,9 +2650,37 @@ async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
         )
         return
 
+    remote_gui = (
+        _sa_survey_remote_xpra_enabled(dashboard)
+        and str(parameters.get("run_mode") or "").strip().lower() == "gui"
+    )
+
+    if remote_gui:
+        _tsi_detector_set_status_text(dashboard, "Starting Remote Display...")
+
+        try:
+            xpra_display = await _sa_survey_start_remote_xpra(dashboard)
+        except Exception as error:
+            dashboard.logger.error(
+                f"Could not start remote Detector display: {error}"
+            )
+            _tsi_detector_set_status_text(dashboard, "Display Failed")
+            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+                dashboard,
+                f"Could not start the remote Detector display:\n\n{error}",
+            )
+            return
+
+        dashboard.tsi_detector_xpra_active = True
+        parameters["_fissure_execution_context"] = {
+            "presentation": "xpra",
+            "display": xpra_display,
+        }
+
     _tsi_detector_set_running(
         dashboard,
         node_uid=uid,
+        operation_id=str(parameters.get("operation_id") or "").strip(),
     )
 
     try:
@@ -2628,6 +2691,7 @@ async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
             parameters,
         )
     except Exception:
+        _tsi_detector_cleanup_remote_xpra(dashboard)
         _tsi_detector_set_stopped(dashboard)
         raise
 

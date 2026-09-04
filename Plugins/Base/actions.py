@@ -637,7 +637,7 @@ fixed_detection_schema = {
             "name": "run_mode",
             "label": "Run Mode",
             "type": "string",
-            "default": "headless",
+            "default": "gui",
             "options": ["headless", "gui"],
         },
         {

@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-9-4
 
+Add remote graphical Detector workflows
+
+### Added
+
+- Added remote graphical Fixed Detection support for IP Sensor Nodes using the existing Xpra presentation path while keeping detector execution, lifecycle, detections, status, and results on the normal FISSURE Sensor Node/HIPRFISR messaging path.
+
+### Changed
+
+- Changed Detector Stop behavior to target the active plugin operation by operation ID instead of stopping all plugin operations on the selected Sensor Node.
+- Changed Fixed Detection to default to GUI mode while retaining headless execution as an explicit option.
+- Changed Fixed Detection graphical launches to honor FISSURE execution context and subprocess display environments so the same operation works locally or through remote Xpra presentation.
+- Changed the Detector interface to hide the stale Search control until the Library Search workflow is restored.
+
+### Fixed
+
+- Fixed Fixed Detection hardware selection so the selected B2x0 serial is passed through to the GNU Radio flowgraph instead of being dropped before launch.
+
+## 2026-9-4
+
 Add remote graphical Survey workflows
 
 ### Added

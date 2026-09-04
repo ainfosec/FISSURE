@@ -34,13 +34,14 @@ class OperationMain(Operation):
         self,
         freq_mhz: float = 915.0,
         min_detection_interval_s: float = 10.0,
-        run_mode: str = "headless",
+        run_mode: str = "gui",
         sample_rate: float = 1000000.0,
         threshold: float = -60.0,
         gain: float = 65.0,
         channel: str = "A:A",
         antenna: str = "TX/RX",
         description: str = "Fixed detection",
+        hardware_serial_argument: str = "",
         node_uid: str = "",
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
@@ -57,7 +58,7 @@ class OperationMain(Operation):
 
         self.freq_mhz = float(freq_mhz)
         self.min_detection_interval_s = float(min_detection_interval_s)
-        self.run_mode = str(run_mode or "headless").strip().lower()
+        self.run_mode = str(run_mode or "gui").strip().lower()
         if self.run_mode not in {"headless", "gui"}:
             self.run_mode = "headless"
         self.sample_rate = float(sample_rate)
@@ -66,6 +67,7 @@ class OperationMain(Operation):
         self.channel = str(channel or "A:A")
         self.antenna = str(antenna or "TX/RX")
         self.description = description or "Fixed detection"
+        self.hardware_serial_argument = str(hardware_serial_argument or "").strip()
 
         self.resource_args = {
             "freq_mhz": self.freq_mhz,
@@ -81,7 +83,8 @@ class OperationMain(Operation):
             f"channel={self.channel}, "
             f"antenna={self.antenna}, "
             f"min_detection_interval_s={self.min_detection_interval_s}, "
-            f"description={self.description}"
+            f"description={self.description}, "
+            f"hardware_serial_argument={self.hardware_serial_argument}"
         )
 
     @staticmethod
@@ -125,6 +128,13 @@ class OperationMain(Operation):
 
         flow_graph_dir = os.path.dirname(script_path)
 
+        if self.run_mode == "gui":
+            if not await self.wait_for_graphical_display():
+                self.logger.info(
+                    "Fixed Detection GUI launch cancelled before display became ready."
+                )
+                return
+
         cmd = [
             sys.executable,
             "-u",
@@ -145,6 +155,9 @@ class OperationMain(Operation):
             str(self.min_detection_interval_s),
         ]
 
+        if self.hardware_serial_argument and self.hardware_serial_argument.lower() != "false":
+            cmd.extend(["--serial", self.hardware_serial_argument])
+
         self.logger.info(f"Using fixed detection flow graph: {script_path}")
         self.logger.info(f"Starting fixed detection flow graph: {' '.join(cmd)}")
 
@@ -153,6 +166,7 @@ class OperationMain(Operation):
             cwd=flow_graph_dir,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
+            env=self.get_subprocess_environment(),
         )
 
         async def _log_stderr() -> None:
