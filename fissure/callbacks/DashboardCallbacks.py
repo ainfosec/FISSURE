@@ -2142,6 +2142,18 @@ async def sendArtifactsListTakReturn(
                 "to IQ Record: "
                 f"{error}"
             )
+        
+        try:
+            TSITabSlots.handle_sa_capture_artifact_complete(
+                dashboard,
+                artifact_record,
+            )
+        except Exception as error:
+            component.logger.debug(
+                "Could not route Artifact metadata "
+                "to Signal Analysis Capture: "
+                f"{error}"
+            )
 
     try:
         TSITabSlots.refresh_sa_sois_selected_details(
@@ -2230,6 +2242,15 @@ async def sendSoisListTakReturn(
         component.logger.debug(
             "Could not refresh Signal Analysis SOIs "
             f"after authoritative SOI refresh: {error}"
+        )
+    
+    try:
+        TSITabSlots.refresh_sa_capture_soi_context(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            f"Could not refresh Capture SOI context after SOI refresh: {error}"
         )
 
     try:
@@ -2328,6 +2349,15 @@ def queryPluginActionsResults(
         )
         return
 
+    if context.startswith("sa.capture"):
+        TSITabSlots.handle_sa_capture_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+    
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_query_results(
             frontend,
@@ -2488,6 +2518,16 @@ def queryPluginActionSchemaResults(
         )
         return
 
+    if context.startswith("sa.capture"):
+        TSITabSlots.handle_sa_capture_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+    
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_schema(
             frontend,
@@ -2729,6 +2769,15 @@ async def soiUpdate(component: object, soi=None):
             component.logger.debug(
                 f"Could not refresh Signal Analysis SOIs: {error}"
             )    
+
+        try:
+            TSITabSlots.refresh_sa_capture_soi_context(
+                frontend
+            )
+        except Exception as error:
+            component.logger.debug(
+                f"Could not refresh Capture SOI context: {error}"
+            )
 
 
 async def soiDeleted(

@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-5
+
+Build plugin-driven Signal Analysis Capture workflows
+
+### Added
+
+- Added the new Signal Analysis → Capture workspace with optional SOI context, hardware-aware plugin action discovery, dynamic parameter customization, Start/Stop execution, capture estimates, and managed Last Capture results.
+- Added the `sa.capture` plugin action path so Capture can expose plugin-provided acquisition capabilities beyond the built-in IQ recorder without hardcoding capture methods into the Dashboard.
+- Added post-capture artifact actions for Download/Open Folder, Inspection handoff, and explicit SOI linking so users can review a capture before deciding whether to associate it with an SOI.
+
+### Changed
+
+- Changed the Base IQ Record workflow to use human-readable duration per capture while preserving sample-count handling internally for the existing recorder flowgraphs.
+- Changed Capture execution to use operation-specific lifecycle control and the existing artifact pipeline for both local and remote IP Sensor Nodes.
+- Changed SOI-to-Capture workflow handling so a selected SOI can prefill compatible capture parameters without automatically linking the resulting artifact.
+- Changed IQ Record metadata and result handling to expose capture duration, file count, size, frequency, sample rate, and acquisition timing in the Capture workspace.
+
 ## 2026-9-4
 
 Add remote graphical Detector workflows

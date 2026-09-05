@@ -804,7 +804,7 @@ def populate_sa_sois_selected(dashboard, soi_key, soi):
     _render_sa_sois_history(dashboard, soi)
     _render_sa_sois_record(dashboard, soi)
     _sa_sois_set_selected_widgets_enabled(dashboard, True)
-    
+
 
 def refresh_sa_sois_selected_details(dashboard):
     """
@@ -1318,6 +1318,18 @@ def _slotSA_SOIsWorkflowClicked(dashboard: QtCore.QObject, destination: str):
     page = pages.get(destination)
     if page is not None:
         dashboard.ui.tabWidget_signal_analysis.setCurrentWidget(page)
+
+    if destination == "capture":
+        try:
+            from .capture import refresh_sa_capture_soi_context
+            refresh_sa_capture_soi_context(
+                dashboard,
+                preferred_soi_key=soi_key,
+            )
+        except Exception as error:
+            dashboard.logger.debug(
+                f"Could not prefill Capture from selected SOI: {error}"
+            )
 
 
 @qasync.asyncSlot(QtCore.QObject, str)

@@ -129,6 +129,7 @@ class OperationMain(Operation):
         rx_antenna: str = "TX/RX",
         rx_gain: Union[str, float] = 20.0,
         sample_rate_msps: Union[str, float] = 1.0,
+        duration_s: Union[str, float, None] = None,
         file_length: Union[str, int] = 100000,
         number_of_files: Union[str, int] = 1,
         file_interval: Union[str, float] = 0.0,
@@ -204,7 +205,21 @@ class OperationMain(Operation):
         self.rx_antenna = str(rx_antenna or "TX/RX").strip()
         self.rx_gain = self._float(rx_gain, 20.0)
         self.sample_rate_msps = self._float(sample_rate_msps, 1.0)
-        self.file_length = max(1, self._int(file_length, 100000))
+
+        if duration_s not in (None, "", "None"):
+            self.duration_s = max(0.001, self._float(duration_s, 0.1))
+            self.file_length = max(
+                1,
+                int(round(self.duration_s * self.sample_rate_msps * 1e6)),
+            )
+        else:
+            self.file_length = max(1, self._int(file_length, 100000))
+            self.duration_s = (
+                self.file_length / (self.sample_rate_msps * 1e6)
+                if self.sample_rate_msps > 0
+                else 0.0
+            )
+
         self.number_of_files = max(1, self._int(number_of_files, 1))
         self.file_interval = max(0.0, self._float(file_interval, 0.0))
         self.data_type = str(data_type or "Complex Float 32").strip()
@@ -227,6 +242,7 @@ class OperationMain(Operation):
             f"rx_antenna={self.rx_antenna}, "
             f"sample_rate_msps={self.sample_rate_msps}, "
             f"rx_gain={self.rx_gain}, "
+            f"duration_s={self.duration_s}, "
             f"file_length={self.file_length}, "
             f"number_of_files={self.number_of_files}, "
             f"file_interval={self.file_interval}, "
@@ -364,6 +380,7 @@ class OperationMain(Operation):
             "rx_gain": self.rx_gain,
             "rx_channel": self.rx_channel,
             "rx_antenna": self.rx_antenna,
+            "duration_s": self.duration_s,
             "file_length": self.file_length,
             "requested_number_of_files": self.number_of_files,
             "recorded_file_count": len(recorded_files),
@@ -731,6 +748,7 @@ class OperationMain(Operation):
             "rx_gain": self.rx_gain,
             "rx_channel": self.rx_channel,
             "rx_antenna": self.rx_antenna,
+            "duration_s": self.duration_s,
             "file_length": self.file_length,
             "requested_number_of_files": self.number_of_files,
             "recorded_file_count": len(recorded_files),

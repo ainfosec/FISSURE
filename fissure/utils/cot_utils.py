@@ -1405,6 +1405,13 @@ def handle_tactical_soi_message(dashboard, cot_message):
         frontend.logger.debug(f"Could not refresh Signal Analysis SOIs from Tactical update: {error}")
 
     try:
+        TSITabSlots.refresh_sa_capture_soi_context(frontend)
+    except Exception as error:
+        frontend.logger.debug(
+            f"Could not refresh Capture SOI context from Tactical update: {error}"
+        )        
+
+    try:
         TSITabSlots.refresh_tsi_fe_input_sois(frontend)
         TSITabSlots.refresh_tsi_fe_run_sois(frontend)
     except Exception as error:
@@ -1417,7 +1424,7 @@ def handle_tactical_soi_message(dashboard, cot_message):
         return
 
     TacticalTabSlots.update_tactical_node_soi_row(frontend, soi_record)
-    
+
 
 def cot_to_tactical_soi_record(cot_message):
     """
@@ -1557,6 +1564,11 @@ def handle_tactical_artifact_message(dashboard, cot_message):
             )
 
     IQDataTabSlots.handle_iq_record_artifact_complete(
+        frontend,
+        artifact_record,
+    )
+
+    TSITabSlots.handle_sa_capture_artifact_complete(
         frontend,
         artifact_record,
     )

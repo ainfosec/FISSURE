@@ -4975,6 +4975,1015 @@
       <attribute name="title">
        <string>Capture</string>
       </attribute>
+      <widget class="QStackedWidget" name="stackedWidget_sa_capture">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>815</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_sa_capture_controls">
+        <widget class="QFrame" name="frame_sa_capture_execution">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>570</y>
+           <width>470</width>
+           <height>235</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_capture_execution_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>235</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Execution</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_execution_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>280</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start or stop the capture operation.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_execution_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_capture_start_stop">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>155</x>
+            <y>125</y>
+            <width>160</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_capture_execution_status_label">
+          <property name="geometry">
+           <rect>
+            <x>35</x>
+            <y>55</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_execution_status">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>55</y>
+            <width>200</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_execution_operation_id">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>90</y>
+            <width>330</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_capture_execution_operation_id_label">
+          <property name="geometry">
+           <rect>
+            <x>35</x>
+            <y>90</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Operation ID:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_execution_info">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>170</y>
+            <width>440</width>
+            <height>55</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_capture_setup">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>395</width>
+           <height>370</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_capture_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Action Selection</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>330</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Choose hardware, plugin, and capture action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_479">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>69</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Hardware:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_capture_setup_hardware">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>65</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_setup_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_485">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>159</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_capture_setup_action">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>155</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_capture_setup_query">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>335</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_486">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>114</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Plugin:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_capture_setup_plugin">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>110</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_setup_info">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>200</y>
+            <width>365</width>
+            <height>125</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select an action to view details.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_capture_parameters">
+         <property name="geometry">
+          <rect>
+           <x>415</x>
+           <y>190</y>
+           <width>795</width>
+           <height>370</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_capture_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Parameters</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>400</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Configure parameters for the selected action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_sa_capture_parameters">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>775</width>
+            <height>280</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_sa_capture_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>773</width>
+             <height>278</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_capture_parameters_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>330</x>
+            <y>335</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_capture_context">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>170</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_capture_context_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Capture Context</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_context_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>500</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Optionally use an SOI to prefill compatible capture parameters.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_context_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_487">
+          <property name="geometry">
+           <rect>
+            <x>75</x>
+            <y>79</y>
+            <width>40</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>SOI:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_capture_context_soi">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>75</y>
+            <width>307</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_context_info">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>140</y>
+            <width>1200</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Selecting an SOI prefills compatible parameters. The capture is not linked to the SOI unless you link the result afterward.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_capture_context_soi">
+          <property name="geometry">
+           <rect>
+            <x>560</x>
+            <y>25</y>
+            <width>600</width>
+            <height>100</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QWidget" name="gridLayoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>596</width>
+             <height>96</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_sa_capture_context" columnstretch="0,1">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label2_sa_capture_context_name_label">
+              <property name="text">
+               <string>Name:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label2_sa_capture_context_bandwidth_label">
+              <property name="text">
+               <string>Bandwidth:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label2_sa_capture_context_stage_label">
+              <property name="text">
+               <string>Stage:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label2_sa_capture_context_frequency_label">
+              <property name="text">
+               <string>Frequency:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label2_sa_capture_context_name">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label2_sa_capture_context_frequency">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label2_sa_capture_context_bandwidth">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label2_sa_capture_context_stage">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_capture_execution_last_capture">
+         <property name="geometry">
+          <rect>
+           <x>490</x>
+           <y>570</y>
+           <width>720</width>
+           <height>235</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_capture_last_capture_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>235</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Last Capture</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_last_capture_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>400</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Information about the most recent completed capture.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_capture_last_capture_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </widget>
+         <widget class="QStackedWidget" name="stackedWidget_sa_capture_last_capture">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>50</y>
+            <width>705</width>
+            <height>182</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page_sa_capture_last_capture_no_capture">
+           <widget class="QLabel" name="label_sa_capture_last_capture_no_capture">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>710</width>
+              <height>180</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>No capture has been completed yet.
+Run a capture to see the resulting artifact here.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="page_sa_capture_last_capture_capture">
+           <widget class="QPushButton" name="pushButton_sa_capture_last_capture_link_to_soi">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>535</x>
+              <y>145</y>
+              <width>165</width>
+              <height>32</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Link to SOI</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_capture_last_capture_inspect">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>360</x>
+              <y>145</y>
+              <width>165</width>
+              <height>32</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Inspect</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_capture_last_capture_download">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>145</y>
+              <width>165</width>
+              <height>32</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Download</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_capture_last_capture_open_folder">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>185</x>
+              <y>145</y>
+              <width>165</width>
+              <height>32</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Open Folder</string>
+            </property>
+           </widget>
+           <widget class="QWidget" name="gridLayoutWidget_2">
+            <property name="geometry">
+             <rect>
+              <x>80</x>
+              <y>20</y>
+              <width>621</width>
+              <height>101</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_sa_capture_last_capture" columnstretch="0,3,0,2">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item row="2" column="3">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_duration">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_files">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_frequency_label">
+               <property name="text">
+                <string>Frequency:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_frequency">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_sample_rate_label">
+               <property name="text">
+                <string>Sample Rate:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_file_name_label">
+               <property name="text">
+                <string>File Name:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_file_name">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_duration_label">
+               <property name="text">
+                <string>Duration:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_artifact_id">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_artifact_id_label">
+               <property name="text">
+                <string>Artifact ID:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_files_label">
+               <property name="text">
+                <string>Files:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_total_size_label">
+               <property name="text">
+                <string>Total Size:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_total_size">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_captured">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_captured_label">
+               <property name="text">
+                <string>Captured:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="label2_sa_capture_last_capture_sample_rate">
+               <property name="text">
+                <string>—</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_sa_capture_no_node">
+        <widget class="QLabel" name="label_sa_capture_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sa_capture_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sa_capture_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to capture signal data.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sa_capture_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_sa_capture_empty_icon</zorder>
+        <zorder>label_sa_capture_select_sensor_node_image</zorder>
+        <zorder>label2_sa_capture_no_node_selected</zorder>
+        <zorder>label2_sa_capture_select_a_node</zorder>
+       </widget>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_inspection">
       <attribute name="title">

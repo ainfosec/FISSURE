@@ -59,6 +59,7 @@ ACTION_TAGS = {
     "iq_record": [
         "All",
         "iq.record",
+        "sa.capture",
     ],
     "iq_playback": [
         "All",
@@ -2242,7 +2243,7 @@ iq_record_schema = {
         },
         {
             "name": "artifact_format",
-            "label": "Artifact Format",
+            "label": "Artifact Packaging",
             "type": "string",
             "default": "raw",
             "options": ["raw", "zip"],
@@ -2278,22 +2279,29 @@ iq_record_schema = {
             "default": "TX/RX",
         },
         {
-            "name": "file_length",
-            "label": "File Length",
+            "name": "duration_s",
+            "label": "Duration per Capture (s)",
             "type": "number",
-            "default": 100000,
+            "default": 0.1,
+            "min": 0.001,
+            "step": 0.1,
+            "decimals": 3,
         },
         {
             "name": "number_of_files",
-            "label": "Number of Files",
-            "type": "number",
+            "label": "Number of Captures",
+            "type": "int",
             "default": 1,
+            "min": 1,
         },
         {
             "name": "file_interval",
-            "label": "File Interval (s)",
+            "label": "Interval Between Captures (s)",
             "type": "number",
             "default": 0.0,
+            "min": 0.0,
+            "step": 0.1,
+            "decimals": 3,
         },
         {
             "name": "data_type",
@@ -2304,7 +2312,7 @@ iq_record_schema = {
         },
         {
             "name": "sigmf_enabled",
-            "label": "SigMF Enabled",
+            "label": "SigMF Metadata",
             "type": "string",
             "default": "true",
             "options": ["true", "false"],

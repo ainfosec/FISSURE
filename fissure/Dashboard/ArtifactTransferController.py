@@ -1360,6 +1360,69 @@ class ArtifactTransferController:
         except Exception:
             pass
 
+        # Signal Analysis Capture Artifact buttons.
+        try:
+            selected_artifact_id = str(
+                getattr(
+                    self.frontend,
+                    "sa_capture_artifact_id",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            download_button = (
+                self.frontend.ui
+                .pushButton_sa_capture_last_capture_download
+            )
+            open_button = (
+                self.frontend.ui
+                .pushButton_sa_capture_last_capture_open_folder
+            )
+
+            matching_transfer = bool(
+                active
+                and selected_artifact_id
+                and selected_artifact_id == transfer_artifact_id
+            )
+
+            if matching_transfer:
+                download_button.setText(text)
+                download_button.setEnabled(False)
+                open_button.setEnabled(False)
+
+            elif not active:
+                local_path = self.get_local_path(
+                    selected_artifact_id
+                )
+                download_button.setText(
+                    "Downloaded"
+                    if local_path
+                    else "Download"
+                )
+                download_button.setEnabled(
+                    bool(selected_artifact_id)
+                    and not bool(local_path)
+                )
+                download_button.setToolTip(
+                    str(local_path)
+                    if local_path
+                    else (
+                        f"Download Capture Artifact {selected_artifact_id}"
+                        if selected_artifact_id
+                        else "No Capture Artifact is available."
+                    )
+                )
+                open_button.setEnabled(
+                    bool(local_path)
+                )
+                open_button.setToolTip(
+                    str(local_path or "")
+                )
+
+        except Exception:
+            pass
+        
         # IQ Record Artifact button.
         try:
             selected_artifact_id = str(
