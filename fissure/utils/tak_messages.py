@@ -69,6 +69,7 @@ def _set_point_pin(msg, lat, lon, alt):
     pt.set("ce", "0")
     pt.set("le", "0")
 
+
 def _set_point_suppressed(msg):
     """Event NOT visible on map."""
     pt = msg.find("point")
@@ -81,6 +82,230 @@ def _set_point_suppressed(msg):
     pt.set("ce", "9999999")
     pt.set("le", "9999999")
 
+
+def _build_video_event(component, message):
+    """Build a TAK video connection event for an RTSP stream."""
+    uid = str(message["uid"])
+    data = message.get("data") or {}
+
+    if not isinstance(data, dict):
+        component.logger.error(
+            "TAK video message data must be a dictionary."
+        )
+        return None
+
+    node_uid = str(
+        message.get("node_uid") or ""
+    ).strip()
+
+    # stream_video uses a deterministic TAK video UID:
+    # FISSURE-VIDEO-<sensor-node-uuid>
+    #
+    # Recover the Sensor Node UID from it if the generic TAK path did not
+    # preserve the optional top-level node_uid field.
+    video_uid_prefix = "FISSURE-VIDEO-"
+
+    if not node_uid and uid.startswith(video_uid_prefix):
+        node_uid = uid[
+            len(video_uid_prefix):
+        ].strip()
+
+    node_meta = (
+        component.nodes.get(node_uid, {})
+        if node_uid
+        else {}
+    )
+
+    address = str(
+        data.get("address")
+        or node_meta.get("ip_address")
+        or node_meta.get("node_ip_address")
+        or node_meta.get("ip")
+        or ""
+    ).strip()
+
+    # A local Sensor Node is represented as an IPC connection. The RTSP
+    # server is on the HIPRFISR host, so TAK clients need that host's
+    # network-reachable IP rather than ipc/localhost.
+    if address.lower() in {
+        "ipc",
+        "localhost",
+        "127.0.0.1",
+    }:
+        fissure_config = get_fissure_config()
+        tak_config = fissure_config.get(
+            "tak",
+            {},
+        )
+        address = str(
+            tak_config.get(
+                "external_ip",
+                "",
+            )
+            or ""
+        ).strip()
+
+    if not address or address.lower() == "unknown":
+        component.logger.error(
+            "Unable to resolve video stream address "
+            f"for node {node_uid or '<unknown>'}."
+        )
+        return None
+
+    try:
+        port = int(
+            float(
+                data.get(
+                    "port",
+                    8554,
+                )
+            )
+        )
+    except Exception:
+        component.logger.error(
+            f"Invalid TAK video RTSP port: {data.get('port')}"
+        )
+        return None
+
+    if port < 1 or port > 65535:
+        component.logger.error(
+            f"Invalid TAK video RTSP port: {port}"
+        )
+        return None
+
+    path = str(
+        data.get("path")
+        or "/fissure"
+    ).strip()
+
+    if not path.startswith("/"):
+        path = "/" + path
+
+    protocol = str(
+        data.get("protocol")
+        or "rtsp"
+    ).strip().lower()
+
+    if protocol.endswith("://"):
+        protocol = protocol[:-3]
+
+    alias = str(
+        data.get("alias")
+        or ""
+    ).strip()
+
+    if not alias:
+        node_settings = (
+            node_meta
+            .get("settings", {})
+            .get("Sensor Node", {})
+        )
+
+        node_name = str(
+            message.get("callsign")
+            or node_meta.get("callsign")
+            or node_meta.get("nickname")
+            or node_settings.get("nickname")
+            or ""
+        ).strip()
+
+        if node_name:
+            alias = f"{node_name} Video"
+        elif node_uid:
+            alias = f"FISSURE Video {node_uid[:8]}"
+        else:
+            alias = "FISSURE Video"
+
+    msg, detail = _build_base_event(
+        uid=uid,
+        stale=(
+            message.get("stale")
+            if message.get("stale") is not None
+            else 300
+        ),
+    )
+
+    msg.set(
+        "type",
+        "b-i-v",
+    )
+    msg.set(
+        "how",
+        message.get("how")
+        or "m-g",
+    )
+
+    ET.SubElement(
+        detail,
+        "contact",
+        {
+            "callsign": alias,
+        },
+    )
+
+    video = ET.SubElement(
+        detail,
+        "__video",
+    )
+
+    ET.SubElement(
+        video,
+        "ConnectionEntry",
+        {
+            "protocol": protocol,
+            "address": address,
+            "port": str(port),
+            "path": path,
+            "uid": uid,
+            "alias": alias,
+            "roverPort": "-1",
+            "rtspReliable": "0",
+            "ignoreEmbeddedKLV": "False",
+            "networkTimeout": "12000",
+            "bufferTime": "-1",
+        },
+    )
+
+    point = msg.find(
+        "point"
+    )
+
+    if point is None:
+        point = ET.SubElement(
+            msg,
+            "point",
+        )
+
+    # Match the b-i-v shape already proven with WinTAK.
+    point.set(
+        "lat",
+        "0.0",
+    )
+    point.set(
+        "lon",
+        "0.0",
+    )
+    point.set(
+        "hae",
+        "9999999.0",
+    )
+    point.set(
+        "ce",
+        "9999999.0",
+    )
+    point.set(
+        "le",
+        "9999999.0",
+    )
+
+    component.logger.info(
+        "Advertising TAK video stream: "
+        f"{protocol}://{address}:{port}{path} "
+        f"alias='{alias}' uid='{uid}' "
+        f"node_uid='{node_uid}'"
+    )
+
+    return msg
 
 # ---------------------------------------------------------
 # Transmission helper
@@ -147,7 +372,7 @@ async def send(
 
     Expected input fields (all optional except msg_type and uid):
 
-        msg_type    : "pin" | "event" | "track"
+        msg_type    : "pin" | "event" | "track" | "video"
         uid         : CoT UID
         lat/lon/alt : floats
         time        : ISO 8601 string
@@ -155,7 +380,7 @@ async def send(
         stale       : int (seconds)
         tak_icon    : CoT symbol type ("a-f-G-U-H", "b-m-p-w", etc.)
         callsign    : optional callsign override
-        data        : dict for event messages
+        data        : dict for structured event/video metadata
         how         : TAK "how" value (optional)
     """
 
@@ -181,6 +406,25 @@ async def send(
     how      = message.get("how")
     remarks  = message.get("remarks", "")
     tak_icon = message.get("tak_icon")
+
+    # =====================================================
+    # VIDEO (TAK Video Player connection entry)
+    # =====================================================
+    if mtype == "video":
+        msg = _build_video_event(
+            component,
+            message,
+        )
+
+        if msg is None:
+            return
+
+        return await _dispatch_cot(
+            component,
+            msg,
+            destination=destination,
+            requester_uid=requester_uid,
+        )
 
     # =====================================================
     # 1. PIN (map-visible position marker)

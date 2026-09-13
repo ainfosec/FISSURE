@@ -101,6 +101,14 @@ python3 -m pip install "numpy<2.0" --force-reinstall --break-system-packages  # 
 sudo apt-get install -y iw
 sudo apt-get install -y python3-pyproj
 sudo apt-get install -y python3-uhd
+sudo apt-get install -y python3-gi
+sudo apt-get install -y gstreamer1.0-tools
+sudo apt-get install -y gstreamer1.0-plugins-base
+sudo apt-get install -y gstreamer1.0-plugins-good
+sudo apt-get install -y gstreamer1.0-plugins-bad
+sudo apt-get install -y gstreamer1.0-plugins-ugly
+sudo apt-get install -y gstreamer1.0-libav
+sudo apt-get install -y gir1.2-gst-rtsp-server-1.0
 . ~/.bashrc
 """,True,"Minimum Install"))
 

@@ -1,6 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-13
+
+Add tactical audio/video streaming with TAK discovery
+
+### Added
+
+- Added Base plugin audio and video streaming actions for Sensor Nodes, including RTSP H.264 video with AAC audio and a separate low-bandwidth Opus/RTP audio stream.
+- Added automatic TAK video advertisement using `b-i-v` CoT messages so WinTAK can discover and open Sensor Node RTSP streams without manual connection setup.
+- Added Tactical node video and audio controls that start the selected Sensor Node stream and open matching Dashboard receivers.
+- Added Video Stream Receiver and Audio Stream Receiver tools for opening GStreamer-based media receivers directly from the Dashboard.
+- Added GStreamer and RTSP server runtime dependencies to the Ubuntu installer requirements for the new media workflows.
+
+### Changed
+
+- Changed the Tactical node panel to expose compact video and audio controls with dedicated enabled/disabled icon states and tooltips.
+
 ## 2026-9-11
 
 Rebuild Classifier around plugin models and evidence workflows

@@ -5958,4 +5958,101 @@ def _slotMenuMobileAtlasCreatorClicked(dashboard: QtWidgets.QMainWindow):
         proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + mobac_command + '"', shell=True)
 
 
+@QtCore.pyqtSlot()
+def _slotMenuVideoStreamReceiverClicked(
+    dashboard: QtWidgets.QMainWindow,
+    source_ip=None,
+):
+    """Opens a terminal and receives an RTSP video stream."""
+    if source_ip is None:
+        source_ip = getattr(
+            dashboard,
+            "selected_node_ip",
+            "",
+        )
 
+    source_ip = str(
+        source_ip or ""
+    ).strip()
+
+    if source_ip in ("", "ipc", "localhost"):
+        source_ip = "127.0.0.1"
+
+    expect_script_filepath = os.path.join(
+        fissure.utils.TOOLS_DIR,
+        "expect_script",
+    )
+
+    video_command = (
+        "gst-launch-1.0 -v "
+        f"playbin uri=rtsp://{source_ip}:8554/fissure"
+    )
+
+    if fissure.utils.get_default_expect_terminal(
+        dashboard.backend.os_info
+    ) == "gnome-terminal":
+        proc = subprocess.Popen(
+            "gnome-terminal -- "
+            + expect_script_filepath
+            + ' "'
+            + video_command
+            + '"',
+            shell=True,
+        )
+    elif fissure.utils.get_default_expect_terminal(
+        dashboard.backend.os_info
+    ) == "qterminal":
+        proc = subprocess.Popen(
+            "qterminal -e "
+            + expect_script_filepath
+            + ' "'
+            + video_command
+            + '"',
+            shell=True,
+        )
+    elif fissure.utils.get_default_expect_terminal(
+        dashboard.backend.os_info
+    ) == "lxterminal":
+        proc = subprocess.Popen(
+            "lxterminal -e "
+            + expect_script_filepath
+            + ' "'
+            + video_command
+            + '"',
+            shell=True,
+        )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuAudioStreamReceiverClicked(dashboard: QtWidgets.QMainWindow):
+    """Opens a terminal and receives the FISSURE audio stream."""
+    # Issue the Command
+    expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+    audio_command = (
+        "gst-launch-1.0 -v "
+        "udpsrc port=5502 "
+        "caps='application/x-rtp,media=audio,encoding-name=OPUS,"
+        "payload=96,clock-rate=48000,encoding-params=2' ! "
+        "rtpjitterbuffer latency=50 ! "
+        "rtpopusdepay ! "
+        "opusdec ! "
+        "audioconvert ! "
+        "audioresample ! "
+        "autoaudiosink"
+    )
+
+    if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+        proc = subprocess.Popen(
+            "gnome-terminal -- " + expect_script_filepath + ' "' + audio_command + '"',
+            shell=True,
+        )
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+        proc = subprocess.Popen(
+            "qterminal -e " + expect_script_filepath + ' "' + audio_command + '"',
+            shell=True,
+        )
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+        proc = subprocess.Popen(
+            "lxterminal -e " + expect_script_filepath + ' "' + audio_command + '"',
+            shell=True,
+        )

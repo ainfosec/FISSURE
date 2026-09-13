@@ -665,6 +665,7 @@
      <addaction name="menuMinimodem"/>
      <addaction name="actionAudioRecord"/>
      <addaction name="actionEnscribe"/>
+     <addaction name="actionAudio_Stream_Receiver"/>
     </widget>
     <widget class="QMenu" name="menuRadiosonde">
      <property name="title">
@@ -738,6 +739,7 @@
      </property>
      <addaction name="actionVLC"/>
      <addaction name="actionSimpleScreenRecorder"/>
+     <addaction name="actionVideo_Stream_Receiver"/>
     </widget>
     <widget class="QMenu" name="menuMapping">
      <property name="title">
@@ -3588,6 +3590,16 @@
   <action name="actionMobile_Atlas_Creator">
    <property name="text">
     <string>Mobile Atlas Creator</string>
+   </property>
+  </action>
+  <action name="actionAudio_Stream_Receiver">
+   <property name="text">
+    <string>Audio Stream Receiver</string>
+   </property>
+  </action>
+  <action name="actionVideo_Stream_Receiver">
+   <property name="text">
+    <string>Video Stream Receiver</string>
    </property>
   </action>
  </widget>

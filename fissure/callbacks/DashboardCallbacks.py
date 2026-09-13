@@ -1836,6 +1836,8 @@ async def nodeStateRemove(component: object, node_uid=""):
         TacticalTabSlots.clear_tactical_node_artifact_details(frontend)
         TacticalTabSlots.clear_tactical_node_plugin_controls(frontend)
 
+        TacticalTabSlots.update_tactical_node_stream_button_state(frontend)
+
     if hasattr(frontend, "selected_tactical_node_uids"):
         frontend.selected_tactical_node_uids = [
             uid for uid in frontend.selected_tactical_node_uids

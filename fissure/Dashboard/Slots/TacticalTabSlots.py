@@ -168,6 +168,8 @@ def populate_tactical_node_details(dashboard: QtCore.QObject, node_uid):
 
     _updateTacticalNodeInfoFrameState(dashboard)
 
+    update_tactical_node_stream_button_state(dashboard)
+
 
 def update_tactical_node_stop_button_state(dashboard: QtCore.QObject, node: dict):
     status = (node.get("status") or "").strip().lower()
@@ -180,6 +182,25 @@ def update_tactical_node_stop_button_state(dashboard: QtCore.QObject, node: dict
     ]
 
     dashboard.ui.pushButton_tactical_node_stop.setEnabled(stop_enabled)
+
+
+def update_tactical_node_stream_button_state(
+    dashboard: QtCore.QObject,
+):
+    enabled = bool(
+        getattr(
+            dashboard,
+            "selected_tactical_node_uid",
+            None,
+        )
+    )
+
+    dashboard.ui.pushButton_tactical_node_video.setEnabled(
+        enabled
+    )
+    dashboard.ui.pushButton_tactical_node_audio.setEnabled(
+        enabled
+    )
 
 
 def restore_tactical_node_capabilities(
@@ -7587,10 +7608,7 @@ async def _downloadTacticalTargetData(
         return ""
     
 
-@QtCore.pyqtSlot(
-    QtCore.QObject,
-    QtCore.QPoint,
-)
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
 def _showTacticalTargetsDetailsContextMenu(
     dashboard: QtCore.QObject,
     position: QtCore.QPoint,
@@ -8976,9 +8994,7 @@ def _updateTacticalTargetsDownloadDataButton(
         )
 
 
-@QtCore.pyqtSlot(
-    QtCore.QObject
-)
+@QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalTargetsDownloadDataClicked(
     dashboard: QtCore.QObject,
 ):
@@ -9054,4 +9070,103 @@ def _slotTacticalTargetsDownloadDataClicked(
 
     task.add_done_callback(
         download_finished
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeVideoClicked(dashboard):
+    """Starts video streaming on the selected Tactical node and opens the receiver."""
+    uid = dashboard.ui.label2_tactical_node_uuid.text().strip()
+
+    if not uid:
+        dashboard.logger.warning(
+            "[Tactical] No node selected for video stream."
+        )
+        return
+
+    node_state = (
+        getattr(
+            dashboard,
+            "node_states",
+            {},
+        ).get(
+            uid,
+            {},
+        )
+        or {}
+    )
+
+    source_ip = str(
+        node_state.get("node_ip_address")
+        or node_state.get("ip")
+        or ""
+    ).strip()
+
+    if source_ip.lower() == "ipc":
+        source_ip = "127.0.0.1"
+
+    if not source_ip:
+        dashboard.logger.warning(
+            "[Tactical] Selected node has no IP address for video streaming."
+        )
+        return
+
+    parameters = {
+        "rtsp_port": 8554,
+        "device": "/dev/video0",
+        "source_format": "YUY2",
+        "width": 640,
+        "height": 480,
+        "fps": 30,
+        "bitrate_kbps": 750,
+    }
+
+    await dashboard.backend.tacticalNodeExecute(
+        [uid],
+        "Base",
+        "stream_video",
+        parameters,
+    )
+
+    await asyncio.sleep(1.0)
+
+    from fissure.Dashboard.Slots import MenuBarSlots
+
+    MenuBarSlots._slotMenuVideoStreamReceiverClicked(
+        dashboard,
+        source_ip=source_ip,
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeAudioClicked(dashboard):
+    """Starts audio streaming on the selected Tactical node and opens the receiver."""
+    uid = dashboard.ui.label2_tactical_node_uuid.text().strip()
+
+    if not uid:
+        dashboard.logger.warning(
+            "[Tactical] No node selected for audio stream."
+        )
+        return
+
+    from fissure.Dashboard.Slots import MenuBarSlots
+
+    MenuBarSlots._slotMenuAudioStreamReceiverClicked(
+        dashboard
+    )
+
+    await asyncio.sleep(0.25)
+
+    parameters = {
+        "destination_port": 5502,
+        "sample_rate": 48000,
+        "channels": 2,
+        "bitrate_kbps": 32,
+    }
+
+    await dashboard.backend.tacticalNodeExecute(
+        [uid],
+        "Base",
+        "stream_audio",
+        parameters,
     )

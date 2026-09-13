@@ -210,7 +210,7 @@
         <rect>
          <x>-1</x>
          <y>0</y>
-         <width>304</width>
+         <width>275</width>
          <height>65</height>
         </rect>
        </property>
@@ -228,7 +228,7 @@
          <rect>
           <x>5</x>
           <y>45</y>
-          <width>295</width>
+          <width>268</width>
           <height>17</height>
          </rect>
         </property>
@@ -250,7 +250,7 @@
          <rect>
           <x>5</x>
           <y>5</y>
-          <width>295</width>
+          <width>268</width>
           <height>17</height>
          </rect>
         </property>
@@ -274,7 +274,7 @@
          <rect>
           <x>5</x>
           <y>25</y>
-          <width>295</width>
+          <width>268</width>
           <height>17</height>
          </rect>
         </property>
@@ -1404,8 +1404,36 @@
         </widget>
        </widget>
       </widget>
+      <widget class="QPushButton" name="pushButton_tactical_node_audio">
+       <property name="geometry">
+        <rect>
+         <x>273</x>
+         <y>32</y>
+         <width>30</width>
+         <height>33</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tactical_node_video">
+       <property name="geometry">
+        <rect>
+         <x>273</x>
+         <y>0</y>
+         <width>30</width>
+         <height>33</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
       <zorder>frame5_tactical2</zorder>
       <zorder>frame5_tactical1</zorder>
+      <zorder>pushButton_tactical_node_audio</zorder>
+      <zorder>pushButton_tactical_node_video</zorder>
      </widget>
      <widget class="QWidget" name="tab_targets">
       <attribute name="title">

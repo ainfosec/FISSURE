@@ -94,6 +94,18 @@ ACTION_TAGS = {
 
     "take_photo": ["All"],
     "take_video": ["All"],
+    "stream_video": [
+        "All",
+        "media.stream",
+        "media.video",
+        "tactical.video",
+    ],
+    "stream_audio": [
+        "All",
+        "media.stream",
+        "media.audio",
+        "tactical.audio",
+    ],
 
     "signal_conditioning": [
         "All",
@@ -2433,7 +2445,6 @@ take_video_schema = {
         },
     ]
 }
-
 async def take_video(
     component: SensorNode,
     parameters: Dict[str, Any],
@@ -2455,6 +2466,144 @@ async def take_video(
         component,
         PLUGIN_NAME,
         "take_video.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+stream_video_schema = {
+    "params": [
+        {
+            "name": "rtsp_port",
+            "label": "RTSP Port",
+            "type": "number",
+            "default": 8554,
+        },
+        {
+            "name": "device",
+            "label": "Video Device",
+            "type": "string",
+            "default": "/dev/video0",
+        },
+        {
+            "name": "source_format",
+            "label": "Source Format",
+            "type": "string",
+            "default": "YUY2",
+            "options": ["YUY2", "MJPG"],
+        },
+        {
+            "name": "width",
+            "label": "Width",
+            "type": "number",
+            "default": 640,
+        },
+        {
+            "name": "height",
+            "label": "Height",
+            "type": "number",
+            "default": 480,
+        },
+        {
+            "name": "fps",
+            "label": "FPS",
+            "type": "number",
+            "default": 30,
+        },
+        {
+            "name": "bitrate_kbps",
+            "label": "Bitrate (kbps)",
+            "type": "number",
+            "default": 750,
+        },
+    ]
+}
+async def stream_video(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+
+    component.logger.info(
+        f"stream_video action with parameters: {parameters}"
+    )
+
+    op_params = dict(parameters or {})
+    op_params.setdefault(
+        "operation_id",
+        str(uuid.uuid4()),
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "stream_video.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+stream_audio_schema = {
+    "params": [
+        {
+            "name": "destination_port",
+            "label": "Destination Port",
+            "type": "number",
+            "default": 5502,
+        },
+        {
+            "name": "sample_rate",
+            "label": "Sample Rate (Hz)",
+            "type": "number",
+            "default": 48000,
+        },
+        {
+            "name": "channels",
+            "label": "Channels",
+            "type": "number",
+            "default": 2,
+        },
+        {
+            "name": "bitrate_kbps",
+            "label": "Bitrate (kbps)",
+            "type": "number",
+            "default": 32,
+        },
+    ]
+}
+async def stream_audio(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+
+    component.logger.info(
+        f"stream_audio action with parameters: {parameters}"
+    )
+
+    destination_ip = str(
+        getattr(component, "hiprfisr_ip_address", "") or ""
+    ).strip()
+
+    if destination_ip.lower() == "ipc":
+        destination_ip = "127.0.0.1"
+
+    if not destination_ip:
+        raise ValueError("HIPRFISR IP address is not configured")
+
+    op_params = dict(parameters or {})
+    op_params["destination_ip"] = destination_ip
+    op_params.setdefault(
+        "operation_id",
+        str(uuid.uuid4()),
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "stream_audio.py",
         op_params,
         node_uid,
         wait=True,

@@ -257,6 +257,69 @@ class Dashboard(QtWidgets.QMainWindow):
         self.selected_tactical_node_soi_id = None
         self.selected_tactical_node_artifact_id = None
 
+        # Initialize Stream Buttons
+        video_icon = QtGui.QIcon()
+        video_icon.addFile(
+            os.path.join(
+                fissure.utils.UI_DIR,
+                "Icons",
+                "video_stream_dark.png",
+            ),
+            QtCore.QSize(18, 18),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
+        video_icon.addFile(
+            os.path.join(
+                fissure.utils.UI_DIR,
+                "Icons",
+                "video_stream_disabled.png",
+            ),
+            QtCore.QSize(18, 18),
+            QtGui.QIcon.Disabled,
+            QtGui.QIcon.Off,
+        )
+
+        audio_icon = QtGui.QIcon()
+        audio_icon.addFile(
+            os.path.join(
+                fissure.utils.UI_DIR,
+                "Icons",
+                "audio_stream_dark.png",
+            ),
+            QtCore.QSize(18, 18),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
+        audio_icon.addFile(
+            os.path.join(
+                fissure.utils.UI_DIR,
+                "Icons",
+                "audio_stream_disabled.png",
+            ),
+            QtCore.QSize(18, 18),
+            QtGui.QIcon.Disabled,
+            QtGui.QIcon.Off,
+        )
+
+        self.ui.pushButton_tactical_node_video.setIcon(video_icon)
+        self.ui.pushButton_tactical_node_video.setIconSize(
+            QtCore.QSize(18, 18)
+        )
+        self.ui.pushButton_tactical_node_video.setToolTip(
+            "Start Video Stream"
+        )
+
+        self.ui.pushButton_tactical_node_audio.setIcon(audio_icon)
+        self.ui.pushButton_tactical_node_audio.setIconSize(
+            QtCore.QSize(18, 18)
+        )
+        self.ui.pushButton_tactical_node_audio.setToolTip(
+            "Start Audio Stream"
+        )
+
+        TacticalTabSlots.update_tactical_node_stream_button_state(self)
+
         # Initialize Map Pack
         self.tactical_map = TacticalMapView(
             graphics_view=self.ui.graphicsView,
@@ -2627,6 +2690,12 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionTAK_Stop_Docker_Containers.triggered.connect(lambda: MenuBarSlots._slotMenuTAK_StopDockerContainersClicked(dashboard))
     dashboard.window.actionJohn_the_Ripper.triggered.connect(lambda: MenuBarSlots._slotMenuJohnTheRipperClicked(dashboard))
     dashboard.window.actionMobile_Atlas_Creator.triggered.connect(lambda: MenuBarSlots._slotMenuMobileAtlasCreatorClicked(dashboard))
+    dashboard.window.actionVideo_Stream_Receiver.triggered.connect(
+        lambda: MenuBarSlots._slotMenuVideoStreamReceiverClicked(dashboard)
+    )
+    dashboard.window.actionAudio_Stream_Receiver.triggered.connect(
+        lambda: MenuBarSlots._slotMenuAudioStreamReceiverClicked(dashboard)
+    )
 
     # Lessons Menu
     dashboard.window.actionLessonOpenBTS.triggered.connect(MenuBarSlots._slotMenuLessonOpenBTS_Clicked)
@@ -2943,6 +3012,12 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_targets_download_data.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsDownloadDataClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tactical_node_video.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalNodeVideoClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tactical_node_audio.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalNodeAudioClicked(dashboard)
     )
 
     # Table Widget
