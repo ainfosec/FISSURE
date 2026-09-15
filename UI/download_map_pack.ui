@@ -95,7 +95,7 @@
       <property name="geometry">
        <rect>
         <x>215</x>
-        <y>350</y>
+        <y>335</y>
         <width>100</width>
         <height>27</height>
        </rect>
@@ -420,8 +420,8 @@ p, li { white-space: pre-wrap; }
      <widget class="QCheckBox" name="checkBox_zoom15">
       <property name="geometry">
        <rect>
-        <x>115</x>
-        <y>315</y>
+        <x>220</x>
+        <y>190</y>
         <width>92</width>
         <height>23</height>
        </rect>
@@ -434,7 +434,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>345</y>
+        <y>330</y>
         <width>40</width>
         <height>16</height>
        </rect>
@@ -455,7 +455,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>365</y>
+        <y>350</y>
         <width>40</width>
         <height>16</height>
        </rect>
@@ -476,7 +476,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>55</x>
-        <y>345</y>
+        <y>330</y>
         <width>150</width>
         <height>16</height>
        </rect>
@@ -494,7 +494,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>55</x>
-        <y>365</y>
+        <y>350</y>
         <width>150</width>
         <height>16</height>
        </rect>
@@ -506,6 +506,58 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="text">
        <string>####</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_zoom16">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>215</y>
+        <width>92</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>16</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_zoom17">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>240</y>
+        <width>92</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>17</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_zoom18">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>265</y>
+        <width>92</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>18</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_zoom19">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>290</y>
+        <width>92</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>19</string>
       </property>
      </widget>
     </widget>

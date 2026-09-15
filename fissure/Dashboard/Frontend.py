@@ -158,6 +158,7 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Model Lab")
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Training")
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Classification")
+        self.remove_tab_by_text(self.ui.tabWidget_signal_analysis, "Direction Finding")
 
         # Load FISSURE Logo
         self.ui.label_diagram.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "logo.png")))
@@ -4536,6 +4537,9 @@ def connect_targets_slots(dashboard: Dashboard):
         )
         dashboard.ui.pushButton_ta_targets_download_data.clicked.connect(
             lambda: TargetsTabSlots._slotTargetsDownloadDataClicked(dashboard)
+        )
+        dashboard.ui.pushButton_ta_targets_geolocation_start_stop.clicked.connect(
+            lambda: TargetsTabSlots._slotTargetsGeolocationStartStopClicked(dashboard)
         )
         dashboard.ui.pushButton_ta_targets_recommended_actions_stage.clicked.connect(
             lambda: TargetsTabSlots._slotTargetsRecommendedActionStageClicked(dashboard)

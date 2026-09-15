@@ -16,6 +16,7 @@ def initialize_targets_tab(dashboard: QtCore.QObject):
     dashboard.selected_targets_actions_target_id = None
     dashboard.pending_targets_actions_target_id = None
     dashboard.selected_target_recommendation_id = None
+    dashboard.targets_geolocation_observations = {}
 
     table = dashboard.ui.tableWidget1_ta_targets
     table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
@@ -86,13 +87,43 @@ def initialize_targets_tab(dashboard: QtCore.QObject):
 
     dashboard.ui.plainTextEdit_ta_targets_history_details.setReadOnly(True)
 
+    geolocation_table = dashboard.ui.tableWidget_ta_targets_geolocation_observations
+    geolocation_table.setColumnCount(6)
+    geolocation_table.setHorizontalHeaderLabels(
+        ["Time", "Node", "Power", "Gain", "Position", "Status"]
+    )
+    geolocation_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+    geolocation_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+    geolocation_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    geolocation_table.setWordWrap(False)
+    geolocation_table.setTextElideMode(QtCore.Qt.ElideRight)
+    geolocation_table.verticalHeader().setVisible(False)
+
+    geolocation_header = geolocation_table.horizontalHeader()
+    for column in range(5):
+        geolocation_header.setSectionResizeMode(column, QtWidgets.QHeaderView.ResizeToContents)
+    geolocation_header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+    geolocation_header.setStretchLastSection(True)
+
+    geolocation_font = geolocation_table.font()
+    if geolocation_font.pointSize() > 0:
+        geolocation_font.setPointSize(max(8, geolocation_font.pointSize() - 1))
+    else:
+        geolocation_font.setPixelSize(11)
+    geolocation_table.setFont(geolocation_font)
+    geolocation_table.horizontalHeader().setFont(geolocation_font)
+
+    dashboard.ui.label_ta_targets_geolocation_info.setWordWrap(True)
+    dashboard.ui.label_ta_targets_geolocation_info.setVisible(False)
+    _update_geolocation_button(dashboard, "idle", has_target=False)
+
     dashboard.ui.comboBox_ta_target.clear()
     dashboard.ui.comboBox_ta_target.addItem("No Target", None)
     dashboard.ui.tabWidget_ta_targets.setCurrentWidget(dashboard.ui.tab_targets_details)
 
     clear_target_details(dashboard)
     refresh_targets_view(dashboard)
-    
+
 
 def _target_id(target: dict):
     return str(target.get("target_id") or target.get("uid") or target.get("id") or "").strip()
@@ -268,6 +299,492 @@ def update_target_record(dashboard: QtCore.QObject, target_record: dict):
         dashboard.pending_targets_actions_target_id = None
 
     refresh_targets_view(dashboard)
+
+
+def _safe_float(value):
+    try:
+        if value in (None, "", "None"):
+            return None
+        return float(value)
+    except Exception:
+        return None
+
+
+def _target_geolocate(target: dict):
+    geo = target.get("geolocate") or {}
+    return geo if isinstance(geo, dict) else {}
+
+
+def _target_geolocate_status(target: dict):
+    geo = _target_geolocate(target)
+    return str(geo.get("status") or target.get("geolocation_status") or "idle").strip().lower()
+
+
+def _target_geolocation_frequency(target: dict):
+    value = target.get("target_frequency_mhz")
+    if value in (None, "", "None"):
+        value = target.get("frequency_mhz")
+    value = _safe_float(value)
+    return f"{value:.3f} MHz" if value is not None else "--"
+
+
+def _normalize_geolocation_observation(detection: dict):
+    if not isinstance(detection, dict):
+        return None
+
+    target_id = str(detection.get("target_id") or "").strip()
+    if not target_id:
+        return None
+
+    lat = _safe_float(detection.get("latitude"))
+    if lat is None:
+        lat = _safe_float(detection.get("lat"))
+    lon = _safe_float(detection.get("longitude"))
+    if lon is None:
+        lon = _safe_float(detection.get("lon"))
+
+    power_value = _safe_float(detection.get("power_dbm"))
+    units = "dBm" if power_value is not None else ""
+
+    if power_value is None:
+        power_value = _safe_float(detection.get("power_dbfs_peak"))
+        if power_value is not None:
+            units = "dBFS"
+
+    if power_value is None:
+        power_value = _safe_float(detection.get("metric"))
+        units = str(detection.get("metric_units") or "").strip()
+
+    gain_db = _safe_float(detection.get("receiver_gain_db"))
+    if gain_db is None:
+        gain_db = _safe_float(detection.get("gain_db"))
+
+    valid_position = (
+        lat is not None
+        and lon is not None
+        and -90.0 <= lat <= 90.0
+        and -180.0 <= lon <= 180.0
+    )
+
+    if not valid_position:
+        status = "No GPS"
+    elif power_value is None:
+        status = "No Metric"
+    elif units.lower() == "dbfs" and power_value >= -1.0:
+        status = "Near Full Scale"
+    else:
+        status = "Collected"
+
+    return {
+        "target_id": target_id,
+        "node_uid": str(detection.get("node_uid") or detection.get("source_id") or "").strip(),
+        "time": detection.get("observation_time") or detection.get("timestamp") or "",
+        "lat": lat,
+        "lon": lon,
+        "power_value": power_value,
+        "units": units,
+        "gain_db": gain_db,
+        "path_loss_p0_db": _safe_float(detection.get("path_loss_p0_db")),
+        "detector": str(detection.get("detector") or detection.get("detection_kind") or "").strip(),
+        "operation_id": str(detection.get("operation_id") or detection.get("opid") or "").strip(),
+        "status": status,
+    }
+
+
+def _geolocation_observations(dashboard, target_id):
+    cache = getattr(dashboard, "targets_geolocation_observations", {}) or {}
+    values = cache.get(str(target_id or ""), [])
+    return values if isinstance(values, list) else []
+
+
+def _geolocation_geometry(observations):
+    empty = {
+        "sample_count": 0,
+        "unique_node_count": 0,
+        "unique_position_count": 0,
+        "spread_m": 0.0,
+        "shape_ratio": 0.0,
+        "quality": "insufficient_positions",
+        "usable": False,
+    }
+
+    try:
+        from fissure.utils.geo import Sample, geometry_stats
+    except Exception:
+        return empty
+
+    samples = []
+    for observation in observations:
+        lat = observation.get("lat")
+        lon = observation.get("lon")
+        metric = observation.get("power_value")
+        if lat is None or lon is None or metric is None:
+            continue
+        samples.append(
+            Sample(
+                lat=float(lat),
+                lon=float(lon),
+                rssi_db=float(metric),
+                t=0.0,
+                node_uid=str(observation.get("node_uid") or ""),
+            )
+        )
+
+    if not samples:
+        return empty
+
+    try:
+        return geometry_stats(
+            samples,
+            min_position_separation_m=8.0,
+            min_spread_m=20.0,
+        )
+    except Exception:
+        return empty
+
+
+def _geolocation_measurement_units(observations):
+    for observation in reversed(observations):
+        units = str(observation.get("units") or "").strip()
+        if units:
+            return units
+    return ""
+
+
+def _geolocation_range_calibrated(observations):
+    units = _geolocation_measurement_units(observations).lower()
+    if not units:
+        return None
+    if units == "dbm":
+        return True
+    return any(observation.get("path_loss_p0_db") is not None for observation in observations)
+
+
+def _geolocation_method(target, observations):
+    geo = _target_geolocate(target)
+    action = str(geo.get("action") or "").strip().lower()
+    detector = ""
+    if observations:
+        detector = str(observations[-1].get("detector") or "").strip().lower()
+
+    name = action or detector
+    if name in {
+        "lfm_beacon_geolocate",
+        "wifi_geolocate_target",
+        "wifi_geolocate_all",
+        "usrp_b2x0_geolocate",
+    } or "geolocate" in name:
+        return "RSSI Multilateration"
+
+    return name.replace("_", " ").title() if name else "--"
+
+
+def _geolocation_collection(target, geometry):
+    node_count = int(geometry.get("unique_node_count", 0) or 0)
+    position_count = int(geometry.get("unique_position_count", 0) or 0)
+    geo = _target_geolocate(target)
+    configured_nodes = geo.get("node_uids") or []
+
+    if node_count >= 2 or (not node_count and isinstance(configured_nodes, list) and len(configured_nodes) >= 2):
+        return "Distributed Locate"
+    if position_count >= 2:
+        return "Mobile Survey"
+    if node_count == 1 or (isinstance(configured_nodes, list) and len(configured_nodes) == 1):
+        return "Single Node"
+    return "--"
+
+
+def _geometry_display(quality):
+    return {
+        "insufficient_positions": "Need More Positions",
+        "insufficient_spread": "Insufficient Spread",
+        "collinear": "Collinear",
+        "poor": "Poor",
+        "fair": "Fair",
+        "good": "Good",
+    }.get(str(quality or "").lower(), "--")
+
+
+def _set_semantic_state(widget, state=""):
+    widget.setProperty("state", str(state or ""))
+    widget.style().unpolish(widget)
+    widget.style().polish(widget)
+    widget.update()
+
+
+def _set_geolocation_info(dashboard, text="", severity="info"):
+    label = dashboard.ui.label_ta_targets_geolocation_info
+    label.setText(str(text or ""))
+    label.setProperty("severity", str(severity or "info"))
+    label.setVisible(bool(text))
+    label.style().unpolish(label)
+    label.style().polish(label)
+    label.update()
+
+
+def _update_geolocation_button(dashboard, status, has_target=True):
+    button = dashboard.ui.pushButton_ta_targets_geolocation_start_stop
+    status = str(status or "idle").lower()
+    running = status in ("starting", "running", "stopping")
+
+    if status == "starting":
+        button.setText("Starting...")
+        button.setEnabled(False)
+    elif status == "stopping":
+        button.setText("Stopping...")
+        button.setEnabled(False)
+    elif status == "running":
+        button.setText("Stop Geolocation")
+        button.setEnabled(bool(has_target))
+    else:
+        button.setText("Start Geolocation")
+        button.setEnabled(bool(has_target))
+
+    button.setProperty("running", "true" if running else "false")
+    button.style().unpolish(button)
+    button.style().polish(button)
+    button.update()
+
+
+def _populate_geolocation_observations_table(dashboard, observations):
+    table = dashboard.ui.tableWidget_ta_targets_geolocation_observations
+    table.blockSignals(True)
+    table.setRowCount(0)
+
+    tactical_nodes = getattr(dashboard, "tactical_nodes", {}) or {}
+
+    for observation in reversed(observations[-100:]):
+        row = table.rowCount()
+        table.insertRow(row)
+
+        power = "--"
+        if observation.get("power_value") is not None:
+            units = str(observation.get("units") or "").strip()
+            power = f"{float(observation['power_value']):.1f} {units}".strip()
+
+        gain = "--"
+        if observation.get("gain_db") is not None:
+            gain = f"{float(observation['gain_db']):.0f} dB"
+
+        position = "--"
+        if observation.get("lat") is not None and observation.get("lon") is not None:
+            position = f"{float(observation['lat']):.6f}, {float(observation['lon']):.6f}"
+
+        node_uid = str(observation.get("node_uid") or "").strip()
+        node_record = tactical_nodes.get(node_uid) or {}
+        node_label = node_record.get("callsign") or node_record.get("name") or node_uid or "--"
+
+        values = [
+            TacticalTabSlots.format_tactical_time(observation.get("time") or ""),
+            node_label,
+            power,
+            gain,
+            position,
+            observation.get("status") or "Collected",
+        ]
+
+        for column, value in enumerate(values):
+            item = QtWidgets.QTableWidgetItem(str(value))
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            if column == 1 and node_uid:
+                item.setToolTip(node_uid)
+            table.setItem(row, column, item)
+
+    table.resizeRowsToContents()
+    table.blockSignals(False)
+
+
+def populate_target_geolocation(dashboard: QtCore.QObject, target: dict):
+    if not isinstance(target, dict) or not target:
+        clear_target_geolocation(dashboard)
+        return
+
+    target_id = _target_id(target)
+    observations = _geolocation_observations(dashboard, target_id)
+    geometry = _geolocation_geometry(observations)
+    status = _target_geolocate_status(target)
+    units = _geolocation_measurement_units(observations)
+    calibrated = _geolocation_range_calibrated(observations)
+    quality = str(geometry.get("quality") or "")
+    usable = bool(geometry.get("usable"))
+
+    operation_text = {
+        "idle": "Idle",
+        "starting": "Starting",
+        "running": "Running",
+        "stopping": "Stopping",
+        "unsupported": "Unsupported",
+        "error": "Error",
+    }.get(status, status.replace("_", " ").title() or "Idle")
+
+    dashboard.ui.label_ta_targets_geolocation_operation.setText(operation_text)
+    dashboard.ui.label_ta_targets_geolocation_method.setText(_geolocation_method(target, observations))
+    dashboard.ui.label_ta_targets_geolocation_collection.setText(_geolocation_collection(target, geometry))
+    dashboard.ui.label_ta_targets_geolocation_frequency.setText(_target_geolocation_frequency(target))
+
+    dashboard.ui.label_ta_targets_geolocation_samples.setText(str(int(geometry.get("sample_count", 0) or 0)))
+    dashboard.ui.label_ta_targets_geolocation_nodes.setText(str(int(geometry.get("unique_node_count", 0) or 0)))
+    dashboard.ui.label_ta_targets_geolocation_positions.setText(str(int(geometry.get("unique_position_count", 0) or 0)))
+    dashboard.ui.label_ta_targets_geolocation_spread.setText(f"{float(geometry.get('spread_m', 0.0) or 0.0):.1f} m")
+    dashboard.ui.label_ta_targets_geolocation_geometry.setText(_geometry_display(quality))
+    dashboard.ui.label_ta_targets_geolocation_measurement.setText(units or "--")
+    dashboard.ui.label_ta_targets_geolocation_range_calibrated.setText(
+        "Yes" if calibrated is True else "No" if calibrated is False else "--"
+    )
+
+    active = status in ("starting", "running", "stopping")
+    location_source = str(target.get("location_source") or "").strip().lower()
+    solution_available = location_source == "hiprfisr_multilateration"
+
+    if status == "error":
+        solution_text = "Error"
+    elif status == "unsupported":
+        solution_text = "Unsupported"
+    elif solution_available:
+        solution_text = "Available"
+    elif active and not usable:
+        solution_text = "Collecting"
+    elif active and calibrated is False:
+        solution_text = "Calibration Required"
+    elif active and usable and calibrated is True:
+        solution_text = "Solving"
+    else:
+        solution_text = "Not Available"
+
+    dashboard.ui.label_ta_targets_geolocation_solution.setText(solution_text)
+
+    if solution_text == "Available":
+        lat = _safe_float(target.get("lat"))
+        lon = _safe_float(target.get("lon"))
+        ce_m = _safe_float(target.get("ce_m"))
+        dashboard.ui.label_ta_targets_geolocation_latitude.setText(f"{lat:.6f}" if lat is not None else "--")
+        dashboard.ui.label_ta_targets_geolocation_longitude.setText(f"{lon:.6f}" if lon is not None else "--")
+        dashboard.ui.label_ta_targets_geolocation_ce.setText(f"{ce_m:.1f} m" if ce_m is not None else "--")
+    else:
+        dashboard.ui.label_ta_targets_geolocation_latitude.setText("--")
+        dashboard.ui.label_ta_targets_geolocation_longitude.setText("--")
+        dashboard.ui.label_ta_targets_geolocation_ce.setText("--")
+
+    _set_semantic_state(
+        dashboard.ui.label_ta_targets_geolocation_operation,
+        "good" if status == "running" else "error" if status == "error" else "warning" if active else "",
+    )
+    _set_semantic_state(
+        dashboard.ui.label_ta_targets_geolocation_geometry,
+        "good" if quality == "good" else "warning" if quality in ("fair", "poor", "insufficient_positions", "insufficient_spread", "collinear") else "",
+    )
+    _set_semantic_state(
+        dashboard.ui.label_ta_targets_geolocation_range_calibrated,
+        "good" if calibrated is True else "warning" if calibrated is False else "",
+    )
+    _set_semantic_state(
+        dashboard.ui.label_ta_targets_geolocation_solution,
+        "good" if solution_text == "Available" else "error" if solution_text in ("Error", "Unsupported") else "warning" if solution_text in ("Calibration Required", "Collecting") else "",
+    )
+
+    geo = _target_geolocate(target)
+    error = str(geo.get("error") or "").strip()
+    if status == "error":
+        _set_geolocation_info(dashboard, f"Geolocation error: {error or 'unknown error'}", "error")
+    elif status == "unsupported":
+        _set_geolocation_info(dashboard, "No supported geolocation action is available for this target.", "warning")
+    elif active and not observations:
+        _set_geolocation_info(dashboard, "Waiting for geolocation observations.", "info")
+    elif active and int(geometry.get("unique_position_count", 0) or 0) < 3:
+        _set_geolocation_info(dashboard, "Collect at least 3 distinct receiver positions.", "info")
+    elif active and quality == "insufficient_spread":
+        _set_geolocation_info(dashboard, "Need more spatial spread between receiver positions.", "info")
+    elif active and quality == "collinear":
+        _set_geolocation_info(dashboard, "Observation geometry is too linear. Collect positions around the target.", "warning")
+    elif active and calibrated is False:
+        _set_geolocation_info(dashboard, "Range calibration required before a solution can be produced.", "warning")
+    elif active and usable and calibrated is True and not solution_available:
+        _set_geolocation_info(dashboard, "Geometry is ready. Waiting for a location solution.", "info")
+    else:
+        _set_geolocation_info(dashboard)
+
+    _populate_geolocation_observations_table(dashboard, observations)
+    _update_geolocation_button(dashboard, status, has_target=bool(target_id))
+
+
+def clear_target_geolocation(dashboard: QtCore.QObject):
+    for name in (
+        "label_ta_targets_geolocation_operation",
+        "label_ta_targets_geolocation_method",
+        "label_ta_targets_geolocation_collection",
+        "label_ta_targets_geolocation_frequency",
+        "label_ta_targets_geolocation_samples",
+        "label_ta_targets_geolocation_nodes",
+        "label_ta_targets_geolocation_positions",
+        "label_ta_targets_geolocation_spread",
+        "label_ta_targets_geolocation_geometry",
+        "label_ta_targets_geolocation_measurement",
+        "label_ta_targets_geolocation_range_calibrated",
+        "label_ta_targets_geolocation_solution",
+        "label_ta_targets_geolocation_latitude",
+        "label_ta_targets_geolocation_longitude",
+        "label_ta_targets_geolocation_ce",
+    ):
+        getattr(dashboard.ui, name).setText("--")
+
+    dashboard.ui.tableWidget_ta_targets_geolocation_observations.setRowCount(0)
+    _set_geolocation_info(dashboard)
+    _update_geolocation_button(dashboard, "idle", has_target=False)
+
+
+def handle_target_geolocation_detection(dashboard: QtCore.QObject, detection: dict):
+    observation = _normalize_geolocation_observation(detection)
+    if observation is None:
+        return
+
+    target_id = observation["target_id"]
+    target = (getattr(dashboard, "tactical_targets", {}) or {}).get(target_id) or {}
+    detector = str(observation.get("detector") or "").lower()
+    if _target_geolocate_status(target) not in ("starting", "running", "stopping") and "geolocate" not in detector:
+        return
+
+    if not hasattr(dashboard, "targets_geolocation_observations"):
+        dashboard.targets_geolocation_observations = {}
+
+    observations = dashboard.targets_geolocation_observations.setdefault(target_id, [])
+    operation_id = observation.get("operation_id") or ""
+    if observations and operation_id:
+        previous_operation_id = str(observations[-1].get("operation_id") or "")
+        if previous_operation_id and previous_operation_id != operation_id:
+            observations.clear()
+
+    observations.append(observation)
+    if len(observations) > 250:
+        del observations[:-250]
+
+    if getattr(dashboard, "selected_targets_actions_target_id", None) == target_id:
+        populate_target_geolocation(dashboard, target)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTargetsGeolocationStartStopClicked(dashboard: QtCore.QObject):
+    target_id = getattr(dashboard, "selected_targets_actions_target_id", None)
+    if not target_id:
+        return
+
+    target = (getattr(dashboard, "tactical_targets", {}) or {}).get(target_id)
+    if not target:
+        return
+
+    status = _target_geolocate_status(target)
+    if status in ("starting", "running"):
+        await dashboard.backend.tacticalTargetsGeolocateStop(target_id=target_id)
+        return
+
+    if status == "stopping":
+        return
+
+    dashboard.targets_geolocation_observations[target_id] = []
+    populate_target_geolocation(dashboard, target)
+    await dashboard.backend.tacticalTargetsGeolocateStart(
+        target_id=target_id,
+        search_similar_targets=False,
+    )
 
 
 def _target_details_html(target: dict):
@@ -539,6 +1056,7 @@ def populate_target_details(dashboard: QtCore.QObject, target: dict, preserve_no
     dashboard.ui.label_ta_targets_info_details.setText(_target_details_html(target))
     populate_target_recommendations(dashboard, target)
     populate_target_history(dashboard, target)
+    populate_target_geolocation(dashboard, target)
 
     if not preserve_notes:
         dashboard.ui.textEdit_ta_targets_notes.setPlainText(str(target.get("notes") or ""))
@@ -561,6 +1079,7 @@ def clear_target_details(dashboard: QtCore.QObject):
     dashboard.ui.tableWidget_ta_targets_recommended_actions.setRowCount(0)
     dashboard.ui.tableWidget_ta_targets_history.setRowCount(0)
     dashboard.ui.plainTextEdit_ta_targets_history_details.clear()
+    clear_target_geolocation(dashboard)
     _clear_recommendation_details(dashboard)
     dashboard.ui.pushButton_ta_targets_save_notes.setEnabled(False)
     dashboard.ui.pushButton_ta_targets_open_soi.setEnabled(False)

@@ -53,6 +53,12 @@ def parse_cot_xml(raw_xml):
         "detection_node_uid": None,
         "detection_frequency_hz": None,
         "detection_power_dbm": None,
+        "detection_power_dbfs_peak": None,
+        "detection_metric": None,
+        "detection_metric_units": None,
+        "detection_matched_filter_metric": None,
+        "detection_matched_filter_units": None,
+        "detection_receiver_gain_db": None,
         "detection_timestamp": None,
         "detection_detector": None,
         "detection_opid": None,
@@ -62,6 +68,8 @@ def parse_cot_xml(raw_xml):
         "target_state": None,
         "target_frequency_mhz": None,
         "target_geolocation_status": None,
+        "target_geolocate": {},
+        "target_location_source": None,
         "target_identity": {},
         "target_artifact_ids": [],
         "target_artifact_links": [],
@@ -208,6 +216,36 @@ def parse_cot_xml(raw_xml):
                 "power_dbm"
             )
             cot_message[
+                "detection_power_dbfs_peak"
+            ] = fissure_detection.findtext(
+                "power_dbfs_peak"
+            )
+            cot_message[
+                "detection_metric"
+            ] = fissure_detection.findtext(
+                "metric"
+            )
+            cot_message[
+                "detection_metric_units"
+            ] = fissure_detection.findtext(
+                "metric_units"
+            )
+            cot_message[
+                "detection_matched_filter_metric"
+            ] = fissure_detection.findtext(
+                "matched_filter_metric"
+            )
+            cot_message[
+                "detection_matched_filter_units"
+            ] = fissure_detection.findtext(
+                "matched_filter_units"
+            )
+            cot_message[
+                "detection_receiver_gain_db"
+            ] = fissure_detection.findtext(
+                "receiver_gain_db"
+            )
+            cot_message[
                 "detection_timestamp"
             ] = fissure_detection.findtext(
                 "timestamp"
@@ -297,6 +335,10 @@ def parse_cot_xml(raw_xml):
                 )
             )
 
+            cot_message["target_location_source"] = (
+                fissure_target.findtext("location_source")
+            )
+
             cot_message[
                 "target_frequency_mhz"
             ] = (
@@ -333,7 +375,12 @@ def parse_cot_xml(raw_xml):
                     "recommendations_json",
                     "target_recommendations",
                     [],
-                ),                
+                ),
+                (
+                    "geolocate_json",
+                    "target_geolocate",
+                    {},
+                ),
             )
 
             for (
@@ -631,6 +678,22 @@ def cot_to_tactical_detection_record(cot_message):
 
     freq_hz = _safe_float(cot_message.get("detection_frequency_hz"))
     power_dbm = _safe_float(cot_message.get("detection_power_dbm"))
+    power_dbfs_peak = _safe_float(
+        cot_message.get("detection_power_dbfs_peak")
+    )
+    metric = _safe_float(cot_message.get("detection_metric"))
+    metric_units = str(
+        cot_message.get("detection_metric_units") or ""
+    ).strip()
+    matched_filter_metric = _safe_float(
+        cot_message.get("detection_matched_filter_metric")
+    )
+    matched_filter_units = str(
+        cot_message.get("detection_matched_filter_units") or ""
+    ).strip()
+    receiver_gain_db = _safe_float(
+        cot_message.get("detection_receiver_gain_db")
+    )
 
     frequency_display = ""
     if freq_hz is not None:
@@ -638,7 +701,14 @@ def cot_to_tactical_detection_record(cot_message):
 
     power_display = ""
     if power_dbm is not None:
-        power_display = f"{power_dbm:.1f}"
+        power_display = f"{power_dbm:.1f} dBm"
+    elif power_dbfs_peak is not None:
+        power_display = f"{power_dbfs_peak:.1f} dBFS"
+    elif metric is not None:
+        if metric_units:
+            power_display = f"{metric:.1f} {metric_units}"
+        else:
+            power_display = f"{metric:.1f}"
 
     timestamp = (
         cot_message.get("detection_timestamp")
@@ -655,6 +725,13 @@ def cot_to_tactical_detection_record(cot_message):
         "detector": cot_message.get("detection_detector") or "",
         "operation_id": cot_message.get("detection_opid") or "",
         "event_uid": uid,
+        "power_dbm": power_dbm,
+        "power_dbfs_peak": power_dbfs_peak,
+        "metric": metric,
+        "metric_units": metric_units,
+        "matched_filter_metric": matched_filter_metric,
+        "matched_filter_units": matched_filter_units,
+        "receiver_gain_db": receiver_gain_db,
         "raw_xml": cot_message.get("raw_xml"),
 
         "lat": cot_message.get("lat"),
@@ -852,6 +929,17 @@ def cot_to_tactical_target_record(
     ):
         recommendations = []
 
+    geolocate = cot_message.get(
+        "target_geolocate",
+        {},
+    )
+
+    if not isinstance(
+        geolocate,
+        dict,
+    ):
+        geolocate = {}        
+
     latest_artifact_id = str(
         cot_message.get(
             "artifact_id",
@@ -942,10 +1030,16 @@ def cot_to_tactical_target_record(
                 "",
             ),
         "geolocation_status": (
-            cot_message.get(
+            geolocate.get("status")
+            or cot_message.get(
                 "target_geolocation_status"
             )
             or "idle"
+        ),
+        "geolocate": geolocate,
+        "location_source": (
+            cot_message.get("target_location_source")
+            or ""
         ),
 
         "target_frequency_mhz":

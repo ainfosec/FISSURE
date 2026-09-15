@@ -6,7 +6,7 @@ options:
     cmake_opt: ''
     comment: ''
     copyright: ''
-    description: ''
+    description: LFM matched-filter detector with independent in-band dBFS power measurement.
     gen_cmake: 'On'
     gen_linking: dynamic
     generate_options: no_gui
@@ -19,210 +19,76 @@ options:
     realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
-    run_options: prompt
+    run_options: run
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: ''
+    title: LFM Beacon RTL-SDR
     window_size: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate:
+    - 8
+    - 8
     rotation: 0
     state: enabled
-
 blocks:
-- name: Nmatch
-  id: variable
+- name: rx_freq_default
+  id: parameter
   parameters:
+    alias: ''
     comment: ''
-    value: int(0.25 * ton * samp_rate)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [624, 12.0]
-    rotation: 0
-    state: enabled
-- name: avg_len
-  id: variable
-  parameters:
-    comment: ''
-    value: int(0.01*samp_rate)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [536, 88.0]
-    rotation: 0
-    state: enabled
-- name: bw
-  id: variable
-  parameters:
-    comment: ''
-    value: 200e3
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [456, 12]
-    rotation: 0
-    state: enabled
-- name: eps
-  id: variable
-  parameters:
-    comment: ''
-    value: 1e-12
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [616, 88.0]
-    rotation: 0
-    state: enabled
-- name: holdoff_s
-  id: variable
-  parameters:
-    comment: ''
-    value: '0.08'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [792, 88.0]
-    rotation: 0
-    state: enabled
-- name: lpf_cutoff
-  id: variable
-  parameters:
-    comment: ''
-    value: bw*1.2
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [712, 12.0]
-    rotation: 0
-    state: enabled
-- name: lpf_trans
-  id: variable
-  parameters:
-    comment: ''
-    value: bw/2
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [800, 12.0]
-    rotation: 0
-    state: enabled
-- name: matched_taps
-  id: variable
-  parameters:
-    comment: ''
-    value: np.conjugate(np.exp(1j*2*np.pi*np.cumsum(((-bw/2)+(bw/ton)*(np.arange(Nmatch)/samp_rate)))/samp_rate)[::-1])
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [880, 12.0]
-    rotation: 0
-    state: enabled
-- name: min_peak
-  id: variable
-  parameters:
-    comment: ''
-    value: '40'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1064, 88.0]
-    rotation: 0
-    state: enabled
-- name: notes
-  id: variable
-  parameters:
-    comment: ''
-    value: '"Transmits an on message for a Monoprice Z-Wave Plus RGB Smart Bulb."'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1184, 28.0]
-    rotation: 0
-    state: enabled
-- name: peak_window
-  id: variable
-  parameters:
-    comment: ''
-    value: '8000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [872, 88.0]
-    rotation: 0
-    state: enabled
-- name: rx_freq
-  id: variable
-  parameters:
-    comment: ''
+    hide: none
+    label: rx_freq_default
+    short_id: ''
+    type: str
     value: 433e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 156]
+    coordinate:
+    - 8
+    - 8
     rotation: 0
     state: enabled
-- name: rx_gain
-  id: variable
+- name: gain_default
+  id: parameter
   parameters:
+    alias: ''
     comment: ''
-    value: '40'
+    hide: none
+    label: gain_default
+    short_id: ''
+    type: str
+    value: '40.0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 220]
+    coordinate:
+    - 184
+    - 8
     rotation: 0
     state: enabled
-- name: samp_rate
-  id: variable
+- name: power_report_interval_default
+  id: parameter
   parameters:
+    alias: ''
     comment: ''
-    value: 1e6
+    hide: none
+    label: power_report_interval_default
+    short_id: ''
+    type: str
+    value: '0.25'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 92]
-    rotation: 0
-    state: enabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"False"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 284]
-    rotation: 0
-    state: enabled
-- name: threshold
-  id: variable
-  parameters:
-    comment: ''
-    value: '30'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [696, 88.0]
+    coordinate:
+    - 360
+    - 8
     rotation: 0
     state: enabled
 - name: ton
@@ -234,19 +100,51 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 16.0]
+    coordinate:
+    - 8
+    - 96
     rotation: 0
     state: enabled
-- name: tperiod
+- name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: '0.1'
+    value: 1e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 88.0]
+    coordinate:
+    - 96
+    - 96
+    rotation: 0
+    state: enabled
+- name: bw
+  id: variable
+  parameters:
+    comment: ''
+    value: 200e3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 184
+    - 96
+    rotation: 0
+    state: enabled
+- name: Nmatch
+  id: variable
+  parameters:
+    comment: ''
+    value: int(0.25 * ton * samp_rate)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 272
+    - 96
     rotation: 0
     state: enabled
 - name: xlating_hz
@@ -258,228 +156,222 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 88.0]
+    coordinate:
+    - 448
+    - 96
     rotation: 0
     state: enabled
-- name: blocks_add_const_vxx_0
-  id: blocks_add_const_vxx
+- name: threshold
+  id: variable
   parameters:
-    affinity: ''
-    alias: ''
     comment: ''
-    const: eps
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
+    value: '15'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 360.0]
-    rotation: 0
-    state: disabled
-- name: blocks_complex_to_mag_squared_0
-  id: blocks_complex_to_mag_squared
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [720, 192.0]
+    coordinate:
+    - 536
+    - 96
     rotation: 0
     state: enabled
-- name: blocks_divide_xx_0
-  id: blocks_divide_xx
+- name: min_peak
+  id: variable
   parameters:
-    affinity: ''
-    alias: ''
     comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: float
-    vlen: '1'
+    value: '20'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [688, 304.0]
-    rotation: 0
-    state: disabled
-- name: blocks_message_debug_0
-  id: blocks_message_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    en_uvec: 'True'
-    log_level: info
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1168, 248.0]
+    coordinate:
+    - 624
+    - 96
     rotation: 0
     state: enabled
-- name: blocks_moving_average_xx_0
-  id: blocks_moving_average_xx
+- name: holdoff_s
+  id: variable
   parameters:
-    affinity: ''
-    alias: ''
     comment: ''
-    length: avg_len
-    max_iter: '4000'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: 1/avg_len
-    type: float
-    vlen: '1'
+    value: '0.08'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 336.0]
+    coordinate:
+    - 712
+    - 96
     rotation: 0
     state: enabled
-- name: blocks_moving_average_xx_1
-  id: blocks_moving_average_xx
+- name: peak_window
+  id: variable
   parameters:
-    affinity: ''
-    alias: ''
     comment: ''
-    length: '64'
-    max_iter: '4000'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: 1/64
-    type: float
-    vlen: '1'
+    value: '8000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 272.0]
+    coordinate:
+    - 800
+    - 96
     rotation: 0
     state: enabled
-- name: blocks_null_sink_0
-  id: blocks_null_sink
+- name: eps
+  id: variable
   parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
     comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
+    value: 1e-12
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 624.0]
-    rotation: 0
-    state: disabled
-- name: dc_blocker_xx_0
-  id: dc_blocker_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    length: '32'
-    long_form: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: cc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [328, 160.0]
+    coordinate:
+    - 888
+    - 96
     rotation: 0
     state: enabled
-- name: epy_block_0
-  id: epy_block
+- name: avg_len
+  id: variable
   parameters:
-    _source_code: "import time\nimport numpy as np\nimport pmt\nfrom gnuradio import\
-      \ gr\n\n\nclass blk(gr.sync_block):\n    def __init__(\n        self,\n    \
-      \    samp_rate=1e6,\n        rx_freq_hz=433e6,\n        tperiod=0.1,\n     \
-      \   thresh=10.0,\n        min_peak=12.0,\n        holdoff_s=0.08,\n        peak_window=8000,\n\
-      \    ):\n        gr.sync_block.__init__(\n            self,\n            name='burst_detector',\n\
-      \            in_sig=[np.float32],\n            out_sig=None\n        )\n\n \
-      \       self.samp_rate = float(samp_rate)\n        self.rx_freq_hz = float(rx_freq_hz)\n\
-      \        self.thresh = float(thresh)\n        self.min_peak = float(min_peak)\n\
-      \        self.holdoff = int(float(holdoff_s) * self.samp_rate)\n        self.peak_window\
-      \ = int(peak_window)\n\n        self.n = 0\n        self.next_ok = 0\n     \
-      \   self.in_peak = False\n        self.peak_val = 0.0\n        self.peak_idx\
-      \ = 0\n        self.peak_end = 0\n\n        self.message_port_register_out(pmt.intern(\"\
-      det\"))\n\n    def set_rx_freq_hz(self, rx_freq_hz):\n        self.rx_freq_hz\
-      \ = float(rx_freq_hz)\n\n    def work(self, input_items, output_items):\n  \
-      \      x = input_items[0]\n        L = len(x)\n\n        for i in range(L):\n\
-      \            idx = self.n + i\n            v = float(x[i])\n\n            if\
-      \ idx < self.next_ok:\n                continue\n\n            if not self.in_peak:\n\
-      \                if v >= self.thresh:\n                    self.in_peak = True\n\
-      \                    self.peak_val = v\n                    self.peak_idx =\
-      \ idx\n                    self.peak_end = idx + self.peak_window\n        \
-      \    else:\n                if v > self.peak_val:\n                    self.peak_val\
-      \ = v\n                    self.peak_idx = idx\n\n                if idx >=\
-      \ self.peak_end:\n                    if self.peak_val >= self.min_peak:\n \
-      \                       ts = time.time()\n                        msg = f\"\
-      TSI:/LFM Beacon/{self.rx_freq_hz:.1f}/{self.peak_val:.2f}/{ts:.6f}\"\n     \
-      \                   self.message_port_pub(\n                            pmt.intern(\"\
-      det\"),\n                            pmt.intern(msg)\n                     \
-      \   )\n\n                    self.next_ok = self.peak_end + self.holdoff\n \
-      \                   self.in_peak = False\n\n        self.n += L\n        return\
-      \ L\n"
-    affinity: ''
-    alias: ''
     comment: ''
-    holdoff_s: holdoff_s
-    maxoutbuf: '0'
-    min_peak: min_peak
-    minoutbuf: '0'
-    peak_window: peak_window
-    rx_freq_hz: rx_freq
-    samp_rate: samp_rate
-    thresh: threshold
-    tperiod: tperiod
-  states:
-    _io_cache: ('burst_detector', 'blk', [('samp_rate', '1000000.0'), ('rx_freq_hz',
-      '433000000.0'), ('tperiod', '0.1'), ('thresh', '10.0'), ('min_peak', '12.0'),
-      ('holdoff_s', '0.08'), ('peak_window', '8000')], [('0', 'float', 1)], [('det',
-      'message', 1)], '', ['min_peak', 'peak_window', 'rx_freq_hz', 'samp_rate', 'thresh'])
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [968, 240.0]
-    rotation: 0
-    state: enabled
-- name: freq_xlating_fir_filter_xxx_0
-  id: freq_xlating_fir_filter_xxx
-  parameters:
-    affinity: ''
-    alias: ''
-    center_freq: xlating_hz
-    comment: ''
-    decim: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: samp_rate
-    taps: matched_taps
-    type: ccc
+    value: int(0.01*samp_rate)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 160.0]
+    coordinate:
+    - 976
+    - 96
     rotation: 0
     state: enabled
-- name: import_0
+- name: lpf_cutoff
+  id: variable
+  parameters:
+    comment: ''
+    value: bw*1.2
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 176
+    rotation: 0
+    state: enabled
+- name: lpf_trans
+  id: variable
+  parameters:
+    comment: ''
+    value: bw/2
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 96
+    - 176
+    rotation: 0
+    state: enabled
+- name: matched_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: np.conjugate(np.exp(1j*2*np.pi*np.cumsum(((-bw/2)+(bw/ton)*(np.arange(Nmatch)/samp_rate)))/samp_rate)[::-1])
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 184
+    - 176
+    rotation: 0
+    state: enabled
+- name: power_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: firdes.low_pass(1.0, samp_rate, lpf_cutoff, lpf_trans, firdes.WIN_HAMMING, 6.76)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 536
+    - 176
+    rotation: 0
+    state: enabled
+- name: power_avg_len
+  id: variable
+  parameters:
+    comment: ''
+    value: max(1, int(0.002*samp_rate))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 800
+    - 176
+    rotation: 0
+    state: enabled
+- name: rx_freq
+  id: variable
+  parameters:
+    comment: ''
+    value: float(rx_freq_default)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 248
+    rotation: 0
+    state: enabled
+- name: rx_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: float(gain_default)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 184
+    - 248
+    rotation: 0
+    state: enabled
+- name: power_report_interval_s
+  id: variable
+  parameters:
+    comment: ''
+    value: float(power_report_interval_default)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 360
+    - 248
+    rotation: 0
+    state: enabled
+- name: notes
+  id: variable
+  parameters:
+    comment: ''
+    value: '"LFM beacon detector with separate received-power measurement."'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 624
+    - 248
+    rotation: 0
+    state: enabled
+- name: import_numpy
   id: import
   parameters:
     alias: ''
@@ -489,300 +381,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 12.0]
+    coordinate:
+    - 8
+    - 320
     rotation: 0
-    state: true
-- name: qtgui_time_sink_x_0_0_0_1
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'True'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'True'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: '300000'
-    srate: '1'
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '100'
-    ymin: '-100'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [688, 464.0]
-    rotation: 0
-    state: disabled
-- name: qtgui_time_sink_x_0_0_0_1_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'True'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'True'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: '300000'
-    srate: '1'
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '100'
-    ymin: '-100'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [680, 560.0]
-    rotation: 0
-    state: disabled
-- name: qtgui_time_sink_x_0_0_0_1_0_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'True'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'True'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: '300000'
-    srate: '1'
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '100'
-    ymin: '-100'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1048, 472.0]
-    rotation: 0
-    state: disabled
+    state: enabled
 - name: soapy_rtlsdr_source_0
   id: soapy_rtlsdr_source
   parameters:
@@ -804,26 +407,339 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [144, 160.0]
+    coordinate:
+    - 8
+    - 432
     rotation: 0
     state: enabled
-
+- name: dc_blocker_xx_0
+  id: dc_blocker_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: '32'
+    long_form: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: cc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 208
+    - 432
+    rotation: 0
+    state: enabled
+- name: freq_xlating_fir_filter_detect
+  id: freq_xlating_fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: xlating_hz
+    comment: ''
+    decim: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    taps: matched_taps
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 400
+    - 400
+    rotation: 0
+    state: enabled
+- name: blocks_complex_to_mag_squared_detect
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 616
+    - 400
+    rotation: 0
+    state: enabled
+- name: blocks_moving_average_detect_0
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: avg_len
+    max_iter: '4000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: 1/avg_len
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 824
+    - 400
+    rotation: 0
+    state: enabled
+- name: blocks_moving_average_detect_1
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: '64'
+    max_iter: '4000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: 1/64
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1032
+    - 400
+    rotation: 0
+    state: enabled
+- name: freq_xlating_fir_filter_power
+  id: freq_xlating_fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: xlating_hz
+    comment: ''
+    decim: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    taps: power_taps
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 400
+    - 568
+    rotation: 0
+    state: enabled
+- name: blocks_complex_to_mag_squared_power
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 616
+    - 568
+    rotation: 0
+    state: enabled
+- name: blocks_moving_average_power
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: power_avg_len
+    max_iter: '4000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: 1/power_avg_len
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 824
+    - 568
+    rotation: 0
+    state: enabled
+- name: lfm_detector
+  id: epy_block
+  parameters:
+    _source_code: "import time\nimport numpy as np\nimport pmt\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n    \"\"\"Detect LFM matched-filter\
+      \ peaks and report separate RF power.\"\"\"\n\n    def __init__(\n        self,\n        samp_rate=1e6,\n        rx_freq_hz=433e6,\n   \
+      \     thresh=15.0,\n        min_peak=20.0,\n        holdoff_s=0.08,\n        peak_window=8000,\n        eps=1e-12,\n    ):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name=\"lfm_beacon_detector\",\n            in_sig=[np.float32, np.float32],\n            out_sig=None,\n\
+      \        )\n\n        self.samp_rate = float(samp_rate)\n        self.rx_freq_hz = float(rx_freq_hz)\n        self.thresh = float(thresh)\n\
+      \        self.min_peak = float(min_peak)\n        self.holdoff_s = float(holdoff_s)\n        self.holdoff = int(self.holdoff_s * self.samp_rate)\n\
+      \        self.peak_window = int(peak_window)\n        self.eps = float(eps)\n\n        self.n = 0\n        self.next_ok = 0\n        self.in_peak\
+      \ = False\n        self.peak_val = 0.0\n        self.peak_power = self.eps\n        self.peak_idx = 0\n        self.peak_end = 0\n\n   \
+      \     self.message_port_register_out(pmt.intern(\"det\"))\n\n    def set_samp_rate(self, samp_rate):\n        self.samp_rate = float(samp_rate)\n\
+      \        self.holdoff = int(self.holdoff_s * self.samp_rate)\n\n    def set_rx_freq_hz(self, rx_freq_hz):\n        self.rx_freq_hz = float(rx_freq_hz)\n\
+      \n    def set_thresh(self, thresh):\n        self.thresh = float(thresh)\n\n    def set_min_peak(self, min_peak):\n        self.min_peak\
+      \ = float(min_peak)\n\n    def set_holdoff_s(self, holdoff_s):\n        self.holdoff_s = float(holdoff_s)\n        self.holdoff = int(self.holdoff_s\
+      \ * self.samp_rate)\n\n    def set_peak_window(self, peak_window):\n        self.peak_window = int(peak_window)\n\n    def work(self, input_items,\
+      \ output_items):\n        metric = input_items[0]\n        rf_power_linear = input_items[1]\n        length = min(len(metric), len(rf_power_linear))\n\
+      \n        for i in range(length):\n            idx = self.n + i\n            value = float(metric[i])\n            power = max(float(rf_power_linear[i]),\
+      \ self.eps)\n\n            if idx < self.next_ok:\n                continue\n\n            if not self.in_peak:\n                if value\
+      \ >= self.thresh:\n                    self.in_peak = True\n                    self.peak_val = value\n                    self.peak_power\
+      \ = power\n                    self.peak_idx = idx\n                    self.peak_end = idx + self.peak_window\n                continue\n\
+      \n            if value > self.peak_val:\n                self.peak_val = value\n                self.peak_idx = idx\n\n            if power\
+      \ > self.peak_power:\n                self.peak_power = power\n\n            if idx >= self.peak_end:\n                if self.peak_val\
+      \ >= self.min_peak:\n                    ts = time.time()\n                    rf_power_dbfs = 10.0 * np.log10(max(self.peak_power, self.eps))\n\
+      \                    msg = (\n                        f\"TSI:/LFM Beacon/{self.rx_freq_hz:.1f}/\"\n                        f\"{self.peak_val:.2f}/{ts:.6f}/{rf_power_dbfs:.2f}\"\
+      \n                    )\n                    self.message_port_pub(pmt.intern(\"det\"), pmt.intern(msg))\n\n                self.next_ok\
+      \ = self.peak_end + self.holdoff\n                self.in_peak = False\n                self.peak_val = 0.0\n                self.peak_power\
+      \ = self.eps\n\n        self.n += length\n        return length\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    eps: eps
+    holdoff_s: holdoff_s
+    maxoutbuf: '0'
+    min_peak: min_peak
+    minoutbuf: '0'
+    peak_window: peak_window
+    rx_freq_hz: rx_freq
+    samp_rate: samp_rate
+    thresh: threshold
+  states:
+    _io_cache: ('burst_detector', 'blk', [('samp_rate', '1000000.0'), ('rx_freq_hz', '433000000.0'), ('tperiod', '0.1'), ('thresh', '10.0'), ('min_peak',
+      '12.0'), ('holdoff_s', '0.08'), ('peak_window', '8000')], [('0', 'float', 1)], [('det', 'message', 1)], '', ['min_peak', 'peak_window',
+      'rx_freq_hz', 'samp_rate', 'thresh'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1248
+    - 440
+    rotation: 0
+    state: enabled
+- name: rf_power_reporter
+  id: epy_block
+  parameters:
+    _source_code: "import time\nimport numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n    \"\"\"Print in-band RF power independently\
+      \ of LFM detection.\"\"\"\n\n    def __init__(\n        self,\n        samp_rate=1e6,\n        rx_freq_hz=433e6,\n        report_interval_s=0.25,\n\
+      \        eps=1e-12,\n    ):\n        gr.sync_block.__init__(\n            self,\n            name=\"rf_power_reporter\",\n            in_sig=[np.float32],\n\
+      \            out_sig=None,\n        )\n\n        self.samp_rate = float(samp_rate)\n        self.rx_freq_hz = float(rx_freq_hz)\n      \
+      \  self.report_interval_s = max(0.01, float(report_interval_s))\n        self.eps = float(eps)\n\n        self.report_samples = max(1, int(self.report_interval_s\
+      \ * self.samp_rate))\n        self.sample_count = 0\n        self.sum_power = 0.0\n        self.peak_power = self.eps\n\n    def set_samp_rate(self,\
+      \ samp_rate):\n        self.samp_rate = float(samp_rate)\n        self.report_samples = max(1, int(self.report_interval_s * self.samp_rate))\n\
+      \        self._reset_window()\n\n    def set_rx_freq_hz(self, rx_freq_hz):\n        self.rx_freq_hz = float(rx_freq_hz)\n\n    def set_report_interval_s(self,\
+      \ report_interval_s):\n        self.report_interval_s = max(0.01, float(report_interval_s))\n        self.report_samples = max(1, int(self.report_interval_s\
+      \ * self.samp_rate))\n        self._reset_window()\n\n    def _reset_window(self):\n        self.sample_count = 0\n        self.sum_power\
+      \ = 0.0\n        self.peak_power = self.eps\n\n    def _publish_window(self):\n        if self.sample_count <= 0:\n            return\n\n\
+      \        avg_power = max(self.sum_power / self.sample_count, self.eps)\n        peak_power = max(self.peak_power, self.eps)\n        avg_dbfs\
+      \ = 10.0 * np.log10(avg_power)\n        peak_dbfs = 10.0 * np.log10(peak_power)\n        ts = time.time()\n\n        print(\n          \
+      \  f\"POWER:/LFM Beacon/{self.rx_freq_hz:.1f}/\"\n            f\"{peak_dbfs:.2f}/{avg_dbfs:.2f}/{ts:.6f}\",\n            flush=True,\n \
+      \       )\n        self._reset_window()\n\n    def work(self, input_items, output_items):\n        power = np.asarray(input_items[0], dtype=np.float32)\n\
+      \        pos = 0\n        length = len(power)\n\n        while pos < length:\n            remaining = self.report_samples - self.sample_count\n\
+      \            take = min(remaining, length - pos)\n            chunk = power[pos:pos + take]\n\n            if len(chunk):\n            \
+      \    self.sum_power += float(np.sum(chunk, dtype=np.float64))\n                self.peak_power = max(self.peak_power, float(np.max(chunk)))\n\
+      \                self.sample_count += len(chunk)\n\n            pos += take\n\n            if self.sample_count >= self.report_samples:\n\
+      \                self._publish_window()\n\n        return length\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    eps: eps
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    report_interval_s: power_report_interval_s
+    rx_freq_hz: rx_freq
+    samp_rate: samp_rate
+  states:
+    _io_cache: ('burst_detector', 'blk', [('samp_rate', '1000000.0'), ('rx_freq_hz', '433000000.0'), ('tperiod', '0.1'), ('thresh', '10.0'), ('min_peak',
+      '12.0'), ('holdoff_s', '0.08'), ('peak_window', '8000')], [('0', 'float', 1)], [('det', 'message', 1)], '', ['min_peak', 'peak_window',
+      'rx_freq_hz', 'samp_rate', 'thresh'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1048
+    - 648
+    rotation: 0
+    state: enabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    en_uvec: 'True'
+    log_level: info
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1456
+    - 440
+    rotation: 0
+    state: enabled
 connections:
-- [blocks_add_const_vxx_0, '0', blocks_divide_xx_0, '1']
-- [blocks_complex_to_mag_squared_0, '0', blocks_divide_xx_0, '0']
-- [blocks_complex_to_mag_squared_0, '0', blocks_moving_average_xx_0, '0']
-- [blocks_divide_xx_0, '0', blocks_moving_average_xx_1, '0']
-- [blocks_divide_xx_0, '0', qtgui_time_sink_x_0_0_0_1, '0']
-- [blocks_moving_average_xx_0, '0', blocks_add_const_vxx_0, '0']
-- [blocks_moving_average_xx_0, '0', blocks_moving_average_xx_1, '0']
-- [blocks_moving_average_xx_0, '0', qtgui_time_sink_x_0_0_0_1_0, '0']
-- [blocks_moving_average_xx_1, '0', epy_block_0, '0']
-- [blocks_moving_average_xx_1, '0', qtgui_time_sink_x_0_0_0_1_0_0, '0']
-- [dc_blocker_xx_0, '0', freq_xlating_fir_filter_xxx_0, '0']
-- [epy_block_0, det, blocks_message_debug_0, print]
-- [freq_xlating_fir_filter_xxx_0, '0', blocks_complex_to_mag_squared_0, '0']
-- [soapy_rtlsdr_source_0, '0', dc_blocker_xx_0, '0']
-
+- - soapy_rtlsdr_source_0
+  - '0'
+  - dc_blocker_xx_0
+  - '0'
+- - dc_blocker_xx_0
+  - '0'
+  - freq_xlating_fir_filter_detect
+  - '0'
+- - freq_xlating_fir_filter_detect
+  - '0'
+  - blocks_complex_to_mag_squared_detect
+  - '0'
+- - blocks_complex_to_mag_squared_detect
+  - '0'
+  - blocks_moving_average_detect_0
+  - '0'
+- - blocks_moving_average_detect_0
+  - '0'
+  - blocks_moving_average_detect_1
+  - '0'
+- - blocks_moving_average_detect_1
+  - '0'
+  - lfm_detector
+  - '0'
+- - dc_blocker_xx_0
+  - '0'
+  - freq_xlating_fir_filter_power
+  - '0'
+- - freq_xlating_fir_filter_power
+  - '0'
+  - blocks_complex_to_mag_squared_power
+  - '0'
+- - blocks_complex_to_mag_squared_power
+  - '0'
+  - blocks_moving_average_power
+  - '0'
+- - blocks_moving_average_power
+  - '0'
+  - lfm_detector
+  - '1'
+- - blocks_moving_average_power
+  - '0'
+  - rf_power_reporter
+  - '0'
+- - lfm_detector
+  - det
+  - blocks_message_debug_0
+  - print
 metadata:
   file_format: 1
-  grc_version: 3.10.9.2
+  grc_version: 3.8.5.0

@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 import base64
 import binascii
 import json
+import math
 import re
 import fissure.comms
 import fissure.utils
@@ -2781,10 +2782,17 @@ async def flowGraphStarted(component: object, node_uid="", category=""):
 
 async def recallSettingsReturn(component: object, uuid, settings_dict):
     """
-    Returns the recalled sensor node settings to the Dashboard.
+    Returns recalled Sensor Node settings and caches them for hub-side capability checks.
     """
+    node = component.nodes.get(uuid)
+    if node is None:
+        component.logger.warning(f"recallSettingsReturn received unknown node uuid={uuid}")
+        return
+
+    node["settings"] = dict(settings_dict) if isinstance(settings_dict, dict) else {}
+
     # Get the IP
-    get_node_ip = component.nodes[uuid].get("ip", None)
+    get_node_ip = node.get("ip", None)
 
     # Send the Message
     PARAMETERS = {
@@ -3224,39 +3232,30 @@ async def takReturn(component, payload: dict):
 
 def maybe_ingest_detection_for_geolocation(component, payload: dict):
     """
-    Inspect a TAK event payload. If it is a target-associated detection with usable
-    position + power information, feed it into hub multilateration and return
-    a target patch when a location estimate is available.
+    Feed target-associated detector observations into the hub geolocation session.
+
+    Calibrated dBm measurements can solve immediately with the configured path-loss
+    model. LFM dBFS measurements are valid relative received-power observations, but
+    remain range-uncalibrated until a path-loss reference is supplied.
 
     Returns:
         (target_id, patch, history_entry) or None
     """
-    if not isinstance(payload, dict):
-        return None
-
-    if payload.get("msg_type") != "event":
+    if not isinstance(payload, dict) or payload.get("msg_type") != "event":
         return None
 
     data = payload.get("data") or {}
-    if not isinstance(data, dict):
-        return None
-
-    if data.get("event_type") != "detection":
+    if not isinstance(data, dict) or data.get("event_type") != "detection":
         return None
 
     target_id = str(data.get("target_id") or "").strip()
     if not target_id:
         return None
 
-    power_dbm = data.get("power_dbm")
-    if power_dbm in (None, ""):
-        return None
-
     lat = payload.get("lat")
     lon = payload.get("lon")
     alt = payload.get("alt")
     observation_time = payload.get("time")
-
     if lat in (None, "") or lon in (None, ""):
         return None
 
@@ -3270,6 +3269,70 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
         frequency_hz = None
 
     node_uid = str(data.get("node_uid") or "").strip()
+    metric_units = str(data.get("metric_units") or "").strip()
+    path_loss_n = 2.2
+    path_loss_p0_db = -40.0
+    allow_solve = True
+
+    try:
+        power_dbfs_peak = data.get("power_dbfs_peak")
+        if power_dbfs_peak not in (None, ""):
+            measurement_db = float(power_dbfs_peak)
+            measurement_units = "dBFS"
+            path_loss_n = float(data.get("path_loss_n", 2.2))
+            p0_value = data.get("path_loss_p0_db")
+            allow_solve = p0_value not in (None, "")
+            if allow_solve:
+                path_loss_p0_db = float(p0_value)
+
+        elif metric_units.lower() == "dbfs":
+            metric = data.get("metric")
+            if metric in (None, ""):
+                return None
+
+            measurement_db = float(metric)
+            measurement_units = "dBFS"
+            path_loss_n = float(data.get("path_loss_n", 2.2))
+            p0_value = data.get("path_loss_p0_db")
+            allow_solve = p0_value not in (None, "")
+            if allow_solve:
+                path_loss_p0_db = float(p0_value)
+
+        elif metric_units == "matched_filter_power":
+            metric = data.get("metric")
+            if metric in (None, ""):
+                metric = data.get("power_dbm")
+            metric = float(metric)
+            if metric <= 0.0:
+                return None
+
+            measurement_db = 10.0 * math.log10(metric)
+            measurement_units = "matched_filter_dB"
+            path_loss_n = float(data.get("path_loss_n", 2.2))
+            p0_value = data.get("path_loss_p0_db")
+            allow_solve = False
+            if p0_value not in (None, ""):
+                component.logger.warning(
+                    f"Ignoring path_loss_p0_db for legacy matched-filter measurement "
+                    f"target_id={target_id}; use power_dbfs_peak instead."
+                )
+
+        else:
+            power_dbm = data.get("power_dbm")
+            if power_dbm in (None, ""):
+                return None
+
+            measurement_db = float(power_dbm)
+            measurement_units = metric_units or "dBm"
+            path_loss_n = float(data.get("path_loss_n", 2.2))
+            if data.get("path_loss_p0_db") not in (None, ""):
+                path_loss_p0_db = float(data.get("path_loss_p0_db"))
+
+    except Exception as exc:
+        component.logger.warning(
+            f"Invalid geolocation measurement for target_id={target_id}: {exc}"
+        )
+        return None
 
     try:
         est_out = _fissure_geo_process_measurement(
@@ -3279,12 +3342,16 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
             node_uid=node_uid,
             lat=float(lat),
             lon=float(lon),
-            rssi_db=float(power_dbm),
+            rssi_db=measurement_db,
             observation_time=observation_time,
+            path_loss_n=path_loss_n,
+            path_loss_p0_db=path_loss_p0_db,
+            measurement_units=measurement_units,
+            allow_solve=allow_solve,
         )
-    except Exception as e:
+    except Exception as exc:
         component.logger.error(
-            f"Detection geolocation ingest failed for target_id={target_id}: {e}"
+            f"Detection geolocation ingest failed for target_id={target_id}: {exc}"
         )
         return None
 
@@ -3299,22 +3366,32 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
     else:
         ts_iso = ts_iso.replace(" ", "T")
 
+    location_patch = {
+        "lat": float(est_lat),
+        "lon": float(est_lon),
+        "hae_m": float(alt or 0.0),
+        "timestamp": ts_iso,
+        "source": "hiprfisr_multilateration",
+    }
+    if ce_m is not None:
+        location_patch["ce_m"] = float(ce_m)
+
     patch = {
-        "location": {
-            "lat": float(est_lat),
-            "lon": float(est_lon),
-            "hae_m": float(alt or 0.0),
-            "ce_m": float(ce_m),
-            "timestamp": ts_iso,
-            "source": "hiprfisr_multilateration",
-        },
+        "location": location_patch,
         "state": "tracking",
     }
 
+    target = (getattr(component, "targets", {}) or {}).get(target_id) or {}
+    geo = target.get("geolocate") or {}
     history_entry = {
         "event": "multilateration_update_from_detection",
         "detector": data.get("detector", ""),
         "node_uid": node_uid,
+        "sample_count": geo.get("sample_count"),
+        "unique_node_count": geo.get("unique_node_count"),
+        "unique_position_count": geo.get("unique_position_count"),
+        "spread_m": geo.get("spread_m"),
+        "geometry_quality": geo.get("geometry_quality", ""),
     }
 
     return target_id, patch, history_entry
@@ -6481,83 +6558,184 @@ async def soiUpdate(component: object,
         "alt": record.get("hae_m", 0.0),
     })
 
+
 # ---- Measurement aggregation support (sensor nodes can send raw samples via targetUpdate) ----
-def _fissure_geo_process_measurement(component, *, target_id, frequency_hz, node_uid, lat, lon, rssi_db, observation_time):
-    """Store a raw measurement, run multilateration + CE when ready, and return (est_lat, est_lon, ce_m) or None."""
-    try:
-        # from fissure_geo import Sample, PathLossModel, MultilaterationEstimator, estimate_ce_from_samples
-        from fissure.utils.geo import (
-            Sample,
-            PathLossModel,
-            MultilaterationEstimator,
-            estimate_ce_from_samples,
+def _reset_target_geolocation_session(component, target_id: str) -> int:
+    """Clear cached measurement state for one target before a new geolocation run."""
+    target_id = str(target_id or "").strip()
+    if not target_id or not hasattr(component, "_geo_targets"):
+        return 0
+
+    keys = [
+        key for key in list(component._geo_targets.keys())
+        if isinstance(key, tuple) and key and str(key[0]) == target_id
+    ]
+    for key in keys:
+        component._geo_targets.pop(key, None)
+
+    if keys:
+        component.logger.info(
+            f"Reset geolocation measurement session for target_id={target_id}; "
+            f"cleared={len(keys)}"
         )
-    except Exception:
+    return len(keys)
+
+
+def _fissure_geo_process_measurement(
+    component,
+    *,
+    target_id,
+    frequency_hz,
+    node_uid,
+    lat,
+    lon,
+    rssi_db,
+    observation_time,
+    path_loss_n=2.2,
+    path_loss_p0_db=-40.0,
+    measurement_units="dBm",
+    allow_solve=True,
+):
+    """Store one measurement and return (lat, lon, ce_m) once geometry is usable."""
+    try:
+        from fissure.utils.geo import PathLossModel, MultilaterationEstimator, estimate_ce_from_samples
+    except Exception as exc:
+        component.logger.error(f"Unable to load geolocation utilities: {exc}")
         return None
 
-    # Allow wifi/no-frequency measurements
     try:
-        if frequency_hz is None:
-            freq_bin_hz = -1.0
-        else:
-            # Frequency binning to fuse slightly different reported center freqs (default 1 kHz bins)
-            freq_bin_hz = float(round(float(frequency_hz) / 1000.0) * 1000.0)
+        freq_bin_hz = -1.0 if frequency_hz is None else float(round(float(frequency_hz) / 1000.0) * 1000.0)
     except Exception:
         freq_bin_hz = -1.0
 
     key = (str(target_id), float(freq_bin_hz))
-
     if not hasattr(component, "_geo_targets"):
         component._geo_targets = {}
 
     st = component._geo_targets.get(key)
     if st is None:
-        # Defaults; you can tune per target type later
-        model = PathLossModel(n=2.2, p0_db=-40.0)
-        est = MultilaterationEstimator(max_samples=120)
-        st = {"model": model, "est": est, "last_ce": 0.0, "ce_cached": 75.0}
+        model = PathLossModel(n=float(path_loss_n), p0_db=float(path_loss_p0_db))
+        est = MultilaterationEstimator(
+            max_samples=120,
+            min_position_separation_m=8.0,
+            min_spread_m=20.0,
+        )
+        st = {
+            "model": model,
+            "est": est,
+            "last_ce": 0.0,
+            "ce_cached": None,
+            "last_geometry_signature": None,
+            "last_solution_log": 0.0,
+            "measurement_units": str(measurement_units or ""),
+            "range_calibrated": bool(allow_solve),
+        }
         component._geo_targets[key] = st
 
     model = st["model"]
     est = st["est"]
 
-    # Add sample
     try:
-        est.add_measurement(lat=float(lat), lon=float(lon), rssi_db=float(rssi_db), t=0.0, model=model)
-    except Exception:
-        try:
-            est.add_sample(Sample(float(lat), float(lon), float(rssi_db), 0.0))
-        except Exception:
-            return None
-
-    if not getattr(est, "ready", False):
+        est.add_measurement(
+            lat=float(lat),
+            lon=float(lon),
+            rssi_db=float(rssi_db),
+            t=time.time(),
+            node_uid=str(node_uid or ""),
+            model=model,
+        )
+    except Exception as exc:
+        component.logger.warning(
+            f"Rejected geolocation measurement target_id={target_id} node={node_uid}: {exc}"
+        )
         return None
 
-    # Estimate
+    geometry = est.geometry
+    st["geometry"] = dict(geometry)
+
+    target = (getattr(component, "targets", {}) or {}).get(str(target_id))
+    if isinstance(target, dict):
+        geo = dict(target.get("geolocate") or {})
+        geo.update({
+            "sample_count": int(geometry.get("sample_count", 0)),
+            "unique_node_count": int(geometry.get("unique_node_count", 0)),
+            "unique_position_count": int(geometry.get("unique_position_count", 0)),
+            "spread_m": round(float(geometry.get("spread_m", 0.0)), 1),
+            "shape_ratio": round(float(geometry.get("shape_ratio", 0.0)), 3),
+            "geometry_quality": str(geometry.get("quality", "")),
+            "last_observation_time": observation_time or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "measurement_units": str(measurement_units or ""),
+            "range_calibrated": bool(allow_solve),
+            "had_detections": True,
+        })
+        target["geolocate"] = geo
+
+    signature = (
+        geometry.get("unique_position_count"),
+        geometry.get("unique_node_count"),
+        geometry.get("quality"),
+    )
+    if signature != st.get("last_geometry_signature"):
+        component.logger.info(
+            f"Geo observations target={target_id} node={node_uid or '-'} "
+            f"samples={geometry.get('sample_count', 0)} "
+            f"nodes={geometry.get('unique_node_count', 0)} "
+            f"positions={geometry.get('unique_position_count', 0)} "
+            f"spread={float(geometry.get('spread_m', 0.0)):.1f}m "
+            f"shape={float(geometry.get('shape_ratio', 0.0)):.3f} "
+            f"quality={geometry.get('quality', '')}"
+        )
+        st["last_geometry_signature"] = signature
+
+    if not allow_solve:
+        if not st.get("uncalibrated_logged"):
+            component.logger.info(
+                f"Geo observations for target={target_id} are being collected but not solved: "
+                f"measurement_units={measurement_units or '-'} requires path-loss calibration"
+            )
+            st["uncalibrated_logged"] = True
+        return None
+
+    if not est.ready:
+        return None
+
     try:
         out = est.estimate_latlon(model)
         if not out:
             return None
         est_lat, est_lon = out
-    except Exception:
+    except Exception as exc:
+        component.logger.warning(f"Geolocation solve failed for target_id={target_id}: {exc}")
         return None
 
-    # CE (throttle)
-    import time as _time
-    now = _time.time()
+    now = time.time()
     if (now - float(st.get("last_ce", 0.0))) >= 6.0:
         try:
-            samples_ref = getattr(est, "_samples", None) or getattr(est, "samples", None) or []
-            ce = estimate_ce_from_samples(samples_ref[-30:], model, confidence=0.90)
+            ce = estimate_ce_from_samples(
+                est.samples[-30:],
+                model,
+                confidence=0.90,
+                min_position_separation_m=est.min_position_separation_m,
+                min_spread_m=est.min_spread_m,
+            )
             if ce is not None:
-                st["ce_cached"] = float(ce)
-        except Exception:
-            pass
+                st["ce_cached"] = max(10.0, float(ce))
+        except Exception as exc:
+            component.logger.debug(f"CE estimate unavailable for target_id={target_id}: {exc}")
         st["last_ce"] = now
 
-    return (float(est_lat), float(est_lon), float(st.get("ce_cached", 75.0)))
+    ce_m = st.get("ce_cached")
+    if (now - float(st.get("last_solution_log", 0.0))) >= 3.0:
+        component.logger.info(
+            f"Geo solution target={target_id} lat={float(est_lat):.7f} lon={float(est_lon):.7f} "
+            f"ce={float(ce_m):.1f}m quality={geometry.get('quality', '')}"
+            if ce_m is not None
+            else f"Geo solution target={target_id} lat={float(est_lat):.7f} lon={float(est_lon):.7f} "
+                 f"ce=unavailable quality={geometry.get('quality', '')}"
+        )
+        st["last_solution_log"] = now
 
-    # component.logger.info(f"HIPRFISR targetUpdate received target_id={target_id} state={state}")
+    return float(est_lat), float(est_lon), (float(ce_m) if ce_m is not None else None)
 
 
 def _get_known_wifi_target_ids(component) -> List[str]:
@@ -6685,11 +6863,12 @@ async def targetUpdate(
             location.update({
                 "lat": float(est_lat),
                 "lon": float(est_lon),
-                "ce_m": float(ce_m),
                 "source": "hiprfisr_multilateration",
             })
-            if isinstance(summary, dict):
-                summary["ce_m"] = float(ce_m)
+            if ce_m is not None:
+                location["ce_m"] = float(ce_m)
+                if isinstance(summary, dict):
+                    summary["ce_m"] = float(ce_m)
 
     if classification is None or not isinstance(classification, dict):
         classification = {}
@@ -7514,6 +7693,18 @@ async def targetPatch(
             "status",
             "idle",
         ),
+        "geolocate_json": json.dumps(
+            geo,
+            default=str,
+        ),
+        "location_source": str(
+            location.get("source") or ""
+        ),        
+        "geolocation_sample_count": geo.get("sample_count", 0),
+        "geolocation_unique_node_count": geo.get("unique_node_count", 0),
+        "geolocation_unique_position_count": geo.get("unique_position_count", 0),
+        "geolocation_spread_m": geo.get("spread_m", 0.0),
+        "geolocation_geometry_quality": geo.get("geometry_quality", ""),
         "lat": out_lat,
         "lon": out_lon,
         "hae_m": out_hae,
@@ -7546,6 +7737,7 @@ async def targetPatch(
             "lat": out_lat,
             "lon": out_lon,
             "alt": out_hae,
+            "ce": out_ce,
         },
     )
 
@@ -8104,13 +8296,56 @@ async def sendPluginTargetActionsTak(
         component.logger.debug(traceback.format_exc())
 
 
+def _filter_geolocate_nodes_for_action(component, candidates, plugin_name: str, action_name: str, max_nodes: int = 4):
+    """Prefer nodes whose cached settings confirm support for a plugin action.
+
+    Nodes with unknown settings remain eligible as a fallback so geolocation still works
+    before settings have been recalled from every connected Sensor Node.
+    """
+    confirmed = []
+    unknown = []
+
+    for candidate in list(candidates or []):
+        node_uid = str(candidate.get("uid") or "")
+        node = (getattr(component, "nodes", {}) or {}).get(node_uid) or {}
+        settings = node.get("settings") or {}
+
+        if not settings:
+            unknown.append(candidate)
+            continue
+
+        try:
+            actions = fissure.utils.plugin.get_plugin_actions(
+                plugin_name,
+                sensor_node_settings=settings,
+                logger=component.logger,
+            )
+        except Exception as exc:
+            component.logger.warning(
+                f"Unable to check geolocation action compatibility for node={node_uid}: {exc}"
+            )
+            unknown.append(candidate)
+            continue
+
+        if action_name in actions:
+            confirmed.append(candidate)
+        else:
+            component.logger.info(
+                f"Skipping geolocation node={node_uid}: cached hardware/settings do not support "
+                f"{plugin_name}.{action_name}"
+            )
+
+    ordered = confirmed + unknown
+    return ordered[:max(1, int(max_nodes))]
+
+
 async def geolocate_target_start(
     component: object,
     requester_uid: str,
-    requester_type: str = "tak",    
+    requester_type: str = "tak",
     parameters: dict = None,
 ):
-    """Select nearest nodes and start appropriate geolocation-related action."""
+    """Select compatible nearby nodes and start the target's geolocation action."""
     try:
         component.logger.info(f"geolocate_target_start called with parameters={parameters}")
 
@@ -8129,7 +8364,6 @@ async def geolocate_target_start(
 
         current_geo = target.get("geolocate") or {}
         current_status = current_geo.get("status", "")
-
         if current_status in ("starting", "running", "stopping"):
             component.logger.warning(
                 f"Target {target_id} geolocation already active (status={current_status})"
@@ -8137,8 +8371,9 @@ async def geolocate_target_start(
             await targetPatch(component, target_id=target_id, patch={})
             return
 
-        search_similar_targets = bool(parameters.get("search_similar_targets", False))
+        _reset_target_geolocation_session(component, target_id)
 
+        search_similar_targets = bool(parameters.get("search_similar_targets", False))
         target_location = target.get("location") or {}
         target_lat = target_location.get("lat")
         target_lon = target_location.get("lon")
@@ -8148,40 +8383,9 @@ async def geolocate_target_start(
             component.logger.error(
                 f"Target {target_id} missing valid location: lat={target_lat}, lon={target_lon}"
             )
-            _set_target_geolocate_status(
-                target,
-                status="error",
-                error=msg,
-            )
+            _set_target_geolocate_status(target, status="error", error=msg)
             await targetPatch(component, target_id=target_id, patch={})
             return
-
-        nearest_nodes = fissure.utils.get_nearest_nodes_to_target(
-            component,
-            target,
-            max_nodes=3,
-        )
-
-        if not nearest_nodes:
-            msg = "no_eligible_nodes"
-            component.logger.warning(
-                f"No eligible nodes with valid positions for target_id={target_id}"
-            )
-            _set_target_geolocate_status(
-                target,
-                status="error",
-                error=msg,
-            )
-            await targetPatch(component, target_id=target_id, patch={})
-            return
-
-        component.logger.info(
-            f"Nearest nodes for target_id={target_id}: "
-            + ", ".join(
-                f"{n['uid']} ({n['distance_m']:.1f} m)"
-                for n in nearest_nodes
-            )
-        )
 
         config = _get_target_geolocate_action_config(
             component,
@@ -8190,14 +8394,8 @@ async def geolocate_target_start(
         )
         if not config:
             msg = "unsupported_target_type"
-            component.logger.warning(
-                f"No geolocate mapping for target_id={target_id}"
-            )
-            _set_target_geolocate_status(
-                target,
-                status="unsupported",
-                error=msg,
-            )
+            component.logger.warning(f"No geolocate mapping for target_id={target_id}")
+            _set_target_geolocate_status(target, status="unsupported", error=msg)
             await targetPatch(component, target_id=target_id, patch={})
             return
 
@@ -8208,12 +8406,49 @@ async def geolocate_target_start(
 
         if "target_id" not in action_parameters and "target_ids" not in action_parameters:
             action_parameters["target_id"] = target_id
-
         if "search_similar_targets" not in action_parameters:
             action_parameters["search_similar_targets"] = search_similar_targets
 
-        node_uid_list = [n["uid"] for n in nearest_nodes]
+        nearby_nodes = fissure.utils.get_nearest_nodes_to_target(
+            component,
+            target,
+            max_nodes=12,
+        )
+        if not nearby_nodes:
+            msg = "no_eligible_nodes"
+            component.logger.warning(
+                f"No connected nodes with valid positions for target_id={target_id}"
+            )
+            _set_target_geolocate_status(target, status="error", error=msg)
+            await targetPatch(component, target_id=target_id, patch={})
+            return
 
+        selected_nodes = _filter_geolocate_nodes_for_action(
+            component,
+            nearby_nodes,
+            plugin_name,
+            action_name,
+            max_nodes=4,
+        )
+        if not selected_nodes:
+            msg = "no_compatible_nodes"
+            component.logger.warning(
+                f"No compatible nodes for target_id={target_id} action={plugin_name}.{action_name}"
+            )
+            _set_target_geolocate_status(target, status="error", error=msg)
+            await targetPatch(component, target_id=target_id, patch={})
+            return
+
+
+        component.logger.info(
+            f"Selected geolocation nodes for target_id={target_id}: "
+            + ", ".join(
+                f"{node['uid']} ({node['distance_m']:.1f} m)"
+                for node in selected_nodes
+            )
+        )
+
+        node_uid_list = [node["uid"] for node in selected_nodes]
         previous_state = target.get("state", "") or "imported"
 
         _set_target_geolocate_status(
@@ -8228,19 +8463,14 @@ async def geolocate_target_start(
         target["geolocate"]["previous_state"] = previous_state
         target["geolocate"]["had_detections"] = False
         target["state"] = "tracking"
-
         await targetPatch(component, target_id=target_id, patch={})
 
         launched_nodes = []
-
         try:
             launched_nodes = list(node_uid_list)
-
             component.logger.info(
-                f"Launching {action_name} for target_id={target_id} "
-                f"on nodes={launched_nodes}"
+                f"Launching {action_name} for target_id={target_id} on nodes={launched_nodes}"
             )
-
             await sendPluginActionTak(
                 component,
                 requester_uid,
@@ -8250,25 +8480,20 @@ async def geolocate_target_start(
                 action_name,
                 action_parameters,
             )
-
         except Exception as launch_err:
-            component.logger.error(
-                f"Failed launching geolocate actions: {launch_err}"
-            )
+            component.logger.error(f"Failed launching geolocate actions: {launch_err}")
             component.logger.debug(traceback.format_exc())
 
         target = component.targets.get(target_id)
         if not target:
-            component.logger.error(f"Target disappeared before running update: target_id={target_id}")
+            component.logger.error(
+                f"Target disappeared before running update: target_id={target_id}"
+            )
             return
 
         if not launched_nodes:
             msg = "launch_failed"
-
-            component.logger.warning(
-                f"Geolocate start failed for target_id={target_id}"
-            )
-
+            component.logger.warning(f"Geolocate start failed for target_id={target_id}")
             _set_target_geolocate_status(
                 target,
                 status="error",
@@ -8278,17 +8503,14 @@ async def geolocate_target_start(
                 node_uids=[],
                 error=msg,
             )
-            # restore pre-start state if nothing launched
             previous_state = (target.get("geolocate") or {}).get("previous_state", "") or "imported"
             target["state"] = previous_state
-
             await targetPatch(component, target_id=target_id, patch={})
             return
 
         component.logger.info(
             f"Geolocate running for target_id={target_id} on nodes={launched_nodes}"
         )
-
         _set_target_geolocate_status(
             target,
             status="running",
@@ -8304,15 +8526,11 @@ async def geolocate_target_start(
         component.logger.error(f"Error in geolocate_target_start: {e}")
         component.logger.debug(traceback.format_exc())
 
-        target_id = parameters.get("target_id")
+        target_id = parameters.get("target_id") if parameters else None
         if target_id:
             target = component.targets.get(target_id)
             if target:
-                _set_target_geolocate_status(
-                    target,
-                    status="error",
-                    error="exception",
-                )
+                _set_target_geolocate_status(target, status="error", error="exception")
                 previous_state = (target.get("geolocate") or {}).get("previous_state", "")
                 if previous_state:
                     target["state"] = previous_state
@@ -8330,7 +8548,7 @@ def _get_target_geolocate_action_config(
 
     Returns:
         {
-            "mode": "wifi_target" | "wifi_all" | "lfm_beacon" | "fixed_detection",
+            "mode": "wifi_target" | "wifi_all" | "lfm_beacon" | "generic_frequency",
             "plugin_name": "...",
             "action_name": "...",
             "parameters": {...},
@@ -8388,7 +8606,9 @@ def _get_target_geolocate_action_config(
             "parameters": {
                 "target_id": target_id,
                 "freq_mhz": float(frequency_mhz) if frequency_mhz not in (None, "") else 433.0,
+                "gain_default": 40.0,
                 "min_detection_interval_s": 1.0,
+                "path_loss_n": 2.2,
             },
         }
 

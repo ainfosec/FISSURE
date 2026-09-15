@@ -53,11 +53,11 @@ class fixed_threshold_b2x0(gr.top_block):
         self.vec_height = vec_height = 1000
         self.up_bound_vec_top_half = up_bound_vec_top_half = (fft_size-up_line_adj-1)*(below_zero,)
         self.up_bound_vec_bottom_half = up_bound_vec_bottom_half = (up_line_adj)*(below_zero,)
-        self.thresh_adj = thresh_adj = -60
-        self.samp_rate = samp_rate = 1e6
-        self.rx_gain = rx_gain = 60
+        self.thresh_adj = thresh_adj = float(threshold_default)
+        self.samp_rate = samp_rate = float(sample_rate_default)
+        self.rx_gain = rx_gain = float(gain_default)
         self.rx_freq = rx_freq = rx_freq_default
-        self.rx_antenna = rx_antenna = "TX/RX"
+        self.rx_antenna = rx_antenna = antenna_default
         self.low_bound_vec_top_half = low_bound_vec_top_half = (fft_size-low_line_adj-1)*(below_zero,)
         self.low_bound_vec_bottom_half = low_bound_vec_bottom_half = (low_line_adj)*(below_zero,)
         self.in_box_spec_len = in_box_spec_len = int(np.abs(up_line_adj-low_line_adj))

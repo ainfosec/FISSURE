@@ -57,8 +57,8 @@ def _build_base_event(uid: str, stale: int):
 # Point helpers
 # ---------------------------------------------------------
 
-def _set_point_pin(msg, lat, lon, alt):
-    """Map-visible pin."""
+def _set_point_pin(msg, lat, lon, alt, ce=None, le=None):
+    """Map-visible pin with optional circular/linear error values."""
     pt = msg.find("point")
     if pt is None:
         pt = ET.SubElement(msg, "point")
@@ -66,8 +66,8 @@ def _set_point_pin(msg, lat, lon, alt):
     pt.set("lat", str(lat))
     pt.set("lon", str(lon))
     pt.set("hae", str(alt))
-    pt.set("ce", "0")
-    pt.set("le", "0")
+    pt.set("ce", str(0 if ce in (None, "") else ce))
+    pt.set("le", str(0 if le in (None, "") else le))
 
 
 def _set_point_suppressed(msg):
@@ -490,7 +490,7 @@ async def send(
                 ET.SubElement(alert, "node_uid").text = str(node_uid)
 
 
-        _set_point_pin(msg, lat, lon, alt)
+        _set_point_pin(msg, lat, lon, alt, ce=message.get("ce"), le=message.get("le"))
 
         return await _dispatch_cot(
             component,
@@ -553,7 +553,7 @@ async def send(
         if message.get("suppress_point") or lat is None or lon is None:
             _set_point_suppressed(msg)
         else:
-            _set_point_pin(msg, lat, lon, alt)
+            _set_point_pin(msg, lat, lon, alt, ce=message.get("ce"), le=message.get("le"))
 
         return await _dispatch_cot(
             component,
@@ -598,7 +598,7 @@ async def send(
         # ET.SubElement(detail, "color", {"argb": "ff0000ff"})
 
         ET.SubElement(detail, "contact", {"callsign": callsign})
-        _set_point_pin(msg, lat, lon, alt)
+        _set_point_pin(msg, lat, lon, alt, ce=message.get("ce"), le=message.get("le"))
 
         status = message.get("status") or node_meta.get("status") or "UNK"
         version = message.get("version") or node_meta.get("version") or ""

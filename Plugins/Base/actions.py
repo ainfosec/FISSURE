@@ -1019,6 +1019,11 @@ async def lfm_beacon_geolocate(
     )
 
     op_params = dict(parameters or {})
+    op_params.setdefault("gain_default", 40.0)
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
 
     await component.run_plugin_operation(
         component,
@@ -1085,7 +1090,6 @@ usrp_b2x0_geolocate_schema = {
         },
     ]
 }
-
 async def usrp_b2x0_geolocate(
     component: SensorNode,
     parameters: Dict[str, Any],

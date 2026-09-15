@@ -1697,14 +1697,138 @@ def previewIQ_File(get_type, get_filepath):
         plt.show()  # Needed for 22.04, causes warning in 20.04
 
 
+class MapTileDownloadWorker(QtCore.QObject):
+    progress = QtCore.pyqtSignal(int, int, str)
+    finished = QtCore.pyqtSignal(int, int, int, bool, str)
+
+    USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/122 Safari/537.36"
+    TILE_URL_TEMPLATE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+    def __init__(self, tiles_dir, by_zoom):
+        super().__init__()
+        self.tiles_dir = pathlib.Path(tiles_dir)
+        self.by_zoom = by_zoom
+
+    def _interrupted(self):
+        return QtCore.QThread.currentThread().isInterruptionRequested()
+
+    def _sleep_interruptible(self, seconds):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            if self._interrupted():
+                return False
+            time.sleep(min(0.1, max(0.0, deadline - time.monotonic())))
+        return True
+
+    def _download_tile(self, url, dest):
+        headers = {
+            "User-Agent": self.USER_AGENT,
+            "Accept": "image/png,image/jpeg,*/*",
+        }
+        req = urllib.request.Request(url, headers=headers)
+
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"HTTP {resp.status}")
+
+            data = resp.read()
+            if data.startswith(b"<"):
+                raise RuntimeError("Blocked (HTML response)")
+
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(data)
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        downloaded = 0
+        skipped = 0
+        failed = 0
+        canceled = False
+
+        try:
+            tiles = []
+            for zoom in sorted(self.by_zoom):
+                info = self.by_zoom[zoom]
+                for x in range(info["x_min"], info["x_max"] + 1):
+                    for y in range(info["y_min"], info["y_max"] + 1):
+                        tiles.append((zoom, x, y))
+
+            total = len(tiles)
+
+            for processed, (zoom, x, y) in enumerate(tiles, start=1):
+                if self._interrupted():
+                    canceled = True
+                    break
+
+                dest = self.tiles_dir / str(zoom) / str(x) / f"{y}.png"
+
+                if dest.exists():
+                    skipped += 1
+                    self.progress.emit(
+                        processed,
+                        total,
+                        f"Zoom {zoom}  Tile {processed}/{total}\n"
+                        f"Downloaded: {downloaded}  Skipped: {skipped}  Failed: {failed}",
+                    )
+                    continue
+
+                url = self.TILE_URL_TEMPLATE.format(z=zoom, x=x, y=y)
+                success = False
+
+                for attempt in range(3):
+                    if self._interrupted():
+                        canceled = True
+                        break
+
+                    try:
+                        print("download", url)
+                        self._download_tile(url, dest)
+                        downloaded += 1
+                        success = True
+                        break
+                    except Exception as exc:
+                        print(f"retry {attempt + 1} failed {url}: {exc}")
+                        if attempt < 2 and not self._sleep_interruptible(2 + attempt * 2):
+                            canceled = True
+                            break
+
+                if canceled:
+                    break
+
+                if not success:
+                    failed += 1
+                elif not self._sleep_interruptible(1.0):
+                    canceled = True
+
+                self.progress.emit(
+                    processed,
+                    total,
+                    f"Zoom {zoom}  Tile {processed}/{total}\n"
+                    f"Downloaded: {downloaded}  Skipped: {skipped}  Failed: {failed}",
+                )
+
+                if canceled:
+                    break
+
+            self.finished.emit(downloaded, skipped, failed, canceled, "")
+
+        except Exception as exc:
+            self.finished.emit(downloaded, skipped, failed, canceled, str(exc))
+
+
 class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
     def __init__(self, parent):
         """
-        Feature Extract trim settings.
+        Map pack download and MOBAC settings.
         """
         QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
         self.setupUi(self)
+
+        self._map_download_thread = None
+        self._map_download_worker = None
+        self._map_download_progress = None
+        self._map_download_name = ""
 
         # Prevent Resizing/Maximizing
         self.setFixedSize(400, 500)
@@ -1736,13 +1860,12 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
     def _slotDownload_Clicked(self):
         """
-        Downloads an OSM tile map pack into FISSURE/map_data/<map_pack_name>.
+        Starts an OSM tile map pack download on a worker thread so Dashboard
+        networking, heartbeats, callbacks, and UI processing remain responsive.
         """
+        if self._map_download_thread and self._map_download_thread.isRunning():
+            return
 
-        USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/122 Safari/537.36"
-        TILE_URL_TEMPLATE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-
-        # Map pack name
         map_pack_name = self.textEdit_map_pack_name.toPlainText().strip()
         if not map_pack_name:
             QtWidgets.QMessageBox.warning(self, "Invalid Map Pack Name", "Enter a map pack name.")
@@ -1750,7 +1873,6 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
         map_pack_name = re.sub(r"[^A-Za-z0-9_-]+", "_", map_pack_name)
 
-        # Bounds
         try:
             north = float(self.textEdit_north.toPlainText().strip())
             south = float(self.textEdit_south.toPlainText().strip())
@@ -1765,12 +1887,11 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
         if west > east:
             west, east = east, west
 
-        # Zoom levels
         zoom_levels = []
-        for z in range(10, 16):
-            checkbox = getattr(self, f"checkBox_zoom{z}", None)
+        for zoom in range(10, 20):
+            checkbox = getattr(self, f"checkBox_zoom{zoom}", None)
             if checkbox and checkbox.isChecked():
-                zoom_levels.append(z)
+                zoom_levels.append(zoom)
 
         if not zoom_levels:
             QtWidgets.QMessageBox.warning(self, "No Zoom Levels", "Select at least one zoom level.")
@@ -1778,7 +1899,6 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
         estimate = self.estimate_tile_download(north, south, west, east, zoom_levels)
 
-        # HARD LIMIT (prevents getting blocked)
         if estimate["total_tiles"] > 2000:
             QtWidgets.QMessageBox.warning(
                 self,
@@ -1787,7 +1907,6 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             )
             return
 
-        # Confirm large downloads
         if estimate["total_tiles"] > 1000:
             answer = QtWidgets.QMessageBox.question(
                 self,
@@ -1797,11 +1916,9 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             if answer != QtWidgets.QMessageBox.Yes:
                 return
 
-        # Paths
-        map_pack_dir = os.path.join(fissure.utils.FISSURE_ROOT, "map_data", map_pack_name)
-        tiles_dir = os.path.join(map_pack_dir, "tiles")
-        manifest_path = os.path.join(map_pack_dir, "tile_manifest.json")
-
+        map_pack_dir = pathlib.Path(fissure.utils.FISSURE_ROOT) / "map_data" / map_pack_name
+        tiles_dir = map_pack_dir / "tiles"
+        manifest_path = map_pack_dir / "tile_manifest.json"
         map_pack_dir.mkdir(parents=True, exist_ok=True)
 
         manifest = {
@@ -1811,86 +1928,112 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             "zoom_levels": estimate["by_zoom"],
             "reference_points": [],
         }
-
         manifest_path.write_text(json.dumps(manifest, indent=4), encoding="utf-8")
 
-        def download_tile(url, dest):
-            headers = {
-                "User-Agent": USER_AGENT,
-                "Accept": "image/png,image/jpeg,*/*",
-            }
+        self._map_download_name = map_pack_name
+        self.pushButton_download.setEnabled(False)
+        self.pushButton_cancel.setText("Cancel Download")
 
-            req = urllib.request.Request(url, headers=headers)
+        self._map_download_progress = QtWidgets.QProgressDialog(
+            "Preparing map tiles...",
+            "Cancel",
+            0,
+            estimate["total_tiles"],
+            self,
+        )
+        self._map_download_progress.setWindowTitle("Downloading Map Pack")
+        self._map_download_progress.setWindowModality(QtCore.Qt.WindowModal)
+        self._map_download_progress.setMinimumDuration(0)
+        self._map_download_progress.setAutoClose(False)
+        self._map_download_progress.setAutoReset(False)
+        self._map_download_progress.setValue(0)
+        self._map_download_progress.canceled.connect(self._slotMapDownloadCancelRequested)
 
-            with urllib.request.urlopen(req, timeout=20) as resp:
-                if resp.status != 200:
-                    raise Exception(f"HTTP {resp.status}")
+        self._map_download_thread = QtCore.QThread(self)
+        self._map_download_worker = MapTileDownloadWorker(tiles_dir, estimate["by_zoom"])
+        self._map_download_worker.moveToThread(self._map_download_thread)
 
-                data = resp.read()
+        self._map_download_thread.started.connect(self._map_download_worker.run)
+        self._map_download_worker.progress.connect(self._slotMapDownloadProgress)
+        self._map_download_worker.finished.connect(self._slotMapDownloadFinished)
+        self._map_download_worker.finished.connect(self._map_download_thread.quit)
+        self._map_download_worker.finished.connect(self._map_download_worker.deleteLater)
+        self._map_download_thread.finished.connect(self._slotMapDownloadThreadFinished)
+        self._map_download_thread.finished.connect(self._map_download_thread.deleteLater)
 
-                # Detect blocked HTML response
-                if data.startswith(b"<"):
-                    raise Exception("Blocked (HTML response)")
+        self._map_download_progress.show()
+        self._map_download_thread.start()
 
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(data)
+    def _slotCancelClicked(self):
+        if self._map_download_thread and self._map_download_thread.isRunning():
+            self._slotMapDownloadCancelRequested()
+            return
 
-        downloaded = 0
-        skipped = 0
-        failed = 0
+        self.reject()
 
-        try:
-            for zoom in sorted(estimate["by_zoom"].keys()):
-                info = estimate["by_zoom"][zoom]
+    def _slotMapDownloadProgress(self, processed, total, status):
+        if not self._map_download_progress:
+            return
 
-                for x in range(info["x_min"], info["x_max"] + 1):
-                    for y in range(info["y_min"], info["y_max"] + 1):
+        self._map_download_progress.setMaximum(total)
+        self._map_download_progress.setValue(processed)
+        self._map_download_progress.setLabelText(status)
 
-                        dest = tiles_dir / str(zoom) / str(x) / f"{y}.png"
+    def _slotMapDownloadCancelRequested(self):
+        if not self._map_download_thread or not self._map_download_thread.isRunning():
+            return
 
-                        if dest.exists():
-                            skipped += 1
-                            continue
+        self._map_download_thread.requestInterruption()
+        self.pushButton_cancel.setEnabled(False)
 
-                        url = TILE_URL_TEMPLATE.format(z=zoom, x=x, y=y)
+        if self._map_download_progress:
+            self._map_download_progress.setLabelText(
+                "Canceling after the current network request finishes..."
+            )
 
-                        success = False
+    def _slotMapDownloadFinished(self, downloaded, skipped, failed, canceled, error):
+        if self._map_download_progress:
+            self._map_download_progress.close()
+            self._map_download_progress = None
 
-                        for attempt in range(3):
-                            try:
-                                print("download", url)
-                                download_tile(url, dest)
-                                downloaded += 1
-                                success = True
-                                break
-                            except Exception as e:
-                                print(f"retry {attempt+1} failed {url}: {e}")
-                                time.sleep(2 + attempt * 2)
+        self.pushButton_download.setEnabled(True)
+        self.pushButton_cancel.setEnabled(True)
+        self.pushButton_cancel.setText("Cancel")
 
-                        if not success:
-                            failed += 1
-                            continue
+        if error:
+            QtWidgets.QMessageBox.warning(self, "Download Failed", error)
+            return
 
-                        # IMPORTANT: slow down requests
-                        time.sleep(1.0)
-
-                        QtWidgets.QApplication.processEvents()
-
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(self, "Download Failed", str(e))
+        if canceled:
+            QtWidgets.QMessageBox.information(
+                self,
+                "Download Canceled",
+                f"Downloaded: {downloaded}\n"
+                f"Skipped: {skipped}\n"
+                f"Failed: {failed}\n\n"
+                "Partial tiles were kept. Start the same download again to resume.",
+            )
             return
 
         QtWidgets.QMessageBox.information(
             self,
             "Download Complete",
-            f"Downloaded: {downloaded}\nSkipped: {skipped}\nFailed: {failed}"
+            f"Downloaded: {downloaded}\nSkipped: {skipped}\nFailed: {failed}",
         )
 
-        self.map_pack_name = map_pack_name
+        self.map_pack_name = self._map_download_name
         self.accept()
 
-    def _slotCancelClicked(self):
-        self.reject()
+    def _slotMapDownloadThreadFinished(self):
+        self._map_download_worker = None
+        self._map_download_thread = None
+
+    def reject(self):
+        if self._map_download_thread and self._map_download_thread.isRunning():
+            self._slotMapDownloadCancelRequested()
+            return
+
+        super().reject()
 
     def _slotEstimateSizeClicked(self):
         try:
@@ -1923,18 +2066,10 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             return
 
         zoom_levels = []
-        if self.checkBox_zoom10.isChecked():
-            zoom_levels.append(10)
-        if self.checkBox_zoom11.isChecked():
-            zoom_levels.append(11)
-        if self.checkBox_zoom12.isChecked():
-            zoom_levels.append(12)
-        if self.checkBox_zoom13.isChecked():
-            zoom_levels.append(13)
-        if self.checkBox_zoom14.isChecked():
-            zoom_levels.append(14)
-        if self.checkBox_zoom15.isChecked():
-            zoom_levels.append(15)
+        for zoom in range(10, 20):
+            checkbox = getattr(self, f"checkBox_zoom{zoom}", None)
+            if checkbox and checkbox.isChecked():
+                zoom_levels.append(zoom)
 
         if not zoom_levels:
             QtWidgets.QMessageBox.warning(
@@ -2064,18 +2199,10 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
         # Pick zoom (use highest selected for better detail)
         zoom_levels = []
-        if self.checkBox_zoom10.isChecked():
-            zoom_levels.append(10)
-        if self.checkBox_zoom11.isChecked():
-            zoom_levels.append(11)
-        if self.checkBox_zoom12.isChecked():
-            zoom_levels.append(12)
-        if self.checkBox_zoom13.isChecked():
-            zoom_levels.append(13)
-        if self.checkBox_zoom14.isChecked():
-            zoom_levels.append(14)
-        if self.checkBox_zoom15.isChecked():
-            zoom_levels.append(15)
+        for zoom in range(10, 20):
+            checkbox = getattr(self, f"checkBox_zoom{zoom}", None)
+            if checkbox and checkbox.isChecked():
+                zoom_levels.append(zoom)
 
         zoom = max(zoom_levels) if zoom_levels else 12
 
@@ -2083,7 +2210,6 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
         # Your chosen method
         os.system(f"xdg-open '{url}'")
-
 
     def _slotMOBAC_OpenMOBAC_Clicked(self):
         """

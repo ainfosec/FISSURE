@@ -171,7 +171,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"TX/RX"'
+    value: antenna_default
   states:
     bus_sink: false
     bus_source: false
@@ -237,7 +237,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '60'
+    value: float(gain_default)
   states:
     bus_sink: false
     bus_source: false
@@ -279,7 +279,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 1e6
+    value: float(sample_rate_default)
   states:
     bus_sink: false
     bus_source: false
@@ -312,7 +312,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '-60'
+    value: float(threshold_default)
   states:
     bus_sink: false
     bus_source: false

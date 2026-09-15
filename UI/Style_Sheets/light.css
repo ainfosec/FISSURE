@@ -2788,7 +2788,7 @@ QLabel#label_ta_targets_info_details {
 
 /* Local Target detail tabs need more width than the global 132 px tabs. */
 QTabWidget#tabWidget_ta_targets > QTabBar::tab {
-    width: 180px;
+    width: 160px;
 }
 
 /* Recommendation inspector */
@@ -5597,5 +5597,173 @@ QPushButton#pushButton_sa_classifier_classify_run_start_stop[running="true"]:pre
         x1:0, y1:0, x2:0, y2:1,
         stop:0 #8a0000,
         stop:1 #650000
+    );
+}
+
+/* ==========================================================
+   Targets & Actions - Geolocation
+   ========================================================== */
+
+QTabWidget#tabWidget_ta_targets > QTabBar::tab {
+    width: 155px;
+}
+
+QFrame#frame_ta_targets_geolocation_execute,
+QFrame#frame_ta_targets_geolocation_geometry,
+QFrame#frame_ta_targets_geolocation_solution,
+QFrame#frame_ta_targets_geolocation_observations {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_ta_targets_geolocation_geometry_title,
+QLabel#label_ta_targets_geolocation_solution_title,
+QLabel#label_ta_targets_geolocation_observations_title {
+    color: #0b2d52;
+    background-color: transparent;
+    font: bold 10pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_operation_label,
+QLabel#label_ta_targets_geolocation_method_label,
+QLabel#label_ta_targets_geolocation_collection_label,
+QLabel#label_ta_targets_geolocation_frequency_label,
+QLabel#label_ta_targets_geolocation_samples_label,
+QLabel#label_ta_targets_geolocation_nodes_label,
+QLabel#label_ta_targets_geolocation_positions_label,
+QLabel#label_ta_targets_geolocation_spread_label,
+QLabel#label_ta_targets_geolocation_geometry_label,
+QLabel#label_ta_targets_geolocation_measurement_label,
+QLabel#label_ta_targets_geolocation_range_calibrated_label,
+QLabel#label_ta_targets_geolocation_solution_label,
+QLabel#label_ta_targets_geolocation_latitude_label,
+QLabel#label_ta_targets_geolocation_longitude_label,
+QLabel#label_ta_targets_geolocation_ce_label {
+    color: @color4;
+    background-color: transparent;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_operation,
+QLabel#label_ta_targets_geolocation_method,
+QLabel#label_ta_targets_geolocation_collection,
+QLabel#label_ta_targets_geolocation_frequency,
+QLabel#label_ta_targets_geolocation_samples,
+QLabel#label_ta_targets_geolocation_nodes,
+QLabel#label_ta_targets_geolocation_positions,
+QLabel#label_ta_targets_geolocation_spread,
+QLabel#label_ta_targets_geolocation_geometry,
+QLabel#label_ta_targets_geolocation_measurement,
+QLabel#label_ta_targets_geolocation_range_calibrated,
+QLabel#label_ta_targets_geolocation_solution,
+QLabel#label_ta_targets_geolocation_latitude,
+QLabel#label_ta_targets_geolocation_longitude,
+QLabel#label_ta_targets_geolocation_ce {
+    color: @color4;
+    background-color: transparent;
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_operation[state="good"],
+QLabel#label_ta_targets_geolocation_geometry[state="good"],
+QLabel#label_ta_targets_geolocation_range_calibrated[state="good"],
+QLabel#label_ta_targets_geolocation_solution[state="good"] {
+    color: #078f07;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_operation[state="warning"],
+QLabel#label_ta_targets_geolocation_geometry[state="warning"],
+QLabel#label_ta_targets_geolocation_range_calibrated[state="warning"],
+QLabel#label_ta_targets_geolocation_solution[state="warning"] {
+    color: #a86100;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_operation[state="error"],
+QLabel#label_ta_targets_geolocation_solution[state="error"] {
+    color: #b00000;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_info {
+    color: #0b2d52;
+    background-color: #eaf4ff;
+    border: 1px solid #8bb8e8;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_ta_targets_geolocation_info[severity="warning"] {
+    color: #7a4a00;
+    background-color: #fff4d6;
+    border: 1px solid #e0a22b;
+}
+
+QLabel#label_ta_targets_geolocation_info[severity="error"] {
+    color: #8a0000;
+    background-color: #fde8e8;
+    border: 1px solid #d9534f;
+}
+
+QTableWidget#tableWidget_ta_targets_geolocation_observations {
+    border: none;
+    font: 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_ta_targets_geolocation_start_stop {
+    color: white;
+    border: 1px solid #006600;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #18b318,
+        stop:0.45 #078f07,
+        stop:1 #056d05
+    );
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_ta_targets_geolocation_start_stop:hover {
+    border: 1px solid #008000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #25c525,
+        stop:0.45 #0ca00c,
+        stop:1 #077707
+    );
+}
+
+QPushButton#pushButton_ta_targets_geolocation_start_stop[running="true"] {
+    color: white;
+    border: 1px solid #8a0000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #e64a4a,
+        stop:0.45 #c91f1f,
+        stop:1 #980000
+    );
+}
+
+QPushButton#pushButton_ta_targets_geolocation_start_stop[running="true"]:hover {
+    border: 1px solid #b00000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ff5a5a,
+        stop:0.45 #dd2b2b,
+        stop:1 #b00000
+    );
+}
+
+QPushButton#pushButton_ta_targets_geolocation_start_stop:disabled,
+QPushButton#pushButton_ta_targets_geolocation_start_stop[running="true"]:disabled {
+    color: @color13;
+    border: 1px solid @color1;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
     );
 }

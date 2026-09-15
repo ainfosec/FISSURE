@@ -11,9 +11,45 @@ import asyncio
 import html
 
 
+def _replot_tactical_nodes_on_map(dashboard):
+    """Re-add current Tactical nodes after a map-pack reload."""
+    tactical_nodes = getattr(dashboard, "tactical_nodes", {})
+
+    if not isinstance(tactical_nodes, dict):
+        return
+
+    for uid, node_record in tactical_nodes.items():
+        if not isinstance(node_record, dict):
+            continue
+
+        lat = node_record.get("lat")
+        lon = node_record.get("lon")
+
+        if lat is None or lon is None:
+            continue
+
+        status = str(node_record.get("status") or "").strip()
+        active = status.lower() not in (
+            "",
+            "idle",
+            "stopped",
+            "unknown",
+            "disconnected",
+        )
+
+        dashboard.tactical_map.add_node(
+            node_id=uid,
+            lat=lat,
+            lon=lon,
+            label=node_record.get("callsign") or uid,
+            active=active,
+            status=status,
+        )
+
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalRefreshMapPacks(dashboard: QtCore.QObject):
-    """ 
+    """
     Refreshes the combobox of map pack names from the map data folder.
     """
     combo = dashboard.ui.comboBox_tactical_map_pack
@@ -37,9 +73,16 @@ def _slotTacticalRefreshMapPacks(dashboard: QtCore.QObject):
 
     if combo.currentText():
         try:
-            dashboard.tactical_map.load_map(str(combo.currentText()), preferred_zoom=None, fit=False)
+            dashboard.tactical_map.load_map(
+                str(combo.currentText()),
+                preferred_zoom=None,
+                fit=False,
+            )
+            _replot_tactical_nodes_on_map(dashboard)
         except Exception as e:
-            dashboard.logger.error(f"[Tactical] Failed to load map pack '{combo.currentText()}': {e}")
+            dashboard.logger.error(
+                f"[Tactical] Failed to load map pack '{combo.currentText()}': {e}"
+            )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -54,14 +97,25 @@ def _slotTacticalMapPackChanged(dashboard: QtCore.QObject):
     if not map_name:
         dashboard.tactical_map.scene.clear()
         dashboard.tactical_map.scene.setSceneRect(0, 0, 0, 0)
-        dashboard.logger.info("[Tactical] No map pack selected. Cleared tactical map.")
+        dashboard.logger.info(
+            "[Tactical] No map pack selected. Cleared tactical map."
+        )
         return
 
     try:
-        dashboard.tactical_map.load_map(map_name, preferred_zoom=None, fit=False)
-        dashboard.logger.info(f"[Tactical] Loaded map pack: {map_name}")
+        dashboard.tactical_map.load_map(
+            map_name,
+            preferred_zoom=None,
+            fit=False,
+        )
+        _replot_tactical_nodes_on_map(dashboard)
+        dashboard.logger.info(
+            f"[Tactical] Loaded map pack: {map_name}"
+        )
     except Exception as e:
-        dashboard.logger.error(f"[Tactical] Failed to load map pack '{map_name}': {e}")
+        dashboard.logger.error(
+            f"[Tactical] Failed to load map pack '{map_name}': {e}"
+        )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

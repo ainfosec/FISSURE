@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 from pyproj import Transformer
@@ -14,6 +14,7 @@ class Sample:
     lon: float
     rssi_db: float
     t: float = 0.0
+    node_uid: str = ""
 
 
 class PathLossModel:
@@ -71,12 +72,128 @@ class _LocalProjector:
         return float(lat), float(lon)
 
 
+def _aggregate_samples_by_position(
+    samples: Sequence[Sample],
+    *,
+    min_position_separation_m: float = 8.0,
+) -> List[Sample]:
+    """Collapse repeated observations from effectively the same receiver position."""
+    if not samples:
+        return []
+
+    source = list(samples)
+    proj = _LocalProjector(source[0].lat, source[0].lon)
+    clusters: List[dict] = []
+    min_sep = max(0.1, float(min_position_separation_m))
+
+    for sample in source:
+        x, y = proj.to_xy(sample.lat, sample.lon)
+        match = None
+        match_distance = None
+
+        for cluster in clusters:
+            cx = float(np.mean(cluster["xs"]))
+            cy = float(np.mean(cluster["ys"]))
+            distance = math.hypot(x - cx, y - cy)
+            if distance < min_sep and (match_distance is None or distance < match_distance):
+                match = cluster
+                match_distance = distance
+
+        if match is None:
+            clusters.append({"xs": [x], "ys": [y], "samples": [sample]})
+        else:
+            match["xs"].append(x)
+            match["ys"].append(y)
+            match["samples"].append(sample)
+
+    aggregated: List[Sample] = []
+    for cluster in clusters:
+        members = cluster["samples"]
+        lat = float(np.mean([sample.lat for sample in members]))
+        lon = float(np.mean([sample.lon for sample in members]))
+        rssi_db = float(np.median([sample.rssi_db for sample in members]))
+        t = float(max(sample.t for sample in members))
+        node_uids = sorted({sample.node_uid for sample in members if sample.node_uid})
+        aggregated.append(Sample(lat, lon, rssi_db, t, ",".join(node_uids)))
+
+    return aggregated
+
+
+def geometry_stats(
+    samples: Sequence[Sample],
+    *,
+    min_position_separation_m: float = 8.0,
+    min_spread_m: float = 20.0,
+    min_shape_ratio: float = 0.03,
+) -> Dict[str, object]:
+    """Summarize whether observation positions provide usable 2D geometry."""
+    source = list(samples)
+    aggregated = _aggregate_samples_by_position(
+        source,
+        min_position_separation_m=min_position_separation_m,
+    )
+    node_uids = {sample.node_uid for sample in source if sample.node_uid}
+
+    result: Dict[str, object] = {
+        "sample_count": len(source),
+        "unique_node_count": len(node_uids),
+        "unique_position_count": len(aggregated),
+        "spread_m": 0.0,
+        "shape_ratio": 0.0,
+        "quality": "insufficient_positions",
+        "usable": False,
+    }
+
+    if len(aggregated) < 3:
+        return result
+
+    proj = _LocalProjector(aggregated[0].lat, aggregated[0].lon)
+    xy = np.asarray([proj.to_xy(sample.lat, sample.lon) for sample in aggregated], dtype=np.float64)
+
+    max_distance = 0.0
+    for index in range(len(xy)):
+        delta = xy[index + 1:] - xy[index]
+        if len(delta):
+            max_distance = max(max_distance, float(np.max(np.hypot(delta[:, 0], delta[:, 1]))))
+    result["spread_m"] = max_distance
+
+    centered = xy - np.mean(xy, axis=0)
+    try:
+        singular_values = np.linalg.svd(centered, compute_uv=False)
+        if len(singular_values) >= 2 and singular_values[0] > 1e-9:
+            shape_ratio = float(singular_values[1] / singular_values[0])
+        else:
+            shape_ratio = 0.0
+    except np.linalg.LinAlgError:
+        shape_ratio = 0.0
+    result["shape_ratio"] = shape_ratio
+
+    if max_distance < float(min_spread_m):
+        result["quality"] = "insufficient_spread"
+        return result
+
+    if shape_ratio < float(min_shape_ratio):
+        result["quality"] = "collinear"
+        return result
+
+    if shape_ratio < 0.10:
+        quality = "poor"
+    elif shape_ratio < 0.25:
+        quality = "fair"
+    else:
+        quality = "good"
+
+    result["quality"] = quality
+    result["usable"] = True
+    return result
+
+
 def multilaterate_wls_xy(
     xy_d: Sequence[Tuple[float, float, float]],
     *,
     weights: Optional[Sequence[float]] = None,
 ) -> Optional[Tuple[float, float]]:
-    if len(xy_d) < 4:
+    if len(xy_d) < 3:
         return None
 
     xs = np.asarray([p[0] for p in xy_d], dtype=np.float64)
@@ -86,6 +203,9 @@ def multilaterate_wls_xy(
     x1, y1, d1 = xs[0], ys[0], ds[0]
     A = np.column_stack((2.0 * (xs[1:] - x1), 2.0 * (ys[1:] - y1)))
     b = (d1**2 - ds[1:]**2) + (xs[1:]**2 - x1**2) + (ys[1:]**2 - y1**2)
+
+    if np.linalg.matrix_rank(A) < 2:
+        return None
 
     if weights is None:
         w = 1.0 / np.clip(ds[1:], 10.0, 2000.0)
@@ -109,20 +229,31 @@ def estimate_latlon_from_samples(
     *,
     max_samples: int = 80,
     weights: Optional[Sequence[float]] = None,
+    min_position_separation_m: float = 8.0,
+    min_spread_m: float = 20.0,
 ) -> Optional[Tuple[float, float]]:
-    if not samples:
+    source = list(samples)[-int(max_samples):]
+    if len(source) < 3:
         return None
 
-    s = list(samples)[-int(max_samples):]
-    if len(s) < 4:
+    stats = geometry_stats(
+        source,
+        min_position_separation_m=min_position_separation_m,
+        min_spread_m=min_spread_m,
+    )
+    if not bool(stats["usable"]):
         return None
 
+    s = _aggregate_samples_by_position(
+        source,
+        min_position_separation_m=min_position_separation_m,
+    )
     proj = _LocalProjector(s[0].lat, s[0].lon)
     xy_d: List[Tuple[float, float, float]] = []
 
-    for sm in s:
-        x, y = proj.to_xy(sm.lat, sm.lon)
-        d = model.distance_m(sm.rssi_db)
+    for sample in s:
+        x, y = proj.to_xy(sample.lat, sample.lon)
+        d = model.distance_m(sample.rssi_db)
         xy_d.append((x, y, d))
 
     sol = multilaterate_wls_xy(xy_d, weights=weights)
@@ -140,7 +271,7 @@ def _solve_covariance_xy(
     weights: Optional[Sequence[float]] = None,
     min_range_m: float = 1e-3,
 ) -> Optional[np.ndarray]:
-    if len(xy_d) < 4:
+    if len(xy_d) < 3:
         return None
 
     xs = np.asarray([p[0] for p in xy_d], dtype=np.float64)
@@ -180,23 +311,35 @@ def estimate_ce_from_samples(
     *,
     max_samples: int = 80,
     confidence: float = 0.90,
+    min_position_separation_m: float = 8.0,
+    min_spread_m: float = 20.0,
 ) -> Optional[float]:
-    est = estimate_latlon_from_samples(samples, model, max_samples=max_samples)
+    est = estimate_latlon_from_samples(
+        samples,
+        model,
+        max_samples=max_samples,
+        min_position_separation_m=min_position_separation_m,
+        min_spread_m=min_spread_m,
+    )
     if est is None:
         return None
 
-    lat_hat, lon_hat = est
-    s = list(samples)[-int(max_samples):]
-    if len(s) < 4:
+    source = list(samples)[-int(max_samples):]
+    s = _aggregate_samples_by_position(
+        source,
+        min_position_separation_m=min_position_separation_m,
+    )
+    if len(s) < 3:
         return None
 
+    lat_hat, lon_hat = est
     proj = _LocalProjector(s[0].lat, s[0].lon)
     x_hat, y_hat = proj.to_xy(lat_hat, lon_hat)
 
     xy_d: List[Tuple[float, float, float]] = []
-    for sm in s:
-        x, y = proj.to_xy(sm.lat, sm.lon)
-        d = model.distance_m(sm.rssi_db)
+    for sample in s:
+        x, y = proj.to_xy(sample.lat, sample.lon)
+        d = model.distance_m(sample.rssi_db)
         xy_d.append((x, y, d))
 
     cov = _solve_covariance_xy(xy_d, x_hat, y_hat)
@@ -214,17 +357,34 @@ def estimate_ce_from_samples(
 
 
 class MultilaterationEstimator:
-    def __init__(self, *, smooth_alpha: float = 0.35, max_samples: int = 80) -> None:
+    def __init__(
+        self,
+        *,
+        smooth_alpha: float = 0.35,
+        max_samples: int = 80,
+        min_position_separation_m: float = 8.0,
+        min_spread_m: float = 20.0,
+    ) -> None:
         if not (0.0 <= smooth_alpha <= 1.0):
             raise ValueError("smooth_alpha must be in [0,1]")
         self.smooth_alpha = float(smooth_alpha)
         self.max_samples = int(max_samples)
+        self.min_position_separation_m = float(min_position_separation_m)
+        self.min_spread_m = float(min_spread_m)
         self._samples: List[Sample] = []
         self._est: Optional[Tuple[float, float]] = None
 
     @property
     def ready(self) -> bool:
-        return len(self._samples) >= 4
+        return bool(self.geometry["usable"])
+
+    @property
+    def geometry(self) -> Dict[str, object]:
+        return geometry_stats(
+            self._samples,
+            min_position_separation_m=self.min_position_separation_m,
+            min_spread_m=self.min_spread_m,
+        )
 
     @property
     def samples(self) -> List[Sample]:
@@ -250,20 +410,27 @@ class MultilaterationEstimator:
         lon: float,
         rssi_db: float,
         t: float = 0.0,
+        node_uid: str = "",
         model: Optional[PathLossModel] = None,
         auto_calibrate: bool = False,
         d_ref_m: Optional[float] = None,
         cal_min_samples: int = 20,
     ) -> None:
-        self.add_sample(Sample(float(lat), float(lon), float(rssi_db), float(t)))
+        self.add_sample(Sample(float(lat), float(lon), float(rssi_db), float(t), str(node_uid or "")))
 
         if auto_calibrate and model is not None and d_ref_m is not None:
             if len(self._samples) == int(cal_min_samples):
-                vals = [s.rssi_db for s in self._samples[-cal_min_samples:]]
+                vals = [sample.rssi_db for sample in self._samples[-cal_min_samples:]]
                 model.calibrate_p0_from_samples(vals, float(d_ref_m), robust=True)
 
     def estimate_latlon(self, model: PathLossModel) -> Optional[Tuple[float, float]]:
-        est = estimate_latlon_from_samples(self._samples, model, max_samples=self.max_samples)
+        est = estimate_latlon_from_samples(
+            self._samples,
+            model,
+            max_samples=self.max_samples,
+            min_position_separation_m=self.min_position_separation_m,
+            min_spread_m=self.min_spread_m,
+        )
         if est is None:
             return self._est
 
@@ -293,5 +460,7 @@ class MultilaterationEstimator:
             model,
             max_samples=self.max_samples,
             confidence=confidence,
+            min_position_separation_m=self.min_position_separation_m,
+            min_spread_m=self.min_spread_m,
         )
         return est, ce

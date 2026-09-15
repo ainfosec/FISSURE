@@ -249,6 +249,7 @@ class OperationMain(Operation):
             "frequency_mhz": float(freq_hz) / 1e6,
             "power_dbm": float(metric),
             "metric": float(metric),
+            "metric_units": "matched_filter_power",
             "timestamp": timestamp,
             "detector": "lfm_beacon_detection",
             "opid": self.opid,
@@ -326,6 +327,7 @@ class OperationMain(Operation):
 
         cmd = [
             python_path,
+            "-u",
             script_path,
             "--rx-freq-default",
             str(configured_freq_hz),

@@ -29,7 +29,7 @@ for path in (FISSURE_REPO_ROOT, PLUGIN_ROOT, FLOW_GRAPH_DIR):
 
 try:
     from fissure.utils.plugins.operations import Operation
-    from fissure.utils import FISSURE_ROOT
+    from fissure.utils import FISSURE_ROOT, get_library_version
 except ImportError:
     if FISSURE_REPO_ROOT not in sys.path:
         sys.path.insert(0, FISSURE_REPO_ROOT)
@@ -39,7 +39,7 @@ except ImportError:
         sys.path.insert(0, FLOW_GRAPH_DIR)
 
     from fissure.utils.plugins.operations import Operation
-    from fissure.utils import FISSURE_ROOT
+    from fissure.utils import FISSURE_ROOT, get_library_version
 
 
 class OperationMain(Operation):
@@ -72,6 +72,12 @@ class OperationMain(Operation):
         self.frequency_mhz: float = 2412.0
         self.min_detection_interval_s: float = 1.0
         self.description: str = "USRP B2x0 geolocation"
+        self.sample_rate: float = 1e6
+        self.gain_db: float = 65.0
+        self.threshold_db: float = -60.0
+        self.channel: str = "A:A"
+        self.antenna: str = "TX/RX"
+        self.hardware_serial_argument: str = "False"
 
         self.gpsd_host: str = "127.0.0.1"
         self.gpsd_port: int = 2947
@@ -182,6 +188,26 @@ class OperationMain(Operation):
             self.min_detection_interval_s = 1.0
 
         self.description = str(p.get("description", self.description)).strip() or "USRP B2x0 geolocation"
+
+        try:
+            self.sample_rate = float(p.get("sample_rate", self.sample_rate))
+        except Exception:
+            self.sample_rate = 1e6
+        try:
+            self.gain_db = float(p.get("gain_db", p.get("gain", self.gain_db)))
+        except Exception:
+            self.gain_db = 65.0
+        try:
+            self.threshold_db = float(p.get("threshold_db", p.get("threshold", self.threshold_db)))
+        except Exception:
+            self.threshold_db = -60.0
+
+        self.channel = str(p.get("channel", self.channel) or "A:A")
+        self.antenna = str(p.get("antenna", self.antenna) or "TX/RX")
+        self.hardware_serial_argument = str(
+            p.get("hardware_serial_argument", self.hardware_serial_argument) or "False"
+        ).strip()
+
         self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host))
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
         self.gps_refresh_interval = float(p.get("gps_refresh_interval", self.gps_refresh_interval))
@@ -257,11 +283,11 @@ class OperationMain(Operation):
         frequency_hz: float,
         metric_db: float,
         det_time: float,
-        lat: float,
-        lon: float,
-        alt: float,
+        lat: Optional[float],
+        lon: Optional[float],
+        alt: Optional[float],
     ) -> Dict[str, Any]:
-        return {
+        detection = {
             "kind": "detection",
             "event_type": "detection",
             "detection_kind": "usrp_b2x0_geolocate",
@@ -271,7 +297,9 @@ class OperationMain(Operation):
             "frequency_hz": int(frequency_hz),
             "frequency_mhz": float(frequency_hz) / 1e6,
             "power_dbm": float(metric_db),
+            "metric": float(metric_db),
             "metric_db": float(metric_db),
+            "metric_units": "log_power_fft_db",
             "timestamp": float(det_time),
             "detector": "usrp_b2x0_geolocate",
             "opid": self.opid,
@@ -280,10 +308,14 @@ class OperationMain(Operation):
             "device": "USRP B2x0",
             "configured_frequency_mhz": self.frequency_mhz,
             "description": self.description,
-            "lat": float(lat),
-            "lon": float(lon),
-            "alt": float(alt or 0.0),
         }
+        if lat is not None:
+            detection["latitude"] = float(lat)
+        if lon is not None:
+            detection["longitude"] = float(lon)
+        if alt is not None:
+            detection["altitude"] = float(alt)
+        return detection
 
     async def _emit_detection(
         self,
@@ -291,9 +323,9 @@ class OperationMain(Operation):
         frequency_hz: float,
         metric_db: float,
         det_time: float,
-        lat: float,
-        lon: float,
-        alt: float,
+        lat: Optional[float],
+        lon: Optional[float],
+        alt: Optional[float],
     ) -> None:
         detection = self._make_detection_payload(
             frequency_hz=frequency_hz,
@@ -320,7 +352,14 @@ class OperationMain(Operation):
             await self._call_callback(self.alert_callback, alert_payload)
 
     def _resolve_flowgraph_script(self) -> str:
-        script_path = os.path.join(FLOW_GRAPH_DIR, "fixed_threshold_b2x0.py")
+        version = get_library_version() or "maint-3.10"
+        script_path = os.path.join(
+            FLOW_GRAPH_DIR,
+            version,
+            "b2x0",
+            "headless",
+            "fixed_threshold_b2x0.py",
+        )
         if not os.path.isfile(script_path):
             raise FileNotFoundError(f"fixed_threshold_b2x0.py not found: {script_path}")
         return script_path
@@ -328,6 +367,7 @@ class OperationMain(Operation):
     # ------------------------------------------------------------------
     # run()
     # ------------------------------------------------------------------
+
     async def run(self) -> None:
         self._apply_parameters_from_runner()
 
@@ -347,9 +387,18 @@ class OperationMain(Operation):
 
             cmd: List[str] = [
                 python_path,
+                "-u",
                 script_path,
                 "--rx-freq-default", str(configured_freq_hz),
+                "--sample-rate-default", str(self.sample_rate),
+                "--gain-default", str(self.gain_db),
+                "--threshold-default", str(self.threshold_db),
+                "--channel-default", self.channel,
+                "--antenna-default", self.antenna,
+                "--min-interval", str(self.min_detection_interval_s),
             ]
+            if self.hardware_serial_argument and self.hardware_serial_argument.lower() != "false":
+                cmd.extend(["--serial", self.hardware_serial_argument])
 
             self.logger.info("Starting USRP B2x0 fixed-threshold geolocate flowgraph: %s", " ".join(cmd))
 
@@ -359,7 +408,7 @@ class OperationMain(Operation):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=FLOW_GRAPH_DIR,
+                cwd=os.path.dirname(script_path),
             )
             stderr_task = asyncio.create_task(
                 self._drain_stderr(process.stderr, "USRP B2x0 fixed-threshold flowgraph")
@@ -371,10 +420,7 @@ class OperationMain(Operation):
             while not self._should_stop():
                 lat = self._current_position.get("lat")
                 lon = self._current_position.get("lon")
-                alt = self._current_position.get("alt", 0.0)
-                if lat is None or lon is None:
-                    await asyncio.sleep(0.25)
-                    continue
+                alt = self._current_position.get("alt")
 
                 try:
                     line_bytes = await asyncio.wait_for(process.stdout.readline(), timeout=0.25)
@@ -429,9 +475,9 @@ class OperationMain(Operation):
                     frequency_hz=frequency_hz,
                     metric_db=metric,
                     det_time=emit_time,
-                    lat=float(lat),
-                    lon=float(lon),
-                    alt=float(alt or 0.0),
+                    lat=lat,
+                    lon=lon,
+                    alt=alt,
                 )
 
                 await self._set_status(f"Tracking {self.target_id} @ {frequency_hz / 1e6:.3f} MHz")

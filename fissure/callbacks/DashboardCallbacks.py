@@ -29,6 +29,7 @@ from fissure.Dashboard.Slots import (
     SequentialActionTabSlots,
     SingleActionTabSlots,
     StatusBarSlots,
+    TargetsTabSlots,    
     TopBarSlots,
     TSITabSlots,
 )
@@ -1437,6 +1438,13 @@ async def detectionReturn(component: object, detection: dict):
         component.logger.error(
             f"Failed to process Sequential Actions detector Detection: {exc}"
         )
+
+    try:
+        TargetsTabSlots.handle_target_geolocation_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to update Target geolocation observations: {exc}"
+        )        
 
 
 async def dashboardCoT_Message(component: object, raw_xml: str):

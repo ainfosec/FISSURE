@@ -5,6 +5,7 @@ import asyncio
 import contextlib
 import json
 import logging
+import math
 import os
 import sys
 import time
@@ -60,6 +61,9 @@ class OperationMain(Operation):
         self.freq_mhz: float = 433.0
         self.min_detection_interval_s: float = 1.0
         self.description: str = "LFM beacon geolocation"
+        self.gain_default: float = 40.0
+        self.path_loss_n: float = 2.2
+        self.path_loss_p0_db: Optional[float] = None
 
         self.gpsd_host: str = "127.0.0.1"
         self.gpsd_port: int = 2947
@@ -94,6 +98,26 @@ class OperationMain(Operation):
             str(p.get("description", self.description)).strip()
             or "LFM beacon geolocation"
         )
+
+        try:
+            self.gain_default = float(p.get("gain_default", self.gain_default))
+        except Exception:
+            self.gain_default = 40.0
+
+        try:
+            self.path_loss_n = float(p.get("path_loss_n", self.path_loss_n))
+        except Exception:
+            self.path_loss_n = 2.2
+
+        p0_value = p.get("path_loss_p0_db", self.path_loss_p0_db)
+        if p0_value in (None, ""):
+            self.path_loss_p0_db = None
+        else:
+            try:
+                self.path_loss_p0_db = float(p0_value)
+            except Exception:
+                self.path_loss_p0_db = None
+
         self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host))
 
         try:
@@ -108,7 +132,7 @@ class OperationMain(Operation):
         except Exception:
             self.gps_refresh_interval = 1.0
 
-        self.resource_args = {"freq_mhz": self.freq_mhz}
+        self.resource_args = {"freq_mhz": self.freq_mhz, "gain_default": self.gain_default}
 
     @staticmethod
     def get_resources(freq_mhz: float = 433.0) -> Dict[str, Any]:
@@ -207,7 +231,8 @@ class OperationMain(Operation):
         *,
         label: str,
         frequency_hz: float,
-        metric_db: float,
+        matched_filter_metric: float,
+        power_dbfs_peak: Optional[float],
         det_time: float,
         lat: Union[float, None],
         lon: Union[float, None],
@@ -227,18 +252,31 @@ class OperationMain(Operation):
             "label": label,
             "frequency_hz": int(frequency_hz),
             "frequency_mhz": float(frequency_hz) / 1e6,
-            "power_dbm": float(metric_db),
-            "timestamp": int(ts),
+            "matched_filter_metric": float(matched_filter_metric),
+            "matched_filter_units": "matched_filter_power",
+            "path_loss_n": self.path_loss_n,
+            "timestamp": float(det_time if det_time > 0 else ts),
             "flowgraph_timestamp": float(det_time),
             "detector": "lfm_beacon_geolocate",
             "opid": self.opid,
             "flowgraph": "lfm_beacon_rtlsdr",
             "device": "RTL-SDR",
             "configured_frequency_mhz": self.freq_mhz,
+            "receiver_gain_db": self.gain_default,
             "latitude": lat,
             "longitude": lon,
             "altitude": alt,
         }
+
+        if power_dbfs_peak is not None:
+            detection.update({
+                "metric": float(power_dbfs_peak),
+                "metric_units": "dBFS",
+                "power_dbfs_peak": float(power_dbfs_peak),
+            })
+
+        if self.path_loss_p0_db is not None:
+            detection["path_loss_p0_db"] = self.path_loss_p0_db
 
         if self.detection_callback:
             try:
@@ -252,13 +290,19 @@ class OperationMain(Operation):
 
         if self.alert_callback:
             try:
+                power_text = (
+                    f", peak {power_dbfs_peak:.2f} dBFS"
+                    if power_dbfs_peak is not None
+                    else ""
+                )
                 await asyncio.wait_for(
                     self.alert_callback(
                         self.node_uid,
                         self.opid,
                         (
                             f"{self.description} {self.target_id} "
-                            f"@ {frequency_hz / 1e6:.3f} MHz, metric {metric_db:.2f}"
+                            f"@ {frequency_hz / 1e6:.3f} MHz, "
+                            f"matched metric {matched_filter_metric:.2f}{power_text}"
                         ),
                         self.logger,
                     ),
@@ -289,6 +333,8 @@ class OperationMain(Operation):
             script_path,
             "--rx-freq-default",
             str(configured_freq_hz),
+            "--gain-default",
+            str(self.gain_default),
         ]
 
         self.logger.info(f"Using LFM beacon flow graph: {script_path}")
@@ -351,12 +397,18 @@ class OperationMain(Operation):
                     self.logger.warning(f"Unexpected TSI format: {text}")
                     continue
 
-                _, label, freq_str, metric_str, tstamp_str = parts[:5]
+                _, label, freq_str, matched_metric_str, tstamp_str = parts[:5]
+                power_dbfs_peak_str = parts[5] if len(parts) >= 6 else ""
 
                 try:
                     frequency_hz = float(freq_str)
-                    metric = float(metric_str)
+                    matched_filter_metric = float(matched_metric_str)
                     det_time = float(tstamp_str)
+                    power_dbfs_peak = (
+                        float(power_dbfs_peak_str)
+                        if power_dbfs_peak_str not in (None, "")
+                        else None
+                    )
                 except ValueError:
                     self.logger.warning(f"Could not parse TSI line: {text}")
                     continue
@@ -376,16 +428,23 @@ class OperationMain(Operation):
                         "LFM beacon measurement received before GPS fix; emitting detection without node position."
                     )
 
+                power_text = (
+                    f"{power_dbfs_peak:.2f} dBFS"
+                    if power_dbfs_peak is not None
+                    else "unavailable"
+                )
                 self.logger.info(
                     f"LFM beacon measurement for {self.target_id}: "
                     f"label={label}, freq_mhz={frequency_hz / 1e6:.6f}, "
-                    f"metric={metric:.2f}, lat={lat}, lon={lon}"
+                    f"matched_metric={matched_filter_metric:.2f}, "
+                    f"peak_power={power_text}, lat={lat}, lon={lon}"
                 )
 
                 await self._emit_detection(
                     label=label,
                     frequency_hz=frequency_hz,
-                    metric_db=metric,
+                    matched_filter_metric=matched_filter_metric,
+                    power_dbfs_peak=power_dbfs_peak,
                     det_time=det_time if det_time > 0 else now,
                     lat=lat,
                     lon=lon,

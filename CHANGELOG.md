@@ -1,6 +1,34 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-14
+
+Add target geolocation workflow and RF power ranging support
+
+### Added
+
+- Added a Target-centric Geolocation subtab with Start/Stop controls, operation state, collection method, frequency, geometry quality, solution status, range-calibration state, and a live observation table.
+- Added per-Target geolocation observation tracking in the Dashboard using native detection messages, including node, received power, gain, receiver position, timestamp, and collection status.
+- Added shared geolocation geometry validation with distinct-position clustering, minimum spatial spread, geometry-shape checks, and support for both distributed multi-node and mobile single-node collection.
+- Added an independent in-band RF power measurement path to the LFM RTL-SDR receiver that reports peak dBFS separately from the matched-filter detection metric, plus periodic POWER diagnostics for calibration and testing.
+- Added Target CoT geolocation metadata so Dashboard Targets can distinguish HIPRFISR multilateration solutions from imported or seed locations and display solver state without treating an existing Target coordinate as a new solution.
+- Added updated GNU Radio 3.8 and 3.10 LFM RTL-SDR flow graph sources that preserve the matched-filter detection path while generating the new dBFS power-measurement workflow.
+
+### Changed
+
+- Changed operational RSSI geolocation to live with Targets rather than Signal Analysis and temporarily hid the unfinished Direction Finding subtab until signal-centric bearing/AoA/TDOA workflows are ready.
+- Changed HIPRFISR geolocation readiness to require at least three spatially distinct receiver positions with sufficient spread and non-collinear geometry before attempting a solve.
+- Changed LFM geolocation to use received-power dBFS as the ranging measurement instead of the matched-filter peak, while treating dBFS observations as uncalibrated until an explicit path-loss reference is available.
+- Changed the Target Geolocation UI to follow the active workflow blocker in order, showing collection progress before calibration requirements and exposing a solution only when it originates from HIPRFISR multilateration.
+- Changed Geolocation observations to display Sensor Node callsigns instead of UUIDs, use compact content-sized columns with a stretched Status column, and match the standard Dashboard frame styling across themes.
+- Changed map-pack downloads to run outside the UI event loop with resume behavior for existing tiles and expanded selectable OpenStreetMap zoom levels through 19.
+
+### Fixed
+
+- Fixed map-pack download path handling that attempted directory creation on a string path.
+- Fixed Tactical map-pack switching so the current Sensor Node roster is replotted and off-map nodes remain represented at the map edge instead of appearing to disappear.
+- Fixed LFM RTL-SDR receiver defaults so the active detector uses the intended 15 threshold and 20 minimum peak values, and corrected the gain-default setter's invalid power-report interval reference.
+
 ## 2026-9-13
 
 Add tactical audio/video streaming with TAK discovery
