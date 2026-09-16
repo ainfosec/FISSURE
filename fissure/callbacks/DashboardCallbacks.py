@@ -1449,7 +1449,10 @@ async def detectionReturn(component: object, detection: dict):
 
 async def dashboardCoT_Message(component: object, raw_xml: str):
     """
-    Receives a copy of the CoT message sent to the TAK server and hands it off for parsing.
+    Receive one CoT message for Tactical parsing.
+
+    Explicitly marked replay messages may also repopulate the Target
+    Geolocation observation cache without entering live action workflows.
     """
     try:
         cot_message = fissure.utils.cot_utils.parse_cot_xml(raw_xml)
@@ -1468,6 +1471,19 @@ async def dashboardCoT_Message(component: object, raw_xml: str):
         component.logger.error(
             f"Failed to update TSI detector table: {e}"
         )
+
+    if cot_message.get("replay_dashboard") and cot_message.get("kind") == "detection":
+        try:
+            detection = fissure.utils.cot_utils.cot_to_native_detection_record(cot_message)
+            if detection:
+                TargetsTabSlots.handle_target_geolocation_detection(
+                    component.frontend,
+                    detection,
+                )
+        except Exception as e:
+            component.logger.error(
+                f"Failed to update Target geolocation observations from replay: {e}"
+            )
 
 
 async def nodeStateUpdate(component: object, node_uid="", node={}):

@@ -784,6 +784,7 @@ async def _slotTargetsGeolocationStartStopClicked(dashboard: QtCore.QObject):
     await dashboard.backend.tacticalTargetsGeolocateStart(
         target_id=target_id,
         search_similar_targets=False,
+        preferred_node_uid=getattr(dashboard, "selected_node_uid", ""),
     )
 
 
@@ -792,6 +793,10 @@ def _target_details_html(target: dict):
     identity = target.get("identity") or {}
     if not isinstance(identity, dict):
         identity = {}
+
+    wifi = target.get("wifi") or {}
+    if not isinstance(wifi, dict):
+        wifi = {}
 
     artifact_ids = target.get("artifact_ids") or []
     if not isinstance(artifact_ids, list):
@@ -812,7 +817,7 @@ def _target_details_html(target: dict):
 
     lat = target.get("lat")
     lon = target.get("lon")
-    location = ""
+    location = "Not Set"
     if lat not in [None, "", "None"] and lon not in [None, "", "None"]:
         try:
             location = f"{float(lat):.6f}, {float(lon):.6f}"
@@ -824,7 +829,7 @@ def _target_details_html(target: dict):
         ("Source SOI", target.get("source_soi_id")),
         ("Protocol", _target_protocol(target)),
         ("Frequency", frequency),
-        ("Node ID", target.get("node_uid") or target.get("sensor_node_id") or target.get("node_id")),
+        ("Node ID", target.get("node_uid") or target.get("node_id")),
         ("Location", location),
         ("Updated", _target_updated(target)),
         ("Target Artifacts", len(artifact_ids)),
@@ -841,6 +846,39 @@ def _target_details_html(target: dict):
             "</span> "
             f"{html.escape(str(value))}"
         )
+
+    wifi_fields = [
+        ("SSID", wifi.get("ssid") or target.get("ssid")),
+        ("BSSID", wifi.get("bssid") or target.get("bssid")),
+        ("Channel", wifi.get("channel") if wifi.get("channel") not in [None, "", "None"] else target.get("channel")),
+        ("Band", wifi.get("band") or target.get("band")),
+        ("Encryption", wifi.get("encryption") or target.get("encryption")),
+        ("Vendor", wifi.get("vendor") or target.get("vendor")),
+        ("Last RSSI", wifi.get("rssi_dbm") if wifi.get("rssi_dbm") not in [None, "", "None"] else target.get("rssi_dbm")),
+    ]
+
+    wifi_lines = []
+    for label, value in wifi_fields:
+        if value in [None, "", "None"]:
+            continue
+        if label == "Last RSSI":
+            try:
+                value = f"{float(value):.1f} dBm"
+            except Exception:
+                value = str(value)
+        wifi_lines.append(
+            "&nbsp;&nbsp;&nbsp;&nbsp;"
+            "<span style='font-weight:500;'>"
+            f"{html.escape(str(label))}:"
+            "</span> "
+            f"{html.escape(str(value))}"
+        )
+
+    if wifi_lines:
+        if lines:
+            lines.append("<br>")
+        lines.append("<span style='font-weight:700;'>Wi-Fi</span>")
+        lines.extend(wifi_lines)
 
     useful_identity_keys = [
         "device_name",

@@ -1886,6 +1886,23 @@ def update_tactical_detection_row(dashboard: QtCore.QObject, detection_record):
         format_detection_time(detection_record.get("time", "")),
     ]
 
+    tooltip_lines = []
+    ssid = str(detection_record.get("ssid") or "").strip()
+    bssid = str(detection_record.get("bssid") or "").strip()
+    channel = str(detection_record.get("channel") or "").strip()
+    vendor = str(detection_record.get("vendor") or "").strip()
+
+    if ssid:
+        tooltip_lines.append(f"SSID: {ssid}")
+    if bssid:
+        tooltip_lines.append(f"BSSID: {bssid}")
+    if channel:
+        tooltip_lines.append(f"Channel: {channel}")
+    if vendor:
+        tooltip_lines.append(f"Vendor: {vendor}")
+
+    tooltip = "\n".join(tooltip_lines)
+
     existing_row = None
 
     for row in range(table.rowCount()):
@@ -1907,6 +1924,7 @@ def update_tactical_detection_row(dashboard: QtCore.QObject, detection_record):
 
         item.setText(str(value))
         item.setData(QtCore.Qt.UserRole, uid)
+        item.setToolTip(tooltip)
 
     table.resizeColumnsToContents()
     table.resizeRowsToContents()
@@ -5927,11 +5945,44 @@ async def _slotTacticalTargetsGeolocateClicked(dashboard: QtCore.QObject):
         await dashboard.backend.tacticalTargetsGeolocateStop(
             target_id=target_id,
         )
-    else:
-        await dashboard.backend.tacticalTargetsGeolocateStart(
-            target_id=target_id,
-            search_similar_targets=search_similar_targets,
-        )
+        return
+
+    similar_target_ids = []
+
+    if search_similar_targets:
+        # Use exactly the Targets currently visible to the operator in the
+        # Targets table. Do not silently pull hidden/stale hub Targets into a
+        # Search Similar session.
+        table = dashboard.ui.tableWidget1_ta_targets
+
+        for row in range(table.rowCount()):
+            item = table.item(row, 0)
+            if item is None:
+                continue
+
+            candidate_target_id = str(
+                item.data(QtCore.Qt.UserRole)
+                or ""
+            ).strip()
+
+            if (
+                candidate_target_id
+                and candidate_target_id
+                not in similar_target_ids
+            ):
+                similar_target_ids.append(
+                    candidate_target_id
+                )
+
+        if target_id not in similar_target_ids:
+            similar_target_ids.insert(0, target_id)
+
+    await dashboard.backend.tacticalTargetsGeolocateStart(
+        target_id=target_id,
+        search_similar_targets=search_similar_targets,
+        preferred_node_uid=getattr(dashboard, "selected_node_uid", ""),
+        similar_target_ids=similar_target_ids,
+    )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -8364,9 +8415,6 @@ def populate_tactical_targets_details(
 
     node_id = (
         target.get("node_uid")
-        or target.get(
-            "sensor_node_id"
-        )
         or target.get("node_id")
     )
 
@@ -8723,7 +8771,6 @@ def populate_tactical_targets_details(
             "hae",
             "hae_m",
             "node_uid",
-            "sensor_node_id",
             "node_id",
             "created_time",
             "last_update_time",

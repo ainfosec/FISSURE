@@ -89,6 +89,12 @@ ACTION_TAGS = {
         "client.dashboard",
         "node.local",
     ],
+    "ook_analysis": [
+        "All",
+        "sa.inspection",
+        "client.dashboard",
+        "node.local",
+    ],
 
     "promote_to_soi": ["All"],
 
@@ -3170,6 +3176,100 @@ async def iq_basic_analysis(
         component,
         PLUGIN_NAME,
         "iq_basic_analysis.py",
+        op_params,
+        node_uid,
+    )
+
+
+ook_analysis_schema = {
+    "params": [
+        {
+            "name": "threshold",
+            "label": "Magnitude Threshold",
+            "type": "number",
+            "default": 0.0,
+            "min": 0.0,
+            "step": 0.01,
+            "decimals": 6,
+            "description": "0 uses automatic magnitude threshold detection.",
+        },
+        {
+            "name": "min_pulse_us",
+            "label": "Min Pulse Width (us)",
+            "type": "number",
+            "default": 50.0,
+            "min": 0.0,
+            "step": 10.0,
+            "decimals": 3,
+        },
+        {
+            "name": "merge_gap_us",
+            "label": "Merge Gap (us)",
+            "type": "number",
+            "default": 20.0,
+            "min": 0.0,
+            "step": 5.0,
+            "decimals": 3,
+        },
+        {
+            "name": "burst_gap_us",
+            "label": "Burst Gap (us)",
+            "type": "number",
+            "default": 2000.0,
+            "min": 1.0,
+            "step": 100.0,
+            "decimals": 3,
+        },
+        {
+            "name": "max_samples",
+            "label": "Max Samples",
+            "type": "integer",
+            "default": 10000000,
+            "min": 1000,
+            "max": 50000000,
+            "step": 1000,
+            "description": "Maximum full-rate samples used for pulse timing.",
+        },
+    ]
+}
+
+
+async def ook_analysis(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """Measure OOK pulse widths against the active Inspection evidence/range."""
+    parameters = dict(parameters or {})
+    context = parameters.get("_fissure_inspection_context", {})
+    if not isinstance(context, dict):
+        context = {}
+
+    filepath = str(context.get("filepath") or "").strip()
+    if not filepath:
+        raise ValueError("Inspection context did not provide a local IQ filepath.")
+
+    op_params = {
+        "operation_id": str(parameters.get("operation_id") or ""),
+        "filepath": filepath,
+        "data_type": str(context.get("data_type") or "Complex Float 32"),
+        "sigmf_datatype": str(context.get("sigmf_datatype") or ""),
+        "sample_rate_hz": float(context.get("sample_rate_hz") or 0.0),
+        "center_frequency_hz": float(context.get("center_frequency_hz") or 0.0),
+        "sample_count": int(context.get("sample_count") or 0),
+        "start_sample": int(context.get("start_sample") or 0),
+        "end_sample": int(context.get("end_sample") or 0),
+        "threshold": float(parameters.get("threshold") or 0.0),
+        "min_pulse_us": float(parameters.get("min_pulse_us") or 50.0),
+        "merge_gap_us": float(parameters.get("merge_gap_us") or 20.0),
+        "burst_gap_us": float(parameters.get("burst_gap_us") or 2000.0),
+        "max_samples": int(parameters.get("max_samples") or 10000000),
+    }
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "ook_analysis.py",
         op_params,
         node_uid,
     )

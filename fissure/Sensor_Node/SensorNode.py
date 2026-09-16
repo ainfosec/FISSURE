@@ -34,6 +34,7 @@ import fissure.utils
 from fissure.utils import PLUGIN_DIR
 from fissure.utils import plugin
 from fissure.utils.artifacts import ArtifactManager
+from fissure.Sensor_Node.utils.resources import cleanup_stale_resource_locks
 
 import uuid
 import logging
@@ -233,6 +234,8 @@ class SensorNode(object):
             self.settings_dict['Sensor Node']['console_logging_level'],
             self.settings_dict['Sensor Node']['file_logging_level']
         )
+
+        cleanup_stale_resource_locks(self.logger)
 
         self.gpsd_serial_port = str(self.settings_dict['Sensor Node']['gps']['gpsd_serial_port'])
         self.meshtastic_serial_port = str(self.settings_dict['Sensor Node']['meshtastic_serial_port'])
@@ -1352,7 +1355,19 @@ class SensorNode(object):
             filtered_parameters = {k: v for k, v in parameters.items() if k in init_params}
             operation_inst = operation_main(**filtered_parameters)
             operation_inst.execution_context = dict(execution_context)
-            requested_operation_id = str(parameters.get("operation_id") or "").strip()
+            operation_parameters = parameters.get("parameters")
+            nested_operation_id = (
+                operation_parameters.get("operation_id")
+                if isinstance(operation_parameters, dict)
+                else ""
+            )
+
+            requested_operation_id = str(
+                parameters.get("operation_id")
+                or nested_operation_id
+                or ""
+            ).strip()
+
             if requested_operation_id:
                 operation_inst.opid = requested_operation_id
 
@@ -3093,22 +3108,55 @@ class SensorNode(object):
     
     async def publish_status_to_hiprfisr(self, status: str):
         """
-        Publish node status.
+        Publish node status without flooding the control plane.
 
-        For IP nodes, status rides heartbeat. Force a heartbeat so status changes
-        are reported immediately instead of waiting for the next heartbeat period.
-
-        Meshtastic keeps the previous GPS/TAK-return behavior for now.
+        Operations may refresh status several times per second. Cache the newest
+        status locally, suppress duplicate publications, and force at most one
+        non-terminal status heartbeat per second. Terminal states publish
+        immediately.
         """
-        self.current_status = status
+        status_text = str(status or "")
+        self.current_status = status_text
 
         if self.network_type == "IP":
+            last_published = str(
+                getattr(self, "_last_published_status", "")
+                or ""
+            )
+
+            if status_text == last_published:
+                return
+
+            now = time.monotonic()
+            last_publish_time = float(
+                getattr(
+                    self,
+                    "_last_status_publish_monotonic",
+                    0.0,
+                )
+                or 0.0
+            )
+
+            terminal = status_text.strip().lower() in {
+                "idle",
+                "stopped",
+                "error",
+                "offline",
+            }
+
+            if (
+                not terminal
+                and (now - last_publish_time) < 1.0
+            ):
+                return
+
             await self.send_heartbeat(force=True)
+            self._last_published_status = status_text
+            self._last_status_publish_monotonic = now
             return
 
         if self.network_type == "Meshtastic":
             await self.gpsUpdate(None)
-
 
     def get_local_ip_for_remote(self, remote_ip):
         """

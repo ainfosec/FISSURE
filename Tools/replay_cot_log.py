@@ -179,6 +179,11 @@ def parse_args():
     p.add_argument("--min-interval", type=float, default=0.05)
     p.add_argument("--max-events", type=int)
     p.add_argument("--no-refresh-times", action="store_true")
+    p.add_argument(
+        "--dashboard",
+        action="store_true",
+        help="Mark replay events so HIPRFISR forwards them into the current Dashboard Tactical parser.",
+    )
 
     p.add_argument("--host")
     p.add_argument("--port", type=int)
@@ -348,6 +353,31 @@ def refresh_event_times(event):
     return new
 
 
+def mark_dashboard_replay(event, replay_id):
+
+    new = copy.deepcopy(event)
+
+    detail = new.find("detail")
+    if detail is None:
+        detail = ET.SubElement(new, "detail")
+
+    fissure_detail = detail.find("fissure")
+    if fissure_detail is None:
+        fissure_detail = ET.SubElement(detail, "fissure")
+
+    replay_elem = fissure_detail.find("replay_dashboard")
+    if replay_elem is None:
+        replay_elem = ET.SubElement(fissure_detail, "replay_dashboard")
+    replay_elem.text = "true"
+
+    replay_id_elem = fissure_detail.find("replay_id")
+    if replay_id_elem is None:
+        replay_id_elem = ET.SubElement(fissure_detail, "replay_id")
+    replay_id_elem.text = str(replay_id)
+
+    return new
+
+
 def build_pytak_config(args, config):
 
     tak = config.get("tak", {})
@@ -394,6 +424,14 @@ async def replay_records(records, args, tx_queue, logger):
             if args.no_refresh_times
             else refresh_event_times(r.event_elem)
         )
+
+        if args.dashboard:
+            replay_id = (
+                f"{r.source_path.parent.name}/"
+                f"{r.source_path.name}:{r.index_in_file}:"
+                f"{int(r.logged_ts.timestamp() * 1_000_000)}"
+            )
+            elem = mark_dashboard_replay(elem, replay_id)
 
         data = ET.tostring(elem, encoding="utf-8")
 
@@ -473,12 +511,15 @@ async def main_async(args):
         else:
             print("No CoT events found.")
 
+        print(f"Dashboard replay marker: {'enabled' if args.dashboard else 'disabled'}")
         print("Dry run mode enabled — no messages were sent.")
         return 0
 
     logger.info("Replay source: %s", replay_source)
     logger.info("CoT files discovered: %d", len(paths))
     logger.info("Total CoT events: %d", len(records))
+    if args.dashboard:
+        logger.info("Dashboard replay marker enabled.")
 
     pytak_config = build_pytak_config(args, config)
 

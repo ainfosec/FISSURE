@@ -6,6 +6,75 @@ import logging
 import os
 from typing import Union
 
+def cleanup_stale_resource_locks(logger: logging.Logger = None) -> list:
+    """Remove stale FISSURE resource locks left in /tmp."""
+    logger = logger if logger is not None else logging.getLogger(__name__)
+    current_pid = os.getpid()
+    removed = []
+
+    try:
+        entries = list(os.scandir("/tmp"))
+    except OSError as exc:
+        logger.warning(f"Unable to scan /tmp for FISSURE resource locks: {exc}")
+        return removed
+
+    for entry in entries:
+        if not entry.is_file() or not entry.name.endswith(".lock"):
+            continue
+
+        try:
+            with open(entry.path, "r") as lock_file:
+                contents = lock_file.read()
+        except OSError:
+            continue
+
+        if "fissure_op_id:" not in contents or "pid:" not in contents:
+            continue
+
+        lock_pid = None
+        for line in contents.splitlines():
+            if line.startswith("pid:"):
+                try:
+                    lock_pid = int(line.split(":", 1)[1].strip())
+                except (TypeError, ValueError):
+                    lock_pid = None
+                break
+
+        owner_alive = False
+        if lock_pid is not None and lock_pid != current_pid:
+            try:
+                os.kill(lock_pid, 0)
+                owner_alive = True
+            except ProcessLookupError:
+                owner_alive = False
+            except PermissionError:
+                owner_alive = True
+            except OSError:
+                owner_alive = False
+
+        if owner_alive:
+            logger.debug(
+                f"Preserving active FISSURE resource lock: "
+                f"{entry.path} (pid={lock_pid})"
+            )
+            continue
+
+        try:
+            os.remove(entry.path)
+            removed.append(entry.path)
+            logger.info(
+                f"Removed stale FISSURE resource lock: "
+                f"{entry.path} (pid={lock_pid})"
+            )
+        except OSError as exc:
+            logger.warning(
+                f"Unable to remove stale FISSURE resource lock "
+                f"{entry.path}: {exc}"
+            )
+
+    return removed
+
+
 class Resource(object):
     """
     Represents a resource allocated to a sensor node operation.

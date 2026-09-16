@@ -21,7 +21,6 @@ Expected "parameters" keys (all optional unless noted):
 - gps_refresh_interval: float
 - wifi_refresh_interval: float
 - min_detection_interval_s: float
-- log_dir: str
 
 Target assumptions
 ------------------
@@ -42,7 +41,6 @@ import json
 import logging
 import os
 import shutil
-import signal
 import subprocess
 import sys
 import time
@@ -118,6 +116,9 @@ class OperationMain(Operation):
         self.parameters: Dict[str, Any] = parameters or {}
 
         self.target_id: str = ""
+        self.target_bssid: str = ""
+        self.target_channel: Optional[int] = None
+        self.target_frequency_mhz: Optional[float] = None
         self.search_similar_targets: bool = False
         self.source_id: str = str(node_uid or "").strip() or "sensor_node"
 
@@ -130,11 +131,9 @@ class OperationMain(Operation):
         self.gpsd_host: str = "127.0.0.1"
         self.gpsd_port: int = 2947
         self.gps_refresh_interval: float = 3.0
-        self.wifi_refresh_interval: float = 0.5
+        self.wifi_refresh_interval: float = 0.2
         self.min_detection_interval_s: float = 1.0
-
-        self.log_dir: str = os.path.join(FISSURE_ROOT, "logs", "plugins", "WiFi")
-        os.makedirs(self.log_dir, exist_ok=True)
+        self.aggregation_window_s: float = 3.0
 
         self._gps_stop = asyncio.Event()
         self._current_position = {"lat": None, "lon": None, "alt": 0.0}
@@ -142,11 +141,8 @@ class OperationMain(Operation):
         self._airodump_proc: Optional[asyncio.subprocess.Process] = None
         self._airodump_iface_in_use: Optional[str] = None
 
-        # derived targeting
         self._target_bssid_norm: str = ""
         self._target_bssid_colon: str = ""
-
-        # throttle duplicate emissions
         self._last_emit_time_by_bssid: Dict[str, float] = {}
 
     def _should_stop(self) -> bool:
@@ -187,17 +183,25 @@ class OperationMain(Operation):
             return
 
         self.target_id = str(p.get("target_id", self.target_id or "")).strip()
+        self.target_bssid = str(p.get("bssid", self.target_bssid or "")).strip()
         self.search_similar_targets = _to_bool(
             p.get("search_similar_targets", self.search_similar_targets),
             self.search_similar_targets,
         )
 
-        self.source_id = str(
-            p.get("source_id")
-            or self.node_uid
-            or "sensor_node"
-        ).strip()
+        channel_value = p.get("channel", self.target_channel)
+        try:
+            self.target_channel = int(float(channel_value)) if channel_value not in (None, "", "None") else None
+        except Exception:
+            self.target_channel = None
 
+        frequency_value = p.get("frequency_mhz", self.target_frequency_mhz)
+        try:
+            self.target_frequency_mhz = float(frequency_value) if frequency_value not in (None, "", "None") else None
+        except Exception:
+            self.target_frequency_mhz = None
+
+        self.source_id = str(p.get("source_id") or self.node_uid or "sensor_node").strip()
         self.wifi_interface = str(p.get("wifi_interface", self.wifi_interface) or self.wifi_interface)
         self.mon_suffix = str(p.get("mon_suffix", self.mon_suffix) or self.mon_suffix)
 
@@ -207,14 +211,9 @@ class OperationMain(Operation):
         self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host) or self.gpsd_host)
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
         self.gps_refresh_interval = float(p.get("gps_refresh_interval", self.gps_refresh_interval))
-        self.wifi_refresh_interval = float(p.get("wifi_refresh_interval", self.wifi_refresh_interval))
-        self.min_detection_interval_s = float(p.get("min_detection_interval_s", self.min_detection_interval_s))
-
-        self.log_dir = str(
-            p.get("log_dir")
-            or os.path.join(FISSURE_ROOT, "logs", "plugins", "WiFi")
-        )
-        os.makedirs(self.log_dir, exist_ok=True)
+        self.wifi_refresh_interval = max(0.1, float(p.get("meas_every_s", p.get("wifi_refresh_interval", self.wifi_refresh_interval))))
+        self.min_detection_interval_s = max(0.2, float(p.get("emit_every_s", p.get("min_detection_interval_s", self.min_detection_interval_s))))
+        self.aggregation_window_s = max(self.min_detection_interval_s, float(p.get("aggregation_window_s", self.aggregation_window_s)))
 
         self.resource_args = {"wifi_interface": self.wifi_interface}
 
@@ -273,22 +272,50 @@ class OperationMain(Operation):
         except Exception as e:
             self.logger.warning(f"Restore failed: {e}")
 
-    def _kill_existing_airodump(self) -> None:
+    def _kill_existing_airodump(self, signal_name: str = "TERM") -> None:
+        signal_name = "KILL" if str(signal_name).upper() == "KILL" else "TERM"
+
         patterns = [
             f"airodump-ng.*--write {self.airo_prefix}",
             f"airodump-ng.* {self.wifi_interface}{self.mon_suffix}",
             f"airodump-ng.* {self.wifi_interface}",
         ]
-        for pat in patterns:
+
+        for pattern in patterns:
             try:
-                subprocess.run(
-                    ["sudo", "pkill", "-f", pat],
+                result = subprocess.run(
+                    [
+                        "sudo",
+                        "-n",
+                        "pkill",
+                        f"-{signal_name}",
+                        "-f",
+                        pattern,
+                    ],
+                    stdin=subprocess.DEVNULL,
                     stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE,
+                    text=True,
                     check=False,
                 )
-            except Exception:
-                pass
+
+                stderr = (result.stderr or "").strip()
+
+                if "password is required" in stderr.lower():
+                    self.logger.warning(
+                        "Passwordless sudo is not configured for pkill; "
+                        "unable to stop privileged airodump-ng"
+                    )
+                    return
+
+                if result.returncode == 0:
+                    return
+
+            except Exception as exc:
+                self.logger.debug(
+                    f"Unable to stop airodump-ng with pattern "
+                    f"{pattern!r}: {exc}"
+                )
 
     async def _start_airodump(self) -> Tuple[Optional[asyncio.subprocess.Process], Optional[str]]:
         airodump_path = shutil.which("airodump-ng")
@@ -297,9 +324,7 @@ class OperationMain(Operation):
             return None, None
 
         mon = self.wifi_interface + self.mon_suffix
-
         self._kill_existing_airodump()
-
         self._iface(["sudo", "ip", "link", "set", mon, "down"])
         self._iface(["sudo", "iw", "dev", mon, "del"])
 
@@ -329,17 +354,26 @@ class OperationMain(Operation):
             use = self.wifi_interface
 
         cmd = [
-            "sudo", "-n",
-            airodump_path,
+            "sudo", "-n", airodump_path,
             "--berlin", "1",
             "--write-interval", "1",
-            "--band", "abg",
+        ]
+        if self.target_channel is not None and self.target_channel > 0:
+            cmd.extend(["--channel", str(self.target_channel)])
+        else:
+            cmd.extend(["--band", "abg"])
+        if self._target_bssid_colon:
+            cmd.extend(["--bssid", self._target_bssid_colon])
+        cmd.extend([
             "--output-format", "csv",
             "--write", self.airo_prefix,
             use,
-        ]
+        ])
 
-        self.logger.info(f"Launching airodump-ng on {use} (dual-band)")
+        self.logger.info(
+            f"Launching airodump-ng on {use}: bssid={self._target_bssid_colon or 'any'}, "
+            f"channel={self.target_channel if self.target_channel is not None else 'hop'}"
+        )
         self.logger.info(f"Command: {' '.join(cmd)}")
 
         proc = await asyncio.create_subprocess_exec(
@@ -371,94 +405,69 @@ class OperationMain(Operation):
         return max(files, key=os.path.getmtime) if files else None
 
     def _read_airodump_rows_once(self) -> List[Dict[str, Any]]:
-        """
-        Reads the latest CSV once and returns AP rows as dicts.
-
-        Current parsing:
-        - BSSID     -> r[0]
-        - channel   -> r[3]
-        - privacy   -> r[5]
-        - power     -> r[8]
-        - ESSID     -> r[13]
-
-        This matches airodump CSV well enough for first-pass debugging, though
-        exact fields can vary by version.
-        """
+        """Read only the AP section from the latest airodump-ng CSV."""
         csv_path = self._latest_csv_path()
         if not csv_path:
             return []
 
         try:
             with open(csv_path, errors="ignore", newline="") as f:
-                rows = [r for r in csv.reader(f) if len(r) > 1]
+                rows = list(csv.reader(f))
         except Exception:
             return []
 
-        idx = None
-        for i, r in enumerate(rows):
-            if r and r[0].strip().upper() == "BSSID":
-                idx = i
-                break
+        idx = next((i for i, r in enumerate(rows) if r and r[0].strip().upper() == "BSSID"), None)
         if idx is None:
             return []
 
         out: List[Dict[str, Any]] = []
         for r in rows[idx + 1:]:
-            if not r or all(c.strip() == "" for c in r):
+            if not r or all(not c.strip() for c in r):
                 break
 
-            try:
-                bssid = r[0].strip()
-                channel_text = r[3].strip() if len(r) > 3 else ""
-                privacy = r[5].strip() if len(r) > 5 else ""
-                power_text = r[8].strip() if len(r) > 8 else ""
-                ssid = r[13].strip(" ,\t\r\n") if len(r) > 13 else ""
+            first = r[0].strip()
+            if first.upper() == "STATION MAC":
+                break
+            if len(r) < 14:
+                continue
 
-                if (not ssid) or (ssid.lower() in ("<hidden>", "broadcast", "unknown")):
+            try:
+                bssid = first
+                bssid_norm = self._normalize_bssid(bssid)
+                if len(bssid_norm) != 12 or any(c not in "0123456789abcdef" for c in bssid_norm):
+                    continue
+
+                channel = int(float(r[3].strip())) if r[3].strip() else None
+                if channel is not None and channel <= 0:
+                    channel = None
+
+                rssi = float(r[8].strip()) if r[8].strip() else None
+                ssid = r[13].strip(" ,\t\r\n")
+                if ssid.lower() in {"<hidden>", "broadcast", "unknown"}:
                     ssid = ""
 
-                channel = None
-                if channel_text:
-                    try:
-                        channel = int(float(channel_text))
-                    except Exception:
-                        channel = None
-
-                rssi = None
-                if power_text:
-                    try:
-                        rssi = float(power_text)
-                    except Exception:
-                        rssi = None
-
                 band = ""
-                freq_mhz = None
+                frequency_mhz = None
                 if channel is not None:
-                    # rough inference only
                     if 1 <= channel <= 14:
                         band = "2.4GHz"
-                        # approximate channel center frequency
-                        if channel == 14:
-                            freq_mhz = 2484.0
-                        else:
-                            freq_mhz = 2412.0 + 5.0 * (channel - 1)
+                        frequency_mhz = 2484.0 if channel == 14 else 2412.0 + 5.0 * (channel - 1)
                     elif 30 <= channel <= 177:
                         band = "5GHz"
-                        freq_mhz = 5000.0 + 5.0 * channel
+                        frequency_mhz = 5000.0 + 5.0 * channel
 
                 out.append({
                     "ssid": ssid,
                     "bssid": bssid,
-                    "bssid_norm": self._normalize_bssid(bssid),
+                    "bssid_norm": bssid_norm,
                     "channel": channel,
                     "band": band,
-                    "frequency_mhz": freq_mhz,
+                    "frequency_mhz": frequency_mhz,
                     "rssi_dbm": rssi,
-                    "encryption": privacy,
+                    "encryption": r[5].strip(),
                 })
             except Exception:
                 continue
-
         return out
 
     # -----------------------
@@ -531,6 +540,10 @@ class OperationMain(Operation):
         frequency_mhz: Optional[float],
         rssi_dbm: Optional[float],
         encryption: str,
+        lat: float,
+        lon: float,
+        alt: float,
+        aggregation_sample_count: int,
     ) -> None:
         ts_epoch = time.time()
 
@@ -541,9 +554,9 @@ class OperationMain(Operation):
             "target_id": target_id,
             "node_uid": str(self.node_uid),
             "source_id": self.source_id,
-            "frequency_hz": int(frequency_mhz * 1e6) if frequency_mhz is not None else None,
-            "frequency_mhz": frequency_mhz,
+            "frequency_hz": int(round(float(frequency_mhz) * 1e6)) if frequency_mhz is not None else None,
             "power_dbm": float(rssi_dbm) if rssi_dbm is not None else None,
+            "metric_units": "dBm",
             "timestamp": ts_epoch,
             "detector": "wifi_geolocate_target",
             "opid": self.opid,
@@ -553,9 +566,14 @@ class OperationMain(Operation):
             "channel": channel,
             "band": band,
             "encryption": encryption,
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude": float(alt or 0.0),
+            "aggregation": "median",
+            "aggregation_window_s": float(self.aggregation_window_s),
+            "aggregation_sample_count": int(aggregation_sample_count),
+            "location_semantics": "receiver_observation",
         }
-
-        # remove None values so payload stays cleaner
         detection = {k: v for k, v in detection.items() if v is not None}
 
         await self._run_callback(
@@ -564,47 +582,44 @@ class OperationMain(Operation):
             detection,
         )
 
-        if getattr(self, "alert_callback", None):
-            message = (
-                f"Wi-Fi target measurement: target_id={target_id}, "
-                f"BSSID={bssid}, RSSI={rssi_dbm if rssi_dbm is not None else 'n/a'} dBm"
-            )
-            await self._run_callback(
-                "alert_callback",
-                self.alert_callback,
-                self.node_uid,
-                self.opid,
-                message,
-                self.logger,
-            )
-
     async def _stop_airodump(self) -> None:
         proc = self._airodump_proc
         if not proc or proc.returncode is not None:
             return
 
-        try:
-            os.killpg(proc.pid, signal.SIGTERM)
-        except Exception:
-            proc.terminate()
+        self._kill_existing_airodump("TERM")
 
         try:
-            await asyncio.wait_for(proc.wait(), timeout=3.0)
+            await asyncio.wait_for(
+                proc.wait(),
+                timeout=1.5,
+            )
         except asyncio.TimeoutError:
+            self._kill_existing_airodump("KILL")
+
             try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except Exception:
-                proc.kill()
-            await proc.wait()
+                await asyncio.wait_for(
+                    proc.wait(),
+                    timeout=0.75,
+                )
+            except asyncio.TimeoutError:
+                self.logger.warning(
+                    "airodump-ng did not exit after SIGKILL"
+                )
 
         if proc.stderr:
             try:
-                stderr_data = await asyncio.wait_for(proc.stderr.read(), timeout=1.0)
+                stderr_data = await asyncio.wait_for(
+                    proc.stderr.read(),
+                    timeout=0.5,
+                )
             except Exception:
                 stderr_data = b""
+
             if stderr_data:
                 self.logger.debug(
-                    "airodump-ng stderr:\n" + stderr_data.decode(errors="ignore")
+                    "airodump-ng stderr:\n"
+                    + stderr_data.decode(errors="ignore")
                 )
 
     # -----------------------
@@ -612,6 +627,8 @@ class OperationMain(Operation):
     # -----------------------
     async def run(self) -> None:
         gps_task: Optional[asyncio.Task] = None
+        rssi_window: List[Tuple[float, float]] = []
+        last_csv_mtime = None
 
         try:
             self._apply_parameters_from_runner()
@@ -619,22 +636,29 @@ class OperationMain(Operation):
             if not self.target_id:
                 raise RuntimeError("wifi_geolocate_target requires target_id")
 
-            self._target_bssid_norm, self._target_bssid_colon = self._derive_bssid_from_target_id(self.target_id)
+            if self.target_bssid:
+                bssid_norm = self._normalize_bssid(self.target_bssid)
+                if len(bssid_norm) != 12:
+                    raise RuntimeError(f"wifi_geolocate_target received invalid BSSID={self.target_bssid}")
+                self._target_bssid_norm = bssid_norm
+                self._target_bssid_colon = ":".join(bssid_norm[i:i + 2] for i in range(0, 12, 2)).upper()
+            else:
+                self._target_bssid_norm, self._target_bssid_colon = self._derive_bssid_from_target_id(self.target_id)
+
             if not self._target_bssid_norm:
                 raise RuntimeError(
-                    f"wifi_geolocate_target could not derive BSSID from target_id={self.target_id}"
+                    f"wifi_geolocate_target could not resolve BSSID for target_id={self.target_id}"
                 )
 
             self.logger.info(
-                f"Starting Wi-Fi geolocate target operation: "
-                f"target_id={self.target_id}, target_bssid={self._target_bssid_colon}, "
-                f"search_similar_targets={self.search_similar_targets}"
+                f"Starting Wi-Fi geolocate target operation: target_id={self.target_id}, "
+                f"target_bssid={self._target_bssid_colon}, channel={self.target_channel}, "
+                f"emit_every_s={self.min_detection_interval_s}, meas_every_s={self.wifi_refresh_interval}, "
+                f"aggregation_window_s={self.aggregation_window_s}"
             )
-
             await self._set_status(f"Geolocating Wi-Fi target {self.target_id}")
 
             gps_task = asyncio.create_task(self._gps_loop())
-
             self._airodump_proc, self._airodump_iface_in_use = await self._start_airodump()
             if not self._airodump_proc:
                 return
@@ -642,66 +666,77 @@ class OperationMain(Operation):
             while not self._should_stop():
                 lat = self._current_position.get("lat")
                 lon = self._current_position.get("lon")
+                alt = self._current_position.get("alt") or 0.0
                 if lat is None or lon is None:
+                    await self._set_status(f"Waiting for GPS while tracking {self.target_id}")
                     await asyncio.sleep(self.wifi_refresh_interval)
                     continue
 
-                rows = await self._to_thread_compat(self._read_airodump_rows_once)
-                if not rows:
-                    await asyncio.sleep(self.wifi_refresh_interval)
-                    continue
+                csv_path = self._latest_csv_path()
+                csv_mtime = None
+                if csv_path:
+                    try:
+                        csv_mtime = os.path.getmtime(csv_path)
+                    except OSError:
+                        csv_mtime = None
 
-                matched = 0
+                matched_row = None
+                if csv_mtime is not None and csv_mtime != last_csv_mtime:
+                    last_csv_mtime = csv_mtime
+                    rows = await self._to_thread_compat(self._read_airodump_rows_once)
+                    for row in rows:
+                        if row.get("bssid_norm", "") == self._target_bssid_norm:
+                            matched_row = row
+                            break
 
-                for row in rows:
-                    if self._should_stop():
-                        break
+                now = time.time()
+                if matched_row is not None and matched_row.get("rssi_dbm") is not None:
+                    rssi_window.append((now, float(matched_row["rssi_dbm"])))
 
-                    bssid_norm = row.get("bssid_norm", "")
-                    if bssid_norm != self._target_bssid_norm:
-                        continue
+                cutoff = now - self.aggregation_window_s
+                rssi_window = [(ts, value) for ts, value in rssi_window if ts >= cutoff]
 
-                    matched += 1
-                    now = time.time()
-                    last_emit = self._last_emit_time_by_bssid.get(bssid_norm, 0.0)
-                    if (now - last_emit) < self.min_detection_interval_s:
-                        continue
+                last_emit = self._last_emit_time_by_bssid.get(self._target_bssid_norm, 0.0)
+                if matched_row is not None and rssi_window and (now - last_emit) >= self.min_detection_interval_s:
+                    values = sorted(value for _, value in rssi_window)
+                    midpoint = len(values) // 2
+                    if len(values) % 2:
+                        median_rssi = values[midpoint]
+                    else:
+                        median_rssi = 0.5 * (values[midpoint - 1] + values[midpoint])
 
-                    self._last_emit_time_by_bssid[bssid_norm] = now
-
-                    ssid = row.get("ssid", "")
-                    bssid = row.get("bssid", "")
-                    channel = row.get("channel")
-                    band = row.get("band", "")
+                    row = matched_row
+                    channel = row.get("channel") if row.get("channel") is not None else self.target_channel
                     frequency_mhz = row.get("frequency_mhz")
-                    rssi_dbm = row.get("rssi_dbm")
-                    encryption = row.get("encryption", "")
+                    if frequency_mhz is None:
+                        frequency_mhz = self.target_frequency_mhz
 
+                    self._last_emit_time_by_bssid[self._target_bssid_norm] = now
                     self.logger.info(
-                        f"Matched target {self.target_id}: "
-                        f"ssid={ssid or '<hidden>'}, bssid={bssid}, channel={channel}, "
-                        f"freq_mhz={frequency_mhz}, rssi_dbm={rssi_dbm}"
+                        f"Wi-Fi geolocation measurement target={self.target_id} bssid={self._target_bssid_colon} "
+                        f"rssi_median={median_rssi:.1f} dBm samples={len(values)} "
+                        f"position=({float(lat):.6f}, {float(lon):.6f})"
                     )
 
                     await self._emit_detection(
                         target_id=self.target_id,
-                        ssid=ssid,
-                        bssid=bssid,
+                        ssid=row.get("ssid", ""),
+                        bssid=row.get("bssid", "") or self._target_bssid_colon,
                         channel=channel,
-                        band=band,
+                        band=row.get("band", ""),
                         frequency_mhz=frequency_mhz,
-                        rssi_dbm=rssi_dbm,
-                        encryption=encryption,
+                        rssi_dbm=median_rssi,
+                        encryption=row.get("encryption", ""),
+                        lat=float(lat),
+                        lon=float(lon),
+                        alt=float(alt),
+                        aggregation_sample_count=len(values),
                     )
-
-                if matched > 0:
                     await self._set_status(
-                        f"Tracking Wi-Fi target {self.target_id} ({matched} matches)"
+                        f"Tracking Wi-Fi target {self.target_id}: {median_rssi:.1f} dBm"
                     )
-                else:
-                    await self._set_status(
-                        f"Searching for Wi-Fi target {self.target_id}"
-                    )
+                elif matched_row is None and not rssi_window:
+                    await self._set_status(f"Searching for Wi-Fi target {self.target_id}")
 
                 await asyncio.sleep(self.wifi_refresh_interval)
 
@@ -713,14 +748,13 @@ class OperationMain(Operation):
             self._gps_stop.set()
 
             if gps_task:
+                gps_task.cancel()
                 try:
-                    await asyncio.wait_for(gps_task, timeout=3.0)
+                    await gps_task
+                except asyncio.CancelledError:
+                    pass
                 except Exception:
-                    gps_task.cancel()
-                    try:
-                        await gps_task
-                    except Exception:
-                        pass
+                    pass
 
             try:
                 await self._stop_airodump()

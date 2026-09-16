@@ -6,7 +6,7 @@ from configparser import ConfigParser
 import logging
 import json
 
-
+import fissure.comms
 from fissure.utils.common import get_fissure_config
 from fissure.callbacks import HiprFisrCallbacks
 
@@ -124,6 +124,44 @@ class TakReceiver(pytak.QueueWorker):
         self.hipfisr = hipfisr
 
 
+    async def _forward_dashboard_replay(self, raw_xml: str, replay_id: str = "") -> None:
+        """Forward one explicitly marked replay CoT event to the Dashboard only."""
+        if self.hipfisr is None or not getattr(self.hipfisr, "dashboard_connected", False):
+            return
+
+        replay_id = str(replay_id or "").strip()
+        if replay_id:
+            seen = getattr(self, "_dashboard_replay_seen_ids", None)
+            order = getattr(self, "_dashboard_replay_seen_order", None)
+
+            if not isinstance(seen, set) or not isinstance(order, list):
+                seen = set()
+                order = []
+                self._dashboard_replay_seen_ids = seen
+                self._dashboard_replay_seen_order = order
+
+            if replay_id in seen:
+                return
+
+            seen.add(replay_id)
+            order.append(replay_id)
+
+            while len(order) > 4096:
+                expired = order.pop(0)
+                seen.discard(expired)
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.hipfisr.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "dashboardCoT_Message",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "raw_xml": raw_xml,
+            },
+        }
+
+        await self.hipfisr.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
     async def handle_data(self, data: bytes) -> None:
@@ -166,6 +204,12 @@ class TakReceiver(pytak.QueueWorker):
 
             fissure = detail.find("fissure")
             if fissure is None:
+                return
+
+            replay_dashboard = (fissure.findtext("replay_dashboard") or "").strip().lower()
+            if replay_dashboard in ("1", "true", "yes", "on"):
+                replay_id = (fissure.findtext("replay_id") or "").strip()
+                await self._forward_dashboard_replay(data_decode, replay_id)
                 return
 
             request = (fissure.findtext("request") or "").strip().lower()

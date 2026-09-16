@@ -1,6 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-16
+
+Stabilize Wi-Fi geolocation workflows and artifact logging
+
+### Added
+
+- Added shared Wi-Fi geolocation session tracking so Direct Geolocate All and Search Similar Targets use a common operation ID across related Targets and can be stopped as a single operation from any participating Target.
+- Added explicit Search Similar Target scoping from the Dashboard so bulk Wi-Fi geolocation only includes the intended visible known Targets instead of every Wi-Fi Target retained by HIPRFISR.
+- Added generic nested operation ID support to the Sensor Node plugin operation runner so plugins can preserve caller-supplied operation IDs without implementing custom action dispatch helpers.
+
+### Changed
+
+- Changed Wi-Fi geolocation Target lifecycle handling so Direct Geolocate All marks admitted Targets as actively tracking while running, restores them together when the shared operation stops, and keeps Search Similar lifecycle ownership centralized in HIPRFISR.
+- Changed Sensor Node status publishing to throttle forced heartbeat updates, preventing rapidly changing operation status text from flooding HIPRFISR and the Dashboard while preserving immediate terminal-state updates.
+- Changed Wi-Fi plugin actions back to the standard FISSURE plugin pattern of tags, hardware, schemas, and action entry points, removing Wi-Fi-specific parameter and operation-dispatch helper layers from `actions.py`.
+- Changed Wi-Fi operation shutdown to reuse the existing airodump-specific process cleanup path, allowing privileged `airodump-ng` processes to stop quickly without broad process-management behavior.
+- Changed Dense Wi-Fi Wardrive Logger batch output to write summary CSVs, observation CSVs, and metadata directly into Artifact operation folders instead of maintaining duplicate files under lowercase `FISSURE/logs`.
+- Changed Dense Wi-Fi Wardrive Logger persistence to be Artifact-based by default and removed the obsolete optional artifact-output path and legacy log-directory plumbing.
+
+### Fixed
+
+- Fixed Direct Geolocate All stopping only the selected Target instead of clearing every Target associated with the same shared Wi-Fi geolocation operation.
+- Fixed Search Similar Targets immediately expanding to stale or hidden Wi-Fi Targets that were present in HIPRFISR but not part of the operator's intended current Target set.
+- Fixed Wi-Fi geolocation control-plane flooding caused by operation status callbacks forcing Sensor Node heartbeats several times per second.
+- Fixed shared Wi-Fi geolocation stop handling so the operation action and operation ID are authoritative even if a Target's mode field is stale or inconsistent.
+- Fixed privileged `airodump-ng` teardown so Wi-Fi discovery and geolocation operations stop cleanly and responsively without leaving the operation runner waiting on failed process-group termination.
+
 ## 2026-9-14
 
 Add target geolocation workflow and RF power ranging support

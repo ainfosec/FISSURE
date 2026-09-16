@@ -3444,7 +3444,6 @@ def _tsi_fe_artifact_node_uid(
     return str(
         record.get("node_uid")
         or record.get("source_id")
-        or record.get("sensor_node_id")
         or ""
     ).strip()
 

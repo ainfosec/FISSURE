@@ -2571,6 +2571,8 @@ class DashboardBackend:
         self,
         target_id,
         search_similar_targets=False,
+        preferred_node_uid="",
+        similar_target_ids=None,
     ):
         if self.hiprfisr_connected is True:
             PARAMETERS = {
@@ -2579,6 +2581,12 @@ class DashboardBackend:
                 "parameters": {
                     "target_id": target_id,
                     "search_similar_targets": search_similar_targets,
+                    "preferred_node_uid": str(preferred_node_uid or "").strip(),
+                    "similar_target_ids": [
+                        str(value)
+                        for value in (similar_target_ids or [])
+                        if str(value or "").strip()
+                    ],
                 },
             }
 

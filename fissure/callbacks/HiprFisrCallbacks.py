@@ -3231,16 +3231,7 @@ async def takReturn(component, payload: dict):
 
 
 def maybe_ingest_detection_for_geolocation(component, payload: dict):
-    """
-    Feed target-associated detector observations into the hub geolocation session.
-
-    Calibrated dBm measurements can solve immediately with the configured path-loss
-    model. LFM dBFS measurements are valid relative received-power observations, but
-    remain range-uncalibrated until a path-loss reference is supplied.
-
-    Returns:
-        (target_id, patch, history_entry) or None
-    """
+    """Feed target-associated detector observations into the hub geolocation session."""
     if not isinstance(payload, dict) or payload.get("msg_type") != "event":
         return None
 
@@ -3269,7 +3260,7 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
         frequency_hz = None
 
     node_uid = str(data.get("node_uid") or "").strip()
-    metric_units = str(data.get("metric_units") or "").strip()
+    metric_units = str(data.get("metric_units") or data.get("measurement_units") or "").strip()
     path_loss_n = 2.2
     path_loss_p0_db = -40.0
     allow_solve = True
@@ -3289,7 +3280,6 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
             metric = data.get("metric")
             if metric in (None, ""):
                 return None
-
             measurement_db = float(metric)
             measurement_units = "dBFS"
             path_loss_n = float(data.get("path_loss_n", 2.2))
@@ -3305,33 +3295,31 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
             metric = float(metric)
             if metric <= 0.0:
                 return None
-
             measurement_db = 10.0 * math.log10(metric)
             measurement_units = "matched_filter_dB"
             path_loss_n = float(data.get("path_loss_n", 2.2))
-            p0_value = data.get("path_loss_p0_db")
             allow_solve = False
-            if p0_value not in (None, ""):
+            if data.get("path_loss_p0_db") not in (None, ""):
                 component.logger.warning(
-                    f"Ignoring path_loss_p0_db for legacy matched-filter measurement "
-                    f"target_id={target_id}; use power_dbfs_peak instead."
+                    f"Ignoring path_loss_p0_db for legacy matched-filter measurement target_id={target_id}; use power_dbfs_peak instead."
                 )
 
         else:
-            power_dbm = data.get("power_dbm")
-            if power_dbm in (None, ""):
+            measurement = data.get("rssi_dbm")
+            if measurement in (None, ""):
+                measurement = data.get("power_dbm")
+            if measurement in (None, ""):
+                measurement = data.get("measurement_db")
+            if measurement in (None, ""):
                 return None
-
-            measurement_db = float(power_dbm)
+            measurement_db = float(measurement)
             measurement_units = metric_units or "dBm"
             path_loss_n = float(data.get("path_loss_n", 2.2))
             if data.get("path_loss_p0_db") not in (None, ""):
                 path_loss_p0_db = float(data.get("path_loss_p0_db"))
 
     except Exception as exc:
-        component.logger.warning(
-            f"Invalid geolocation measurement for target_id={target_id}: {exc}"
-        )
+        component.logger.warning(f"Invalid geolocation measurement for target_id={target_id}: {exc}")
         return None
 
     try:
@@ -3350,16 +3338,13 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
             allow_solve=allow_solve,
         )
     except Exception as exc:
-        component.logger.error(
-            f"Detection geolocation ingest failed for target_id={target_id}: {exc}"
-        )
+        component.logger.error(f"Detection geolocation ingest failed for target_id={target_id}: {exc}")
         return None
 
     if est_out is None:
         return None
 
     est_lat, est_lon, ce_m = est_out
-
     ts_iso = observation_time
     if not isinstance(ts_iso, str) or not ts_iso:
         ts_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -3376,11 +3361,7 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
     if ce_m is not None:
         location_patch["ce_m"] = float(ce_m)
 
-    patch = {
-        "location": location_patch,
-        "state": "tracking",
-    }
-
+    patch = {"location": location_patch, "state": "tracking"}
     target = (getattr(component, "targets", {}) or {}).get(target_id) or {}
     geo = target.get("geolocate") or {}
     history_entry = {
@@ -3393,7 +3374,6 @@ def maybe_ingest_detection_for_geolocation(component, payload: dict):
         "spread_m": geo.get("spread_m"),
         "geometry_quality": geo.get("geometry_quality", ""),
     }
-
     return target_id, patch, history_entry
 
 
@@ -7721,6 +7701,10 @@ async def targetPatch(
             "encryption",
             "",
         ),
+        "vendor": wifi.get(
+            "vendor",
+            "",
+        ),
         "last_observation_time": wifi.get(
             "last_observation_time",
             "",
@@ -8345,132 +8329,516 @@ async def geolocate_target_start(
     requester_type: str = "tak",
     parameters: dict = None,
 ):
-    """Select compatible nearby nodes and start the target's geolocation action."""
+    """Select compatible nodes and start the Target's geolocation action."""
     try:
-        component.logger.info(f"geolocate_target_start called with parameters={parameters}")
+        component.logger.info(
+            f"geolocate_target_start called with parameters={parameters}"
+        )
 
         if parameters is None:
             parameters = {}
 
-        target_id = parameters.get("target_id")
+        target_id = str(
+            parameters.get("target_id")
+            or ""
+        ).strip()
         if not target_id:
-            component.logger.error("geolocate_target_start missing target_id")
-            return
-
-        target = component.targets.get(target_id)
-        if not target:
-            component.logger.error(f"Target not found for target_id={target_id}")
-            return
-
-        current_geo = target.get("geolocate") or {}
-        current_status = current_geo.get("status", "")
-        if current_status in ("starting", "running", "stopping"):
-            component.logger.warning(
-                f"Target {target_id} geolocation already active (status={current_status})"
-            )
-            await targetPatch(component, target_id=target_id, patch={})
-            return
-
-        _reset_target_geolocation_session(component, target_id)
-
-        search_similar_targets = bool(parameters.get("search_similar_targets", False))
-        target_location = target.get("location") or {}
-        target_lat = target_location.get("lat")
-        target_lon = target_location.get("lon")
-
-        if not fissure.utils.is_valid_lat_lon(target_lat, target_lon):
-            msg = "invalid_target_location"
             component.logger.error(
-                f"Target {target_id} missing valid location: lat={target_lat}, lon={target_lon}"
+                "geolocate_target_start missing target_id"
             )
-            _set_target_geolocate_status(target, status="error", error=msg)
-            await targetPatch(component, target_id=target_id, patch={})
             return
 
-        config = _get_target_geolocate_action_config(
-            component,
-            target,
-            search_similar_targets=search_similar_targets,
+        target = component.targets.get(
+            target_id
+        )
+        if not target:
+            component.logger.error(
+                f"Target not found for target_id={target_id}"
+            )
+            return
+
+        current_geo = (
+            target.get("geolocate")
+            or {}
+        )
+        current_status = current_geo.get(
+            "status",
+            "",
+        )
+        if current_status in (
+            "starting",
+            "running",
+            "stopping",
+        ):
+            component.logger.warning(
+                f"Target {target_id} geolocation already active "
+                f"(status={current_status})"
+            )
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch={},
+            )
+            return
+
+        search_similar_targets = bool(
+            parameters.get(
+                "search_similar_targets",
+                False,
+            )
+        )
+        preferred_node_uid = str(
+            parameters.get(
+                "preferred_node_uid",
+            )
+            or ""
+        ).strip()
+
+        config = (
+            _get_target_geolocate_action_config(
+                component,
+                target,
+                search_similar_targets=(
+                    search_similar_targets
+                ),
+                similar_target_ids=parameters.get(
+                    "similar_target_ids"
+                ),
+            )
         )
         if not config:
             msg = "unsupported_target_type"
-            component.logger.warning(f"No geolocate mapping for target_id={target_id}")
-            _set_target_geolocate_status(target, status="unsupported", error=msg)
-            await targetPatch(component, target_id=target_id, patch={})
-            return
-
-        plugin_name = config["plugin_name"]
-        action_name = config["action_name"]
-        action_parameters = dict(config.get("parameters", {}))
-        mode = config.get("mode", "")
-
-        if "target_id" not in action_parameters and "target_ids" not in action_parameters:
-            action_parameters["target_id"] = target_id
-        if "search_similar_targets" not in action_parameters:
-            action_parameters["search_similar_targets"] = search_similar_targets
-
-        nearby_nodes = fissure.utils.get_nearest_nodes_to_target(
-            component,
-            target,
-            max_nodes=12,
-        )
-        if not nearby_nodes:
-            msg = "no_eligible_nodes"
             component.logger.warning(
-                f"No connected nodes with valid positions for target_id={target_id}"
+                f"No geolocate mapping for target_id={target_id}"
             )
-            _set_target_geolocate_status(target, status="error", error=msg)
-            await targetPatch(component, target_id=target_id, patch={})
+            _set_target_geolocate_status(
+                target,
+                status="unsupported",
+                error=msg,
+            )
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch={},
+            )
             return
 
-        selected_nodes = _filter_geolocate_nodes_for_action(
-            component,
-            nearby_nodes,
-            plugin_name,
-            action_name,
-            max_nodes=4,
+        plugin_name = config[
+            "plugin_name"
+        ]
+        action_name = config[
+            "action_name"
+        ]
+        action_parameters = dict(
+            config.get(
+                "parameters",
+                {},
+            )
+        )
+        mode = config.get(
+            "mode",
+            "",
+        )
+
+        if (
+            "target_id"
+            not in action_parameters
+            and "target_ids"
+            not in action_parameters
+        ):
+            action_parameters[
+                "target_id"
+            ] = target_id
+
+        if (
+            "search_similar_targets"
+            not in action_parameters
+        ):
+            action_parameters[
+                "search_similar_targets"
+            ] = search_similar_targets
+
+        shared_target_ids = [
+            target_id
+        ]
+        shared_operation_id = ""
+
+        if (
+            mode == "wifi_similar"
+            and action_name
+            == "wifi_geolocate_all"
+        ):
+            mapped_ids = list(
+                (
+                    action_parameters.get(
+                        "target_bssids"
+                    )
+                    or {}
+                ).values()
+            )
+            shared_target_ids = list(
+                dict.fromkeys(
+                    [
+                        str(value)
+                        for value
+                        in mapped_ids
+                        if str(
+                            value
+                            or ""
+                        ).strip()
+                    ]
+                )
+            )
+
+            if (
+                target_id
+                not in shared_target_ids
+            ):
+                shared_target_ids.insert(
+                    0,
+                    target_id,
+                )
+
+            shared_operation_id = (
+                str(uuid.uuid4())
+            )
+            action_parameters[
+                "operation_id"
+            ] = shared_operation_id
+
+        for session_target_id in (
+            shared_target_ids
+        ):
+            _reset_target_geolocation_session(
+                component,
+                session_target_id,
+            )
+
+        target_location = (
+            target.get("location")
+            or {}
+        )
+        target_lat = target_location.get(
+            "lat"
+        )
+        target_lon = target_location.get(
+            "lon"
+        )
+        target_location_valid = (
+            fissure.utils.is_valid_lat_lon(
+                target_lat,
+                target_lon,
+            )
+        )
+
+        candidates = []
+        if target_location_valid:
+            candidates = (
+                fissure.utils
+                .get_nearest_nodes_to_target(
+                    component,
+                    target,
+                    max_nodes=12,
+                )
+            )
+
+        if not candidates:
+            for (
+                node_uid,
+                node,
+            ) in (
+                getattr(
+                    component,
+                    "nodes",
+                    {},
+                )
+                or {}
+            ).items():
+                if not node.get(
+                    "connected",
+                    False,
+                ):
+                    continue
+
+                node_alt = node.get(
+                    "alt"
+                )
+                if node_alt in (
+                    None,
+                    "",
+                ):
+                    node_alt = node.get(
+                        "altitude"
+                    )
+
+                candidates.append({
+                    "uid":
+                        str(node_uid),
+                    "distance_m":
+                        None,
+                    "lat":
+                        node.get("lat"),
+                    "lon":
+                        node.get("lon"),
+                    "alt":
+                        node_alt,
+                    "status":
+                        node.get(
+                            "status",
+                            "unknown",
+                        ),
+                    "connected":
+                        True,
+                    "identity":
+                        node.get(
+                            "identity"
+                        ),
+                    "nickname":
+                        node.get(
+                            "nickname"
+                        ),
+                    "callsign":
+                        node.get(
+                            "callsign"
+                        ),
+                })
+
+        if preferred_node_uid:
+            preferred = None
+            remaining = []
+
+            for candidate in candidates:
+                if (
+                    str(
+                        candidate.get(
+                            "uid"
+                        )
+                        or ""
+                    )
+                    == preferred_node_uid
+                ):
+                    preferred = candidate
+                else:
+                    remaining.append(
+                        candidate
+                    )
+
+            if preferred is None:
+                node = (
+                    getattr(
+                        component,
+                        "nodes",
+                        {},
+                    )
+                    or {}
+                ).get(
+                    preferred_node_uid
+                ) or {}
+
+                if node.get(
+                    "connected",
+                    False,
+                ):
+                    preferred = {
+                        "uid":
+                            preferred_node_uid,
+                        "distance_m":
+                            None,
+                        "lat":
+                            node.get("lat"),
+                        "lon":
+                            node.get("lon"),
+                        "alt":
+                            node.get(
+                                "alt",
+                                node.get(
+                                    "altitude"
+                                ),
+                            ),
+                        "status":
+                            node.get(
+                                "status",
+                                "unknown",
+                            ),
+                        "connected":
+                            True,
+                        "identity":
+                            node.get(
+                                "identity"
+                            ),
+                        "nickname":
+                            node.get(
+                                "nickname"
+                            ),
+                        "callsign":
+                            node.get(
+                                "callsign"
+                            ),
+                    }
+
+            candidates = (
+                [preferred]
+                if preferred
+                else []
+            ) + remaining
+
+        if not candidates:
+            msg = "no_connected_nodes"
+            component.logger.warning(
+                f"No connected Sensor Nodes available for "
+                f"target_id={target_id}"
+            )
+
+            _set_target_geolocate_status(
+                target,
+                status="error",
+                error=msg,
+            )
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch={},
+            )
+            return
+
+        selected_nodes = (
+            _filter_geolocate_nodes_for_action(
+                component,
+                candidates,
+                plugin_name,
+                action_name,
+                max_nodes=4,
+            )
         )
         if not selected_nodes:
             msg = "no_compatible_nodes"
             component.logger.warning(
-                f"No compatible nodes for target_id={target_id} action={plugin_name}.{action_name}"
+                f"No compatible nodes for target_id={target_id} "
+                f"action={plugin_name}.{action_name}"
             )
-            _set_target_geolocate_status(target, status="error", error=msg)
-            await targetPatch(component, target_id=target_id, patch={})
+            _set_target_geolocate_status(
+                target,
+                status="error",
+                error=msg,
+            )
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch={},
+            )
             return
 
+        selected_descriptions = []
+        for node in selected_nodes:
+            distance_m = node.get(
+                "distance_m"
+            )
+            if distance_m is None:
+                selected_descriptions.append(
+                    str(
+                        node.get("uid")
+                        or ""
+                    )
+                )
+            else:
+                selected_descriptions.append(
+                    f"{node.get('uid')} "
+                    f"({float(distance_m):.1f} m)"
+                )
 
         component.logger.info(
             f"Selected geolocation nodes for target_id={target_id}: "
             + ", ".join(
-                f"{node['uid']} ({node['distance_m']:.1f} m)"
-                for node in selected_nodes
+                selected_descriptions
             )
         )
 
-        node_uid_list = [node["uid"] for node in selected_nodes]
-        previous_state = target.get("state", "") or "imported"
+        node_uid_list = [
+            str(
+                node.get("uid")
+                or ""
+            )
+            for node in selected_nodes
+        ]
+        node_uid_list = [
+            node_uid
+            for node_uid
+            in node_uid_list
+            if node_uid
+        ]
 
-        _set_target_geolocate_status(
-            target,
-            status="starting",
-            mode=mode,
-            plugin=plugin_name,
-            action=action_name,
-            node_uids=node_uid_list,
-            error="",
-        )
-        target["geolocate"]["previous_state"] = previous_state
-        target["geolocate"]["had_detections"] = False
-        target["state"] = "tracking"
-        await targetPatch(component, target_id=target_id, patch={})
+        for (
+            session_target_id
+        ) in shared_target_ids:
+            session_target = (
+                component.targets.get(
+                    session_target_id
+                )
+            )
+            if not session_target:
+                continue
+
+            previous_state = (
+                session_target.get(
+                    "state",
+                    "",
+                )
+                or "imported"
+            )
+
+            _set_target_geolocate_status(
+                session_target,
+                status="starting",
+                mode=mode,
+                plugin=plugin_name,
+                action=action_name,
+                node_uids=node_uid_list,
+                error="",
+            )
+            session_target[
+                "geolocate"
+            ][
+                "previous_state"
+            ] = previous_state
+            session_target[
+                "geolocate"
+            ][
+                "had_detections"
+            ] = False
+            session_target[
+                "geolocate"
+            ][
+                "operation_id"
+            ] = shared_operation_id
+            session_target[
+                "state"
+            ] = "tracking"
+
+            await targetPatch(
+                component,
+                target_id=(
+                    session_target_id
+                ),
+                patch={},
+            )
 
         launched_nodes = []
         try:
-            launched_nodes = list(node_uid_list)
-            component.logger.info(
-                f"Launching {action_name} for target_id={target_id} on nodes={launched_nodes}"
+            launched_nodes = list(
+                node_uid_list
             )
+            component.logger.info(
+                f"Launching {action_name} for target_id={target_id} "
+                f"on nodes={launched_nodes}"
+            )
+
+            if shared_operation_id:
+                component.logger.info(
+                    f"Shared geolocation operation_id="
+                    f"{shared_operation_id} "
+                    f"targets={shared_target_ids}"
+                )
+
             await sendPluginActionTak(
                 component,
                 requester_uid,
@@ -8481,60 +8849,154 @@ async def geolocate_target_start(
                 action_parameters,
             )
         except Exception as launch_err:
-            component.logger.error(f"Failed launching geolocate actions: {launch_err}")
-            component.logger.debug(traceback.format_exc())
-
-        target = component.targets.get(target_id)
-        if not target:
             component.logger.error(
-                f"Target disappeared before running update: target_id={target_id}"
+                f"Failed launching geolocate actions: {launch_err}"
             )
-            return
+            component.logger.debug(
+                traceback.format_exc()
+            )
 
         if not launched_nodes:
             msg = "launch_failed"
-            component.logger.warning(f"Geolocate start failed for target_id={target_id}")
-            _set_target_geolocate_status(
-                target,
-                status="error",
-                mode=mode,
-                plugin=plugin_name,
-                action=action_name,
-                node_uids=[],
-                error=msg,
+            component.logger.warning(
+                f"Geolocate start failed for target_id={target_id}"
             )
-            previous_state = (target.get("geolocate") or {}).get("previous_state", "") or "imported"
-            target["state"] = previous_state
-            await targetPatch(component, target_id=target_id, patch={})
+
+            for (
+                session_target_id
+            ) in shared_target_ids:
+                session_target = (
+                    component.targets.get(
+                        session_target_id
+                    )
+                )
+                if not session_target:
+                    continue
+
+                session_geo = (
+                    session_target.get(
+                        "geolocate"
+                    )
+                    or {}
+                )
+                previous_state = (
+                    session_geo.get(
+                        "previous_state",
+                        "",
+                    )
+                    or "imported"
+                )
+                session_target[
+                    "state"
+                ] = previous_state
+
+                _set_target_geolocate_status(
+                    session_target,
+                    status="error",
+                    mode=mode,
+                    plugin=plugin_name,
+                    action=action_name,
+                    node_uids=[],
+                    error=msg,
+                )
+                session_target[
+                    "geolocate"
+                ][
+                    "operation_id"
+                ] = shared_operation_id
+
+                await targetPatch(
+                    component,
+                    target_id=(
+                        session_target_id
+                    ),
+                    patch={},
+                )
             return
 
         component.logger.info(
-            f"Geolocate running for target_id={target_id} on nodes={launched_nodes}"
+            f"Geolocate running for target_id={target_id} "
+            f"on nodes={launched_nodes}"
         )
-        _set_target_geolocate_status(
-            target,
-            status="running",
-            mode=mode,
-            plugin=plugin_name,
-            action=action_name,
-            node_uids=launched_nodes,
-            error="",
-        )
-        await targetPatch(component, target_id=target_id, patch={})
+
+        for (
+            session_target_id
+        ) in shared_target_ids:
+            session_target = (
+                component.targets.get(
+                    session_target_id
+                )
+            )
+            if not session_target:
+                continue
+
+            _set_target_geolocate_status(
+                session_target,
+                status="running",
+                mode=mode,
+                plugin=plugin_name,
+                action=action_name,
+                node_uids=launched_nodes,
+                error="",
+            )
+            session_target[
+                "geolocate"
+            ][
+                "operation_id"
+            ] = shared_operation_id
+
+            await targetPatch(
+                component,
+                target_id=(
+                    session_target_id
+                ),
+                patch={},
+            )
 
     except Exception as e:
-        component.logger.error(f"Error in geolocate_target_start: {e}")
-        component.logger.debug(traceback.format_exc())
+        component.logger.error(
+            f"Error in geolocate_target_start: {e}"
+        )
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
-        target_id = parameters.get("target_id") if parameters else None
+        target_id = (
+            parameters.get("target_id")
+            if parameters
+            else None
+        )
         if target_id:
-            target = component.targets.get(target_id)
+            target = component.targets.get(
+                target_id
+            )
             if target:
-                _set_target_geolocate_status(target, status="error", error="exception")
-                previous_state = (target.get("geolocate") or {}).get("previous_state", "")
+                _set_target_geolocate_status(
+                    target,
+                    status="error",
+                    error="exception",
+                )
+                previous_state = (
+                    (
+                        target.get(
+                            "geolocate"
+                        )
+                        or {}
+                    ).get(
+                        "previous_state",
+                        "",
+                    )
+                )
                 if previous_state:
-                    target["state"] = previous_state
-                await targetPatch(component, target_id=target_id, patch={})
+                    target[
+                        "state"
+                    ] = previous_state
+
+                await targetPatch(
+                    component,
+                    target_id=target_id,
+                    patch={},
+                )
 
 
 def _get_target_geolocate_action_config(
@@ -8542,90 +9004,222 @@ def _get_target_geolocate_action_config(
     target: dict,
     *,
     search_similar_targets: bool = False,
+    similar_target_ids=None,
 ):
-    """
-    Resolve which plugin action should be launched for this target.
-
-    Returns:
-        {
-            "mode": "wifi_target" | "wifi_all" | "lfm_beacon" | "generic_frequency",
-            "plugin_name": "...",
-            "action_name": "...",
-            "parameters": {...},
-        }
-
-    Returns None if no supported mapping exists.
-    """
-    target_id = target.get("target_id", "")
+    """Resolve the current-architecture geolocation action for one Target."""
+    target_id = str(target.get("target_id") or "").strip()
     classification = target.get("classification") or {}
-
-    display_label = str(classification.get("display_label") or "").strip().lower()
+    display_label = str(
+        classification.get("display_label")
+        or ""
+    ).strip().lower()
 
     candidate_labels = []
     for candidate in classification.get("candidates", []):
         if isinstance(candidate, dict):
-            label = str(candidate.get("label") or "").strip().lower()
+            label = str(
+                candidate.get("label")
+                or ""
+            ).strip().lower()
             if label:
                 candidate_labels.append(label)
 
-    labels = [display_label] + candidate_labels
-    label_text = " ".join(labels)
-
+    label_text = " ".join(
+        [display_label] + candidate_labels
+    )
     frequency_mhz = target.get("frequency_mhz")
+    wifi = target.get("wifi") or {}
+    wifi_bssid = str(
+        wifi.get("bssid")
+        or ""
+    ).strip()
 
-    WIFI_PLUGIN = "WiFi"
-    BASE_PLUGIN = "Base"
+    is_wifi = (
+        bool(wifi_bssid)
+        or "wifi" in label_text
+        or "wi-fi" in label_text
+        or "802.11" in label_text
+    )
 
-    if "wifi" in label_text or "802.11" in label_text:
+    if is_wifi:
+        wifi_frequency_mhz = wifi.get(
+            "frequency_mhz"
+        )
+        if wifi_frequency_mhz in (
+            None,
+            "",
+            "None",
+        ):
+            wifi_frequency_mhz = frequency_mhz
+
         if search_similar_targets:
+            target_bssids = {}
+            target_ids = []
+
+            allowed_target_ids = {
+                str(value)
+                for value in (similar_target_ids or [])
+                if str(value or "").strip()
+            }
+            if target_id:
+                allowed_target_ids.add(target_id)
+
+            for (
+                known_target_id,
+                known_target,
+            ) in (
+                getattr(
+                    component,
+                    "targets",
+                    {},
+                )
+                or {}
+            ).items():
+                if (
+                    allowed_target_ids
+                    and str(known_target_id)
+                    not in allowed_target_ids
+                ):
+                    continue
+
+                if not isinstance(
+                    known_target,
+                    dict,
+                ):
+                    continue
+
+                known_wifi = (
+                    known_target.get("wifi")
+                    or {}
+                )
+                known_bssid = str(
+                    known_wifi.get("bssid")
+                    or ""
+                ).strip()
+
+                known_classification = (
+                    known_target.get(
+                        "classification"
+                    )
+                    or {}
+                )
+                known_label = str(
+                    known_classification.get(
+                        "display_label"
+                    )
+                    or ""
+                ).lower()
+
+                if (
+                    not known_bssid
+                    and "wifi"
+                    not in known_label
+                    and "wi-fi"
+                    not in known_label
+                    and "802.11"
+                    not in known_label
+                ):
+                    continue
+
+                target_ids.append(
+                    str(known_target_id)
+                )
+
+                if known_bssid:
+                    target_bssids[
+                        known_bssid
+                    ] = str(
+                        known_target_id
+                    )
+
             return {
-                "mode": "wifi_all",
-                "plugin_name": WIFI_PLUGIN,
-                "action_name": "wifi_geolocate_all",
+                "mode": "wifi_similar",
+                "plugin_name": "WiFi",
+                "action_name":
+                    "wifi_geolocate_all",
                 "parameters": {
-                    "target_ids": _get_known_wifi_target_ids(component),
-                    "search_similar_targets": True,
+                    "target_bssids":
+                        target_bssids,
+                    "target_ids":
+                        target_ids,
+                    "max_targets": 0,
+                    "emit_every_s": 1.0,
+                    "meas_every_s": 0.2,
+                    "aggregation_window_s":
+                        3.0,
+                    "search_similar_targets":
+                        True,
                 },
             }
 
         return {
             "mode": "wifi_target",
-            "plugin_name": WIFI_PLUGIN,
-            "action_name": "wifi_geolocate_target",
+            "plugin_name": "WiFi",
+            "action_name":
+                "wifi_geolocate_target",
             "parameters": {
                 "target_id": target_id,
-                "search_similar_targets": False,
+                "bssid": wifi_bssid,
+                "channel":
+                    wifi.get("channel"),
+                "frequency_mhz":
+                    wifi_frequency_mhz,
+                "emit_every_s": 1.0,
+                "meas_every_s": 0.2,
+                "aggregation_window_s":
+                    3.0,
+                "search_similar_targets":
+                    False,
             },
         }
 
-    if "lfm" in label_text or "beacon" in label_text:
+    if (
+        "lfm" in label_text
+        or "beacon" in label_text
+    ):
         return {
             "mode": "lfm_beacon",
-            "plugin_name": BASE_PLUGIN,
-            "action_name": "lfm_beacon_geolocate",
+            "plugin_name": "Base",
+            "action_name":
+                "lfm_beacon_geolocate",
             "parameters": {
                 "target_id": target_id,
-                "freq_mhz": float(frequency_mhz) if frequency_mhz not in (None, "") else 433.0,
+                "freq_mhz": (
+                    float(frequency_mhz)
+                    if frequency_mhz
+                    not in (None, "")
+                    else 433.0
+                ),
                 "gain_default": 40.0,
-                "min_detection_interval_s": 1.0,
+                "min_detection_interval_s":
+                    1.0,
                 "path_loss_n": 2.2,
             },
         }
 
-    if frequency_mhz not in (None, ""):
+    if frequency_mhz not in (
+        None,
+        "",
+    ):
         return {
-            "mode": "generic_frequency",
-            "plugin_name": BASE_PLUGIN,
-            "action_name": "usrp_b2x0_geolocate",
+            "mode":
+                "generic_frequency",
+            "plugin_name": "Base",
+            "action_name":
+                "usrp_b2x0_geolocate",
             "parameters": {
                 "target_id": target_id,
-                "frequency_mhz": float(frequency_mhz) if frequency_mhz not in (None, "") else 2412.0,
+                "frequency_mhz":
+                    float(frequency_mhz),
                 "emit_every_s": 1.0,
                 "meas_every_s": 0.20,
                 "sample_rate": 1e6,
                 "gain_db": 65.0,
                 "detect_frequency": True,
-                "description": f"Generic frequency geolocation for {target_id}",
+                "description":
+                    f"Generic frequency "
+                    f"geolocation for "
+                    f"{target_id}",
             },
         }
 
@@ -8682,7 +9276,7 @@ async def geolocate_target_stop(
     requester_type: str = "tak",
     parameters: dict = None,
 ):
-    """Stop geolocation for a target across all associated nodes."""
+    """Stop geolocation for one Target or one shared Wi-Fi session."""
     try:
         component.logger.info(
             f"geolocate_target_stop called with parameters={parameters}"
@@ -8691,26 +9285,275 @@ async def geolocate_target_stop(
         if parameters is None:
             parameters = {}
 
-        target_id = parameters.get("target_id")
-
+        target_id = str(
+            parameters.get("target_id")
+            or ""
+        ).strip()
         if not target_id:
             component.logger.error(
                 "geolocate_target_stop missing target_id"
             )
             return
 
-        target = component.targets.get(target_id)
-
+        target = component.targets.get(
+            target_id
+        )
         if not target:
             component.logger.error(
                 f"Target not found for target_id={target_id}"
             )
             return
 
-        geolocate = target.get("geolocate") or {}
+        geolocate = (
+            target.get("geolocate")
+            or {}
+        )
+        mode = str(
+            geolocate.get("mode")
+            or ""
+        )
+        action = str(
+            geolocate.get("action")
+            or ""
+        )
+        operation_id = str(
+            geolocate.get(
+                "operation_id"
+            )
+            or ""
+        ).strip()
+
+        is_shared_wifi = (
+            action == "wifi_geolocate_all"
+            and bool(operation_id)
+        )
+
+        if is_shared_wifi:
+            shared_target_ids = []
+            shared_node_uids = set()
+
+            for (
+                peer_target_id,
+                peer_target,
+            ) in component.targets.items():
+                peer_geo = (
+                    peer_target.get(
+                        "geolocate"
+                    )
+                    or {}
+                )
+
+                if (
+                    str(
+                        peer_geo.get(
+                            "operation_id"
+                        )
+                        or ""
+                    ).strip()
+                    == operation_id
+                    and str(
+                        peer_geo.get(
+                            "action"
+                        )
+                        or ""
+                    )
+                    == "wifi_geolocate_all"
+                ):
+                    shared_target_ids.append(
+                        peer_target_id
+                    )
+                    shared_node_uids.update(
+                        peer_geo.get(
+                            "node_uids"
+                        )
+                        or []
+                    )
+
+            if not shared_target_ids:
+                shared_target_ids = [
+                    target_id
+                ]
+
+            component.logger.info(
+                f"Stopping shared Wi-Fi geolocation "
+                f"operation_id={operation_id} "
+                f"mode={mode} "
+                f"targets={shared_target_ids} "
+                f"nodes={sorted(shared_node_uids)}"
+            )
+
+            for (
+                peer_target_id
+            ) in shared_target_ids:
+                peer_target = (
+                    component.targets.get(
+                        peer_target_id
+                    )
+                )
+                if not peer_target:
+                    continue
+
+                peer_geo = (
+                    peer_target.get(
+                        "geolocate"
+                    )
+                    or {}
+                )
+                _set_target_geolocate_status(
+                    peer_target,
+                    status="stopping",
+                    mode=peer_geo.get(
+                        "mode",
+                        "",
+                    ),
+                    plugin=peer_geo.get(
+                        "plugin",
+                        "",
+                    ),
+                    action=peer_geo.get(
+                        "action",
+                        "",
+                    ),
+                    node_uids=list(
+                        peer_geo.get(
+                            "node_uids"
+                        )
+                        or []
+                    ),
+                    error="",
+                )
+
+                await targetPatch(
+                    component,
+                    target_id=(
+                        peer_target_id
+                    ),
+                    patch={},
+                )
+
+            stopped_nodes = []
+            failed_nodes = []
+
+            for node_uid in sorted(
+                shared_node_uids
+            ):
+                try:
+                    await stop_plugin_operation(
+                        component,
+                        node_uid,
+                        operation_id,
+                    )
+                    stopped_nodes.append(
+                        node_uid
+                    )
+                except Exception as stop_err:
+                    component.logger.error(
+                        f"Failed stopping shared Wi-Fi geolocation "
+                        f"operation_id={operation_id} "
+                        f"on node={node_uid}: {stop_err}"
+                    )
+                    component.logger.debug(
+                        traceback.format_exc()
+                    )
+                    failed_nodes.append(
+                        node_uid
+                    )
+
+            for (
+                peer_target_id
+            ) in shared_target_ids:
+                peer_target = (
+                    component.targets.get(
+                        peer_target_id
+                    )
+                )
+                if not peer_target:
+                    continue
+
+                peer_geo = (
+                    peer_target.get(
+                        "geolocate"
+                    )
+                    or {}
+                )
+                previous_state = (
+                    peer_geo.get(
+                        "previous_state",
+                        "",
+                    )
+                    or "detected"
+                )
+                had_detections = bool(
+                    peer_geo.get(
+                        "had_detections",
+                        False,
+                    )
+                )
+
+                peer_target[
+                    "state"
+                ] = (
+                    "detected"
+                    if had_detections
+                    else previous_state
+                )
+
+                _set_target_geolocate_status(
+                    peer_target,
+                    status="idle",
+                    mode="",
+                    plugin="",
+                    action="",
+                    node_uids=[],
+                    error=(
+                        ""
+                        if not failed_nodes
+                        else (
+                            "partial_stop_failed:"
+                            + ",".join(
+                                failed_nodes
+                            )
+                        )
+                    ),
+                )
+                peer_target[
+                    "geolocate"
+                ][
+                    "operation_id"
+                ] = ""
+                peer_target[
+                    "geolocate"
+                ][
+                    "previous_state"
+                ] = ""
+                peer_target[
+                    "geolocate"
+                ][
+                    "had_detections"
+                ] = False
+
+                await targetPatch(
+                    component,
+                    target_id=(
+                        peer_target_id
+                    ),
+                    patch={},
+                )
+
+            component.logger.info(
+                f"Shared Wi-Fi geolocation stopped "
+                f"operation_id={operation_id}; "
+                f"targets={shared_target_ids}; "
+                f"stopped_nodes={stopped_nodes}; "
+                f"failed_nodes={failed_nodes}"
+            )
+            return
 
         node_uid_list = list(
-            geolocate.get("node_uids") or []
+            geolocate.get(
+                "node_uids"
+            )
+            or []
         )
 
         if not node_uid_list:
@@ -8720,13 +9563,21 @@ async def geolocate_target_stop(
             )
 
             previous_state = (
-                geolocate.get("previous_state", "")
-                or target.get("state", "")
+                geolocate.get(
+                    "previous_state",
+                    "",
+                )
+                or target.get(
+                    "state",
+                    "",
+                )
                 or "imported"
             )
-
             had_detections = bool(
-                geolocate.get("had_detections", False)
+                geolocate.get(
+                    "had_detections",
+                    False,
+                )
             )
 
             target["state"] = (
@@ -8744,28 +9595,47 @@ async def geolocate_target_stop(
                 node_uids=[],
                 error="",
             )
-
-            target["geolocate"]["previous_state"] = ""
-            target["geolocate"]["had_detections"] = False
+            target[
+                "geolocate"
+            ][
+                "operation_id"
+            ] = ""
+            target[
+                "geolocate"
+            ][
+                "previous_state"
+            ] = ""
+            target[
+                "geolocate"
+            ][
+                "had_detections"
+            ] = False
 
             await targetPatch(
                 component,
                 target_id=target_id,
                 patch={},
             )
-
             return
 
         _set_target_geolocate_status(
             target,
             status="stopping",
-            mode=geolocate.get("mode", ""),
-            plugin=geolocate.get("plugin", ""),
-            action=geolocate.get("action", ""),
+            mode=geolocate.get(
+                "mode",
+                "",
+            ),
+            plugin=geolocate.get(
+                "plugin",
+                "",
+            ),
+            action=geolocate.get(
+                "action",
+                "",
+            ),
             node_uids=node_uid_list,
             error="",
         )
-
         await targetPatch(
             component,
             target_id=target_id,
@@ -8787,23 +9657,25 @@ async def geolocate_target_stop(
                 requester_type,
                 node_uid_list,
             )
-
-            stopped_nodes = list(node_uid_list)
+            stopped_nodes = list(
+                node_uid_list
+            )
 
         except Exception as stop_err:
             component.logger.error(
                 f"Failed stopping geolocation for "
                 f"target_id={target_id}: {stop_err}"
             )
-
             component.logger.debug(
                 traceback.format_exc()
             )
+            failed_nodes = list(
+                node_uid_list
+            )
 
-            failed_nodes = list(node_uid_list)
-
-        target = component.targets.get(target_id)
-
+        target = component.targets.get(
+            target_id
+        )
         if not target:
             component.logger.error(
                 f"Target disappeared before final idle update: "
@@ -8811,34 +9683,51 @@ async def geolocate_target_stop(
             )
             return
 
-        geolocate = target.get("geolocate") or {}
-
+        geolocate = (
+            target.get("geolocate")
+            or {}
+        )
         previous_state = (
-            geolocate.get("previous_state", "")
+            geolocate.get(
+                "previous_state",
+                "",
+            )
             or "imported"
         )
-
         had_detections = bool(
-            geolocate.get("had_detections", False)
+            geolocate.get(
+                "had_detections",
+                False,
+            )
         )
 
-        if failed_nodes and not stopped_nodes:
+        if (
+            failed_nodes
+            and not stopped_nodes
+        ):
             _set_target_geolocate_status(
                 target,
                 status="error",
-                mode=geolocate.get("mode", ""),
-                plugin=geolocate.get("plugin", ""),
-                action=geolocate.get("action", ""),
+                mode=geolocate.get(
+                    "mode",
+                    "",
+                ),
+                plugin=geolocate.get(
+                    "plugin",
+                    "",
+                ),
+                action=geolocate.get(
+                    "action",
+                    "",
+                ),
                 node_uids=node_uid_list,
                 error="stop_failed",
             )
-
             await targetPatch(
                 component,
                 target_id=target_id,
                 patch={},
             )
-
             return
 
         target["state"] = (
@@ -8857,12 +9746,29 @@ async def geolocate_target_stop(
             error=(
                 ""
                 if not failed_nodes
-                else f"partial_stop_failed:{','.join(failed_nodes)}"
+                else (
+                    "partial_stop_failed:"
+                    + ",".join(
+                        failed_nodes
+                    )
+                )
             ),
         )
-
-        target["geolocate"]["previous_state"] = ""
-        target["geolocate"]["had_detections"] = False
+        target[
+            "geolocate"
+        ][
+            "operation_id"
+        ] = ""
+        target[
+            "geolocate"
+        ][
+            "previous_state"
+        ] = ""
+        target[
+            "geolocate"
+        ][
+            "had_detections"
+        ] = False
 
         await targetPatch(
             component,
@@ -8882,32 +9788,9 @@ async def geolocate_target_stop(
         component.logger.error(
             f"Error in geolocate_target_stop: {e}"
         )
-
         component.logger.debug(
             traceback.format_exc()
         )
-
-        target_id = (
-            parameters.get("target_id")
-            if parameters
-            else None
-        )
-
-        if target_id:
-            target = component.targets.get(target_id)
-
-            if target:
-                _set_target_geolocate_status(
-                    target,
-                    status="error",
-                    error="exception",
-                )
-
-                await targetPatch(
-                    component,
-                    target_id=target_id,
-                    patch={},
-                )
 
 
 def _normalize_promoted_detection(detection):
@@ -9277,126 +10160,114 @@ async def promoteDetectionToTarget(
     requester_uid: str = "",
     requester_callsign: str = "",
 ):
-    """
-    Convert an existing structured detection directly into an authoritative target.
-    No plugin action or Sensor Node execution is involved.
-    """
+    """Convert one structured Detection into an authoritative Target."""
     detection = _normalize_promoted_detection(detection)
-
     if not detection:
-        component.logger.warning(
-            "promoteDetectionToTarget received an empty detection"
-        )
+        component.logger.warning("promoteDetectionToTarget received an empty detection")
         return
 
     node_uid = str(detection.get("node_uid") or "").strip()
-
     if not node_uid:
-        component.logger.warning(
-            "promoteDetectionToTarget detection missing node_uid"
-        )
+        component.logger.warning("promoteDetectionToTarget detection missing node_uid")
         return
 
     target_id = str(uuid.uuid4())
     frequency_mhz = _promoted_detection_frequency_mhz(detection)
+    observation_time = detection.get("observation_time") or detection.get("timestamp") or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    lat = _promoted_detection_float(detection, "latitude", "lat")
+    lon = _promoted_detection_float(detection, "longitude", "lon")
+    alt = _promoted_detection_float(detection, "hae_meters", "hae_m", "alt", "altitude")
 
-    observation_time = (
-        detection.get("timestamp")
-        or detection.get("observation_time")
-        or datetime.now(timezone.utc).strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
-        )
-    )
+    detector_text = " ".join(str(detection.get(key) or "") for key in ("detector", "detection_kind", "source", "protocol")).lower()
+    bssid = str(detection.get("bssid") or detection.get("ap_bssid") or "").strip()
+    is_wifi = bool(bssid) or "wifi" in detector_text or "wi-fi" in detector_text or "802.11" in detector_text
 
-    lat = _promoted_detection_float(
-        detection,
-        "latitude",
-        "lat",
-    )
-
-    lon = _promoted_detection_float(
-        detection,
-        "longitude",
-        "lon",
-    )
-
-    alt = _promoted_detection_float(
-        detection,
-        "hae_meters",
-        "hae_m",
-        "alt",
-    )
-
-    location = {}
-
-    if lat is not None:
-        location["lat"] = lat
-
-    if lon is not None:
-        location["lon"] = lon
-
-    if alt is not None:
-        location["hae_m"] = alt
-
-    if observation_time:
-        location["timestamp"] = observation_time
-
-    location["source"] = "wintak_detection_promotion"
-
-    display_label = _promoted_detection_label(detection)
+    if is_wifi and bssid:
+        normalized_bssid = bssid.replace(":", "").replace("-", "").strip().lower()
+        if len(normalized_bssid) == 12 and all(c in "0123456789abcdef" for c in normalized_bssid):
+            existing_target_id = ""
+            for candidate_target_id, candidate_target in (getattr(component, "targets", {}) or {}).items():
+                if not isinstance(candidate_target, dict):
+                    continue
+                candidate_bssid = str((candidate_target.get("wifi") or {}).get("bssid") or "")
+                candidate_bssid = candidate_bssid.replace(":", "").replace("-", "").strip().lower()
+                if candidate_bssid == normalized_bssid:
+                    existing_target_id = str(candidate_target_id)
+                    break
+            target_id = existing_target_id or f"wifiap-{normalized_bssid}"
 
     classification = {
-        "display_label": display_label,
+        "display_label": "Wi-Fi AP" if is_wifi else _promoted_detection_label(detection),
         "confidence": None,
         "source": "promoted_detection",
-        "candidates": [],
+        "candidates": ([{"source": "wifi", "label": "802.11 Access Point"}] if is_wifi else []),
     }
 
     summary = {
         "source": "detection_promotion",
         "promoted_by_uid": requester_uid or "",
         "promoted_by_callsign": requester_callsign or "",
-        "detection_event_uid": str(
-            detection.get("event_uid") or ""
-        ),
+        "detection_event_uid": str(detection.get("event_uid") or ""),
         "attributes": dict(detection),
     }
+
+    if lat is not None and lon is not None:
+        summary["observation_location"] = {
+            "lat": lat,
+            "lon": lon,
+            "hae_m": alt,
+            "timestamp": observation_time,
+            "semantics": "receiver_observation" if is_wifi else "detection_location",
+        }
+
+    patch = {
+        "node_uid": node_uid,
+        "state": "detected",
+        "frequency_mhz": frequency_mhz,
+        "classification": classification,
+        "summary": summary,
+    }
+
+    if is_wifi:
+        rssi_dbm = detection.get("rssi_dbm")
+        if rssi_dbm in (None, ""):
+            rssi_dbm = detection.get("power_dbm")
+
+        wifi = {
+            "bssid": bssid,
+            "ssid": str(detection.get("ssid") or ""),
+            "channel": detection.get("channel"),
+            "band": str(detection.get("band") or ""),
+            "frequency_mhz": frequency_mhz,
+            "rssi_dbm": rssi_dbm,
+            "encryption": str(detection.get("encryption") or ""),
+            "vendor": str(detection.get("vendor") or detection.get("manufacturer") or ""),
+            "last_observation_time": observation_time,
+        }
+        patch["wifi"] = {key: value for key, value in wifi.items() if value not in (None, "")}
+    else:
+        location = {"source": "detection_promotion"}
+        if lat is not None:
+            location["lat"] = lat
+        if lon is not None:
+            location["lon"] = lon
+        if alt is not None:
+            location["hae_m"] = alt
+        if observation_time:
+            location["timestamp"] = observation_time
+        patch["location"] = location
 
     history_entry = {
         "event": "promoted_from_detection",
         "source": "detection_promotion",
         "requester_uid": requester_uid or "",
         "requester_callsign": requester_callsign or "",
-        "detection_event_uid": str(
-            detection.get("event_uid") or ""
-        ),
-        "timestamp": datetime.now(timezone.utc).strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
-        ),
+        "detection_event_uid": str(detection.get("event_uid") or ""),
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
     }
 
-    await targetUpdate(
-        component,
-        node_uid=node_uid,
-        target_id=target_id,
-        source_soi_id="",
-        frequency_mhz=frequency_mhz,
-        state="detected",
-        artifact_id="",
-        classification=classification,
-        location=location,
-        history_entry=history_entry,
-        summary=summary,
-        lat=lat,
-        lon=lon,
-        alt=alt,
-        observation_time=observation_time,
-    )
-
-    component.logger.info(
-        f"Promoted detection to target "
-        f"target_id={target_id}, node_uid={node_uid}"
-    )
+    await targetPatch(component, target_id=target_id, patch=patch, history_entry=history_entry, artifact_id="")
+    component.logger.info(f"Promoted detection to target target_id={target_id}, node_uid={node_uid}, wifi={is_wifi}")
 
 
 async def deleteSoi(
