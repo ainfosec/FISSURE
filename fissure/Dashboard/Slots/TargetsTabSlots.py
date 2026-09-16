@@ -704,7 +704,10 @@ def populate_target_geolocation(dashboard: QtCore.QObject, target: dict):
         _set_geolocation_info(dashboard)
 
     _populate_geolocation_observations_table(dashboard, observations)
-    _update_geolocation_button(dashboard, status, has_target=bool(target_id))
+    if target.get("_replay_only"):
+        _update_geolocation_button(dashboard, "idle", has_target=False)
+    else:
+        _update_geolocation_button(dashboard, status, has_target=bool(target_id))
 
 
 def clear_target_geolocation(dashboard: QtCore.QObject):
@@ -768,7 +771,7 @@ async def _slotTargetsGeolocationStartStopClicked(dashboard: QtCore.QObject):
         return
 
     target = (getattr(dashboard, "tactical_targets", {}) or {}).get(target_id)
-    if not target:
+    if not target or target.get("_replay_only"):
         return
 
     status = _target_geolocate_status(target)

@@ -5914,6 +5914,38 @@ def _slotMenuTAK_StopDockerContainersClicked(dashboard: QtWidgets.QMainWindow):
 
 
 @QtCore.pyqtSlot()
+def _slotMenuReplayCoTToTAKClicked(dashboard: QtWidgets.QMainWindow):
+    """
+    Opens a terminal with the CoT replay command populated for TAK.
+    """
+    expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+    replay_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "replay_cot_log.py")
+    replay_command = "python3 " + replay_script_filepath
+    if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+
+
+@QtCore.pyqtSlot()
+def _slotMenuReplayCoTToTAKDashboardClicked(dashboard: QtWidgets.QMainWindow):
+    """
+    Opens a terminal with the CoT replay command populated for TAK and Dashboard replay.
+    """
+    expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+    replay_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "replay_cot_log.py")
+    replay_command = "python3 " + replay_script_filepath + " --dashboard"
+    if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + replay_command + '"', shell=True)
+
+
+@QtCore.pyqtSlot()
 def _slotMenuJohnTheRipperClicked(dashboard: QtWidgets.QMainWindow):
     """
     Opens a terminal with an example John the Ripper command for hash dictionary cracking.

@@ -2175,6 +2175,24 @@ def _slotTacticalNodeDetectionsPlotZoomClicked(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
+def _slotTacticalNodeDetectionsPlotAllClicked(dashboard: QtCore.QObject):
+    table = dashboard.ui.tableWidget_tactical_node_detections
+
+    for row in range(table.rowCount()):
+        item = table.item(row, 0)
+        if item is None:
+            continue
+
+        detection_uid = item.data(QtCore.Qt.UserRole)
+        if not detection_uid:
+            continue
+
+        detection = dashboard.tactical_detections.get(detection_uid)
+        if detection:
+            plot_tactical_node_detection(dashboard, detection, zoom=False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalNodeDetectionsRemoveClicked(dashboard: QtCore.QObject):
     detection = get_selected_tactical_node_detection(dashboard)
     if not detection:
@@ -2215,7 +2233,8 @@ def plot_tactical_node_detection(
     if not uid or lat is None or lon is None:
         return
 
-    label = detection.get("frequency") or uid
+    ssid = str(detection.get("ssid") or "").strip()
+    label = ssid or detection.get("frequency") or uid
 
     dashboard.tactical_map.add_detection(
         detection_id=uid,
@@ -3430,12 +3449,25 @@ def _slotTacticalTargetsClearRowsClicked(dashboard: QtCore.QObject):
     TargetsTabSlots.refresh_targets_view(dashboard)
 
 
-
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalTargetsShowCeRingsToggled(dashboard: QtCore.QObject):
     checked = dashboard.ui.checkBox_tactical_targets_show_ce_rings.isChecked()
 
     dashboard.tactical_map.set_show_ce_rings(checked)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTacticalDetectionLabelsToggled(dashboard: QtCore.QObject):
+    checked = dashboard.ui.checkBox_tactical_detection_labels.isChecked()
+
+    dashboard.tactical_map.set_show_detection_labels(checked)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTacticalTargetLabelsToggled(dashboard: QtCore.QObject):
+    checked = dashboard.ui.checkBox_tactical_target_labels.isChecked()
+
+    dashboard.tactical_map.set_show_target_labels(checked)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -5905,7 +5937,7 @@ def update_tactical_targets_geolocate_button_state(
 ):
     button = dashboard.ui.pushButton_tactical_targets_geolocate
 
-    if not target:
+    if not target or target.get("_replay_only"):
         button.setText("Geolocate")
         button.setEnabled(False)
         return
@@ -5932,7 +5964,7 @@ async def _slotTacticalTargetsGeolocateClicked(dashboard: QtCore.QObject):
         return
 
     target = dashboard.tactical_targets.get(target_id)
-    if not target:
+    if not target or target.get("_replay_only"):
         return
 
     status = get_target_geolocate_status(target)
@@ -7268,6 +7300,7 @@ def _showTacticalNodeDetectionsContextMenu(
 
     action_plot = menu.addAction("Plot")
     action_plot_zoom = menu.addAction("Plot + Zoom")
+    action_plot_all = menu.addAction("Plot All")
     action_remove = menu.addAction("Remove from Map")
 
     menu.addSeparator()
@@ -7277,6 +7310,7 @@ def _showTacticalNodeDetectionsContextMenu(
 
     action_plot.setEnabled(has_detection)
     action_plot_zoom.setEnabled(has_detection)
+    action_plot_all.setEnabled(has_rows)
     action_remove.setEnabled(has_detection)
     action_delete.setEnabled(has_detection)
     action_clear.setEnabled(has_rows)
@@ -7287,6 +7321,8 @@ def _showTacticalNodeDetectionsContextMenu(
         _slotTacticalNodeDetectionsPlotClicked(dashboard)
     elif chosen_action == action_plot_zoom:
         _slotTacticalNodeDetectionsPlotZoomClicked(dashboard)
+    elif chosen_action == action_plot_all:
+        _slotTacticalNodeDetectionsPlotAllClicked(dashboard)
     elif chosen_action == action_remove:
         _slotTacticalNodeDetectionsRemoveClicked(dashboard)
     elif chosen_action == action_delete:

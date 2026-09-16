@@ -1248,9 +1248,11 @@ class SensorNode(object):
             # Update canonical state first (so beacons reflect immediately)
             self.current_status = s
 
-            # Publish only if we haven't already published this value (unless force=True)
+            # Publish only if we haven't already published this value (unless force=True).
+            # publish_status_to_hiprfisr() owns the published-status cache. Do not
+            # update _last_published_status here before calling it, or the publisher
+            # will treat this new edge as a duplicate and suppress it.
             if force or (self._last_published_status != s):
-                self._last_published_status = s
                 try:
                     await self.publish_status_to_hiprfisr(s)
                 except Exception:

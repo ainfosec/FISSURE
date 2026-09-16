@@ -2331,6 +2331,17 @@ def connect_menuBar_slots(dashboard: Dashboard):
         lambda: MenuBarSlots._slotMenuRememberConfigurationClicked(dashboard)
     )
 
+    # TAK Menu
+    dashboard.window.actionWebTAK.triggered.connect(MenuBarSlots._slotMenuWebTAK_Clicked)
+    dashboard.window.actionTAK_Start_Docker_Containers.triggered.connect(lambda: MenuBarSlots._slotMenuTAK_StartDockerContainersClicked(dashboard))
+    dashboard.window.actionTAK_Stop_Docker_Containers.triggered.connect(lambda: MenuBarSlots._slotMenuTAK_StopDockerContainersClicked(dashboard))
+    dashboard.window.actionReplay_CoT_to_TAK.triggered.connect(
+        lambda: MenuBarSlots._slotMenuReplayCoTToTAKClicked(dashboard)
+    )
+    dashboard.window.actionReplay_CoT_to_TAK_Dashboard.triggered.connect(
+        lambda: MenuBarSlots._slotMenuReplayCoTToTAKDashboardClicked(dashboard)
+    )
+
     # Standalone Menu
     dashboard.window.actionJ2497_demod_method1.triggered.connect(lambda: MenuBarSlots._slotMenuJ2497_DemodMethod1Clicked(dashboard))
     dashboard.window.actionWifi_rx.triggered.connect(lambda: MenuBarSlots._slotMenuWifiRxClicked(dashboard))
@@ -2686,9 +2697,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionHeyWhatsThat_Path_Profiler.triggered.connect(MenuBarSlots._slotMenuHeyWhatsThatPathProfilerClicked)
     dashboard.window.actionWindy_Route_Planner.triggered.connect(MenuBarSlots._slotMenuWindyRoutePlannerClicked)
     dashboard.window.actionWindy.triggered.connect(MenuBarSlots._slotMenuWindyClicked)
-    dashboard.window.actionWebTAK.triggered.connect(MenuBarSlots._slotMenuWebTAK_Clicked)
-    dashboard.window.actionTAK_Start_Docker_Containers.triggered.connect(lambda: MenuBarSlots._slotMenuTAK_StartDockerContainersClicked(dashboard))
-    dashboard.window.actionTAK_Stop_Docker_Containers.triggered.connect(lambda: MenuBarSlots._slotMenuTAK_StopDockerContainersClicked(dashboard))
     dashboard.window.actionJohn_the_Ripper.triggered.connect(lambda: MenuBarSlots._slotMenuJohnTheRipperClicked(dashboard))
     dashboard.window.actionMobile_Atlas_Creator.triggered.connect(lambda: MenuBarSlots._slotMenuMobileAtlasCreatorClicked(dashboard))
     dashboard.window.actionVideo_Stream_Receiver.triggered.connect(
@@ -3043,6 +3051,12 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.checkBox_tactical_targets_show_ce_rings.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsShowCeRingsToggled(dashboard)
     )
+    dashboard.ui.checkBox_tactical_detection_labels.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalDetectionLabelsToggled(dashboard)
+    )
+    dashboard.ui.checkBox_tactical_target_labels.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalTargetLabelsToggled(dashboard)
+    )    
     dashboard.ui.tableWidget_tactical_node_targets.itemSelectionChanged.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsRowSelectionChanged(dashboard)
     )

@@ -1462,20 +1462,25 @@ async def dashboardCoT_Message(component: object, raw_xml: str):
 
     fissure.utils.cot_utils.handle_tactical_cot_message(component, cot_message)
 
-    try:
-        TSITabSlots.append_tsi_active_detector_detection_from_cot(
-            component.frontend,
-            cot_message,
-        )
-    except Exception as e:
-        component.logger.error(
-            f"Failed to update TSI detector table: {e}"
-        )
+    is_replay = bool(cot_message.get("replay_dashboard"))
 
-    if cot_message.get("replay_dashboard") and cot_message.get("kind") == "detection":
+    if not is_replay:
+        try:
+            TSITabSlots.append_tsi_active_detector_detection_from_cot(
+                component.frontend,
+                cot_message,
+            )
+        except Exception as e:
+            component.logger.error(
+                f"Failed to update TSI detector table: {e}"
+            )
+
+    if is_replay and cot_message.get("kind") == "detection":
         try:
             detection = fissure.utils.cot_utils.cot_to_native_detection_record(cot_message)
-            if detection:
+            target_id = str((detection or {}).get("target_id") or "").strip()
+            target = (getattr(component.frontend, "tactical_targets", {}) or {}).get(target_id)
+            if detection and isinstance(target, dict) and target.get("_replay_only"):
                 TargetsTabSlots.handle_target_geolocation_detection(
                     component.frontend,
                     detection,

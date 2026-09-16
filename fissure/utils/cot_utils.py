@@ -865,6 +865,22 @@ def handle_tactical_cot_message(dashboard, cot_message):
         return
 
     kind = cot_message.get("kind")
+    is_replay = bool(cot_message.get("replay_dashboard"))
+
+    # Replay is awareness-only. Historical capability/query responses should
+    # not rewrite the Dashboard's current action/customize controls.
+    if is_replay and any(
+        _cot_has_fissure_event(cot_message, event_type)
+        for event_type in (
+            "plugin_list",
+            "plugin_actions",
+            "plugin_action_schema",
+            "ecosystem_plugin_list",
+            "ecosystem_plugin_actions",
+            "ecosystem_plugin_action_schema",
+        )
+    ):
+        return
 
     if kind == "node":
         handle_tactical_node_message(dashboard, cot_message)
@@ -881,9 +897,9 @@ def handle_tactical_cot_message(dashboard, cot_message):
     elif _cot_has_fissure_event(cot_message, "plugin_list"):
         handle_tactical_plugin_list_message(dashboard, cot_message)
     elif _cot_has_fissure_event(cot_message, "plugin_actions"):
-        handle_tactical_plugin_actions_message(dashboard, cot_message)     
+        handle_tactical_plugin_actions_message(dashboard, cot_message)
     elif _cot_has_fissure_event(cot_message, "plugin_action_schema"):
-        handle_tactical_action_customize_message(dashboard, cot_message)     
+        handle_tactical_action_customize_message(dashboard, cot_message)
     elif _cot_has_fissure_event(cot_message, "ecosystem_plugin_list"):
         handle_tactical_ecosystem_plugin_list_message(dashboard, cot_message)
     elif _cot_has_fissure_event(cot_message, "ecosystem_plugin_actions"):
@@ -915,10 +931,30 @@ def handle_tactical_node_message(dashboard, cot_message):
     if not node_record:
         return
 
+    uid = node_record["uid"]
+
+    if cot_message.get("replay_dashboard"):
+        # Historical node status must not replace current node/control state.
+        # When the node is not currently connected, keep only its replayed
+        # position on the map as passive awareness.
+        node_state = getattr(frontend, "node_states", {}).get(uid, {}) or {}
+        if not bool(node_state.get("connected", False)):
+            lat = node_record.get("lat")
+            lon = node_record.get("lon")
+            if lat is not None and lon is not None:
+                frontend.tactical_map.add_node(
+                    node_id=uid,
+                    lat=lat,
+                    lon=lon,
+                    label=node_record.get("callsign") or uid,
+                    active=False,
+                    status="Replay",
+                )
+        return
+
     if not hasattr(frontend, "tactical_nodes"):
         frontend.tactical_nodes = {}
 
-    uid = node_record["uid"]
     frontend.tactical_nodes[uid] = node_record
 
     lat = node_record.get("lat")
@@ -953,31 +989,40 @@ def handle_tactical_node_message(dashboard, cot_message):
 
 
 def handle_tactical_target_message(dashboard, cot_message):
-        frontend = dashboard.frontend
+    frontend = dashboard.frontend
 
-        target_record = cot_to_tactical_target_record(cot_message)
-        if not target_record:
+    target_record = cot_to_tactical_target_record(cot_message)
+    if not target_record:
+        return
+
+    if not hasattr(frontend, "tactical_targets"):
+        frontend.tactical_targets = {}
+
+    if not hasattr(frontend, "selected_tactical_target_id"):
+        frontend.selected_tactical_target_id = None
+
+    target_id = target_record["target_id"]
+    existing_target = frontend.tactical_targets.get(target_id)
+
+    if cot_message.get("replay_dashboard"):
+        # Never replace a current/live Target with historical replay state.
+        # Replay-created Targets stay local to the Dashboard and are marked
+        # non-actionable; a later live Target update naturally replaces it.
+        if isinstance(existing_target, dict) and not existing_target.get("_replay_only"):
             return
+        target_record["_replay_only"] = True
 
-        if not hasattr(frontend, "tactical_targets"):
-            frontend.tactical_targets = {}
+    is_new_target = existing_target is None
+    frontend.tactical_targets[target_id] = target_record
 
-        if not hasattr(frontend, "selected_tactical_target_id"):
-            frontend.selected_tactical_target_id = None
+    TacticalTabSlots.update_tactical_target_row(frontend, target_record)
+    TargetsTabSlots.update_target_record(frontend, target_record)
 
-        target_id = target_record["target_id"]
-        is_new_target = target_id not in frontend.tactical_targets
+    if is_new_target and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked():
+        TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
 
-        frontend.tactical_targets[target_id] = target_record
-
-        TacticalTabSlots.update_tactical_target_row(frontend, target_record)
-        TargetsTabSlots.update_target_record(frontend, target_record)
-
-        if is_new_target and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked():
-            TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
-
-        if frontend.selected_tactical_target_id == target_id:
-            TacticalTabSlots._slotTacticalTargetsRowSelectionChanged(frontend)
+    if frontend.selected_tactical_target_id == target_id:
+        TacticalTabSlots._slotTacticalTargetsRowSelectionChanged(frontend)
 
 
 def cot_to_tactical_target_record(cot_message):

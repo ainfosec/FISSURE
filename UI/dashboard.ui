@@ -2346,6 +2346,38 @@
       <string>Clear</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="checkBox_tactical_detection_labels">
+     <property name="geometry">
+      <rect>
+       <x>165</x>
+       <y>745</y>
+       <width>130</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Detection Labels</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_tactical_target_labels">
+     <property name="geometry">
+      <rect>
+       <x>305</x>
+       <y>745</y>
+       <width>130</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Target Labels</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_tsi">
     <property name="autoFillBackground">

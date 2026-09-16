@@ -3,6 +3,28 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-9-16
 
+Refine replay safety and Tactical map controls
+
+### Added
+
+- Added Dashboard-aware CoT replay handling so recorded Targets, detections, and geolocation observations can be restored for demonstration without replaying historical action menus, live node status, or control state.
+- Added TAK menu actions for replaying CoT logs to TAK alone or to TAK plus the Dashboard using the existing FISSURE terminal launcher pattern.
+- Added a Plot All action to the Tactical detections context menu so every detection currently shown for the selected Sensor Node can be plotted using the existing detection map path.
+- Added Tactical Detection Labels and Target Labels display toggles so dense map views can hide text while keeping the underlying markers and interactions available.
+
+### Changed
+
+- Changed replayed Dashboard Targets to remain presentation-only until replaced by live Target updates, keeping replayed geolocation observations separated from active Target state and preventing replay data from interfering with live geolocation controls.
+- Changed Tactical detection map labels to prefer SSID when available and fall back to frequency for non-Wi-Fi or unnamed detections.
+- Changed Tactical label visibility handling so detection and Target text can be toggled independently while Sensor Node labels, Target CE rings, and marker click behavior remain unaffected.
+
+### Fixed
+
+- Fixed generic plugin operation status transitions being suppressed by the Sensor Node status cache, restoring immediate Running and Idle updates for short and long-running plugin actions such as `dummy_detection`.
+- Fixed Dashboard replay behavior that could visually overwrite current Sensor Node status and action-control state with historical recorded values even though replayed actions were not actually executing.
+
+## 2026-9-16
+
 Stabilize Wi-Fi geolocation workflows and artifact logging
 
 ### Added

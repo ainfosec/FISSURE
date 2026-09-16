@@ -1100,6 +1100,8 @@
     <addaction name="actionTAK_Start_Docker_Containers"/>
     <addaction name="actionTAK_Stop_Docker_Containers"/>
     <addaction name="actionConnect_to_TAK_Server"/>
+    <addaction name="actionReplay_CoT_to_TAK"/>
+    <addaction name="actionReplay_CoT_to_TAK_Dashboard"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -3600,6 +3602,16 @@
   <action name="actionVideo_Stream_Receiver">
    <property name="text">
     <string>Video Stream Receiver</string>
+   </property>
+  </action>
+  <action name="actionReplay_CoT_to_TAK">
+   <property name="text">
+    <string>Replay CoT to TAK</string>
+   </property>
+  </action>
+  <action name="actionReplay_CoT_to_TAK_Dashboard">
+   <property name="text">
+    <string>Replay CoT to TAK + Dashboard</string>
    </property>
   </action>
  </widget>

@@ -8329,7 +8329,7 @@ async def geolocate_target_start(
     requester_type: str = "tak",
     parameters: dict = None,
 ):
-    """Select compatible nodes and start the Target's geolocation action."""
+    """Start one Target geolocation session across compatible Sensor Nodes."""
     try:
         component.logger.info(
             f"geolocate_target_start called with parameters={parameters}"
@@ -8461,7 +8461,12 @@ async def geolocate_target_start(
         shared_target_ids = [
             target_id
         ]
-        shared_operation_id = ""
+        shared_operation_id = str(
+            uuid.uuid4()
+        )
+        action_parameters[
+            "operation_id"
+        ] = shared_operation_id
 
         if (
             mode == "wifi_similar"
@@ -8498,13 +8503,6 @@ async def geolocate_target_start(
                     0,
                     target_id,
                 )
-
-            shared_operation_id = (
-                str(uuid.uuid4())
-            )
-            action_parameters[
-                "operation_id"
-            ] = shared_operation_id
 
         for session_target_id in (
             shared_target_ids
@@ -8832,12 +8830,11 @@ async def geolocate_target_start(
                 f"on nodes={launched_nodes}"
             )
 
-            if shared_operation_id:
-                component.logger.info(
-                    f"Shared geolocation operation_id="
-                    f"{shared_operation_id} "
-                    f"targets={shared_target_ids}"
-                )
+            component.logger.info(
+                f"Geolocation operation_id={shared_operation_id} "
+                f"targets={shared_target_ids} "
+                f"nodes={launched_nodes}"
+            )
 
             await sendPluginActionTak(
                 component,
@@ -8903,7 +8900,7 @@ async def geolocate_target_start(
                     "geolocate"
                 ][
                     "operation_id"
-                ] = shared_operation_id
+                ] = ""
 
                 await targetPatch(
                     component,
@@ -9276,7 +9273,7 @@ async def geolocate_target_stop(
     requester_type: str = "tak",
     parameters: dict = None,
 ):
-    """Stop geolocation for one Target or one shared Wi-Fi session."""
+    """Stop one Target geolocation session by its exact operation ID."""
     try:
         component.logger.info(
             f"geolocate_target_stop called with parameters={parameters}"
@@ -9642,36 +9639,67 @@ async def geolocate_target_stop(
             patch={},
         )
 
+        if not operation_id:
+            component.logger.error(
+                f"Cannot stop geolocation for target_id={target_id}: "
+                "missing operation_id"
+            )
+            _set_target_geolocate_status(
+                target,
+                status="error",
+                mode=geolocate.get(
+                    "mode",
+                    "",
+                ),
+                plugin=geolocate.get(
+                    "plugin",
+                    "",
+                ),
+                action=geolocate.get(
+                    "action",
+                    "",
+                ),
+                node_uids=node_uid_list,
+                error="missing_operation_id",
+            )
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch={},
+            )
+            return
+
         stopped_nodes = []
         failed_nodes = []
 
-        try:
-            component.logger.info(
-                f"Stopping geolocation for target_id={target_id} "
-                f"on node_uids={node_uid_list}"
-            )
+        component.logger.info(
+            f"Stopping geolocation operation_id={operation_id} "
+            f"for target_id={target_id} "
+            f"on node_uids={node_uid_list}"
+        )
 
-            await stop_all_plugin_operations(
-                component,
-                requester_uid,
-                requester_type,
-                node_uid_list,
-            )
-            stopped_nodes = list(
-                node_uid_list
-            )
-
-        except Exception as stop_err:
-            component.logger.error(
-                f"Failed stopping geolocation for "
-                f"target_id={target_id}: {stop_err}"
-            )
-            component.logger.debug(
-                traceback.format_exc()
-            )
-            failed_nodes = list(
-                node_uid_list
-            )
+        for node_uid in node_uid_list:
+            try:
+                await stop_plugin_operation(
+                    component,
+                    node_uid,
+                    operation_id,
+                )
+                stopped_nodes.append(
+                    node_uid
+                )
+            except Exception as stop_err:
+                component.logger.error(
+                    f"Failed stopping geolocation "
+                    f"operation_id={operation_id} "
+                    f"on node_uid={node_uid}: {stop_err}"
+                )
+                component.logger.debug(
+                    traceback.format_exc()
+                )
+                failed_nodes.append(
+                    node_uid
+                )
 
         target = component.targets.get(
             target_id
