@@ -394,29 +394,10 @@ class HiprFisr:
         # ---------------------------------------------------------
         if self.tak_mode == "auto":
             self.logger.info(f"TAK auto-connect enabled → {tak_ip}:{tak_port}")
-
-            async def try_initial_connect():
-                TIMEOUT = 5
-                try:
-                    await asyncio.wait_for(
-                        asyncio.open_connection(tak_ip, tak_port),
-                        timeout=TIMEOUT
-                    )
-                    self.logger.info("TAK server reachable at startup.")
-                except Exception:
-                    self.logger.warning(
-                        f"TAK server not reachable within {TIMEOUT}s. "
-                        "Continuing startup; pytak will reconnect automatically."
-                    )
-
-                # Launch pytak (handles its own reconnection)
-                self.tak_task = asyncio.create_task(
-                    self.run_tak_loop(tak_config, auto_reconnect=True)
-                )
-                self.child_tasks.append(self.tak_task)
-
-            # Fire background task without blocking HIPRFISR startup
-            asyncio.create_task(try_initial_connect())
+            self.tak_task = asyncio.create_task(
+                self.run_tak_loop(tak_config, auto_reconnect=True)
+            )
+            self.child_tasks.append(self.tak_task)
 
         elif self.tak_mode == "manual":
             self.logger.info("TAK manual mode: waiting for user input")
@@ -486,31 +467,108 @@ class HiprFisr:
         return
 
 
-    async def run_tak_loop(self, tak_config, auto_reconnect=True):
+    async def _tak_server_reachable(self, host, port, timeout=3.0):
+        """Return True when the TAK TCP endpoint is accepting connections."""
+        writer = None
+        try:
+            _, writer = await asyncio.wait_for(
+                asyncio.open_connection(host, port),
+                timeout=timeout,
+            )
+            return True
+        except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
+            return False
+        finally:
+            if writer is not None:
+                writer.close()
+                try:
+                    await writer.wait_closed()
+                except Exception:
+                    pass
+
+
+    async def _wait_for_tak_server(self, host, port, retry_seconds=10.0, reconnecting=False):
         """
-        Run pytak. Restart only if auto_reconnect=True.
-        Never double-spawns.
+        Wait quietly for the TAK TCP endpoint before starting pytak.
+
+        This keeps auto-connect/reconnect behavior without repeatedly starting
+        pytak while the TAK Docker containers are stopped or still booting.
         """
+        announced = False
 
         while not self.shutdown:
+            if await self._tak_server_reachable(host, port):
+                if announced:
+                    self.logger.info(
+                        f"TAK server available at {host}:{port}. Starting TAK client."
+                    )
+                return True
+
+            if not announced:
+                if reconnecting:
+                    self.logger.warning(
+                        f"TAK server unavailable at {host}:{port}. "
+                        f"Auto-connect will retry quietly every {retry_seconds:.0f} seconds."
+                    )
+                else:
+                    self.logger.warning(
+                        f"TAK server unavailable at {host}:{port}. "
+                        "FISSURE will continue running and connect automatically "
+                        f"when the server becomes available; retrying every {retry_seconds:.0f} seconds."
+                    )
+                announced = True
+            else:
+                self.logger.debug(
+                    f"TAK server still unavailable at {host}:{port}; waiting to retry."
+                )
+
+            await asyncio.sleep(retry_seconds)
+
+        return False
+
+
+    async def run_tak_loop(self, tak_config, auto_reconnect=True):
+        """
+        Run pytak.
+
+        Auto mode waits for the TAK TCP endpoint before starting pytak and
+        reconnects automatically after a later outage. Manual mode attempts once.
+        """
+        tak_settings = self.settings.get("tak", {}) or {}
+        tak_ip = tak_settings.get("ip_addr", "127.0.0.1")
+        tak_port = int(tak_settings.get("port", 8089))
+        retry_seconds = 10.0
+        connected_once = False
+
+        while not self.shutdown:
+            if auto_reconnect:
+                available = await self._wait_for_tak_server(
+                    tak_ip,
+                    tak_port,
+                    retry_seconds=retry_seconds,
+                    reconnecting=connected_once,
+                )
+                if not available:
+                    break
+
             try:
                 self.clitool = pytak.CLITool(tak_config)
                 await self.clitool.setup()
 
-                # Attach receiver once per loop
                 self.clitool.add_tasks({
                     TakReceiver(self.clitool.rx_queue, tak_config, self, self.logger)
                 })
 
-                # Collect pytak-created asyncio tasks
-                for t in getattr(self.clitool, "tasks", []):
-                    if isinstance(t, asyncio.Task):
-                        self.child_tasks.append(t)
+                for task in getattr(self.clitool, "tasks", []):
+                    if isinstance(task, asyncio.Task):
+                        self.child_tasks.append(task)
 
-                self.logger.info("Starting pytak client...")
+                self.logger.info("Starting TAK client...")
                 self.tak_connected = True
+                connected_once = True
+
                 await self.clitool.run()
-                self.logger.warning("TAK connection ended")
+
                 self.tak_connected = False
 
                 if self.shutdown:
@@ -520,19 +578,38 @@ class HiprFisr:
                     self.logger.info("TAK manual mode: not reconnecting")
                     break
 
-                self.logger.warning("TAK connection lost. Reconnecting in 5 seconds...")
+                self.logger.warning(
+                    "TAK connection ended. Waiting for the server before reconnecting."
+                )
                 await asyncio.sleep(5)
+
+            except asyncio.CancelledError:
+                self.tak_connected = False
+                raise
 
             except Exception as e:
+                self.tak_connected = False
+
                 if self.shutdown:
                     break
-                self.logger.error(f"pytak crashed: {e}")
 
-            # auto reconnect delay
-            if auto_reconnect and not self.shutdown:
-                await asyncio.sleep(5)
+                if not auto_reconnect:
+                    self.logger.warning(f"TAK connection failed: {e}")
+                    break
 
-        self.logger.info("Exiting Tak loop")
+                if connected_once:
+                    self.logger.warning(
+                        f"TAK client disconnected: {e}. Retrying in {retry_seconds:.0f} seconds."
+                    )
+                else:
+                    self.logger.warning(
+                        f"TAK client could not connect: {e}. Retrying in {retry_seconds:.0f} seconds."
+                    )
+
+                await asyncio.sleep(retry_seconds)
+
+        self.tak_connected = False
+        self.logger.info("Exiting TAK loop")
 
 
     async def stop_tak_client(self):

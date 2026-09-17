@@ -2378,6 +2378,55 @@
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QSlider" name="horizontalSlider_tactical_map_zoom">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>750</y>
+       <width>160</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>0</number>
+     </property>
+     <property name="pageStep">
+      <number>1</number>
+     </property>
+     <property name="tracking">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="tickPosition">
+      <enum>QSlider::TicksBelow</enum>
+     </property>
+     <property name="tickInterval">
+      <number>1</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label2_78">
+     <property name="geometry">
+      <rect>
+       <x>695</x>
+       <y>745</y>
+       <width>40</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Zoom:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_tsi">
     <property name="autoFillBackground">

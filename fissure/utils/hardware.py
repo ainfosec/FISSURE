@@ -1202,19 +1202,25 @@ def findCaribouLite():
     return scan_results
 
 
-def probe_gpsd(logger: logging.Logger, format="", serial_port="/dev/ttyACM1", return_altitude=False):
+def probe_gpsd(
+        logger: logging.Logger,
+        format="",
+        serial_port="/dev/ttyACM1",
+        return_altitude=False,
+        timeout=5.0,
+    ):
     from gps import gps, WATCH_ENABLE, WATCH_JSON
 
-    """ 
+    """
     Probes GPS devices using gpsd and returns the coordinates without restarting gpsd.
     Assumes gpsd is already running and managing the serial device.
     """
     session = None
     try:
-        
         if not os.path.exists(serial_port):
             logger.error(f"❌ GPS device not found at {serial_port}. Ensure the device is connected.")
             return None
+
         try:
             with socket.create_connection(("localhost", 2947), timeout=2):
                 logger.debug("Connected to gpsd socket on port 2947.")
@@ -1222,28 +1228,32 @@ def probe_gpsd(logger: logging.Logger, format="", serial_port="/dev/ttyACM1", re
             logger.error(f"❌ Could not connect to gpsd: {e}")
             return None
 
-       
         session = gps(mode=WATCH_ENABLE | WATCH_JSON)
-        logger.info("GPS session initialized. Waiting for data...")
+        logger.debug("GPS session initialized. Waiting for data...")
 
         start_time = time.time()
-        timeout = 3  # seconds
+        timeout = max(1.0, float(timeout))
 
         while time.time() - start_time < timeout:
             try:
-                report = session.next()  # blocking read with timeout
-                if report.get('class') == 'TPV':
-                    lat = getattr(report, 'lat', None)
-                    lon = getattr(report, 'lon', None)
+                report = session.next()
+                if report.get("class") == "TPV":
+                    lat = getattr(report, "lat", None)
+                    lon = getattr(report, "lon", None)
 
                     if lat is not None and lon is not None:
                         if return_altitude:
-                            alt = getattr(report, 'alt', None)
-                            return {"latitude": lat, "longitude": lon, "altitude": alt}
-                        else:
-                            coords = format_coordinates(lat, lon, format)
-                            logger.debug(f"✅ GPS Data Received: {coords}")
-                            return coords
+                            alt = getattr(report, "alt", None)
+                            return {
+                                "latitude": lat,
+                                "longitude": lon,
+                                "altitude": alt,
+                            }
+
+                        coords = format_coordinates(lat, lon, format)
+                        logger.debug(f"✅ GPS Data Received: {coords}")
+                        return coords
+
             except KeyError:
                 continue
             except StopIteration:
@@ -1253,7 +1263,9 @@ def probe_gpsd(logger: logging.Logger, format="", serial_port="/dev/ttyACM1", re
                 logger.error(f"❌ Error while retrieving GPS data: {e}")
                 return None
 
-        logger.error("❌ GPS timeout: No valid data received within timeout period.")
+        logger.warning(
+            f"GPS timeout: no valid position received within {timeout:.1f} seconds."
+        )
         return None
 
     except Exception as e:
@@ -1264,7 +1276,7 @@ def probe_gpsd(logger: logging.Logger, format="", serial_port="/dev/ttyACM1", re
         if session:
             try:
                 session.close()
-                logger.info("GPS session closed cleanly.")
+                logger.debug("GPS session closed cleanly.")
             except Exception as e:
                 logger.error(f"Error closing GPS session: {e}")
     

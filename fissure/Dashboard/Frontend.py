@@ -325,8 +325,10 @@ class Dashboard(QtWidgets.QMainWindow):
         self.tactical_map = TacticalMapView(
             graphics_view=self.ui.graphicsView,
             parent=self,
-            default_map_name="elmira_demo",
+            default_map_name="demo_map_pack",
         )
+
+        TacticalTabSlots.initialize_tactical_map_zoom_slider(self)
 
         # Refresh Combobox and Map
         TacticalTabSlots._slotTacticalRefreshMapPacks(self)
@@ -2920,6 +2922,11 @@ def connect_menuBar_slots(dashboard: Dashboard):
     
 
 def connect_tactical_slots(dashboard: Dashboard):
+    # Slider
+    dashboard.ui.horizontalSlider_tactical_map_zoom.valueChanged.connect(
+        lambda: TacticalTabSlots._slotTacticalMapZoomChanged(dashboard)
+    )
+
     # Combo Box
     dashboard.ui.comboBox_tactical_map_pack.currentIndexChanged.connect(
         lambda: TacticalTabSlots._slotTacticalMapPackChanged(dashboard)

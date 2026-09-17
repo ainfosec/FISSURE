@@ -130,13 +130,19 @@ class OperationMain(Operation):
 
         self.gpsd_host: str = "127.0.0.1"
         self.gpsd_port: int = 2947
+        self.gps_max_age_s: float = 3.0
         self.gps_refresh_interval: float = 3.0
         self.wifi_refresh_interval: float = 0.2
         self.min_detection_interval_s: float = 1.0
         self.aggregation_window_s: float = 3.0
 
         self._gps_stop = asyncio.Event()
-        self._current_position = {"lat": None, "lon": None, "alt": 0.0}
+        self._current_position = {
+            "lat": None,
+            "lon": None,
+            "alt": 0.0,
+            "updated_monotonic": 0.0,
+        }
 
         self._airodump_proc: Optional[asyncio.subprocess.Process] = None
         self._airodump_iface_in_use: Optional[str] = None
@@ -144,6 +150,14 @@ class OperationMain(Operation):
         self._target_bssid_norm: str = ""
         self._target_bssid_colon: str = ""
         self._last_emit_time_by_bssid: Dict[str, float] = {}
+
+    def _gps_position_is_fresh(self) -> bool:
+        lat = self._current_position.get("lat")
+        lon = self._current_position.get("lon")
+        updated = float(self._current_position.get("updated_monotonic") or 0.0)
+        if lat is None or lon is None or updated <= 0.0:
+            return False
+        return (time.monotonic() - updated) <= self.gps_max_age_s        
 
     def _should_stop(self) -> bool:
         if getattr(self, "_stop", False):
@@ -210,6 +224,7 @@ class OperationMain(Operation):
 
         self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host) or self.gpsd_host)
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
+        self.gps_max_age_s = max(1.0, float(p.get("gps_max_age_s", self.gps_max_age_s)))
         self.gps_refresh_interval = float(p.get("gps_refresh_interval", self.gps_refresh_interval))
         self.wifi_refresh_interval = max(0.1, float(p.get("meas_every_s", p.get("wifi_refresh_interval", self.wifi_refresh_interval))))
         self.min_detection_interval_s = max(0.2, float(p.get("emit_every_s", p.get("min_detection_interval_s", self.min_detection_interval_s))))
@@ -514,6 +529,7 @@ class OperationMain(Operation):
                                     "lat": float(lat),
                                     "lon": float(lon),
                                     "alt": float(alt),
+                                    "updated_monotonic": time.monotonic(),
                                 })
 
                 try:
@@ -667,8 +683,8 @@ class OperationMain(Operation):
                 lat = self._current_position.get("lat")
                 lon = self._current_position.get("lon")
                 alt = self._current_position.get("alt") or 0.0
-                if lat is None or lon is None:
-                    await self._set_status(f"Waiting for GPS while tracking {self.target_id}")
+                if lat is None or lon is None or not self._gps_position_is_fresh():
+                    await self._set_status(f"Waiting for fresh GPS while tracking {self.target_id}")
                     await asyncio.sleep(self.wifi_refresh_interval)
                     continue
 

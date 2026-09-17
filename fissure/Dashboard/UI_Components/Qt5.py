@@ -1972,12 +1972,13 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
         self.reject()
 
     def _slotMapDownloadProgress(self, processed, total, status):
-        if not self._map_download_progress:
+        progress = self._map_download_progress
+        if progress is None:
             return
 
-        self._map_download_progress.setMaximum(total)
-        self._map_download_progress.setValue(processed)
-        self._map_download_progress.setLabelText(status)
+        progress.setMaximum(total)
+        progress.setLabelText(status)
+        progress.setValue(processed)
 
     def _slotMapDownloadCancelRequested(self):
         if not self._map_download_thread or not self._map_download_thread.isRunning():

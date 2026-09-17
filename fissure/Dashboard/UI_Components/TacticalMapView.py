@@ -91,6 +91,7 @@ class TacticalMapView(QtCore.QObject):
         self.alert_clicked_callback = None
         self.detection_clicked_callback = None
         self.soi_clicked_callback = None
+        self.zoom_changed_callback = None
 
         self._configure_graphics_view()
 
@@ -197,6 +198,12 @@ class TacticalMapView(QtCore.QObject):
             scene_x, scene_y = self.latlon_to_scene(center_lat, center_lon)
             self.graphics_view.resetTransform()
             self.graphics_view.centerOn(scene_x, scene_y)
+
+        if callable(self.zoom_changed_callback):
+            self.zoom_changed_callback(
+                self.map_zoom,
+                list(self.map_available_zooms),
+            )
 
         return True
 
@@ -502,6 +509,10 @@ class TacticalMapView(QtCore.QObject):
 
     def set_soi_clicked_callback(self, callback):
         self.soi_clicked_callback = callback
+
+
+    def set_zoom_changed_callback(self, callback):
+        self.zoom_changed_callback = callback
 
     # -------------------------------------------------------------------------
     # Coordinate conversion

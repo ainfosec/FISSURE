@@ -276,6 +276,8 @@ class SensorNode(object):
         self.gps_autostart = bool(gps_settings.get("gps_autostart", True))
         self.gps_source = str(gps_settings.get("gps_source", "saved"))
         self.gps_update_interval_seconds = int(gps_settings.get("gps_update_interval_seconds", 20))
+        self.gps_stale_after_failures = max(1, int(gps_settings.get("gps_stale_after_failures", 2)))
+        self.gps_consecutive_failures = 0
 
         self.meshtastic_lock = asyncio.Lock()
 
@@ -3031,13 +3033,12 @@ class SensorNode(object):
         Heartbeat carries the cached GPS/status state to HIPRFISR, and HIPRFISR
         publishes node CoT from its normalized node state.
 
-        Meshtastic is left on the existing direct TAK-return path for now.
+        A single missed periodic GPS probe does not immediately stale an existing
+        fix. Sustained failures do. Meshtastic is left on the existing direct
+        TAK-return path for now.
         """
         now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
-        # ---------------------------------------------------------
-        # UPDATE LOCAL GPS CACHE
-        # ---------------------------------------------------------
         if gps_data:
             for key in ["latitude", "longitude", "altitude"]:
                 value = gps_data.get(key)
@@ -3053,34 +3054,37 @@ class SensorNode(object):
             self.gps_valid = True
             self.gps_time = now_iso
             self.gps_stale = False
+            self.gps_consecutive_failures = 0
 
             self.logger.info(f"Updating GPS position: {self.gps_position}")
 
         else:
-            # Failed GPS probe. Keep fallback/last-known position available,
-            # but mark it stale so HIPRFISR can report the distinction.
+            self.gps_consecutive_failures += 1
             self.gps_valid = bool(
                 self.gps_position.get("latitude") is not None and
                 self.gps_position.get("longitude") is not None
             )
-            self.gps_stale = True
 
             if not getattr(self, "gps_time", None):
                 self.gps_time = now_iso
 
-            self.logger.info(
-                f"Failed to update GPS position. Keeping last position: {self.gps_position}"
-            )
+            if self.gps_consecutive_failures >= self.gps_stale_after_failures:
+                self.gps_stale = True
+                self.logger.warning(
+                    "GPS update failed %d consecutive times; keeping last position marked stale: %s",
+                    self.gps_consecutive_failures,
+                    self.gps_position,
+                )
+            else:
+                self.logger.info(
+                    "GPS update missed (%d/%d); keeping last valid position without marking it stale.",
+                    self.gps_consecutive_failures,
+                    self.gps_stale_after_failures,
+                )
 
-        # ---------------------------------------------------------
-        # IP: CACHE ONLY
-        # ---------------------------------------------------------
         if self.network_type == "IP":
             return
 
-        # ---------------------------------------------------------
-        # MESHTASTIC: KEEP EXISTING DIRECT PATH FOR NOW
-        # ---------------------------------------------------------
         if self.network_type == "Meshtastic":
             PARAMETERS = {
                 "msg": [
@@ -3288,12 +3292,20 @@ class GPSManager:
 
     async def fetch_gps_from_gpsd(self):
         """
-        Fetch GPS data from a gpsd source.
+        Fetch GPS data from gpsd without blocking the Sensor Node asyncio loop.
         """
         try:
-            # Read gpsd
-            get_coordinates = fissure.utils.hardware.probe_gpsd(self.logger, "DD", self.gpsd_serial_port, True)
-            return get_coordinates
+            loop = asyncio.get_running_loop()
+            return await loop.run_in_executor(
+                None,
+                lambda: fissure.utils.hardware.probe_gpsd(
+                    self.logger,
+                    "DD",
+                    self.gpsd_serial_port,
+                    True,
+                    5.0,
+                ),
+            )
         except Exception as e:
             self.logger.error(f"Error getting GPS from gpsd: {e}")
             return None

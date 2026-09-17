@@ -85,6 +85,80 @@ def _slotTacticalRefreshMapPacks(dashboard: QtCore.QObject):
             )
 
 
+def initialize_tactical_map_zoom_slider(dashboard: QtCore.QObject):
+    slider = dashboard.ui.horizontalSlider_tactical_map_zoom
+    slider.blockSignals(True)
+    slider.setMinimum(0)
+    slider.setMaximum(0)
+    slider.setSingleStep(1)
+    slider.setPageStep(1)
+    slider.setTracking(False)
+    slider.setTickInterval(1)
+    slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+    slider.setEnabled(False)
+    slider.blockSignals(False)
+
+    dashboard.tactical_map.set_zoom_changed_callback(
+        lambda zoom, zooms: _sync_tactical_map_zoom_slider(
+            dashboard,
+            zoom,
+            zooms,
+        )
+    )
+
+    _sync_tactical_map_zoom_slider(
+        dashboard,
+        dashboard.tactical_map.map_zoom,
+        dashboard.tactical_map.map_available_zooms,
+    )
+
+
+def _sync_tactical_map_zoom_slider(dashboard, zoom, zooms):
+    slider = dashboard.ui.horizontalSlider_tactical_map_zoom
+    zooms = sorted(int(value) for value in (zooms or []))
+
+    slider.blockSignals(True)
+
+    if not zooms or zoom not in zooms:
+        slider.setMinimum(0)
+        slider.setMaximum(0)
+        slider.setValue(0)
+        slider.setEnabled(False)
+        slider.setToolTip("Map zoom unavailable")
+        slider.blockSignals(False)
+        return
+
+    index = zooms.index(int(zoom))
+    slider.setMinimum(0)
+    slider.setMaximum(len(zooms) - 1)
+    slider.setValue(index)
+    slider.setEnabled(len(zooms) > 1)
+    slider.setToolTip(f"Map zoom level: {zoom}")
+    slider.blockSignals(False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTacticalMapZoomChanged(dashboard: QtCore.QObject):
+    zooms = sorted(dashboard.tactical_map.map_available_zooms)
+    if not zooms:
+        return
+
+    index = dashboard.ui.horizontalSlider_tactical_map_zoom.value()
+    index = max(0, min(index, len(zooms) - 1))
+    zoom = zooms[index]
+
+    if zoom == dashboard.tactical_map.map_zoom:
+        return
+
+    center_lat, center_lon = dashboard.tactical_map.current_view_center_latlon()
+    dashboard.tactical_map.load_zoom(
+        zoom,
+        center_lat=center_lat,
+        center_lon=center_lon,
+        fit=False,
+    )
+
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalMapPackChanged(dashboard: QtCore.QObject):
     """

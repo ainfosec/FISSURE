@@ -54,6 +54,12 @@ wifi_discovery_edge_light_schema = {
             "default": 15.0,
         },
         {
+            "name": "max_emit_rate_hz",
+            "label": "Max Detection Rate (Hz)",
+            "type": "number",
+            "default": 5.0,
+        },
+        {
             "name": "alert_on_new_detection",
             "label": "Alert on New BSSID",
             "type": "string",
@@ -165,9 +171,9 @@ wifi_discovery_edge_logger_schema = {
         },
         {
             "name": "batch_unique_devices",
-            "label": "Batch Unique BSSIDs",
+            "label": "Batch Unique BSSIDs (0=Off)",
             "type": "number",
-            "default": 500,
+            "default": 0,
         },
         {
             "name": "batch_observation_rows",

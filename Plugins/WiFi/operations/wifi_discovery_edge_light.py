@@ -74,13 +74,20 @@ class OperationMain(Operation):
         self.gpsd_port = 2947
         self.scan_interval_s = 0.5
         self.reemit_interval_s = 15.0
+        self.max_emit_rate_hz = 5.0
+        self.max_emit_burst = 3
+        self.status_interval_s = 5.0
         self.alert_on_new_detection = False
         self._gps_stop = asyncio.Event()
         self._current_position = {"lat": None, "lon": None, "alt": 0.0}
         self._airodump_proc = None
         self._airodump_iface_in_use = None
         self._last_emit_by_bssid: Dict[str, float] = {}
+        self._last_source_seen_by_bssid: Dict[str, str] = {}
         self._seen_bssids: Set[str] = set()
+        self._emit_tokens = 0.0
+        self._emit_token_time = time.monotonic()
+        self._last_status_epoch = 0.0
 
     def _apply_parameters_from_runner(self) -> None:
         p = self.parameters if isinstance(self.parameters, dict) else {}
@@ -93,6 +100,7 @@ class OperationMain(Operation):
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
         self.scan_interval_s = max(0.2, float(p.get("scan_interval_s", p.get("wifi_refresh_interval", self.scan_interval_s))))
         self.reemit_interval_s = max(0.0, float(p.get("reemit_interval_s", self.reemit_interval_s)))
+        self.max_emit_rate_hz = max(0.1, float(p.get("max_emit_rate_hz", self.max_emit_rate_hz)))
         self.alert_on_new_detection = _to_bool(p.get("alert_on_new_detection", p.get("alert_on_new_target", self.alert_on_new_detection)), self.alert_on_new_detection)
         self.resource_args = {"wifi_interface": self.wifi_interface}
 
@@ -257,6 +265,7 @@ class OperationMain(Operation):
                     channel = None
 
                 rssi = float(r[8].strip()) if r[8].strip() else None
+                source_last_seen = r[2].strip()
                 ssid = r[13].strip(" ,\t\r\n")
                 if ssid.lower() in {"<hidden>", "broadcast", "unknown"}:
                     ssid = ""
@@ -271,6 +280,7 @@ class OperationMain(Operation):
                     "frequency_mhz": frequency_mhz,
                     "rssi_dbm": rssi,
                     "encryption": r[5].strip(),
+                    "source_last_seen": source_last_seen,
                 })
             except Exception:
                 continue
@@ -348,6 +358,21 @@ class OperationMain(Operation):
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, lambda: func(*args, **kwargs))
 
+    def _take_emit_budget(self) -> int:
+        now = time.monotonic()
+        elapsed = max(0.0, now - self._emit_token_time)
+        self._emit_token_time = now
+
+        burst_capacity = min(
+            float(self.max_emit_burst),
+            max(1.0, float(self.max_emit_rate_hz)),
+        )
+        self._emit_tokens = min(
+            burst_capacity,
+            self._emit_tokens + elapsed * self.max_emit_rate_hz,
+        )
+        return int(self._emit_tokens)
+    
     async def _emit_detection(self, row: Dict[str, Any], *, first_seen: bool) -> None:
         if not self.detection_callback:
             return
@@ -418,6 +443,14 @@ class OperationMain(Operation):
             if not self.detection_callback:
                 raise RuntimeError("wifi_discovery_edge_light requires detection_callback")
 
+            burst_capacity = min(
+                float(self.max_emit_burst),
+                max(1.0, float(self.max_emit_rate_hz)),
+            )
+            self._emit_tokens = burst_capacity
+            self._emit_token_time = time.monotonic()
+            self._last_status_epoch = 0.0
+
             await self._set_status("Discovering Wi-Fi")
             gps_task = asyncio.create_task(self._gps_loop())
             self._airodump_proc, self._airodump_iface_in_use = await self._start_airodump()
@@ -427,11 +460,19 @@ class OperationMain(Operation):
             while not self._should_stop():
                 rows = await self._to_thread_compat(self._read_airodump_rows_once)
                 now = time.time()
+                candidates = []
 
                 for row in rows:
                     bssid_norm = row.get("bssid_norm", "")
                     if not bssid_norm:
                         continue
+
+                    source_last_seen = str(row.get("source_last_seen") or "").strip()
+                    if source_last_seen:
+                        previous_source_seen = self._last_source_seen_by_bssid.get(bssid_norm)
+                        if previous_source_seen == source_last_seen:
+                            continue
+                        self._last_source_seen_by_bssid[bssid_norm] = source_last_seen
 
                     first_seen = bssid_norm not in self._seen_bssids
                     last_emit = self._last_emit_by_bssid.get(bssid_norm, 0.0)
@@ -441,13 +482,42 @@ class OperationMain(Operation):
                     ):
                         continue
 
-                    self._seen_bssids.add(bssid_norm)
-                    self._last_emit_by_bssid[bssid_norm] = now
-                    await self._emit_detection(row, first_seen=first_seen)
+                    candidates.append((first_seen, row))
 
-                await self._set_status(
-                    f"Discovering Wi-Fi: {len(self._seen_bssids)} BSSIDs"
+                # Light discovery is intentionally live and bounded, not exhaustive.
+                # New BSSIDs are preferred, then stronger RSSI. Anything that
+                # cannot fit in the current output budget is reconsidered only
+                # when airodump reports that BSSID as seen again.
+                candidates.sort(
+                    key=lambda item: (
+                        0 if item[0] else 1,
+                        -float(item[1].get("rssi_dbm"))
+                        if item[1].get("rssi_dbm") is not None
+                        else float("inf"),
+                    )
                 )
+
+                budget = self._take_emit_budget()
+                for first_seen, row in candidates[:budget]:
+                    if self._should_stop():
+                        break
+
+                    bssid_norm = row["bssid_norm"]
+                    await self._emit_detection(row, first_seen=first_seen)
+                    self._seen_bssids.add(bssid_norm)
+                    self._last_emit_by_bssid[bssid_norm] = time.time()
+                    self._emit_tokens = max(0.0, self._emit_tokens - 1.0)
+
+                    # Give stop/status/control traffic an opportunity to run
+                    # between individual detection deliveries.
+                    await asyncio.sleep(0)
+
+                if (now - self._last_status_epoch) >= self.status_interval_s:
+                    self._last_status_epoch = now
+                    await self._set_status(
+                        f"Discovering Wi-Fi: {len(self._seen_bssids)} BSSIDs"
+                    )
+
                 await asyncio.sleep(self.scan_interval_s)
         except asyncio.CancelledError:
             raise
@@ -455,7 +525,6 @@ class OperationMain(Operation):
             self.logger.exception(f"Wi-Fi light discovery error: {exc}")
         finally:
             await self._stop_runtime(gps_task)
-
 
 
 if __name__ == "__main__":

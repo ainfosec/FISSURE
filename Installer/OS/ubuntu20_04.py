@@ -2287,16 +2287,17 @@ programs_ubuntu20_04.append(('nwdiag (30.3 MB)',
 packetdiag -h
 """,True,'Data'))
 
-# HamClock
-programs_ubuntu20_04.append(('HamClock (52.7 MB)',
+# OpenHamClock
+programs_ubuntu20_04.append(('OpenHamClock',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
-unzip -q ESPHamClock.zip
-rm ESPHamClock.zip
-cd ESPHamClock
-make install hamclock-1600x960
-sudo make install hamclock-1600x960
+rm -rf hamclock
+if timeout 120 git clone --depth 1 https://github.com/openhamclock/hamclock.git; then
+    cd hamclock/ESPHamClock
+    make hamclock-1600x960 && sudo make install
+else
+    echo "OpenHamClock download failed or timed out."
+fi
 ########## Verify ##########
 ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))

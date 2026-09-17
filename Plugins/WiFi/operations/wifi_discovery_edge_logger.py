@@ -78,9 +78,10 @@ class OperationMain(Operation):
         self.gpsd_port = 2947
         self.scan_interval_s = 0.5
         self.observation_interval_s = 2.0
-        self.batch_unique_devices = 500
+        self.batch_unique_devices = 0
         self.batch_observation_rows = 5000
         self.batch_duration_s = 300.0
+        self.status_interval_s = 5.0
         self.alert_every_unique = 0
         self.alert_on_batch = False
         self.artifact_name_prefix = "Wi-Fi Wardrive Batch"
@@ -91,7 +92,9 @@ class OperationMain(Operation):
         self._batch_observations: List[Dict[str, Any]] = []
         self._seen_bssids_total: Set[str] = set()
         self._last_observation_time_by_bssid: Dict[str, float] = {}
+        self._last_source_seen_by_bssid: Dict[str, str] = {}
         self._last_alert_unique_count = 0
+        self._last_status_epoch = 0.0
         self._batch_index = 0
         self._batch_started_epoch = time.time()
         self._run_id = str(uuid.uuid4())
@@ -107,7 +110,7 @@ class OperationMain(Operation):
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
         self.scan_interval_s = max(0.2, float(p.get("scan_interval_s", p.get("wifi_refresh_interval", self.scan_interval_s))))
         self.observation_interval_s = max(0.0, float(p.get("observation_interval_s", p.get("min_log_interval_s", self.observation_interval_s))))
-        self.batch_unique_devices = max(1, int(p.get("batch_unique_devices", self.batch_unique_devices)))
+        self.batch_unique_devices = max(0, int(p.get("batch_unique_devices", self.batch_unique_devices)))
         self.batch_observation_rows = max(1, int(p.get("batch_observation_rows", self.batch_observation_rows)))
         self.batch_duration_s = max(0.0, float(p.get("batch_duration_s", self.batch_duration_s)))
         self.alert_every_unique = max(0, int(p.get("alert_every_unique", self.alert_every_unique)))
@@ -298,6 +301,7 @@ class OperationMain(Operation):
 
                 rssi = float(r[8].strip()) if r[8].strip() else None
                 beacon_count = int(float(r[9].strip())) if r[9].strip() else None
+                source_last_seen = r[2].strip()
                 ssid = r[13].strip(" ,\t\r\n")
                 if ssid.lower() in {"<hidden>", "broadcast", "unknown"}:
                     ssid = ""
@@ -313,6 +317,7 @@ class OperationMain(Operation):
                     "rssi_dbm": rssi,
                     "encryption": r[5].strip(),
                     "beacon_count": beacon_count,
+                    "source_last_seen": source_last_seen,
                 })
             except Exception:
                 continue
@@ -353,9 +358,17 @@ class OperationMain(Operation):
         if not bssid_norm:
             return False
 
+        source_last_seen = str(row.get("source_last_seen") or "").strip()
+        if source_last_seen:
+            previous_source_seen = self._last_source_seen_by_bssid.get(bssid_norm)
+            if previous_source_seen == source_last_seen:
+                return False
+            self._last_source_seen_by_bssid[bssid_norm] = source_last_seen
+
         last = self._last_observation_time_by_bssid.get(bssid_norm)
         if last is not None and self.observation_interval_s > 0 and (now_epoch - last) < self.observation_interval_s:
             return False
+
         self._last_observation_time_by_bssid[bssid_norm] = now_epoch
 
         lat = self._current_position.get("lat")
@@ -567,7 +580,6 @@ class OperationMain(Operation):
 
         self._batch_summaries.clear()
         self._batch_observations.clear()
-        self._last_observation_time_by_bssid.clear()
         self._batch_index = next_batch_index
         self._batch_started_epoch = time.time()
 
@@ -598,7 +610,7 @@ class OperationMain(Operation):
             )
 
     async def _maybe_flush_batch(self, now_epoch: float) -> None:
-        if len(self._batch_summaries) >= self.batch_unique_devices:
+        if self.batch_unique_devices > 0 and len(self._batch_summaries) >= self.batch_unique_devices:
             await self._flush_batch("unique-device limit")
         elif len(self._batch_observations) >= self.batch_observation_rows:
             await self._flush_batch("observation-row limit")
@@ -674,11 +686,15 @@ class OperationMain(Operation):
                     self._record_observation(row, now)
 
                 await self._maybe_flush_batch(now)
-                gps_state = "GPS" if self._current_position.get("lat") is not None and self._current_position.get("lon") is not None else "no GPS"
-                await self._set_status(
-                    f"Wi-Fi logger: {len(self._seen_bssids_total)} unique total, "
-                    f"{len(self._batch_summaries)} current BSSIDs, {len(self._batch_observations)} observations ({gps_state})"
-                )
+
+                if (now - self._last_status_epoch) >= self.status_interval_s:
+                    self._last_status_epoch = now
+                    gps_state = "GPS" if self._current_position.get("lat") is not None and self._current_position.get("lon") is not None else "no GPS"
+                    await self._set_status(
+                        f"Wi-Fi logger: {len(self._seen_bssids_total)} unique total, "
+                        f"{len(self._batch_summaries)} current BSSIDs, {len(self._batch_observations)} observations ({gps_state})"
+                    )
+
                 await asyncio.sleep(self.scan_interval_s)
         except asyncio.CancelledError:
             raise

@@ -76,6 +76,7 @@ class OperationMain(Operation):
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
         self.gpsd_host = "127.0.0.1"
         self.gpsd_port = 2947
+        self.gps_max_age_s = 3.0
         self.meas_every_s = 0.5
         self.emit_every_s = 1.0
         self.aggregation_window_s = 3.0
@@ -83,7 +84,12 @@ class OperationMain(Operation):
         self.auto_create_targets = True
         self.target_bssids: Dict[str, str] = {}
         self._gps_stop = asyncio.Event()
-        self._current_position = {"lat": None, "lon": None, "alt": 0.0}
+        self._current_position = {
+            "lat": None,
+            "lon": None,
+            "alt": 0.0,
+            "updated_monotonic": 0.0,
+        }
         self._airodump_proc = None
         self._airodump_iface_in_use = None
         self._announced_targets: Set[str] = set()
@@ -100,6 +106,7 @@ class OperationMain(Operation):
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
         self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host) or self.gpsd_host)
         self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
+        self.gps_max_age_s = max(1.0, float(p.get("gps_max_age_s", self.gps_max_age_s)))
         self.meas_every_s = max(0.2, float(p.get("meas_every_s", p.get("wifi_refresh_interval", self.meas_every_s))))
         self.emit_every_s = max(0.2, float(p.get("emit_every_s", p.get("min_detection_interval_s", self.emit_every_s))))
         self.aggregation_window_s = max(self.emit_every_s, float(p.get("aggregation_window_s", self.aggregation_window_s)))
@@ -127,6 +134,14 @@ class OperationMain(Operation):
 
         self.resource_args = {"wifi_interface": self.wifi_interface}
 
+    def _gps_position_is_fresh(self) -> bool:
+        lat = self._current_position.get("lat")
+        lon = self._current_position.get("lon")
+        updated = float(self._current_position.get("updated_monotonic") or 0.0)
+        if lat is None or lon is None or updated <= 0.0:
+            return False
+        return (time.monotonic() - updated) <= self.gps_max_age_s
+    
     def _should_stop(self) -> bool:
         if getattr(self, "_stop", False):
             return True
@@ -329,7 +344,12 @@ class OperationMain(Operation):
                             lat, lon = msg.get("lat"), msg.get("lon")
                             alt = msg.get("altMSL") or msg.get("altHAE") or 0.0
                             if lat is not None and lon is not None:
-                                self._current_position.update({"lat": float(lat), "lon": float(lon), "alt": float(alt)})
+                                self._current_position.update({
+                                    "lat": float(lat),
+                                    "lon": float(lon),
+                                    "alt": float(alt),
+                                    "updated_monotonic": time.monotonic(),
+                                })
                 writer.close()
                 await writer.wait_closed()
             except Exception as exc:
@@ -543,7 +563,7 @@ class OperationMain(Operation):
         return target_id
 
     async def _emit_detection(self, target_id: str, row: Dict[str, Any], rssi_dbm: float, sample_count: int) -> None:
-        if not self.detection_callback:
+        if not self.detection_callback or not self._gps_position_is_fresh():
             return
 
         lat = self._current_position.get("lat")
@@ -607,8 +627,8 @@ class OperationMain(Operation):
             while not self._should_stop():
                 lat = self._current_position.get("lat")
                 lon = self._current_position.get("lon")
-                if lat is None or lon is None:
-                    await self._set_status(f"Wi-Fi locate all: {mode_text}; waiting for GPS")
+                if lat is None or lon is None or not self._gps_position_is_fresh():
+                    await self._set_status(f"Wi-Fi locate all: {mode_text}; waiting for fresh GPS")
                     await asyncio.sleep(self.meas_every_s)
                     continue
 
