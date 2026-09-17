@@ -49,9 +49,9 @@ wifi_discovery_edge_light_schema = {
         },
         {
             "name": "reemit_interval_s",
-            "label": "BSSID Re-emit Interval (s)",
+            "label": "BSSID Re-emit Interval (s, 0=Off)",
             "type": "number",
-            "default": 15.0,
+            "default": 0.0,
         },
         {
             "name": "max_emit_rate_hz",
@@ -154,7 +154,6 @@ async def wifi_discovery_edge_oui(
     )
 
 
-
 wifi_discovery_edge_logger_schema = {
     "params": _COMMON_WIFI_PARAMS + [
         {
@@ -164,28 +163,28 @@ wifi_discovery_edge_logger_schema = {
             "default": 0.5,
         },
         {
-            "name": "observation_interval_s",
-            "label": "BSSID Observation Interval (s)",
+            "name": "observation_max_gap_s",
+            "label": "Max Observation Gap (s)",
             "type": "number",
-            "default": 2.0,
+            "default": 10.0,
         },
         {
-            "name": "batch_unique_devices",
-            "label": "Batch Unique BSSIDs (0=Off)",
+            "name": "observation_distance_m",
+            "label": "Observation Distance (m)",
             "type": "number",
-            "default": 0,
+            "default": 20.0,
         },
         {
-            "name": "batch_observation_rows",
-            "label": "Batch Observation Rows",
+            "name": "observation_rssi_change_db",
+            "label": "RSSI Change Threshold (dB)",
             "type": "number",
-            "default": 5000,
+            "default": 8.0,
         },
         {
-            "name": "batch_duration_s",
-            "label": "Batch Duration (s)",
+            "name": "artifact_rollover_mb",
+            "label": "Artifact Rollover (MB, 0=Off)",
             "type": "number",
-            "default": 300.0,
+            "default": 250.0,
         },
         {
             "name": "alert_every_unique",
@@ -194,8 +193,8 @@ wifi_discovery_edge_logger_schema = {
             "default": 0,
         },
         {
-            "name": "alert_on_batch",
-            "label": "Alert When Batch Saved",
+            "name": "alert_on_artifact",
+            "label": "Alert When Artifact Saved",
             "type": "string",
             "default": "false",
             "options": ["true", "false"],
@@ -204,7 +203,7 @@ wifi_discovery_edge_logger_schema = {
             "name": "artifact_name_prefix",
             "label": "Artifact Name Prefix",
             "type": "string",
-            "default": "Wi-Fi Wardrive Batch",
+            "default": "Wi-Fi Wardrive",
         },
     ]
 }
@@ -242,14 +241,14 @@ wifi_geolocate_target_schema = {
             "default": "",
         },
         {
-            "name": "emit_every_s",
-            "label": "Emit Interval (s)",
+            "name": "measurement_spacing_m",
+            "label": "Measurement Spacing (m)",
             "type": "number",
-            "default": 1.0,
+            "default": 20.0,
         },
         {
             "name": "meas_every_s",
-            "label": "Measurement Interval (s)",
+            "label": "Scan Refresh Interval (s)",
             "type": "number",
             "default": 0.2,
         },
@@ -258,13 +257,6 @@ wifi_geolocate_target_schema = {
             "label": "RSSI Median Window (s)",
             "type": "number",
             "default": 3.0,
-        },
-        {
-            "name": "search_similar_targets",
-            "label": "Search Similar Targets",
-            "type": "string",
-            "default": "false",
-            "options": ["true", "false"],
         },
     ]
 }
@@ -302,10 +294,10 @@ wifi_geolocate_all_schema = {
             "default": 25,
         },
         {
-            "name": "emit_every_s",
-            "label": "Observation Emit Interval (s)",
+            "name": "measurement_spacing_m",
+            "label": "Measurement Spacing (m)",
             "type": "number",
-            "default": 1.0,
+            "default": 20.0,
         },
         {
             "name": "meas_every_s",

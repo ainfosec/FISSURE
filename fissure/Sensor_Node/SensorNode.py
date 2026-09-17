@@ -297,6 +297,11 @@ class SensorNode(object):
         self.gps_valid = True
         self.gps_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         self.gps_stale = False
+        self.gps_updated_monotonic = (
+            time.monotonic()
+            if self.gps_source.strip().lower() == "saved"
+            else None
+        )
 
         self.operations = {} # operation tracking dictionary
 
@@ -633,6 +638,9 @@ class SensorNode(object):
                         "%Y-%m-%dT%H:%M:%S.%fZ"
                     )
 
+        location_valid = detection.get("location_valid")
+        allow_location_fallback = location_valid is not False
+
         lat = detection.get("latitude")
         if lat is None:
             lat = detection.get("lat")
@@ -649,14 +657,19 @@ class SensorNode(object):
         if alt is None:
             alt = detection.get("hae")
 
-        gps_position = getattr(self, "gps_position", {}) or {}
+        if not allow_location_fallback:
+            lat = None
+            lon = None
+            alt = None
+        else:
+            gps_position = getattr(self, "gps_position", {}) or {}
 
-        if lat is None:
-            lat = gps_position.get("latitude")
-        if lon is None:
-            lon = gps_position.get("longitude")
-        if alt is None:
-            alt = gps_position.get("altitude")
+            if lat is None:
+                lat = gps_position.get("latitude")
+            if lon is None:
+                lon = gps_position.get("longitude")
+            if alt is None:
+                alt = gps_position.get("altitude")
 
         if lat is not None:
             detection.setdefault("latitude", lat)
@@ -1347,6 +1360,7 @@ class SensorNode(object):
         parameters["soi_callback"] = self.send_soi_update
         parameters["recommendation_callback"] = self.send_recommendation
         parameters["inspection_callback"] = self.send_inspection
+        parameters["position_callback"] = self.get_current_position_snapshot
         parameters["artifact_manager"] = self.artifact_manager
         parameters["logger"] = self.logger
 
@@ -3025,6 +3039,57 @@ class SensorNode(object):
                 pass
 
 
+    def get_current_position_snapshot(self) -> Dict[str, Any]:
+        """
+        Return the Sensor Node's canonical cached position for plugin operations.
+
+        This never performs a blocking GPS read. gpsd updates the cache
+        continuously when selected; other sources retain their existing update
+        behavior. Saved coordinates are intentionally static and never become
+        stale merely because time has passed.
+        """
+        source = str(getattr(self, "gps_source", "") or "").strip()
+        source_lower = source.lower()
+        position = dict(getattr(self, "gps_position", {}) or {})
+
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        valid = bool(
+            getattr(self, "gps_valid", False)
+            and lat is not None
+            and lon is not None
+        )
+        stale = bool(getattr(self, "gps_stale", False))
+        age_s = None
+
+        if source_lower == "saved":
+            stale = False
+        elif source_lower == "gpsd":
+            updated = getattr(self, "gps_updated_monotonic", None)
+            if updated is None:
+                valid = False
+                stale = True
+            else:
+                age_s = max(0.0, time.monotonic() - float(updated))
+                if age_s > 3.0:
+                    valid = False
+                    stale = True
+        elif stale:
+            valid = False
+
+        return {
+            "source": source,
+            "valid": valid,
+            "stale": stale,
+            "latitude": lat if valid else None,
+            "longitude": lon if valid else None,
+            "altitude": alt if valid else None,
+            "gps_time": getattr(self, "gps_time", ""),
+            "age_s": age_s,
+        }
+    
+
     async def gpsUpdate(self, gps_data):
         """
         Cache GPS updates.
@@ -3055,8 +3120,12 @@ class SensorNode(object):
             self.gps_time = now_iso
             self.gps_stale = False
             self.gps_consecutive_failures = 0
+            self.gps_updated_monotonic = time.monotonic()
 
-            self.logger.info(f"Updating GPS position: {self.gps_position}")
+            if str(getattr(self, "gps_source", "")).strip().lower() == "gpsd":
+                self.logger.debug(f"Updating GPS position: {self.gps_position}")
+            else:
+                self.logger.info(f"Updating GPS position: {self.gps_position}")
 
         else:
             self.gps_consecutive_failures += 1
@@ -3359,15 +3428,121 @@ class GPSManager:
         return gps_data
 
 
+    async def _watch_gpsd(self):
+        """
+        Keep one gpsd WATCH connection open and refresh the Sensor Node cache
+        whenever gpsd publishes a valid TPV fix.
+
+        gps_update_interval_seconds remains the failure/stale reporting cadence;
+        it no longer limits gpsd acquisition frequency.
+        """
+        self.running = True
+        failure_interval_s = max(
+            5.0,
+            float(self.gps_update_interval_seconds),
+        )
+
+        while self.running:
+            writer = None
+            try:
+                reader, writer = await asyncio.open_connection(
+                    "127.0.0.1",
+                    2947,
+                )
+                writer.write(b'?WATCH={"enable":true,"json":true}\n')
+                await writer.drain()
+
+                self.logger.info(
+                    "Connected to gpsd live position stream."
+                )
+
+                buffer = ""
+                last_valid_monotonic = time.monotonic()
+                last_failure_callback = time.monotonic()
+
+                while self.running:
+                    try:
+                        data = await asyncio.wait_for(
+                            reader.read(4096),
+                            timeout=1.0,
+                        )
+                    except asyncio.TimeoutError:
+                        data = None
+
+                    if data == b"":
+                        raise ConnectionError("gpsd connection closed")
+
+                    if data:
+                        buffer += data.decode(errors="ignore")
+
+                        while "\n" in buffer:
+                            line, buffer = buffer.split("\n", 1)
+                            try:
+                                report = json.loads(line)
+                            except Exception:
+                                continue
+
+                            if (
+                                report.get("class") != "TPV"
+                                or report.get("mode", 0) < 2
+                            ):
+                                continue
+
+                            lat = report.get("lat")
+                            lon = report.get("lon")
+                            if lat is None or lon is None:
+                                continue
+
+                            alt = report.get("altMSL")
+                            if alt is None:
+                                alt = report.get("altHAE")
+                            if alt is None:
+                                alt = 0.0
+
+                            await self.gps_callback({
+                                "latitude": float(lat),
+                                "longitude": float(lon),
+                                "altitude": float(alt),
+                            })
+                            last_valid_monotonic = time.monotonic()
+                            last_failure_callback = last_valid_monotonic
+
+                    now = time.monotonic()
+                    if (
+                        now - last_valid_monotonic >= failure_interval_s
+                        and now - last_failure_callback >= failure_interval_s
+                    ):
+                        await self.gps_callback(None)
+                        last_failure_callback = now
+
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                if self.running:
+                    self.logger.warning(
+                        f"gpsd live position stream unavailable: {e}"
+                    )
+                    await self.gps_callback(None)
+                    await asyncio.sleep(2.0)
+            finally:
+                if writer is not None:
+                    try:
+                        writer.close()
+                        await writer.wait_closed()
+                    except Exception:
+                        pass
+
+
     async def periodic_gps_update(self, gps_source, meshtastic_node):
-        """Periodically updates GPS position from available sources."""
+        """Update the configured GPS source without coupling acquisition to heartbeat."""
+        if str(gps_source).strip().lower() == "gpsd":
+            await self._watch_gpsd()
+            return
+
         self.running = True
         while self.running:
             gps_data = await self._fetch_gps_once(gps_source, meshtastic_node)
-
-            # Send new GPS data to the callback function
             await self.gps_callback(gps_data)
-
             await asyncio.sleep(self.gps_update_interval_seconds)
 
 

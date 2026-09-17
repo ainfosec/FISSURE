@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 import time
-from typing import Any, Callable, Dict, Union
+from typing import Callable, Union
 
 PLUGIN_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 FISSURE_ROOT = os.path.abspath(os.path.join(PLUGIN_ROOT, "..", ".."))
@@ -41,20 +41,6 @@ async def _emit_detection(operation, detector, description, extra=None):
         operation.logger.warning("%s has no detection_callback", detector)
 
 
-async def _run_blocking(func, *args):
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, lambda: func(*args))
-
-import gpsd
-
-
-def _get_current_position():
-    packet = gpsd.get_current()
-    if getattr(packet, "mode", 0) < 2:
-        return None
-    return float(packet.lat), float(packet.lon)
-
-
 class OperationMain(Operation):
     def __init__(
         self,
@@ -68,8 +54,16 @@ class OperationMain(Operation):
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
         detection_callback: Union[Callable, None] = None,
+        position_callback: Union[Callable, None] = None,
     ) -> None:
-        super().__init__(node_uid=node_uid, logger=logger, alert_callback=alert_callback, tak_cot_callback=tak_cot_callback, detection_callback=detection_callback)
+        super().__init__(
+            node_uid=node_uid,
+            logger=logger,
+            alert_callback=alert_callback,
+            tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
+            position_callback=position_callback,
+        )
         self.latitude = None if str(latitude) in {"", "None", "none"} else float(latitude)
         self.longitude = None if str(longitude) in {"", "None", "none"} else float(longitude)
         self.comparison = str(comparison or ">").strip()
@@ -86,13 +80,28 @@ class OperationMain(Operation):
         if self.latitude is None and self.longitude is None:
             raise ValueError("latitude or longitude threshold is required")
 
-        await _run_blocking(gpsd.connect)
         while not self._stop:
             try:
-                current = await _run_blocking(_get_current_position)
-                if current and self._crossed(current):
-                    await _emit_detection(self, "gps_line", self.description, {"latitude": current[0], "longitude": current[1], "latitude_threshold": self.latitude, "longitude_threshold": self.longitude, "comparison": self.comparison})
-                    return
+                position = self.position_callback()
+                if position and position.get("valid"):
+                    current = (
+                        float(position["latitude"]),
+                        float(position["longitude"]),
+                    )
+                    if self._crossed(current):
+                        await _emit_detection(
+                            self,
+                            "gps_line",
+                            self.description,
+                            {
+                                "latitude": current[0],
+                                "longitude": current[1],
+                                "latitude_threshold": self.latitude,
+                                "longitude_threshold": self.longitude,
+                                "comparison": self.comparison,
+                            },
+                        )
+                        return
             except Exception:
                 self.logger.exception("GPS line check failed")
 

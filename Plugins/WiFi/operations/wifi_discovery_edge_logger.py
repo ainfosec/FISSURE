@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """FISSURE - Dense Wi-Fi Wardrive Logger
 
-High-volume Wi-Fi collection for driving, walking, and drone surveys. Keeps the
-large observation stream local and writes bounded summary/observation batches
-directly into FISSURE Artifacts. It does not create Detections, Targets, or
+High-volume Wi-Fi collection for driving, walking, and drone surveys. Keeps
+collection local during the run, maintains one run-wide BSSID summary, records
+only spatially or RF-useful observations, and normally creates one Artifact
+when the operation stops. It does not create Detections, Targets, or
 geolocation solutions.
 """
 
@@ -12,6 +13,7 @@ import csv
 import glob
 import json
 import logging
+import math
 import os
 import shutil
 import subprocess
@@ -66,56 +68,152 @@ def _channel_info(channel: Optional[int]) -> Tuple[str, Optional[float]]:
 
 
 class OperationMain(Operation):
-    def __init__(self, node_uid: str = "", logger: logging.Logger = logging.getLogger(__name__), alert_callback: Union[Callable, None] = None, tak_cot_callback=None, status_callback: Union[Callable, None] = None, target_callback=None, artifact_manager=None, parameters: Optional[Dict[str, Any]] = None) -> None:
-        super().__init__(node_uid=node_uid, logger=logger, alert_callback=alert_callback, tak_cot_callback=tak_cot_callback, status_callback=status_callback, target_callback=target_callback, artifact_manager=artifact_manager)
+    def __init__(
+        self,
+        node_uid: str = "",
+        logger: logging.Logger = logging.getLogger(__name__),
+        alert_callback: Union[Callable, None] = None,
+        tak_cot_callback=None,
+        status_callback: Union[Callable, None] = None,
+        target_callback=None,
+        position_callback=None,
+        artifact_manager=None,
+        parameters: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        super().__init__(
+            node_uid=node_uid,
+            logger=logger,
+            alert_callback=alert_callback,
+            tak_cot_callback=tak_cot_callback,
+            status_callback=status_callback,
+            target_callback=target_callback,
+            position_callback=position_callback,
+            artifact_manager=artifact_manager,
+        )
         self.parameters = parameters or {}
         self.source_id = str(node_uid or "").strip() or "sensor_node"
         self.wifi_interface = "wlx00c0caa744fc"
         self.mon_suffix = MON_SUFFIX_DEFAULT
         self.airo_prefix = "/tmp/airodump"
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
-        self.gpsd_host = "127.0.0.1"
-        self.gpsd_port = 2947
+
         self.scan_interval_s = 0.5
-        self.observation_interval_s = 2.0
-        self.batch_unique_devices = 0
-        self.batch_observation_rows = 5000
-        self.batch_duration_s = 300.0
+        self.observation_max_gap_s = 10.0
+        self.observation_distance_m = 20.0
+        self.observation_rssi_change_db = 8.0
+        self.artifact_rollover_mb = 250.0
         self.status_interval_s = 5.0
+        self.checkpoint_interval_s = 30.0
         self.alert_every_unique = 0
-        self.alert_on_batch = False
-        self.artifact_name_prefix = "Wi-Fi Wardrive Batch"
-        self._gps_stop = asyncio.Event()
-        self._current_position = {"lat": None, "lon": None, "alt": 0.0}
+        self.alert_on_artifact = False
+        self.artifact_name_prefix = "Wi-Fi Wardrive"
+
         self._airodump_proc: Optional[asyncio.subprocess.Process] = None
-        self._batch_summaries: Dict[str, Dict[str, Any]] = {}
-        self._batch_observations: List[Dict[str, Any]] = []
+        self._run_id = str(uuid.uuid4())
+        self._run_started_epoch = time.time()
+        self._run_stamp = time.strftime(
+            "%Y%m%d_%H%M%S",
+            time.gmtime(self._run_started_epoch),
+        )
+
+        self._summaries: Dict[str, Dict[str, Any]] = {}
         self._seen_bssids_total: Set[str] = set()
-        self._last_observation_time_by_bssid: Dict[str, float] = {}
+        self._seen_ssids_total: Set[str] = set()
         self._last_source_seen_by_bssid: Dict[str, str] = {}
+        self._last_logged_by_bssid: Dict[str, Dict[str, Any]] = {}
+        self._raw_sighting_count_total = 0
+        self._logged_observation_count_total = 0
+
         self._last_alert_unique_count = 0
         self._last_status_epoch = 0.0
-        self._batch_index = 0
-        self._batch_started_epoch = time.time()
-        self._run_id = str(uuid.uuid4())
+        self._last_checkpoint_epoch = 0.0
+
+        self._part_index = 0
+        self._part_operation_id = ""
+        self._part_folder = ""
+        self._part_started_epoch = 0.0
+        self._part_observation_count = 0
+        self._part_observation_path = ""
+        self._part_summary_path = ""
+        self._part_metadata_path = ""
+        self._observation_file = None
+        self._observation_writer = None
+        self._artifact_ids: List[str] = []
 
     def _apply_parameters_from_runner(self) -> None:
         p = self.parameters if isinstance(self.parameters, dict) else {}
-        self.source_id = str(p.get("source_id") or p.get("node_uid") or self.node_uid or "sensor_node").strip()
-        self.wifi_interface = str(p.get("wifi_interface", self.wifi_interface) or self.wifi_interface)
-        self.mon_suffix = str(p.get("mon_suffix", self.mon_suffix) or self.mon_suffix)
-        self.airo_prefix = str(p.get("airo_prefix", self.airo_prefix) or self.airo_prefix)
+        self.source_id = str(
+            p.get("source_id")
+            or p.get("node_uid")
+            or self.node_uid
+            or "sensor_node"
+        ).strip()
+        self.wifi_interface = str(
+            p.get("wifi_interface", self.wifi_interface)
+            or self.wifi_interface
+        )
+        self.mon_suffix = str(
+            p.get("mon_suffix", self.mon_suffix)
+            or self.mon_suffix
+        )
+        self.airo_prefix = str(
+            p.get("airo_prefix", self.airo_prefix)
+            or self.airo_prefix
+        )
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
-        self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host) or self.gpsd_host)
-        self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
-        self.scan_interval_s = max(0.2, float(p.get("scan_interval_s", p.get("wifi_refresh_interval", self.scan_interval_s))))
-        self.observation_interval_s = max(0.0, float(p.get("observation_interval_s", p.get("min_log_interval_s", self.observation_interval_s))))
-        self.batch_unique_devices = max(0, int(p.get("batch_unique_devices", self.batch_unique_devices)))
-        self.batch_observation_rows = max(1, int(p.get("batch_observation_rows", self.batch_observation_rows)))
-        self.batch_duration_s = max(0.0, float(p.get("batch_duration_s", self.batch_duration_s)))
-        self.alert_every_unique = max(0, int(p.get("alert_every_unique", self.alert_every_unique)))
-        self.alert_on_batch = _to_bool(p.get("alert_on_batch", self.alert_on_batch), self.alert_on_batch)
-        self.artifact_name_prefix = str(p.get("artifact_name_prefix", self.artifact_name_prefix) or self.artifact_name_prefix)
+
+        self.scan_interval_s = max(
+            0.2,
+            float(p.get("scan_interval_s", self.scan_interval_s)),
+        )
+        self.observation_max_gap_s = max(
+            0.0,
+            float(
+                p.get(
+                    "observation_max_gap_s",
+                    self.observation_max_gap_s,
+                )
+            ),
+        )
+        self.observation_distance_m = max(
+            0.0,
+            float(
+                p.get(
+                    "observation_distance_m",
+                    self.observation_distance_m,
+                )
+            ),
+        )
+        self.observation_rssi_change_db = max(
+            0.0,
+            float(
+                p.get(
+                    "observation_rssi_change_db",
+                    self.observation_rssi_change_db,
+                )
+            ),
+        )
+        self.artifact_rollover_mb = max(
+            0.0,
+            float(
+                p.get(
+                    "artifact_rollover_mb",
+                    self.artifact_rollover_mb,
+                )
+            ),
+        )
+        self.alert_every_unique = max(
+            0,
+            int(p.get("alert_every_unique", self.alert_every_unique)),
+        )
+        self.alert_on_artifact = _to_bool(
+            p.get("alert_on_artifact", self.alert_on_artifact),
+            self.alert_on_artifact,
+        )
+        self.artifact_name_prefix = str(
+            p.get("artifact_name_prefix", self.artifact_name_prefix)
+            or self.artifact_name_prefix
+        )
         self.resource_args = {"wifi_interface": self.wifi_interface}
 
     def _should_stop(self) -> bool:
@@ -240,7 +338,10 @@ class OperationMain(Operation):
             self._iface(["sudo", "ip", "link", "set", mon, "up"])
             use = mon
         else:
-            self.logger.warning(f"Monitor sub-interface create failed: {(add.stderr or '').strip()}")
+            self.logger.info(
+                f"Monitor sub-interface unavailable; using {self.wifi_interface} "
+                f"directly in monitor mode"
+            )
             self._iface(["sudo", "ip", "link", "set", self.wifi_interface, "down"])
             self._iface(["sudo", "iw", "dev", self.wifi_interface, "set", "type", "monitor"])
             self._iface(["sudo", "ip", "link", "set", self.wifi_interface, "up"])
@@ -323,69 +424,255 @@ class OperationMain(Operation):
                 continue
         return out
 
-    async def _gps_loop(self) -> None:
-        buf = ""
-        while not self._should_stop() and not self._gps_stop.is_set():
-            try:
-                reader, writer = await asyncio.open_connection(self.gpsd_host, self.gpsd_port)
-                writer.write(b'?WATCH={"enable":true,"json":true}\n')
-                await writer.drain()
-                while not self._should_stop() and not self._gps_stop.is_set():
-                    data = await reader.read(4096)
-                    if not data:
-                        await asyncio.sleep(0.5)
-                        continue
-                    buf += data.decode(errors="ignore")
-                    while "\n" in buf:
-                        line, buf = buf.split("\n", 1)
-                        try:
-                            msg = json.loads(line)
-                        except Exception:
-                            continue
-                        if msg.get("class") == "TPV" and msg.get("mode", 0) >= 2:
-                            lat, lon = msg.get("lat"), msg.get("lon")
-                            alt = msg.get("altMSL") or msg.get("altHAE") or 0.0
-                            if lat is not None and lon is not None:
-                                self._current_position.update({"lat": float(lat), "lon": float(lon), "alt": float(alt)})
-                writer.close()
-                await writer.wait_closed()
-            except Exception as exc:
-                self.logger.debug(f"GPS unavailable: {exc}")
-                await asyncio.sleep(2.0)
+    def _snapshot_position(self) -> Dict[str, Any]:
+        try:
+            position = self.position_callback()
+        except Exception as exc:
+            self.logger.warning(f"Position callback failed: {exc}")
+            return {"location_valid": False, "location_source": ""}
 
-    def _record_observation(self, row: Dict[str, Any], now_epoch: float) -> bool:
-        bssid_norm = row.get("bssid_norm", "")
-        if not bssid_norm:
-            return False
+        if not isinstance(position, dict) or not position.get("valid", False):
+            return {
+                "location_valid": False,
+                "location_source": str(
+                    position.get("source") or ""
+                    if isinstance(position, dict)
+                    else ""
+                ),
+            }
 
-        source_last_seen = str(row.get("source_last_seen") or "").strip()
-        if source_last_seen:
-            previous_source_seen = self._last_source_seen_by_bssid.get(bssid_norm)
-            if previous_source_seen == source_last_seen:
-                return False
-            self._last_source_seen_by_bssid[bssid_norm] = source_last_seen
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        if lat is None or lon is None:
+            return {
+                "location_valid": False,
+                "location_source": str(position.get("source") or ""),
+            }
 
-        last = self._last_observation_time_by_bssid.get(bssid_norm)
-        if last is not None and self.observation_interval_s > 0 and (now_epoch - last) < self.observation_interval_s:
-            return False
+        return {
+            "location_valid": True,
+            "location_source": str(position.get("source") or ""),
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude_m": float(alt or 0.0),
+        }
 
-        self._last_observation_time_by_bssid[bssid_norm] = now_epoch
+    @staticmethod
+    def _distance_m(
+        lat1: float,
+        lon1: float,
+        lat2: float,
+        lon2: float,
+    ) -> float:
+        radius_m = 6371000.0
+        phi1 = math.radians(lat1)
+        phi2 = math.radians(lat2)
+        dphi = math.radians(lat2 - lat1)
+        dlambda = math.radians(lon2 - lon1)
+        a = (
+            math.sin(dphi / 2.0) ** 2
+            + math.cos(phi1)
+            * math.cos(phi2)
+            * math.sin(dlambda / 2.0) ** 2
+        )
+        return radius_m * 2.0 * math.atan2(
+            math.sqrt(a),
+            math.sqrt(max(0.0, 1.0 - a)),
+        )
 
-        lat = self._current_position.get("lat")
-        lon = self._current_position.get("lon")
-        alt = self._current_position.get("alt")
-        now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(now_epoch))
+    def _observation_reason(
+        self,
+        bssid_norm: str,
+        now_epoch: float,
+        position: Dict[str, Any],
+        rssi_dbm: Optional[float],
+    ) -> str:
+        previous = self._last_logged_by_bssid.get(bssid_norm)
+        if previous is None:
+            return "new_bssid"
+
+        previous_valid = bool(previous.get("location_valid", False))
+        current_valid = bool(position.get("location_valid", False))
+
+        if previous_valid != current_valid:
+            return "location_state_changed"
+
+        if (
+            previous_valid
+            and current_valid
+            and self.observation_distance_m > 0
+        ):
+            distance = self._distance_m(
+                float(previous["latitude"]),
+                float(previous["longitude"]),
+                float(position["latitude"]),
+                float(position["longitude"]),
+            )
+            if distance >= self.observation_distance_m:
+                return "receiver_moved"
+
+        previous_rssi = previous.get("rssi_dbm")
+        if (
+            rssi_dbm is not None
+            and previous_rssi is not None
+            and self.observation_rssi_change_db > 0
+            and abs(float(rssi_dbm) - float(previous_rssi))
+            >= self.observation_rssi_change_db
+        ):
+            return "rssi_changed"
+
+        if self.observation_max_gap_s > 0:
+            elapsed = now_epoch - float(previous.get("timestamp_epoch", 0.0))
+            if elapsed >= self.observation_max_gap_s:
+                return "time_gap"
+
+        return ""
+
+    def _observation_fields(self) -> List[str]:
+        return [
+            "run_id",
+            "part_index",
+            "timestamp_iso",
+            "timestamp_epoch",
+            "source_last_seen",
+            "node_uid",
+            "source_id",
+            "latitude",
+            "longitude",
+            "altitude_m",
+            "location_valid",
+            "location_source",
+            "bssid",
+            "ssid",
+            "rssi_dbm",
+            "channel",
+            "band",
+            "frequency_mhz",
+            "encryption",
+            "beacon_count",
+            "reason",
+            "location_semantics",
+        ]
+
+    def _summary_fields(self) -> List[str]:
+        return [
+            "run_id",
+            "node_uid",
+            "source_id",
+            "bssid",
+            "ssid",
+            "first_seen_iso",
+            "first_seen_epoch",
+            "first_latitude",
+            "first_longitude",
+            "first_location_source",
+            "last_seen_iso",
+            "last_seen_epoch",
+            "last_latitude",
+            "last_longitude",
+            "last_location_source",
+            "strongest_seen_iso",
+            "strongest_seen_epoch",
+            "strongest_rssi_dbm",
+            "strongest_latitude",
+            "strongest_longitude",
+            "strongest_location_source",
+            "latest_rssi_dbm",
+            "raw_sighting_count",
+            "logged_observation_count",
+            "channel",
+            "band",
+            "frequency_mhz",
+            "encryption",
+            "latest_beacon_count",
+            "latest_source_last_seen",
+        ]
+
+    def _start_part(self) -> None:
+        self._part_index += 1
+        self._part_operation_id = str(uuid.uuid4())
+        self._part_started_epoch = time.time()
+        self._part_observation_count = 0
+
+        if self.artifact_manager:
+            _, self._part_folder = self.artifact_manager.create_operation_dir(
+                self._part_operation_id
+            )
+        else:
+            self._part_folder = os.path.join(
+                "/tmp",
+                f"fissure_wifi_wardrive_{self._run_id}",
+                f"part_{self._part_index:04d}",
+            )
+            os.makedirs(self._part_folder, exist_ok=True)
+
+        self._part_observation_path = os.path.join(
+            self._part_folder,
+            "observations.csv",
+        )
+        self._part_summary_path = os.path.join(
+            self._part_folder,
+            "summary.csv",
+        )
+        self._part_metadata_path = os.path.join(
+            self._part_folder,
+            "metadata.json",
+        )
+
+        self._observation_file = open(
+            self._part_observation_path,
+            "w",
+            newline="",
+            encoding="utf-8",
+        )
+        self._observation_writer = csv.DictWriter(
+            self._observation_file,
+            fieldnames=self._observation_fields(),
+        )
+        self._observation_writer.writeheader()
+
+    def _append_observation(
+        self,
+        row: Dict[str, Any],
+        position: Dict[str, Any],
+        now_epoch: float,
+        reason: str,
+    ) -> None:
+        if self._observation_writer is None:
+            raise RuntimeError("Wardrive observation writer is not open")
+
+        now_iso = time.strftime(
+            "%Y-%m-%dT%H:%M:%SZ",
+            time.gmtime(now_epoch),
+        )
         observation = {
             "run_id": self._run_id,
-            "batch_index": self._batch_index + 1,
+            "part_index": self._part_index,
             "timestamp_iso": now_iso,
             "timestamp_epoch": now_epoch,
+            "source_last_seen": row.get("source_last_seen", ""),
             "node_uid": self.node_uid,
             "source_id": self.source_id,
-            "latitude": float(lat) if lat is not None else None,
-            "longitude": float(lon) if lon is not None else None,
-            "altitude_m": float(alt or 0.0) if lat is not None and lon is not None else None,
-            "location_valid": bool(lat is not None and lon is not None),
+            "latitude": (
+                position.get("latitude")
+                if position.get("location_valid")
+                else None
+            ),
+            "longitude": (
+                position.get("longitude")
+                if position.get("location_valid")
+                else None
+            ),
+            "altitude_m": (
+                position.get("altitude_m")
+                if position.get("location_valid")
+                else None
+            ),
+            "location_valid": bool(
+                position.get("location_valid", False)
+            ),
+            "location_source": position.get("location_source", ""),
             "bssid": row.get("bssid", ""),
             "ssid": row.get("ssid", ""),
             "rssi_dbm": row.get("rssi_dbm"),
@@ -394,241 +681,411 @@ class OperationMain(Operation):
             "frequency_mhz": row.get("frequency_mhz"),
             "encryption": row.get("encryption", ""),
             "beacon_count": row.get("beacon_count"),
+            "reason": reason,
             "location_semantics": "receiver_observation",
         }
-        self._batch_observations.append(observation)
 
-        summary = self._batch_summaries.get(bssid_norm)
+        self._observation_writer.writerow(observation)
+        self._part_observation_count += 1
+        self._logged_observation_count_total += 1
+
+        self._last_logged_by_bssid[row["bssid_norm"]] = {
+            "timestamp_epoch": now_epoch,
+            "location_valid": observation["location_valid"],
+            "latitude": observation["latitude"],
+            "longitude": observation["longitude"],
+            "rssi_dbm": observation["rssi_dbm"],
+        }
+
+    def _record_sighting(
+        self,
+        row: Dict[str, Any],
+        now_epoch: float,
+    ) -> bool:
+        bssid_norm = row.get("bssid_norm", "")
+        if not bssid_norm:
+            return False
+
+        source_last_seen = str(
+            row.get("source_last_seen") or ""
+        ).strip()
+        if source_last_seen:
+            previous_source_seen = self._last_source_seen_by_bssid.get(
+                bssid_norm
+            )
+            if previous_source_seen == source_last_seen:
+                return False
+            self._last_source_seen_by_bssid[
+                bssid_norm
+            ] = source_last_seen
+
+        self._raw_sighting_count_total += 1
+        self._seen_bssids_total.add(bssid_norm)
+
+        ssid = str(row.get("ssid") or "").strip()
+        if ssid:
+            self._seen_ssids_total.add(ssid)
+
+        position = self._snapshot_position()
+        now_iso = time.strftime(
+            "%Y-%m-%dT%H:%M:%SZ",
+            time.gmtime(now_epoch),
+        )
+        rssi = row.get("rssi_dbm")
+        summary = self._summaries.get(bssid_norm)
+        new_strongest = False
+
         if summary is None:
             summary = {
                 "run_id": self._run_id,
-                "batch_index": self._batch_index + 1,
                 "node_uid": self.node_uid,
                 "source_id": self.source_id,
                 "bssid": row.get("bssid", ""),
-                "ssid": row.get("ssid", ""),
+                "ssid": ssid,
                 "first_seen_iso": now_iso,
                 "first_seen_epoch": now_epoch,
+                "first_latitude": (
+                    position.get("latitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "first_longitude": (
+                    position.get("longitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "first_location_source": position.get(
+                    "location_source",
+                    "",
+                ),
                 "last_seen_iso": now_iso,
                 "last_seen_epoch": now_epoch,
-                "first_latitude": observation["latitude"],
-                "first_longitude": observation["longitude"],
-                "last_latitude": observation["latitude"],
-                "last_longitude": observation["longitude"],
-                "strongest_rssi_dbm": row.get("rssi_dbm"),
-                "strongest_latitude": observation["latitude"],
-                "strongest_longitude": observation["longitude"],
-                "latest_rssi_dbm": row.get("rssi_dbm"),
-                "logged_observation_count": 1,
+                "last_latitude": (
+                    position.get("latitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "last_longitude": (
+                    position.get("longitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "last_location_source": position.get(
+                    "location_source",
+                    "",
+                ),
+                "strongest_seen_iso": now_iso,
+                "strongest_seen_epoch": now_epoch,
+                "strongest_rssi_dbm": rssi,
+                "strongest_latitude": (
+                    position.get("latitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "strongest_longitude": (
+                    position.get("longitude")
+                    if position.get("location_valid")
+                    else None
+                ),
+                "strongest_location_source": position.get(
+                    "location_source",
+                    "",
+                ),
+                "latest_rssi_dbm": rssi,
+                "raw_sighting_count": 1,
+                "logged_observation_count": 0,
                 "channel": row.get("channel"),
                 "band": row.get("band", ""),
                 "frequency_mhz": row.get("frequency_mhz"),
                 "encryption": row.get("encryption", ""),
                 "latest_beacon_count": row.get("beacon_count"),
+                "latest_source_last_seen": source_last_seen,
             }
-            self._batch_summaries[bssid_norm] = summary
-            return True
+            self._summaries[bssid_norm] = summary
+            new_strongest = True
+        else:
+            summary["last_seen_iso"] = now_iso
+            summary["last_seen_epoch"] = now_epoch
+            summary["last_latitude"] = (
+                position.get("latitude")
+                if position.get("location_valid")
+                else None
+            )
+            summary["last_longitude"] = (
+                position.get("longitude")
+                if position.get("location_valid")
+                else None
+            )
+            summary["last_location_source"] = position.get(
+                "location_source",
+                "",
+            )
+            summary["latest_rssi_dbm"] = rssi
+            summary["raw_sighting_count"] = int(
+                summary.get("raw_sighting_count", 0)
+            ) + 1
+            summary["ssid"] = ssid or summary.get("ssid", "")
+            summary["channel"] = row.get("channel")
+            summary["band"] = row.get("band", "")
+            summary["frequency_mhz"] = row.get("frequency_mhz")
+            summary["encryption"] = row.get("encryption", "")
+            summary["latest_beacon_count"] = row.get("beacon_count")
+            summary["latest_source_last_seen"] = source_last_seen
 
-        summary["last_seen_iso"] = now_iso
-        summary["last_seen_epoch"] = now_epoch
-        summary["last_latitude"] = observation["latitude"]
-        summary["last_longitude"] = observation["longitude"]
-        summary["latest_rssi_dbm"] = row.get("rssi_dbm")
-        summary["logged_observation_count"] = int(summary.get("logged_observation_count", 0)) + 1
-        summary["ssid"] = row.get("ssid", "") or summary.get("ssid", "")
-        summary["channel"] = row.get("channel")
-        summary["band"] = row.get("band", "")
-        summary["frequency_mhz"] = row.get("frequency_mhz")
-        summary["encryption"] = row.get("encryption", "")
-        summary["latest_beacon_count"] = row.get("beacon_count")
+            strongest = summary.get("strongest_rssi_dbm")
+            if (
+                rssi is not None
+                and (strongest is None or float(rssi) > float(strongest))
+            ):
+                new_strongest = True
+                summary["strongest_seen_iso"] = now_iso
+                summary["strongest_seen_epoch"] = now_epoch
+                summary["strongest_rssi_dbm"] = rssi
+                summary["strongest_latitude"] = (
+                    position.get("latitude")
+                    if position.get("location_valid")
+                    else None
+                )
+                summary["strongest_longitude"] = (
+                    position.get("longitude")
+                    if position.get("location_valid")
+                    else None
+                )
+                summary["strongest_location_source"] = position.get(
+                    "location_source",
+                    "",
+                )
 
-        rssi = row.get("rssi_dbm")
-        strongest = summary.get("strongest_rssi_dbm")
-        if rssi is not None and (strongest is None or rssi > strongest):
-            summary["strongest_rssi_dbm"] = rssi
-            summary["strongest_latitude"] = observation["latitude"]
-            summary["strongest_longitude"] = observation["longitude"]
+        reason = self._observation_reason(
+            bssid_norm,
+            now_epoch,
+            position,
+            rssi,
+        )
+        if not reason:
+            return False
+
+        self._append_observation(
+            row,
+            position,
+            now_epoch,
+            reason,
+        )
+        summary["logged_observation_count"] = int(
+            summary.get("logged_observation_count", 0)
+        ) + 1
         return True
 
-    def _write_csv(self, path: str, rows: List[Dict[str, Any]]) -> None:
-        if not rows:
-            return
-        fieldnames = list(rows[0].keys())
-        with open(path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
-
-    def _write_batch_files(
-        self,
-        summaries: List[Dict[str, Any]],
-        observations: List[Dict[str, Any]],
-        batch_index: int,
-        folder: str,
-    ) -> Tuple[str, str]:
-        os.makedirs(folder, exist_ok=True)
-
-        stamp = time.strftime("%Y%m%d_%H%M%S", time.gmtime())
-        prefix = os.path.join(
-            folder,
-            f"wifi_wardrive_batch_{batch_index:04d}_{stamp}",
-        )
-        summary_path = prefix + "_summary.csv"
-        observations_path = prefix + "_observations.csv"
-
-        self._write_csv(summary_path, summaries)
-        self._write_csv(observations_path, observations)
-
-        return summary_path, observations_path
-
-    def _create_batch_artifact(
-        self,
-        summaries: List[Dict[str, Any]],
-        observations: List[Dict[str, Any]],
-        batch_index: int,
-    ) -> Tuple[str, str, str]:
-        if not self.artifact_manager:
-            raise RuntimeError("Artifact manager is unavailable")
-
-        operation_id = str(uuid.uuid4())
-        _, folder = self.artifact_manager.create_operation_dir(operation_id)
-
-        summary_path, observations_path = self._write_batch_files(
-            summaries,
-            observations,
-            batch_index,
-            folder,
-        )
-
-        valid_positions = sum(
-            1
-            for row in observations
-            if row.get("location_valid")
-        )
-        metadata = {
-            "role": "wifi_wardrive_batch_v3",
-            "run_id": self._run_id,
-            "batch_index": batch_index,
-            "node_uid": self.node_uid,
-            "source_id": self.source_id,
-            "operation_id": operation_id,
-            "unique_bssid_count_batch": len(summaries),
-            "observation_count_batch": len(observations),
-            "observations_with_position": valid_positions,
-            "unique_bssid_count_total": len(self._seen_bssids_total),
-            "created_time": time.strftime(
-                "%Y-%m-%dT%H:%M:%SZ",
-                time.gmtime(),
-            ),
-            "summary_filename": os.path.basename(summary_path),
-            "observations_filename": os.path.basename(observations_path),
-            "location_semantics": "receiver_observation",
-        }
+    def _write_summary(self) -> None:
+        rows = list(self._summaries.values())
+        temporary_path = self._part_summary_path + ".part"
 
         with open(
-            os.path.join(folder, "batch_metadata.json"),
+            temporary_path,
+            "w",
+            newline="",
+            encoding="utf-8",
+        ) as f:
+            writer = csv.DictWriter(
+                f,
+                fieldnames=self._summary_fields(),
+            )
+            writer.writeheader()
+            if rows:
+                writer.writerows(rows)
+
+        os.replace(
+            temporary_path,
+            self._part_summary_path,
+        )
+
+    def _metadata(
+        self,
+        reason: str,
+        complete: bool,
+    ) -> Dict[str, Any]:
+        now_epoch = time.time()
+        position = self._snapshot_position()
+        return {
+            "role": "wifi_wardrive_session_v4",
+            "run_id": self._run_id,
+            "part_index": self._part_index,
+            "node_uid": self.node_uid,
+            "source_id": self.source_id,
+            "operation_id": self._part_operation_id,
+            "run_started_time": time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ",
+                time.gmtime(self._run_started_epoch),
+            ),
+            "part_started_time": time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ",
+                time.gmtime(self._part_started_epoch),
+            ),
+            "created_time": time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ",
+                time.gmtime(now_epoch),
+            ),
+            "complete": bool(complete),
+            "finalize_reason": reason,
+            "unique_bssid_count_total": len(self._seen_bssids_total),
+            "unique_ssid_count_total": len(self._seen_ssids_total),
+            "raw_sighting_count_total": self._raw_sighting_count_total,
+            "logged_observation_count_total": (
+                self._logged_observation_count_total
+            ),
+            "logged_observation_count_part": (
+                self._part_observation_count
+            ),
+            "summary_bssid_count": len(self._summaries),
+            "summary_scope": "run_to_date",
+            "observation_scope": "this_part",
+            "location_semantics": "receiver_observation",
+            "position_source": position.get("location_source", ""),
+            "scan_interval_s": self.scan_interval_s,
+            "observation_max_gap_s": self.observation_max_gap_s,
+            "observation_distance_m": self.observation_distance_m,
+            "observation_rssi_change_db": (
+                self.observation_rssi_change_db
+            ),
+            "artifact_rollover_mb": self.artifact_rollover_mb,
+            "summary_filename": os.path.basename(
+                self._part_summary_path
+            ),
+            "observations_filename": os.path.basename(
+                self._part_observation_path
+            ),
+        }
+
+    def _write_metadata(
+        self,
+        reason: str,
+        complete: bool,
+    ) -> None:
+        metadata = self._metadata(reason, complete)
+        temporary_path = self._part_metadata_path + ".part"
+
+        with open(
+            temporary_path,
             "w",
             encoding="utf-8",
         ) as f:
             json.dump(metadata, f, indent=2)
 
-        artifact = self.artifact_manager.create_zip_artifact_from_folder(
-            source_id=self.source_id,
-            operation_id=operation_id,
-            folder=folder,
-            name=f"{self.artifact_name_prefix} #{batch_index}",
-            metadata=metadata,
-            arc_prefix=f"wifi_wardrive_{operation_id}",
-        )
-        artifact_id = str(
-            getattr(artifact, "id", artifact)
-            if artifact
-            else ""
+        os.replace(
+            temporary_path,
+            self._part_metadata_path,
         )
 
-        return artifact_id, summary_path, observations_path
+    def _checkpoint(self) -> None:
+        if self._observation_file is not None:
+            self._observation_file.flush()
+        self._write_summary()
+        self._write_metadata("running", False)
 
-    async def _flush_batch(self, reason: str) -> None:
-        if not self._batch_observations:
-            self._batch_started_epoch = time.time()
+    def _part_size_mb(self) -> float:
+        try:
+            return os.path.getsize(
+                self._part_observation_path
+            ) / (1024.0 * 1024.0)
+        except OSError:
+            return 0.0
+
+    async def _finalize_part(
+        self,
+        reason: str,
+        *,
+        start_next: bool,
+    ) -> None:
+        if self._observation_file is not None:
+            self._observation_file.flush()
+            self._observation_file.close()
+            self._observation_file = None
+            self._observation_writer = None
+
+        if self._part_observation_count <= 0:
+            self.logger.info(
+                f"Wi-Fi wardrive part {self._part_index} had no observations; "
+                "no Artifact created"
+            )
+            if start_next:
+                self._start_part()
             return
 
-        summaries = list(self._batch_summaries.values())
-        observations = list(self._batch_observations)
-        next_batch_index = self._batch_index + 1
+        self._write_summary()
+        self._write_metadata(reason, True)
 
         artifact_id = ""
-        summary_path = ""
-        observations_path = ""
-
-        try:
-            (
-                artifact_id,
-                summary_path,
-                observations_path,
-            ) = self._create_batch_artifact(
-                summaries,
-                observations,
-                next_batch_index,
+        if self.artifact_manager:
+            metadata = self._metadata(reason, True)
+            name = (
+                f"{self.artifact_name_prefix} "
+                f"{self._run_stamp} Part {self._part_index}"
             )
-        except Exception as exc:
-            self.logger.warning(
-                f"Artifact creation failed for batch "
-                f"{next_batch_index}: {exc}"
-            )
-            return
+            try:
+                artifact_id = (
+                    self.artifact_manager.create_zip_artifact_from_folder(
+                        source_id=self.source_id,
+                        operation_id=self._part_operation_id,
+                        folder=self._part_folder,
+                        name=name,
+                        metadata=metadata,
+                        arc_prefix=(
+                            f"wifi_wardrive_{self._run_id}"
+                            f"_part_{self._part_index:04d}"
+                        ),
+                    )
+                )
+            except Exception as exc:
+                self.logger.warning(
+                    f"Wardrive Artifact creation failed: {exc}"
+                )
 
-        self._batch_summaries.clear()
-        self._batch_observations.clear()
-        self._batch_index = next_batch_index
-        self._batch_started_epoch = time.time()
+        if artifact_id:
+            self._artifact_ids.append(str(artifact_id))
 
         self.logger.info(
-            f"Wi-Fi wardrive batch {self._batch_index} saved "
-            f"to Artifact ({reason}): "
-            f"{len(summaries)} BSSIDs, "
-            f"{len(observations)} observations, "
+            f"Wi-Fi wardrive part {self._part_index} saved "
+            f"({reason}): "
+            f"{len(self._seen_bssids_total)} BSSIDs, "
+            f"{len(self._seen_ssids_total)} SSIDs, "
+            f"{self._part_observation_count} observations, "
             f"artifact={artifact_id or '<none>'}"
         )
 
-        if self.alert_on_batch:
+        if self.alert_on_artifact:
             await self._emit_alert(
                 (
-                    f"Wi-Fi wardrive batch {self._batch_index} saved: "
-                    f"{len(summaries)} BSSIDs / "
-                    f"{len(observations)} observations"
+                    f"Wi-Fi wardrive saved: "
+                    f"{len(self._seen_bssids_total)} BSSIDs / "
+                    f"{self._part_observation_count} observations"
                 ),
-                f"wifi-wardrive-batch-{self._run_id}-{self._batch_index}",
-                "wifi_wardrive_batch",
+                (
+                    f"wifi-wardrive-artifact-"
+                    f"{self._run_id}-{self._part_index}"
+                ),
+                "wifi_wardrive_artifact",
                 {
                     "run_id": self._run_id,
-                    "batch_index": self._batch_index,
+                    "part_index": self._part_index,
                     "artifact_id": artifact_id,
-                    "summary_path": summary_path,
-                    "observations_path": observations_path,
                 },
             )
 
-    async def _maybe_flush_batch(self, now_epoch: float) -> None:
-        if self.batch_unique_devices > 0 and len(self._batch_summaries) >= self.batch_unique_devices:
-            await self._flush_batch("unique-device limit")
-        elif len(self._batch_observations) >= self.batch_observation_rows:
-            await self._flush_batch("observation-row limit")
-        elif self.batch_duration_s > 0 and self._batch_observations and (now_epoch - self._batch_started_epoch) >= self.batch_duration_s:
-            await self._flush_batch("time limit")
+        if start_next:
+            self._start_part()
 
-    async def _stop_runtime(self, gps_task: Optional[asyncio.Task]) -> None:
-        self._gps_stop.set()
+    async def _maybe_rollover(self) -> None:
+        if self.artifact_rollover_mb <= 0:
+            return
+        if self._part_size_mb() < self.artifact_rollover_mb:
+            return
 
-        if gps_task:
-            gps_task.cancel()
-            try:
-                await gps_task
-            except asyncio.CancelledError:
-                pass
-            except Exception:
-                pass
+        await self._finalize_part(
+            "size rollover",
+            start_next=True,
+        )
 
+    async def _stop_runtime(self) -> None:
         if self._airodump_proc and self._airodump_proc.returncode is None:
             self._kill_existing_airodump("TERM")
 
@@ -653,46 +1110,83 @@ class OperationMain(Operation):
         await self._to_thread_compat(self._restore_managed)
 
     async def run(self) -> None:
-        gps_task = None
         try:
             self._apply_parameters_from_runner()
+            self._start_part()
             await self._set_status("Logging Wi-Fi")
-            gps_task = asyncio.create_task(self._gps_loop())
+
             self._airodump_proc, _ = await self._start_airodump()
             if not self._airodump_proc:
                 return
 
             while not self._should_stop():
-                rows = await self._to_thread_compat(self._read_airodump_rows_once)
+                rows = await self._to_thread_compat(
+                    self._read_airodump_rows_once
+                )
                 now = time.time()
+
                 for row in rows:
                     bssid_norm = row.get("bssid_norm", "")
                     if not bssid_norm:
                         continue
 
                     before = len(self._seen_bssids_total)
-                    self._seen_bssids_total.add(bssid_norm)
-                    if len(self._seen_bssids_total) > before and self.alert_every_unique > 0:
+                    logged = self._record_sighting(row, now)
+
+                    if (
+                        len(self._seen_bssids_total) > before
+                        and self.alert_every_unique > 0
+                    ):
                         count = len(self._seen_bssids_total)
-                        if (count - self._last_alert_unique_count) >= self.alert_every_unique:
+                        if (
+                            count - self._last_alert_unique_count
+                        ) >= self.alert_every_unique:
                             self._last_alert_unique_count = count
                             await self._emit_alert(
-                                f"Wi-Fi wardrive has observed {count} unique BSSIDs",
-                                f"wifi-wardrive-unique-{self._run_id}-{count}",
+                                (
+                                    f"Wi-Fi wardrive has observed "
+                                    f"{count} unique BSSIDs"
+                                ),
+                                (
+                                    f"wifi-wardrive-unique-"
+                                    f"{self._run_id}-{count}"
+                                ),
                                 "wifi_wardrive_summary",
-                                {"run_id": self._run_id, "unique_bssid_count_total": count},
+                                {
+                                    "run_id": self._run_id,
+                                    "unique_bssid_count_total": count,
+                                },
                             )
 
-                    self._record_observation(row, now)
+                    if logged:
+                        await asyncio.sleep(0)
 
-                await self._maybe_flush_batch(now)
+                if (
+                    now - self._last_checkpoint_epoch
+                ) >= self.checkpoint_interval_s:
+                    self._last_checkpoint_epoch = now
+                    await self._to_thread_compat(self._checkpoint)
 
-                if (now - self._last_status_epoch) >= self.status_interval_s:
+                await self._maybe_rollover()
+
+                if (
+                    now - self._last_status_epoch
+                ) >= self.status_interval_s:
                     self._last_status_epoch = now
-                    gps_state = "GPS" if self._current_position.get("lat") is not None and self._current_position.get("lon") is not None else "no GPS"
+                    position = self._snapshot_position()
+                    gps_state = (
+                        position.get("location_source") or "GPS"
+                        if position.get("location_valid")
+                        else "no GPS"
+                    )
                     await self._set_status(
-                        f"Wi-Fi logger: {len(self._seen_bssids_total)} unique total, "
-                        f"{len(self._batch_summaries)} current BSSIDs, {len(self._batch_observations)} observations ({gps_state})"
+                        f"Wi-Fi logger: "
+                        f"{len(self._seen_bssids_total)} BSSIDs / "
+                        f"{len(self._seen_ssids_total)} SSIDs, "
+                        f"{self._logged_observation_count_total} "
+                        f"observations, "
+                        f"{self._part_size_mb():.1f} MB "
+                        f"({gps_state})"
                     )
 
                 await asyncio.sleep(self.scan_interval_s)
@@ -702,15 +1196,28 @@ class OperationMain(Operation):
             self.logger.exception("Wi-Fi wardrive logger failed")
         finally:
             try:
-                await self._flush_batch("operation stopped")
+                if self._part_folder:
+                    await self._finalize_part(
+                        "operation stopped",
+                        start_next=False,
+                    )
             except Exception:
-                self.logger.exception("Final Wi-Fi wardrive batch flush failed")
+                self.logger.exception(
+                    "Final Wi-Fi wardrive Artifact creation failed"
+                )
+
             try:
-                await self._stop_runtime(gps_task)
+                await self._stop_runtime()
             except Exception:
                 self.logger.exception("Wi-Fi wardrive cleanup failed")
+
             await self._set_status("Idle")
-            self.logger.info(f"Wi-Fi wardrive stopped. Unique BSSIDs observed: {len(self._seen_bssids_total)}")
+            self.logger.info(
+                f"Wi-Fi wardrive stopped. "
+                f"Unique BSSIDs: {len(self._seen_bssids_total)}, "
+                f"unique SSIDs: {len(self._seen_ssids_total)}, "
+                f"observations: {self._logged_observation_count_total}"
+            )
 
     async def _to_thread_compat(self, func, *args, **kwargs):
         if hasattr(asyncio, "to_thread"):

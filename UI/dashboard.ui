@@ -1699,7 +1699,7 @@
        <property name="geometry">
         <rect>
          <x>153</x>
-         <y>770</y>
+         <y>772</y>
          <width>143</width>
          <height>25</height>
         </rect>
@@ -1720,7 +1720,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>740</y>
+         <y>735</y>
          <width>160</width>
          <height>23</height>
         </rect>
@@ -1735,8 +1735,8 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>740</y>
+         <x>175</x>
+         <y>735</y>
          <width>120</width>
          <height>25</height>
         </rect>
@@ -1757,7 +1757,7 @@
        <property name="geometry">
         <rect>
          <x>5</x>
-         <y>770</y>
+         <y>772</y>
          <width>143</width>
          <height>25</height>
         </rect>
@@ -1769,6 +1769,19 @@
        </property>
        <property name="text">
         <string>Download Data</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_6">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>765</y>
+         <width>303</width>
+         <height>3</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </widget>

@@ -3003,6 +3003,9 @@ async def detectionReturn(
         detection["opid"] = operation_id
         detection.setdefault("operation_id", operation_id)
 
+    location_valid = detection.get("location_valid")
+    allow_location_fallback = location_valid is not False
+
     if lat is None:
         lat = detection.get("latitude")
     if lat is None:
@@ -3022,16 +3025,21 @@ async def detectionReturn(
     if alt is None:
         alt = detection.get("hae")
 
-    node_record = {}
-    if node_uid:
-        node_record = (getattr(component, "nodes", {}) or {}).get(node_uid, {}) or {}
+    if not allow_location_fallback:
+        lat = None
+        lon = None
+        alt = None
+    else:
+        node_record = {}
+        if node_uid:
+            node_record = (getattr(component, "nodes", {}) or {}).get(node_uid, {}) or {}
 
-    if lat is None:
-        lat = node_record.get("lat")
-    if lon is None:
-        lon = node_record.get("lon")
-    if alt is None:
-        alt = node_record.get("alt")
+        if lat is None:
+            lat = node_record.get("lat")
+        if lon is None:
+            lon = node_record.get("lon")
+        if alt is None:
+            alt = node_record.get("alt")
 
     if lat is not None:
         detection.setdefault("latitude", lat)
@@ -3077,21 +3085,22 @@ async def detectionReturn(
         "tak_icon": "r-x-fissure-detection",
     }
 
-    try:
-        out = maybe_ingest_detection_for_geolocation(component, payload)
-        if out is not None:
-            target_id, patch, history_entry = out
-            await targetPatch(
-                component,
-                target_id=target_id,
-                patch=patch,
-                history_entry=history_entry,
-                artifact_id="",
+    if allow_location_fallback and lat is not None and lon is not None:
+        try:
+            out = maybe_ingest_detection_for_geolocation(component, payload)
+            if out is not None:
+                target_id, patch, history_entry = out
+                await targetPatch(
+                    component,
+                    target_id=target_id,
+                    patch=patch,
+                    history_entry=history_entry,
+                    artifact_id="",
+                )
+        except Exception as exc:
+            component.logger.error(
+                f"detectionReturn geolocation ingest error: {exc}"
             )
-    except Exception as exc:
-        component.logger.error(
-            f"detectionReturn geolocation ingest error: {exc}"
-        )
 
     if component.dashboard_connected:
         dashboard_msg = {
@@ -3107,10 +3116,11 @@ async def detectionReturn(
             dashboard_msg,
         )
 
-    await fissure.utils.tak_messages.send(
-        component,
-        payload,
-    )
+    if allow_location_fallback and lat is not None and lon is not None:
+        await fissure.utils.tak_messages.send(
+            component,
+            payload,
+        )
 
 
 #######################################
@@ -9140,7 +9150,8 @@ def _get_target_geolocate_action_config(
                     "target_ids":
                         target_ids,
                     "max_targets": 0,
-                    "emit_every_s": 1.0,
+                    "measurement_spacing_m":
+                        20.0,
                     "meas_every_s": 0.2,
                     "aggregation_window_s":
                         3.0,
@@ -9161,12 +9172,11 @@ def _get_target_geolocate_action_config(
                     wifi.get("channel"),
                 "frequency_mhz":
                     wifi_frequency_mhz,
-                "emit_every_s": 1.0,
+                "measurement_spacing_m":
+                    20.0,
                 "meas_every_s": 0.2,
                 "aggregation_window_s":
                     3.0,
-                "search_similar_targets":
-                    False,
             },
         }
 

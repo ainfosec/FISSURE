@@ -9,7 +9,6 @@ not estimate transmitter location or perform edge-side geolocation.
 import asyncio
 import csv
 import glob
-import json
 import logging
 import os
 import re
@@ -66,31 +65,37 @@ def _channel_info(channel: Optional[int]) -> Tuple[str, Optional[float]]:
 
 
 class OperationMain(Operation):
-    def __init__(self, node_uid: str = "", logger: logging.Logger = logging.getLogger(__name__), alert_callback=None, tak_cot_callback=None, detection_callback=None, status_callback=None, target_callback=None, artifact_manager=None, parameters: Optional[Dict[str, Any]] = None) -> None:
-        super().__init__(node_uid=node_uid, logger=logger, alert_callback=alert_callback, tak_cot_callback=tak_cot_callback, detection_callback=detection_callback, status_callback=status_callback, target_callback=target_callback, artifact_manager=artifact_manager)
+    def __init__(self, node_uid: str = "", logger: logging.Logger = logging.getLogger(__name__), alert_callback=None, tak_cot_callback=None, detection_callback=None, status_callback=None, target_callback=None, position_callback=None, artifact_manager=None, parameters: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(node_uid=node_uid, logger=logger, alert_callback=alert_callback, tak_cot_callback=tak_cot_callback, detection_callback=detection_callback, status_callback=status_callback, target_callback=target_callback, position_callback=position_callback, artifact_manager=artifact_manager)
         self.parameters = parameters or {}
         self.source_id = str(node_uid or "").strip() or "sensor_node"
         self.wifi_interface = "wlx00c0caa744fc"
         self.mon_suffix = MON_SUFFIX_DEFAULT
         self.airo_prefix = "/tmp/airodump"
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
-        self.gpsd_host = "127.0.0.1"
-        self.gpsd_port = 2947
         self.scan_interval_s = 0.5
         self.reemit_interval_s = 15.0
+        self.max_emit_rate_hz = 5.0
+        self.max_emit_burst = 3
+        self.pending_ttl_s = 3.0
+        self.max_pending_bssids = 50
+        self.status_interval_s = 5.0
         self.alert_on_new_detection = False
         self.auto_create_targets = False
         self.oui_filter_raw = ""
         self.oui_prefixes: Set[str] = set()
         self.exact_bssids: Set[str] = set()
         self._oui_vendors: Dict[str, str] = {}
-        self._gps_stop = asyncio.Event()
-        self._current_position = {"lat": None, "lon": None, "alt": 0.0}
         self._airodump_proc = None
         self._airodump_iface_in_use = None
         self._last_emit_by_bssid: Dict[str, float] = {}
+        self._last_source_seen_by_bssid: Dict[str, str] = {}
         self._seen_bssids: Set[str] = set()
         self._targeted_bssids: Set[str] = set()
+        self._pending_by_bssid: Dict[str, Dict[str, Any]] = {}
+        self._emit_tokens = 0.0
+        self._emit_token_time = time.monotonic()
+        self._last_status_epoch = 0.0
 
     def _apply_parameters_from_runner(self) -> None:
         p = self.parameters if isinstance(self.parameters, dict) else {}
@@ -99,10 +104,9 @@ class OperationMain(Operation):
         self.mon_suffix = str(p.get("mon_suffix", self.mon_suffix) or self.mon_suffix)
         self.airo_prefix = str(p.get("airo_prefix", self.airo_prefix) or self.airo_prefix)
         self.airo_csv_glob = self.airo_prefix + "-*.csv"
-        self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host) or self.gpsd_host)
-        self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
         self.scan_interval_s = max(0.2, float(p.get("scan_interval_s", p.get("wifi_refresh_interval", self.scan_interval_s))))
         self.reemit_interval_s = max(0.0, float(p.get("reemit_interval_s", self.reemit_interval_s)))
+        self.max_emit_rate_hz = max(0.1, float(p.get("max_emit_rate_hz", self.max_emit_rate_hz)))
         self.alert_on_new_detection = _to_bool(p.get("alert_on_new_detection", p.get("alert_on_new_target", self.alert_on_new_detection)), self.alert_on_new_detection)
         self.auto_create_targets = _to_bool(p.get("auto_create_targets", self.auto_create_targets), self.auto_create_targets)
         self.oui_filter_raw = str(p.get("oui_filter", self.oui_filter_raw) or "").strip()
@@ -262,7 +266,10 @@ class OperationMain(Operation):
             self._iface(["sudo", "ip", "link", "set", mon, "up"])
             use = mon
         else:
-            self.logger.warning(f"Monitor sub-interface create failed: {(add.stderr or '').strip()}")
+            self.logger.info(
+                f"Monitor sub-interface unavailable; using {self.wifi_interface} "
+                f"directly in monitor mode"
+            )
             self._iface(["sudo", "ip", "link", "set", self.wifi_interface, "down"])
             self._iface(["sudo", "iw", "dev", self.wifi_interface, "set", "type", "monitor"])
             self._iface(["sudo", "ip", "link", "set", self.wifi_interface, "up"])
@@ -322,6 +329,7 @@ class OperationMain(Operation):
                     channel = None
 
                 rssi = float(r[8].strip()) if r[8].strip() else None
+                source_last_seen = r[2].strip()
                 ssid = r[13].strip(" ,\t\r\n")
                 if ssid.lower() in {"<hidden>", "broadcast", "unknown"}:
                     ssid = ""
@@ -336,53 +344,13 @@ class OperationMain(Operation):
                     "frequency_mhz": frequency_mhz,
                     "rssi_dbm": rssi,
                     "encryption": r[5].strip(),
+                    "source_last_seen": source_last_seen,
                 })
             except Exception:
                 continue
         return out
 
-    async def _gps_loop(self) -> None:
-        buf = ""
-        while not self._should_stop() and not self._gps_stop.is_set():
-            try:
-                reader, writer = await asyncio.open_connection(self.gpsd_host, self.gpsd_port)
-                writer.write(b'?WATCH={"enable":true,"json":true}\n')
-                await writer.drain()
-                while not self._should_stop() and not self._gps_stop.is_set():
-                    data = await reader.read(4096)
-                    if not data:
-                        await asyncio.sleep(0.5)
-                        continue
-                    buf += data.decode(errors="ignore")
-                    while "\n" in buf:
-                        line, buf = buf.split("\n", 1)
-                        try:
-                            msg = json.loads(line)
-                        except Exception:
-                            continue
-                        if msg.get("class") == "TPV" and msg.get("mode", 0) >= 2:
-                            lat, lon = msg.get("lat"), msg.get("lon")
-                            alt = msg.get("altMSL") or msg.get("altHAE") or 0.0
-                            if lat is not None and lon is not None:
-                                self._current_position.update({"lat": float(lat), "lon": float(lon), "alt": float(alt)})
-                writer.close()
-                await writer.wait_closed()
-            except Exception as exc:
-                self.logger.warning(f"GPS error: {exc}")
-                await asyncio.sleep(2.0)
-
-    async def _stop_runtime(self, gps_task: Optional[asyncio.Task]) -> None:
-        self._gps_stop.set()
-
-        if gps_task:
-            gps_task.cancel()
-            try:
-                await gps_task
-            except asyncio.CancelledError:
-                pass
-            except Exception:
-                pass
-
+    async def _stop_runtime(self) -> None:
         if self._airodump_proc and self._airodump_proc.returncode is None:
             self._kill_existing_airodump("TERM")
 
@@ -413,6 +381,104 @@ class OperationMain(Operation):
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, lambda: func(*args, **kwargs))
 
+    def _snapshot_position(self) -> Dict[str, Any]:
+        try:
+            position = self.position_callback()
+        except Exception as exc:
+            self.logger.warning(f"Position callback failed: {exc}")
+            return {"location_valid": False}
+
+        if not isinstance(position, dict) or not position.get("valid", False):
+            return {"location_valid": False}
+
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        if lat is None or lon is None:
+            return {"location_valid": False}
+
+        return {
+            "location_valid": True,
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude": float(alt or 0.0),
+            "location_source": str(position.get("source") or ""),
+        }
+
+    def _queue_pending_detection(
+        self,
+        row: Dict[str, Any],
+        *,
+        first_seen: bool,
+        now_epoch: float,
+    ) -> None:
+        bssid_norm = row.get("bssid_norm", "")
+        if not bssid_norm:
+            return
+
+        now_monotonic = time.monotonic()
+        existing = self._pending_by_bssid.get(bssid_norm)
+
+        pending = dict(row)
+        pending.update(self._snapshot_position())
+        pending["_observation_epoch"] = now_epoch
+        pending["_first_seen"] = bool(first_seen)
+        pending["_pending_since_monotonic"] = (
+            existing.get("_pending_since_monotonic", now_monotonic)
+            if existing
+            else now_monotonic
+        )
+
+        self._pending_by_bssid[bssid_norm] = pending
+
+        if len(self._pending_by_bssid) <= self.max_pending_bssids:
+            return
+
+        oldest_bssid = min(
+            self._pending_by_bssid,
+            key=lambda key: float(
+                self._pending_by_bssid[key].get(
+                    "_pending_since_monotonic",
+                    now_monotonic,
+                )
+            ),
+        )
+        self._pending_by_bssid.pop(oldest_bssid, None)
+
+    def _prune_pending(self) -> None:
+        now = time.monotonic()
+        expired = [
+            bssid
+            for bssid, pending in self._pending_by_bssid.items()
+            if (
+                now
+                - float(
+                    pending.get(
+                        "_pending_since_monotonic",
+                        now,
+                    )
+                )
+            )
+            > self.pending_ttl_s
+        ]
+        for bssid in expired:
+            self._pending_by_bssid.pop(bssid, None)
+
+    def _take_emit_budget(self) -> int:
+        now = time.monotonic()
+        elapsed = max(0.0, now - self._emit_token_time)
+        self._emit_token_time = now
+
+        burst_capacity = min(
+            float(self.max_emit_burst),
+            max(1.0, float(self.max_emit_rate_hz)),
+        )
+        self._emit_tokens = min(
+            burst_capacity,
+            self._emit_tokens + elapsed * self.max_emit_rate_hz,
+        )
+        return int(self._emit_tokens)
+
     async def _emit_target_patch(self, row: Dict[str, Any]) -> None:
         if not self.auto_create_targets or not self.target_callback:
             return
@@ -420,20 +486,18 @@ class OperationMain(Operation):
         bssid_norm = row["bssid_norm"]
         if bssid_norm in self._targeted_bssids:
             return
-        lat = self._current_position.get("lat")
-        lon = self._current_position.get("lon")
-        alt = self._current_position.get("alt")
-        now = time.time()
+        location_valid = bool(row.get("location_valid", False))
+        observation_time = float(row.get("_observation_epoch") or time.time())
         summary = {"source": "wifi_oui_discovery", "auto_created": True}
-        if lat is not None and lon is not None:
-            summary["observation_location"] = {"lat": float(lat), "lon": float(lon), "hae_m": float(alt or 0.0), "timestamp": now, "semantics": "receiver_observation"}
+        if location_valid:
+            summary["observation_location"] = {"lat": float(row["latitude"]), "lon": float(row["longitude"]), "hae_m": float(row.get("altitude") or 0.0), "timestamp": observation_time, "semantics": "receiver_observation"}
 
         patch = {
             "node_uid": str(self.node_uid),
             "state": "detected",
             "frequency_mhz": row.get("frequency_mhz"),
             "classification": {"display_label": "Wi-Fi AP", "source": "wifi_oui_discovery", "candidates": [{"source": "wifi", "label": "802.11 Access Point"}]},
-            "wifi": {"bssid": row.get("bssid", ""), "ssid": row.get("ssid", ""), "channel": row.get("channel"), "band": row.get("band", ""), "frequency_mhz": row.get("frequency_mhz"), "rssi_dbm": row.get("rssi_dbm"), "encryption": row.get("encryption", ""), "vendor": row.get("vendor", ""), "oui_prefix": row.get("oui_prefix", ""), "last_observation_time": now},
+            "wifi": {"bssid": row.get("bssid", ""), "ssid": row.get("ssid", ""), "channel": row.get("channel"), "band": row.get("band", ""), "frequency_mhz": row.get("frequency_mhz"), "rssi_dbm": row.get("rssi_dbm"), "encryption": row.get("encryption", ""), "vendor": row.get("vendor", ""), "oui_prefix": row.get("oui_prefix", ""), "last_observation_time": observation_time},
             "summary": summary,
         }
         patch["wifi"] = {k: v for k, v in patch["wifi"].items() if v not in (None, "")}
@@ -445,9 +509,7 @@ class OperationMain(Operation):
         if not self.detection_callback:
             return
 
-        lat = self._current_position.get("lat")
-        lon = self._current_position.get("lon")
-        alt = self._current_position.get("alt")
+        location_valid = bool(row.get("location_valid", False))
         bssid_norm = row["bssid_norm"]
         source_key = str(self.node_uid or self.source_id or "sensor_node").strip()
 
@@ -467,7 +529,7 @@ class OperationMain(Operation):
             "source_id": self.source_id,
             "opid": self.opid,
             "operation_id": self.opid,
-            "timestamp": time.time(),
+            "timestamp": float(row.get("_observation_epoch") or time.time()),
             "ssid": row.get("ssid", ""),
             "bssid": row.get("bssid", ""),
             "oui_prefix": row.get("oui_prefix", ""),
@@ -479,11 +541,13 @@ class OperationMain(Operation):
             "encryption": row.get("encryption", ""),
             "first_seen": bool(first_seen),
             "location_semantics": "receiver_observation",
+            "location_source": row.get("location_source", ""),
+            "location_valid": location_valid,
         }
-        if lat is not None and lon is not None:
-            detection["latitude"] = float(lat)
-            detection["longitude"] = float(lon)
-            detection["altitude"] = float(alt or 0.0)
+        if location_valid:
+            detection["latitude"] = float(row["latitude"])
+            detection["longitude"] = float(row["longitude"])
+            detection["altitude"] = float(row.get("altitude") or 0.0)
 
         detection = {k: v for k, v in detection.items() if v is not None}
         await self._call(self.detection_callback, detection)
@@ -502,7 +566,6 @@ class OperationMain(Operation):
                 self.logger.exception("alert_callback failed")
 
     async def run(self) -> None:
-        gps_task = None
         try:
             self._apply_parameters_from_runner()
             if not self.detection_callback:
@@ -510,11 +573,18 @@ class OperationMain(Operation):
             if not self.oui_prefixes and not self.exact_bssids:
                 raise RuntimeError("wifi_discovery_edge_oui requires at least one valid BSSID, prefix, or vendor filter")
 
+            burst_capacity = min(
+                float(self.max_emit_burst),
+                max(1.0, float(self.max_emit_rate_hz)),
+            )
+            self._emit_tokens = burst_capacity
+            self._emit_token_time = time.monotonic()
+            self._last_status_epoch = 0.0
+
             await self._set_status(
                 f"Filtered Wi-Fi discovery: {len(self.exact_bssids)} exact BSSIDs, "
                 f"{len(self.oui_prefixes)} prefixes"
             )
-            gps_task = asyncio.create_task(self._gps_loop())
             self._airodump_proc, self._airodump_iface_in_use = await self._start_airodump()
             if not self._airodump_proc:
                 return
@@ -522,29 +592,78 @@ class OperationMain(Operation):
             while not self._should_stop():
                 rows = await self._to_thread_compat(self._read_airodump_rows_once)
                 now = time.time()
+                self._prune_pending()
 
                 for row in rows:
                     bssid_norm = row.get("bssid_norm", "")
                     if not self._matches_filter(bssid_norm):
                         continue
 
-                    first_seen = bssid_norm not in self._seen_bssids
-                    last_emit = self._last_emit_by_bssid.get(bssid_norm, 0.0)
-                    if not first_seen and (self.reemit_interval_s <= 0 or now - last_emit < self.reemit_interval_s):
-                        continue
+                    source_last_seen = str(row.get("source_last_seen") or "").strip()
+                    if source_last_seen:
+                        previous_source_seen = self._last_source_seen_by_bssid.get(bssid_norm)
+                        if previous_source_seen == source_last_seen:
+                            continue
+                        self._last_source_seen_by_bssid[bssid_norm] = source_last_seen
 
-                    self._seen_bssids.add(bssid_norm)
-                    self._last_emit_by_bssid[bssid_norm] = now
+                    first_seen = bssid_norm not in self._seen_bssids
+                    if not first_seen:
+                        if self.reemit_interval_s <= 0:
+                            continue
+
+                        last_emit = self._last_emit_by_bssid.get(bssid_norm, 0.0)
+                        if now - last_emit < self.reemit_interval_s:
+                            continue
+
+                    self._queue_pending_detection(
+                        row,
+                        first_seen=first_seen,
+                        now_epoch=now,
+                    )
+
+                pending = sorted(
+                    self._pending_by_bssid.values(),
+                    key=lambda row: (
+                        0 if row.get("_first_seen", False) else 1,
+                        -float(row.get("rssi_dbm"))
+                        if row.get("rssi_dbm") is not None
+                        else float("inf"),
+                        -float(row.get("_observation_epoch") or 0.0),
+                    ),
+                )
+
+                budget = self._take_emit_budget()
+                for row in pending[:budget]:
+                    if self._should_stop():
+                        break
+
+                    bssid_norm = row["bssid_norm"]
+                    first_seen = bool(row.get("_first_seen", False))
+
                     await self._emit_detection(row, first_seen=first_seen)
 
-                await self._set_status(f"OUI discovery: {len(self._seen_bssids)} matching BSSIDs")
+                    self._seen_bssids.add(bssid_norm)
+                    self._last_emit_by_bssid[bssid_norm] = time.time()
+                    self._pending_by_bssid.pop(bssid_norm, None)
+                    self._emit_tokens = max(0.0, self._emit_tokens - 1.0)
+
+                    # Keep control/status traffic responsive between detections.
+                    await asyncio.sleep(0)
+
+                if (now - self._last_status_epoch) >= self.status_interval_s:
+                    self._last_status_epoch = now
+                    await self._set_status(
+                        f"OUI discovery: {len(self._seen_bssids)} matching BSSIDs"
+                        f" ({len(self._pending_by_bssid)} pending)"
+                    )
+
                 await asyncio.sleep(self.scan_interval_s)
         except asyncio.CancelledError:
             raise
         except Exception as exc:
             self.logger.exception(f"Wi-Fi OUI discovery error: {exc}")
         finally:
-            await self._stop_runtime(gps_task)
+            await self._stop_runtime()
 
 
 if __name__ == "__main__":

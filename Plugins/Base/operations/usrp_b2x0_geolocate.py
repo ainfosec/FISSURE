@@ -7,7 +7,6 @@ as a subprocess, mirroring the working LFM beacon geolocate pattern.
 
 import asyncio
 import inspect
-import json
 import logging
 import os
 import shutil
@@ -30,6 +29,7 @@ for path in (FISSURE_REPO_ROOT, PLUGIN_ROOT, FLOW_GRAPH_DIR):
 try:
     from fissure.utils.plugins.operations import Operation
     from fissure.utils import FISSURE_ROOT, get_library_version
+    from fissure.utils.common import haversine_m
 except ImportError:
     if FISSURE_REPO_ROOT not in sys.path:
         sys.path.insert(0, FISSURE_REPO_ROOT)
@@ -40,6 +40,7 @@ except ImportError:
 
     from fissure.utils.plugins.operations import Operation
     from fissure.utils import FISSURE_ROOT, get_library_version
+    from fissure.utils.common import haversine_m
 
 
 class OperationMain(Operation):
@@ -52,6 +53,7 @@ class OperationMain(Operation):
         detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
+        position_callback: Union[Callable, None] = None,
         artifact_manager=None,
         parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
@@ -63,6 +65,7 @@ class OperationMain(Operation):
             detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
+            position_callback=position_callback,
             artifact_manager=artifact_manager,
         )
 
@@ -79,16 +82,17 @@ class OperationMain(Operation):
         self.antenna: str = "TX/RX"
         self.hardware_serial_argument: str = "False"
 
-        self.gpsd_host: str = "127.0.0.1"
-        self.gpsd_port: int = 2947
-        self.gps_refresh_interval: float = 1.0
-
         self.source_id: str = str(node_uid or "sensor_node")
         self.emit_alerts: bool = False
 
-        self._gps_stop = asyncio.Event()
-        self._current_position: Dict[str, Any] = {"lat": None, "lon": None, "alt": 0.0}
+        # Keep network/Hub traffic bounded while still allowing repeated RSSI
+        # samples at one receiver position for robust per-position aggregation.
+        self.measurement_spacing_m: float = 8.0
+        self.stationary_reemit_s: float = 5.0
+
         self._last_emit_time: float = 0.0
+        self._last_spatial_emit_position: Optional[tuple] = None
+        self._last_no_position_log_time: float = 0.0
 
     # ------------------------------------------------------------------
     # Compatibility/callback helpers
@@ -164,7 +168,7 @@ class OperationMain(Operation):
             self.logger.exception("%s task failed during cancellation", name)
 
     # ------------------------------------------------------------------
-    # Parameter/GPS helpers
+    # Parameter/position helpers
     # ------------------------------------------------------------------
     def _apply_parameters_from_runner(self) -> None:
         p = getattr(self, "parameters", None)
@@ -208,71 +212,88 @@ class OperationMain(Operation):
             p.get("hardware_serial_argument", self.hardware_serial_argument) or "False"
         ).strip()
 
-        self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host))
-        self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
-        self.gps_refresh_interval = float(p.get("gps_refresh_interval", self.gps_refresh_interval))
-
         self.source_id = str(p.get("source_id", self.source_id) or self.node_uid or "sensor_node")
         self.emit_alerts = bool(p.get("emit_alerts", self.emit_alerts))
 
-    async def _gps_loop(self) -> None:
-        self.logger.info("Starting GPS loop (GPSD)")
-        buf = ""
+        try:
+            self.measurement_spacing_m = max(
+                0.0,
+                float(p.get("measurement_spacing_m", self.measurement_spacing_m)),
+            )
+        except Exception:
+            self.measurement_spacing_m = 8.0
 
-        while (not self._should_stop()) and (not self._gps_stop.is_set()):
-            writer = None
-            try:
-                reader, writer = await asyncio.open_connection(self.gpsd_host, self.gpsd_port)
-                writer.write(b'?WATCH={"enable":true,"json":true}\n')
-                await writer.drain()
+        try:
+            self.stationary_reemit_s = max(
+                self.min_detection_interval_s,
+                float(p.get("stationary_reemit_s", self.stationary_reemit_s)),
+            )
+        except Exception:
+            self.stationary_reemit_s = max(self.min_detection_interval_s, 5.0)
 
-                while (not self._should_stop()) and (not self._gps_stop.is_set()):
-                    data = await reader.read(4096)
-                    if not data:
-                        await asyncio.sleep(0.5)
-                        continue
+    def _snapshot_position(self) -> Dict[str, Any]:
+        try:
+            position = self.position_callback()
+        except Exception as exc:
+            self.logger.warning("Position callback failed: %s", exc)
+            return {"valid": False, "source": ""}
 
-                    buf += data.decode(errors="ignore")
+        if not isinstance(position, dict) or not position.get("valid", False):
+            return {
+                "valid": False,
+                "source": (
+                    str(position.get("source") or "")
+                    if isinstance(position, dict)
+                    else ""
+                ),
+            }
 
-                    while "\n" in buf:
-                        if self._should_stop() or self._gps_stop.is_set():
-                            break
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        if lat is None or lon is None:
+            return {
+                "valid": False,
+                "source": str(position.get("source") or ""),
+            }
 
-                        line, buf = buf.split("\n", 1)
-                        if not line.strip():
-                            continue
+        return {
+            "valid": True,
+            "source": str(position.get("source") or ""),
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude": float(alt or 0.0),
+        }
 
-                        try:
-                            msg = json.loads(line)
-                        except Exception:
-                            continue
 
-                        if msg.get("class") == "TPV" and msg.get("mode", 0) >= 2:
-                            lat = msg.get("lat")
-                            lon = msg.get("lon")
-                            alt = msg.get("altMSL") or msg.get("altHAE") or msg.get("alt") or 0.0
+    def _position_emit_decision(
+        self,
+        *,
+        lat: float,
+        lon: float,
+        now: float,
+    ) -> tuple:
+        """Return (should_emit, reason, distance_from_spatial_anchor_m)."""
+        anchor = self._last_spatial_emit_position
+        if anchor is None:
+            return True, "first_position", None
 
-                            if lat is not None and lon is not None:
-                                self._current_position.update({
-                                    "lat": float(lat),
-                                    "lon": float(lon),
-                                    "alt": float(alt or 0.0),
-                                })
+        try:
+            distance_m = haversine_m(anchor[0], anchor[1], lat, lon)
+        except Exception:
+            distance_m = None
 
-            except asyncio.CancelledError:
-                raise
-            except Exception as e:
-                self.logger.warning("GPS error: %s", e)
-                await asyncio.sleep(2.0)
-            finally:
-                if writer is not None:
-                    try:
-                        writer.close()
-                        await writer.wait_closed()
-                    except Exception:
-                        pass
+        if (
+            distance_m is not None
+            and distance_m >= self.measurement_spacing_m
+        ):
+            return True, "moved", float(distance_m)
 
-        self.logger.info("GPS loop exited")
+        if (now - self._last_emit_time) >= self.stationary_reemit_s:
+            return True, "stationary_refresh", distance_m
+
+        return False, "too_close", distance_m
+
 
     # ------------------------------------------------------------------
     # Emission helpers
@@ -371,7 +392,6 @@ class OperationMain(Operation):
     async def run(self) -> None:
         self._apply_parameters_from_runner()
 
-        gps_task: Optional[asyncio.Task] = None
         stderr_task: Optional[asyncio.Task] = None
         process: Optional[asyncio.subprocess.Process] = None
 
@@ -402,8 +422,6 @@ class OperationMain(Operation):
 
             self.logger.info("Starting USRP B2x0 fixed-threshold geolocate flowgraph: %s", " ".join(cmd))
 
-            gps_task = asyncio.create_task(self._gps_loop())
-
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
@@ -418,10 +436,6 @@ class OperationMain(Operation):
                 raise RuntimeError("Flowgraph stdout pipe was not created")
 
             while not self._should_stop():
-                lat = self._current_position.get("lat")
-                lon = self._current_position.get("lon")
-                alt = self._current_position.get("alt")
-
                 try:
                     line_bytes = await asyncio.wait_for(process.stdout.readline(), timeout=0.25)
                 except asyncio.TimeoutError:
@@ -458,16 +472,44 @@ class OperationMain(Operation):
                 now = time.time()
                 if (now - self._last_emit_time) < self.min_detection_interval_s:
                     continue
+
+                position = self._snapshot_position()
+                if not position.get("valid"):
+                    if (now - self._last_no_position_log_time) >= 10.0:
+                        self.logger.info(
+                            "USRP B2x0 geolocation is receiving RF detections but waiting "
+                            "for a valid Sensor Node position."
+                        )
+                        self._last_no_position_log_time = now
+                    continue
+
+                lat = float(position.get("latitude"))
+                lon = float(position.get("longitude"))
+                alt = float(position.get("altitude") or 0.0)
+
+                should_emit, emit_reason, distance_m = self._position_emit_decision(
+                    lat=lat,
+                    lon=lon,
+                    now=now,
+                )
+                if not should_emit:
+                    continue
+
+                if emit_reason in {"first_position", "moved"}:
+                    self._last_spatial_emit_position = (lat, lon)
                 self._last_emit_time = now
 
                 self.logger.info(
-                    "USRP B2x0 measurement for %s: label=%s, freq_mhz=%.6f, metric=%.2f, lat=%s, lon=%s",
+                    "USRP B2x0 measurement for %s: label=%s, freq_mhz=%.6f, "
+                    "metric=%.2f, lat=%.7f, lon=%.7f, reason=%s, spacing_m=%s",
                     self.target_id,
                     label,
                     frequency_hz / 1e6,
                     metric,
                     lat,
                     lon,
+                    emit_reason,
+                    f"{distance_m:.1f}" if distance_m is not None else "-",
                 )
 
                 emit_time = det_time if det_time > 0 else now
@@ -480,15 +522,15 @@ class OperationMain(Operation):
                     alt=alt,
                 )
 
-                await self._set_status(f"Tracking {self.target_id} @ {frequency_hz / 1e6:.3f} MHz")
+                await self._set_status(
+                    f"Tracking {self.target_id} @ {frequency_hz / 1e6:.3f} MHz"
+                )
 
         except asyncio.CancelledError:
             raise
         except Exception as e:
             self.logger.exception("USRP B2x0 geolocate operation error: %s", e)
         finally:
-            self._gps_stop.set()
-            await self._cancel_task(gps_task, "GPS")
             await self._stop_process(process, "USRP B2x0 fixed-threshold flowgraph")
             await self._cancel_task(stderr_task, "stderr drain")
             await self._set_status("Idle")

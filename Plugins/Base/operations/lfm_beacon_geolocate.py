@@ -3,9 +3,7 @@
 
 import asyncio
 import contextlib
-import json
 import logging
-import math
 import os
 import sys
 import time
@@ -41,6 +39,7 @@ class OperationMain(Operation):
         detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
+        position_callback: Union[Callable, None] = None,
         artifact_manager=None,
         parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
@@ -52,6 +51,7 @@ class OperationMain(Operation):
             detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
+            position_callback=position_callback,
             artifact_manager=artifact_manager,
         )
 
@@ -65,12 +65,6 @@ class OperationMain(Operation):
         self.path_loss_n: float = 2.2
         self.path_loss_p0_db: Optional[float] = None
 
-        self.gpsd_host: str = "127.0.0.1"
-        self.gpsd_port: int = 2947
-        self.gps_refresh_interval: float = 1.0
-
-        self._gps_stop = asyncio.Event()
-        self._current_position = {"lat": None, "lon": None, "alt": 0.0}
         self._last_emit_time: float = 0.0
 
     def _apply_parameters_from_runner(self) -> None:
@@ -118,20 +112,6 @@ class OperationMain(Operation):
             except Exception:
                 self.path_loss_p0_db = None
 
-        self.gpsd_host = str(p.get("gpsd_host", self.gpsd_host))
-
-        try:
-            self.gpsd_port = int(p.get("gpsd_port", self.gpsd_port))
-        except Exception:
-            self.gpsd_port = 2947
-
-        try:
-            self.gps_refresh_interval = float(
-                p.get("gps_refresh_interval", self.gps_refresh_interval)
-            )
-        except Exception:
-            self.gps_refresh_interval = 1.0
-
         self.resource_args = {"freq_mhz": self.freq_mhz, "gain_default": self.gain_default}
 
     @staticmethod
@@ -152,79 +132,39 @@ class OperationMain(Operation):
 
         return script_path
 
-    async def _gps_loop(self) -> None:
-        self.logger.info("Starting GPS loop: GPSD")
-        buf = ""
+    def _snapshot_position(self) -> Dict[str, Any]:
+        try:
+            position = self.position_callback()
+        except Exception as exc:
+            self.logger.warning(f"Position callback failed: {exc}")
+            return {"valid": False, "source": ""}
 
-        while not self._stop and not self._gps_stop.is_set():
-            writer = None
+        if not isinstance(position, dict) or not position.get("valid", False):
+            return {
+                "valid": False,
+                "source": (
+                    str(position.get("source") or "")
+                    if isinstance(position, dict)
+                    else ""
+                ),
+            }
 
-            try:
-                reader, writer = await asyncio.open_connection(
-                    self.gpsd_host,
-                    self.gpsd_port,
-                )
-                writer.write(b'?WATCH={"enable":true,"json":true}\n')
-                await writer.drain()
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        if lat is None or lon is None:
+            return {
+                "valid": False,
+                "source": str(position.get("source") or ""),
+            }
 
-                while not self._stop and not self._gps_stop.is_set():
-                    try:
-                        data = await asyncio.wait_for(
-                            reader.read(4096),
-                            timeout=max(0.25, self.gps_refresh_interval),
-                        )
-                    except asyncio.TimeoutError:
-                        continue
-
-                    if not data:
-                        await asyncio.sleep(0.5)
-                        continue
-
-                    buf += data.decode(errors="ignore")
-
-                    while "\n" in buf:
-                        if self._stop or self._gps_stop.is_set():
-                            break
-
-                        line, buf = buf.split("\n", 1)
-                        if not line.strip():
-                            continue
-
-                        try:
-                            msg = json.loads(line)
-                        except Exception:
-                            continue
-
-                        if msg.get("class") == "TPV" and msg.get("mode", 0) >= 2:
-                            lat = msg.get("lat")
-                            lon = msg.get("lon")
-                            alt = msg.get("altMSL") or msg.get("altHAE") or 0.0
-
-                            if lat is not None and lon is not None:
-                                self._current_position.update(
-                                    {
-                                        "lat": float(lat),
-                                        "lon": float(lon),
-                                        "alt": float(alt),
-                                    }
-                                )
-
-            except asyncio.CancelledError:
-                raise
-
-            except Exception as e:
-                self.logger.warning(f"GPS error: {e}")
-                await asyncio.sleep(2.0)
-
-            finally:
-                if writer is not None:
-                    try:
-                        writer.close()
-                        await writer.wait_closed()
-                    except Exception:
-                        pass
-
-        self.logger.info("GPS loop stopped.")
+        return {
+            "valid": True,
+            "source": str(position.get("source") or ""),
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude": float(alt or 0.0),
+        }
 
     async def _emit_detection(
         self,
@@ -340,8 +280,6 @@ class OperationMain(Operation):
         self.logger.info(f"Using LFM beacon flow graph: {script_path}")
         self.logger.info(f"Starting LFM beacon flow graph: {' '.join(cmd)}")
 
-        gps_task = asyncio.create_task(self._gps_loop())
-
         process = await asyncio.create_subprocess_exec(
             *cmd,
             cwd=flow_graph_dir,
@@ -419,13 +357,18 @@ class OperationMain(Operation):
 
                 self._last_emit_time = now
 
-                lat = self._current_position.get("lat")
-                lon = self._current_position.get("lon")
-                alt = self._current_position.get("alt")
-
-                if lat is None or lon is None:
+                position = self._snapshot_position()
+                if position.get("valid"):
+                    lat = position.get("latitude")
+                    lon = position.get("longitude")
+                    alt = position.get("altitude")
+                else:
+                    lat = None
+                    lon = None
+                    alt = None
                     self.logger.debug(
-                        "LFM beacon measurement received before GPS fix; emitting detection without node position."
+                        "LFM beacon measurement received without valid Sensor Node position; "
+                        "emitting detection without node position."
                     )
 
                 power_text = (
@@ -464,13 +407,6 @@ class OperationMain(Operation):
             raise
 
         finally:
-            self._gps_stop.set()
-
-            if gps_task and not gps_task.done():
-                gps_task.cancel()
-                with contextlib.suppress(asyncio.CancelledError):
-                    await gps_task
-
             if stderr_task and not stderr_task.done():
                 stderr_task.cancel()
                 with contextlib.suppress(asyncio.CancelledError):

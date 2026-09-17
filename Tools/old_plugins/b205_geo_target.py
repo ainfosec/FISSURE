@@ -5,7 +5,7 @@ B205 RSSI/power geolocation target operation.
 
 This operation:
 - Tracks one or more RF frequencies with a B205/B2xx UHD receiver.
-- Reads GPSD position updates for this sensor node.
+- Reads position from the Sensor Node's configured GPS source.
 - Computes relative RSSI/power measurements from received IQ.
 - Uses the fissure_geo helper library for path-loss multilateration.
 - Emits target updates suitable for the Tactical tab / TAK target workflow.
@@ -77,6 +77,7 @@ class OperationMain(Operation):
         tak_cot_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
+        position_callback: Union[Callable, None] = None,
         artifact_manager=None,
     ) -> None:
         super().__init__(
@@ -86,15 +87,10 @@ class OperationMain(Operation):
             tak_cot_callback=tak_cot_callback,
             status_callback=status_callback,
             target_callback=target_callback,
+            position_callback=position_callback,
             artifact_manager=artifact_manager,
         )
 
-        self._gps_stop = asyncio.Event()
-        self._current_position: Dict[str, Any] = {"lat": None, "lon": None, "alt": 0.0}
-
-        self.gpsd_host = "127.0.0.1"
-        self.gpsd_port = 2947
-        self.gps_refresh_interval = 3.0
         self.opid = str(getattr(self, "opid", "") or uuid.uuid4())
 
     # ------------------------------------------------------------------
@@ -172,80 +168,41 @@ class OperationMain(Operation):
         return sorted({float(f) for f in freqs})
 
     # ------------------------------------------------------------------
-    # GPSD loop
+    # Position helper
     # ------------------------------------------------------------------
-    async def _gps_loop(self) -> None:
-        self.logger.info("Starting GPS loop (GPSD)")
-        last = 0.0
-        buf = ""
+    def _snapshot_position(self) -> Dict[str, Any]:
+        try:
+            position = self.position_callback()
+        except Exception as exc:
+            self.logger.warning("Position callback failed: %s", exc)
+            return {"valid": False, "source": ""}
 
-        while (not self._should_stop()) and (not self._gps_stop.is_set()):
-            writer = None
-            try:
-                reader, writer = await asyncio.open_connection(self.gpsd_host, self.gpsd_port)
-                writer.write(b'?WATCH={"enable":true,"json":true}\n')
-                await writer.drain()
+        if not isinstance(position, dict) or not position.get("valid", False):
+            return {
+                "valid": False,
+                "source": (
+                    str(position.get("source") or "")
+                    if isinstance(position, dict)
+                    else ""
+                ),
+            }
 
-                while (not self._should_stop()) and (not self._gps_stop.is_set()):
-                    data = await asyncio.wait_for(reader.read(4096), timeout=2.0)
-                    if not data:
-                        await asyncio.sleep(0.5)
-                        continue
-                    buf += data.decode(errors="ignore")
+        lat = position.get("latitude")
+        lon = position.get("longitude")
+        alt = position.get("altitude")
+        if lat is None or lon is None:
+            return {
+                "valid": False,
+                "source": str(position.get("source") or ""),
+            }
 
-                    while "\n" in buf:
-                        if self._should_stop() or self._gps_stop.is_set():
-                            break
-                        line, buf = buf.split("\n", 1)
-                        if not line.strip():
-                            continue
-                        try:
-                            msg = json.loads(line)
-                        except Exception:
-                            continue
-
-                        if msg.get("class") == "TPV" and msg.get("mode", 0) >= 2:
-                            lat = msg.get("lat")
-                            lon = msg.get("lon")
-                            alt = msg.get("altMSL") or msg.get("altHAE") or msg.get("alt") or 0.0
-                            if lat is not None and lon is not None:
-                                self._current_position.update(
-                                    {"lat": float(lat), "lon": float(lon), "alt": float(alt or 0.0)}
-                                )
-                                now = time.time()
-                                if (now - last) >= float(self.gps_refresh_interval):
-                                    last = now
-
-            except asyncio.TimeoutError:
-                continue
-            except asyncio.CancelledError:
-                raise
-            except Exception as exc:
-                self.logger.warning("GPS error: %s", exc)
-                await asyncio.sleep(2.0)
-            finally:
-                if writer is not None:
-                    try:
-                        writer.close()
-                        await writer.wait_closed()
-                    except Exception:
-                        pass
-
-        self.logger.info("GPS loop exited")
-
-    async def _gps_fallback_check(self, fallback_position: Optional[Dict[str, Any]]) -> None:
-        if not fallback_position:
-            return
-        await asyncio.sleep(1.0)
-        if self._current_position.get("lat") is None:
-            self.logger.warning("GPS unavailable. Using fallback coordinates.")
-            self._current_position.update(
-                {
-                    "lat": float(fallback_position.get("lat", 40.712776)),
-                    "lon": float(fallback_position.get("lon", -74.005974)),
-                    "alt": float(fallback_position.get("alt", 10.5)),
-                }
-            )
+        return {
+            "valid": True,
+            "source": str(position.get("source") or ""),
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "altitude": float(alt or 0.0),
+        }
 
     # ------------------------------------------------------------------
     # UHD/geolocation helpers
@@ -405,8 +362,6 @@ class OperationMain(Operation):
         params: Dict[str, Any] = getattr(self, "parameters", {}) or {}
         source_id = self._source_id(params)
 
-        gps_task: Optional[asyncio.Task] = None
-        fallback_task: Optional[asyncio.Task] = None
         uhd = None
         streamer = None
         stream_cmd_issued = False
@@ -414,10 +369,6 @@ class OperationMain(Operation):
         try:
             if not self.target_callback:
                 raise RuntimeError("b205_geo_target requires target_callback to be wired")
-
-            self.gpsd_host = str(params.get("gpsd_host", self.gpsd_host))
-            self.gpsd_port = int(params.get("gpsd_port", self.gpsd_port))
-            self.gps_refresh_interval = float(params.get("gps_refresh_interval", self.gps_refresh_interval))
 
             uhd_args = str(params.get("uhd_args", "type=b200"))
             rate = float(params.get("sample_rate", 1e6))
@@ -452,18 +403,11 @@ class OperationMain(Operation):
             emit_tak_cot = bool(params.get("emit_tak_cot", False))
             emit_alerts = bool(params.get("emit_alerts", False))
 
-            fallback_position = params.get("fallback_position")
-            if fallback_position is None and bool(params.get("use_gps_fallback", True)):
-                fallback_position = {"lat": 40.712776, "lon": -74.005974, "alt": 10.5}
-
             freqs_hz = self._parse_freqs_hz(params)
             await self._set_status(f"Running: B205 Geo ({len(freqs_hz)} freqs)")
 
             if not self.artifact_manager:
                 self.logger.warning("artifact_manager not provided; using operation_id as local artifact_id fallback")
-
-            gps_task = asyncio.create_task(self._gps_loop())
-            fallback_task = asyncio.create_task(self._gps_fallback_check(fallback_position))
 
             uhd, usrp, streamer, md = self._uhd_open(uhd_args, rate, gain, antenna)
             stream_cmd_issued = True
@@ -512,9 +456,15 @@ class OperationMain(Operation):
                             await asyncio.sleep(0.01)
                             continue
 
-                        lat = self._current_position.get("lat")
-                        lon = self._current_position.get("lon")
-                        alt = self._current_position.get("alt", 0.0)
+                        position = self._snapshot_position()
+                        if position.get("valid", False):
+                            lat = position.get("latitude")
+                            lon = position.get("longitude")
+                            alt = position.get("altitude", 0.0)
+                        else:
+                            lat = None
+                            lon = None
+                            alt = 0.0
 
                         st = per_freq[freq_hz]
                         model: PathLossModel = st["model"]
@@ -714,26 +664,6 @@ class OperationMain(Operation):
                 await asyncio.sleep(0.01)
 
         finally:
-            self._gps_stop.set()
-
-            if fallback_task is not None:
-                fallback_task.cancel()
-                try:
-                    await fallback_task
-                except asyncio.CancelledError:
-                    pass
-                except Exception:
-                    self.logger.exception("GPS fallback task cleanup failed")
-
-            if gps_task is not None:
-                gps_task.cancel()
-                try:
-                    await gps_task
-                except asyncio.CancelledError:
-                    pass
-                except Exception:
-                    self.logger.exception("GPS task cleanup failed")
-
             if stream_cmd_issued and uhd is not None and streamer is not None:
                 try:
                     cmd = uhd.types.StreamCMD(uhd.types.StreamMode.stop_cont)

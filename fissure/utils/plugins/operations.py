@@ -26,6 +26,7 @@ _base_params = [
     'soi_callback', 
     'recommendation_callback', 
     'inspection_callback',
+    'position_callback',
     'artifact_manager'
 ]
 
@@ -111,6 +112,18 @@ async def send_inspection(
             bool(final),
             inspection,
         )
+    
+def get_position() -> Dict[str, Any]:
+    """Return an invalid position when an operation runs outside a Sensor Node."""
+    return {
+        "source": "",
+        "valid": False,
+        "stale": True,
+        "latitude": None,
+        "longitude": None,
+        "altitude": None,
+        "gps_time": "",
+    }
         
 def setup_decorator(func):
     async def wrapper(self) -> bool:
@@ -259,6 +272,7 @@ class Operation(object):
             soi_callback: Union[Callable, None] = None, 
             recommendation_callback: Union[Callable, None] = None, 
             inspection_callback: Union[Callable, None] = None,
+            position_callback: Union[Callable, None] = None,
             artifact_manager: Union[ArtifactManager, None] = None
         ) -> None:
         """Initialize the Operation class.
@@ -285,6 +299,8 @@ class Operation(object):
             Callback function for attaching recommended follow-on actions to Targets
         inspection_callback : Union[Callable, None], optional
             Callback function for structured Inspection measurements and analysis results
+        position_callback : Union[Callable, None], optional
+            Callback returning the Sensor Node's current cached position snapshot
         artifact_manager : Union[ArtifactManager, None], optional
             ArtifactManager instance for managing artifacts, by default None to use the global artifact manager
         """
@@ -308,6 +324,8 @@ class Operation(object):
             recommendation_callback = send_recommendation
         if inspection_callback is None:
             inspection_callback = send_inspection
+        if position_callback is None:
+            position_callback = get_position
         self.alert_callback = alert_callback
         self.tak_cot_callback = tak_cot_callback
         self.detection_callback = detection_callback
@@ -316,6 +334,7 @@ class Operation(object):
         self.soi_callback = soi_callback
         self.recommendation_callback = recommendation_callback
         self.inspection_callback = inspection_callback
+        self.position_callback = position_callback
         if artifact_manager is not None:
             self.artifact_manager = artifact_manager
         else:

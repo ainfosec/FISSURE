@@ -3,6 +3,37 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-9-17
 
+Unify positioning and harden geolocation workflows
+
+### Added
+
+- Added a generic Sensor Node position callback for plugin operations so actions can use the node's configured GPS source without implementing their own GPS client.
+- Added continuous gpsd position caching at the Sensor Node so moving RF observations can use fresh fixes without increasing heartbeat or node-state publication traffic.
+- Added spatial Wi-Fi geolocation sampling with per-BSSID receiver-position clusters, median RSSI aggregation, and configurable measurement spacing for focused, Search Similar, and Geolocate All workflows.
+
+### Changed
+
+- Changed Light Discovery to prioritize one representative detection per BSSID by default, use a small bounded pending cache, snapshot receiver position at observation time, and avoid building a long backlog in dense Wi-Fi environments.
+- Changed Wi-Fi operations to honor the Sensor Node's configured GPS source, including static Saved coordinates and fresh gpsd fixes, instead of opening independent gpsd connections.
+- Changed Edge OUI Discovery to use bounded per-BSSID pending observations and rate-limited emission so large groups of matching devices do not create an immediate detection burst.
+- Changed Dense Wi-Fi Wardrive Logger to maintain run-wide BSSID summaries, record only spatially or RF-useful observations, and package a normal collection session into one Artifact on Stop with a large size-based rollover only as a safety limit.
+- Changed focused Wi-Fi geolocation to emit one representative measurement for a receiver location and wait for meaningful movement before contributing another geometry point.
+- Changed Geolocate All and Search Similar to apply the same per-BSSID freshness, spatial clustering, and measurement-spacing rules while preserving deterministic Target creation and existing known-Target mappings.
+- Changed GPS point, GPS line, LFM beacon, and generic USRP geolocation actions to use the Sensor Node's configured position source instead of maintaining independent gpsd connections.
+- Changed generic USRP Target geolocation to suppress redundant stationary observations, emit immediately after meaningful receiver movement, and periodically refresh measurements without flooding the hub.
+- Changed generic RF Target geolocation to use the centralized HIPRFISR geolocation workflow and core `fissure.utils.geo` implementation as the active path, with legacy B205-specific geolocation code removed from the live Base plugin.
+
+### Fixed
+
+- Fixed Wi-Fi observations using gpsd even when the Sensor Node was configured for another GPS source such as Saved.
+- Fixed non-Wi-Fi geolocation and GPS trigger actions bypassing the Sensor Node's selected GPS source.
+- Fixed cumulative airodump rows being eligible to pair stale Wi-Fi RSSI data with a newer receiver position during geolocation.
+- Fixed repeated Wi-Fi geolocation observations from nearly the same receiver location inflating sample counts without adding useful spatial geometry.
+- Fixed generic USRP geolocation continuously forwarding redundant observations while the receiver remained at the same location.
+- Fixed stale geolocation action registrations referencing legacy or nonexistent operation paths.
+
+## 2026-9-17
+
 Harden field operations and installer reliability
 
 ### Added

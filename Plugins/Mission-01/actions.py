@@ -52,7 +52,6 @@ DELEGATED_ACTIONS = {
     "wifi_geolocate_all": "WiFi",
 
     # Base RF / Geolocation
-    "signal_geolocate": "Base",
     "lfm_beacon_geolocate": "Base",
     "usrp_b2x0_geolocate": "Base",
 

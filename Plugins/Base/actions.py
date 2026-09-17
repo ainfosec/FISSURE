@@ -17,8 +17,6 @@ PLUGIN_NAME = "Base"
 
 
 ACTION_TAGS = {
-    "signal_geolocate": ["All"],
-
     "fixed_detection": [
         "All",
         "tsi.detector",
@@ -300,7 +298,6 @@ ACTION_TAGS = {
 ACTION_HARDWARE = {
     "hackrf_sweep_detection": ["HackRF"],
     "rtl_power_detection": ["RTL2832U"],
-    "signal_geolocate": ["USRP B20xmini", "USRP B2x0"],
     "fixed_detection": ["USRP B20xmini", "USRP B2x0"],
     "scan_detection": ["USRP B20xmini", "USRP B2x0"],
     "lfm_beacon_detection": ["RTL2832U"],
@@ -376,7 +373,6 @@ sensor_node_time_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Sensor Node time reached"},
     ]
 }
-
 async def sensor_node_time(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Sensor Node time action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "sensor_node_time.py", parameters, node_uid, wait=True)
@@ -388,7 +384,6 @@ timer_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Timer expired"},
     ]
 }
-
 async def timer(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Timer action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "timer.py", parameters, node_uid, wait=True)
@@ -403,7 +398,6 @@ sound_threshold_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Sound threshold exceeded"},
     ]
 }
-
 async def sound_threshold(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Sound threshold action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "sound_threshold.py", parameters, node_uid, wait=True)
@@ -416,7 +410,6 @@ file_modified_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "File modified"},
     ]
 }
-
 async def file_modified(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"File modified action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "file_modified.py", parameters, node_uid, wait=True)
@@ -429,7 +422,6 @@ folder_modified_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Folder modified"},
     ]
 }
-
 async def folder_modified(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Folder modified action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "folder_modified.py", parameters, node_uid, wait=True)
@@ -446,7 +438,6 @@ temperature_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Temperature condition met"},
     ]
 }
-
 async def temperature(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Temperature action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "temperature.py", parameters, node_uid, wait=True)
@@ -462,7 +453,6 @@ weather_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Weather condition met"},
     ]
 }
-
 async def weather(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Weather action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "weather.py", parameters, node_uid, wait=True)
@@ -478,7 +468,6 @@ wind_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Wind threshold reached"},
     ]
 }
-
 async def wind(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Wind action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "wind.py", parameters, node_uid, wait=True)
@@ -494,7 +483,6 @@ sunrise_sunset_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Sunrise/sunset reached"},
     ]
 }
-
 async def sunrise_sunset(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Sunrise/sunset action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "sunrise_sunset.py", parameters, node_uid, wait=True)
@@ -508,7 +496,6 @@ detect_ssid_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "SSID detected"},
     ]
 }
-
 async def detect_ssid(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Detect SSID action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "detect_ssid.py", parameters, node_uid, wait=True)
@@ -523,7 +510,6 @@ gps_point_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "GPS point reached"},
     ]
 }
-
 async def gps_point(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"GPS point action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "gps_point.py", parameters, node_uid, wait=True)
@@ -538,7 +524,6 @@ gps_line_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "GPS line crossed"},
     ]
 }
-
 async def gps_line(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"GPS line action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "gps_line.py", parameters, node_uid, wait=True)
@@ -550,7 +535,6 @@ x10_demod_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "X10 message detected"},
     ]
 }
-
 async def x10_demod(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"X10 demod action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "x10_demod.py", parameters, node_uid, wait=True)
@@ -562,7 +546,6 @@ plane_spotting_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Aircraft detected"},
     ]
 }
-
 async def plane_spotting(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Plane spotting action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "plane_spotting.py", parameters, node_uid, wait=True)
@@ -575,7 +558,6 @@ rds_keyword_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "RDS keyword detected"},
     ]
 }
-
 async def rds_keyword(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"RDS keyword action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "rds_keyword.py", parameters, node_uid, wait=True)
@@ -589,7 +571,6 @@ cellular_tower_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Cellular tower detected"},
     ]
 }
-
 async def cellular_tower(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Cellular tower action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "cellular_tower.py", parameters, node_uid, wait=True)
@@ -602,30 +583,9 @@ webserver_curl_schema = {
         {"name": "description", "label": "Description", "type": "string", "default": "Web request received"},
     ]
 }
-
 async def webserver_curl(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
     component.logger.info(f"Webserver curl action with parameters: {parameters}")
     await component.run_plugin_operation(component, PLUGIN_NAME, "webserver_curl.py", parameters, node_uid, wait=True)
-
-
-async def signal_geolocate(
-    component: SensorNode,
-    parameters: Dict[str, Any],
-    node_uid: str = "",
-) -> None:
-    component.logger.info(
-        f"Signal geolocation with parameters: {parameters}"
-    )
-
-    op_params = dict(parameters or {})
-
-    await component.run_plugin_operation(
-        component,
-        PLUGIN_NAME,
-        "signal_geolocate.py",
-        {"parameters": op_params},
-        node_uid,
-    )
 
 
 fixed_detection_schema = {
@@ -3232,8 +3192,6 @@ ook_analysis_schema = {
         },
     ]
 }
-
-
 async def ook_analysis(
     component: SensorNode,
     parameters: Dict[str, Any],
