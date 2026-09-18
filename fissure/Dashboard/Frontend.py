@@ -2343,6 +2343,9 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionReplay_CoT_to_TAK_Dashboard.triggered.connect(
         lambda: MenuBarSlots._slotMenuReplayCoTToTAKDashboardClicked(dashboard)
     )
+    dashboard.window.actionNew_CoT_Log_Session.triggered.connect(
+        lambda: MenuBarSlots._slotMenuNewCoTLogSessionClicked(dashboard)
+    )
 
     # Standalone Menu
     dashboard.window.actionJ2497_demod_method1.triggered.connect(lambda: MenuBarSlots._slotMenuJ2497_DemodMethod1Clicked(dashboard))

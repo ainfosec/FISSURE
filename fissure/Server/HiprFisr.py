@@ -1923,6 +1923,53 @@ class HiprFisr:
         self.logger.info(f"CoT logging enabled. Session directory: {session_dir}")
 
 
+    def new_cot_log_session(self):
+        """Start a fresh CoT logging session without restarting HIPRFISR."""
+        cfg = self.settings.get("cot_logging", {}) or {}
+
+        if not bool(cfg.get("cot_log_enabled", False)):
+            error = "CoT logging is disabled in the current configuration."
+            self.logger.warning(error)
+            return False, "", error
+
+        base_dir = cfg.get("cot_log_directory", "./Logs/CoT_Logs")
+        if not base_dir:
+            base_dir = "./Logs/CoT_Logs"
+
+        try:
+            if not os.path.isabs(base_dir):
+                base_dir = os.path.join(fissure.utils.FISSURE_ROOT, base_dir)
+        except Exception:
+            base_dir = os.path.abspath(base_dir)
+
+        try:
+            with self.cot_log_lock:
+                os.makedirs(base_dir, exist_ok=True)
+
+                session_name = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+                session_dir = os.path.join(base_dir, session_name)
+
+                suffix = 1
+                while os.path.exists(session_dir):
+                    session_dir = os.path.join(base_dir, f"{session_name}_{suffix:02d}")
+                    suffix += 1
+
+                os.makedirs(session_dir, exist_ok=False)
+
+                self.cot_log_session_dir = session_dir
+                self.cot_log_file_index = 1
+                self.cot_log_file_path = os.path.join(session_dir, "cot_0001.xml")
+                self.cot_log_enabled_runtime = True
+
+            self.logger.info(f"Started new CoT log session: {session_dir}")
+            return True, session_dir, ""
+
+        except Exception as e:
+            error = f"Failed to start new CoT log session: {e}"
+            self.logger.error(error)
+            return False, "", error
+        
+        
     def rotate_cot_log_file(self):
         self.cot_log_file_index += 1
 

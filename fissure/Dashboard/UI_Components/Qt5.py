@@ -1829,6 +1829,7 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
         self._map_download_worker = None
         self._map_download_progress = None
         self._map_download_name = ""
+        self._map_download_result = None
 
         # Prevent Resizing/Maximizing
         self.setFixedSize(400, 500)
@@ -1903,7 +1904,7 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Too Many Tiles",
-                "Limit OSM downloads to small areas (<= 2000 tiles).\nUse MOBAC for larger regions."
+                "Limit OSM downloads to small areas (<= 2000 tiles).\\nUse MOBAC for larger regions."
             )
             return
 
@@ -1911,12 +1912,28 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             answer = QtWidgets.QMessageBox.question(
                 self,
                 "Large Download",
-                f"This will download {estimate['total_tiles']} tiles.\nContinue?",
+                f"This will download {estimate['total_tiles']} tiles.\\nContinue?",
             )
             if answer != QtWidgets.QMessageBox.Yes:
                 return
 
         map_pack_dir = pathlib.Path(fissure.utils.FISSURE_ROOT) / "map_data" / map_pack_name
+
+        if map_pack_dir.exists():
+            answer = QtWidgets.QMessageBox.question(
+                self,
+                "Replace Map Pack",
+                f"A map pack named '{map_pack_name}' already exists.\n\n"
+                "Replace it? The existing map data will be deleted.",
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.No,
+            )
+            if answer != QtWidgets.QMessageBox.Yes:
+                return
+
+            import shutil
+            shutil.rmtree(map_pack_dir)
+
         tiles_dir = map_pack_dir / "tiles"
         manifest_path = map_pack_dir / "tile_manifest.json"
         map_pack_dir.mkdir(parents=True, exist_ok=True)
@@ -1932,7 +1949,6 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
 
         self._map_download_name = map_pack_name
         self.pushButton_download.setEnabled(False)
-        self.pushButton_cancel.setText("Cancel Download")
 
         self._map_download_progress = QtWidgets.QProgressDialog(
             "Preparing map tiles...",
@@ -1948,6 +1964,8 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
         self._map_download_progress.setAutoReset(False)
         self._map_download_progress.setValue(0)
         self._map_download_progress.canceled.connect(self._slotMapDownloadCancelRequested)
+
+        self._map_download_result = None
 
         self._map_download_thread = QtCore.QThread(self)
         self._map_download_worker = MapTileDownloadWorker(tiles_dir, estimate["by_zoom"])
@@ -1993,16 +2011,48 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
             )
 
     def _slotMapDownloadFinished(self, downloaded, skipped, failed, canceled, error):
+        """
+        Records the worker result and closes the progress dialog.
+
+        The map-pack dialog is intentionally not accepted here because the
+        worker thread has not necessarily finished shutting down yet.
+        """
+        self._map_download_result = (
+            downloaded,
+            skipped,
+            failed,
+            canceled,
+            error,
+        )
+
         if self._map_download_progress:
             self._map_download_progress.close()
             self._map_download_progress = None
 
+    def _slotMapDownloadThreadFinished(self):
+        """
+        Finalizes the download only after the worker QThread has fully stopped.
+        """
+        self._map_download_worker = None
+        self._map_download_thread = None
+
         self.pushButton_download.setEnabled(True)
         self.pushButton_cancel.setEnabled(True)
-        self.pushButton_cancel.setText("Cancel")
+
+        result = self._map_download_result
+        self._map_download_result = None
+
+        if result is None:
+            return
+
+        downloaded, skipped, failed, canceled, error = result
 
         if error:
-            QtWidgets.QMessageBox.warning(self, "Download Failed", error)
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Download Failed",
+                error,
+            )
             return
 
         if canceled:
@@ -2012,22 +2062,20 @@ class DownloadMapPackDialog(QtWidgets.QDialog, UI_Types.DownloadMapPack):
                 f"Downloaded: {downloaded}\n"
                 f"Skipped: {skipped}\n"
                 f"Failed: {failed}\n\n"
-                "Partial tiles were kept. Start the same download again to resume.",
+                "Partial tiles were kept.",
             )
             return
 
         QtWidgets.QMessageBox.information(
             self,
             "Download Complete",
-            f"Downloaded: {downloaded}\nSkipped: {skipped}\nFailed: {failed}",
+            f"Downloaded: {downloaded}\n"
+            f"Skipped: {skipped}\n"
+            f"Failed: {failed}",
         )
 
         self.map_pack_name = self._map_download_name
         self.accept()
-
-    def _slotMapDownloadThreadFinished(self):
-        self._map_download_worker = None
-        self._map_download_thread = None
 
     def reject(self):
         if self._map_download_thread and self._map_download_thread.isRunning():

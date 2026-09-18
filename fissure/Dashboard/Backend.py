@@ -725,6 +725,19 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    async def newCoTLogSession(self):
+        """Request a fresh CoT logging session from HIPRFISR."""
+        if self.hiprfisr_connected is not True:
+            return
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "newCoTLogSession",
+            fissure.comms.MessageFields.PARAMETERS: {},
+        }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
     async def updateLoggingLevels(self, new_console_level, new_file_level):
         """
         Updates the console and file logging levels for all components.

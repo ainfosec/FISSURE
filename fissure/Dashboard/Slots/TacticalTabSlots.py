@@ -197,14 +197,13 @@ def _slotTacticalDownloadMapPack(dashboard: QtCore.QObject):
     """
     Opens the Download Map Pack dialog.
     """
-    # Load the Dialog
     download_map_pack_dlg = DownloadMapPackDialog(parent=dashboard)
-    download_map_pack_dlg.show()
-    # download_map_pack_dlg.exec_()
 
     if download_map_pack_dlg.exec_() == QtWidgets.QDialog.Accepted:
         _slotTacticalRefreshMapPacks(dashboard)
-        dashboard.ui.comboBox_tactical_map_pack.setCurrentText(download_map_pack_dlg.map_pack_name)
+        dashboard.ui.comboBox_tactical_map_pack.setCurrentText(
+            download_map_pack_dlg.map_pack_name
+        )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

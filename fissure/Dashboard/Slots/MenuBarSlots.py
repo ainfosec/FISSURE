@@ -5913,6 +5913,19 @@ def _slotMenuTAK_StopDockerContainersClicked(dashboard: QtWidgets.QMainWindow):
         proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + docker_stop_command + '"', shell=True)
 
 
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotMenuNewCoTLogSessionClicked(dashboard: QtWidgets.QMainWindow):
+    """Starts a fresh CoT logging session on HIPRFISR."""
+    if dashboard.backend.hiprfisr_connected is not True:
+        dashboard.statusBar().showMessage(
+            "Cannot start a new CoT log session: HIPRFISR is not connected.",
+            10000,
+        )
+        return
+
+    await dashboard.backend.newCoTLogSession()
+
+
 @QtCore.pyqtSlot()
 def _slotMenuReplayCoTToTAKClicked(dashboard: QtWidgets.QMainWindow):
     """

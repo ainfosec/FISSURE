@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-18
+
+Add CoT session rollover and safe map replacement
+
+### Added
+
+- Added a New CoT Log Session menu action that starts a fresh timestamped HIPRFISR CoT logging session without restarting the Dashboard or interrupting existing session history.
+
+### Fixed
+
+- Fixed saving a map pack with an existing name to require confirmation and replace the previous pack completely, preventing stale tiles and mismatched manifest data from being retained.
+
 ## 2026-9-17
 
 Unify positioning and harden geolocation workflows

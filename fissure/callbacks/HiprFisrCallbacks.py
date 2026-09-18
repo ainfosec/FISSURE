@@ -503,6 +503,24 @@ async def pingIP(component: object, node_uid: str):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+async def newCoTLogSession(component: object):
+    """Start a fresh HIPRFISR CoT logging session."""
+    success, session_dir, error = component.new_cot_log_session()
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "newCoTLogSessionReturn",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "success": success,
+            "session_dir": session_dir,
+            "error": error,
+        },
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+        
+
 ##########################################################################
 ###################### To Multiple Components ############################
 ##########################################################################

@@ -1278,6 +1278,20 @@ async def responsePluginOperationStopped(
     )
 
 
+async def newCoTLogSessionReturn(component: object, success=False, session_dir="", error=""):
+    """Report the result of starting a new CoT logging session."""
+    if success:
+        session_name = os.path.basename(str(session_dir).rstrip(os.sep))
+        message = f"New CoT log session started: {session_name}"
+        component.logger.info(message)
+        component.frontend.statusBar().showMessage(message, 10000)
+        return
+
+    message = str(error or "Could not start a new CoT log session.")
+    component.logger.warning(message)
+    component.frontend.statusBar().showMessage(message, 10000)
+
+
 async def findGPS_CoordinatesResults(component: object, coordinates=""):
     """
     Returns the GPS coordinate results to the NodeConfigureDialog.
