@@ -11,6 +11,7 @@ required_items = [
     "PostgreSQL Database",
     "Meshtastic",
     "Network Certificates",
+    "Xpra",
     "gr-ainfosec",
     "Archive Flow Graphs",
     "Fuzzing Flow Graphs",

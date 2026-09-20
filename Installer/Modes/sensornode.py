@@ -11,6 +11,7 @@ required_items = [
     "Wireshark",
     "Meshtastic",
     "Network Certificates",
+    "Xpra",
     "gr-ainfosec",
 
     # Hardware

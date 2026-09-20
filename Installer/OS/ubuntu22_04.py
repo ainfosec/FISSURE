@@ -118,14 +118,13 @@ fi
 echo "Using bin path: $bin_path"
 mkdir -p "$bin_path"
 
-# Add ~/.local/bin to PATH if missing (for normal installs)
+# Add ~/.local/bin to PATH for future shells on normal host installs.
 if [ "$bin_path" = "$HOME/.local/bin" ]; then
-  if grep -Fq "~/.local/bin" ~/.bashrc
-  then
-    echo "~/.local/bin is already in ~/.bashrc"
-  else
-    printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
-  fi
+    if grep -Fq '$HOME/.local/bin' "$HOME/.bashrc"; then
+        echo "\$HOME/.local/bin is already in ~/.bashrc"
+    else
+        printf '\n%s\n' 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+    fi
 fi
 
 # Create fissure command
@@ -351,8 +350,8 @@ else
     xpra_install_dir="$HOME/Installed_by_FISSURE/xpra"
     mkdir -p "$xpra_install_dir"
 
-    rm -rf "$xpra_install_dir/xpra-6.5.2"
-    rm -f "$xpra_install_dir/xpra-6.5.2.tar.gz"
+    sudo rm -rf "$xpra_install_dir/xpra-6.5.2"
+    sudo rm -f "$xpra_install_dir/xpra-6.5.2.tar.gz"
 
     cd "$xpra_install_dir"
 
@@ -368,8 +367,8 @@ else
     hash -r
 
     cd "$HOME"
-    rm -rf "$xpra_install_dir/xpra-6.5.2"
-    rm -f "$xpra_install_dir/xpra-6.5.2.tar.gz"
+    sudo rm -rf "$xpra_install_dir/xpra-6.5.2"
+    sudo rm -f "$xpra_install_dir/xpra-6.5.2.tar.gz"
 fi
 
 ########## Verify ##########
@@ -379,7 +378,7 @@ else
     test -x /usr/local/bin/xpra &&
     /usr/local/bin/xpra --version 2>&1 | grep -q '6\\.5\\.2'
 fi
-""", False, 'Minimum Install'))
+""", True, 'Minimum Install'))
 
 # Auto-Launch Sensor Node
 programs_ubuntu22_04.append(('Auto-Launch Sensor Node',
@@ -1341,7 +1340,7 @@ ls /usr/bin/designer
 programs_ubuntu22_04.append(('Grip (6.4 MB)',
 """python3 -m pip install grip
 ########## Verify ##########
-ls /usr/local/bin/grip
+grip --help
 """,True,'Development'))
 
 # Kismet
@@ -1908,7 +1907,7 @@ python3 -m pip install python-dateutil
 python3 -m pip install flask_table
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""",True,'433 MHz'))
+""",False,'433 MHz'))
 
 # scan-ssid
 programs_ubuntu22_04.append(('scan-ssid (585.8 kB)',
@@ -2007,18 +2006,25 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu22_04.append(('multimon-ng (13.6 MB)',
-"""sudo apt-get install -y libpulse-dev
+"""sudo apt-get install -y build-essential
+sudo apt-get install -y cmake
+sudo apt-get install -y libpulse-dev
+sudo apt-get install -y libx11-dev
+
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/EliasOenal/multimonNG.git
+
+sudo rm -rf multimonNG
+git clone https://github.com/EliasOenal/multimon-ng.git multimonNG
+
 cd multimonNG
-mkdir build
-cd build
-qmake ../multimon-ng.pro
-make
-sudo make install
+
+cmake -S . -B build
+cmake --build build --parallel 4
+sudo cmake --install build
+
 ########## Verify ##########
-ls /usr/local/bin/multimon-ng
+/usr/local/bin/multimon-ng --help
 """,True,'POCSAG'))
 
 # Xastir
@@ -2129,7 +2135,7 @@ programs_ubuntu22_04.append(('trackerjacker',
 sudo sed -i 's/tostring/tobytes/g' /usr/local/lib/python3.10/dist-packages/scapy/arch/linux.py
 python3 -m pip install trackerjacker
 ########## Verify ##########
-sudo trackerjacker --help
+trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
@@ -2253,15 +2259,26 @@ pyfdax -h
 
 # Bootable USB
 programs_ubuntu22_04.append(('Bootable USB (107.4 MB)',
-"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
-sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
-sudo apt update
-sudo apt install -y systemback
-sudo add-apt-repository -y ppa:mkusb/ppa
-sudo apt-get update
-sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+"""if systemd-detect-virt --quiet; then
+    echo "Running in a VM, not installing"
+else
+    sudo apt-get update
+    sudo apt-get install -y software-properties-common
+
+    sudo add-apt-repository -y universe
+    sudo add-apt-repository -y ppa:mkusb/ppa
+
+    sudo apt-get update
+    sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+fi
+
 ########## Verify ##########
-ls /usr/bin/systemback && ls /usr/bin/guidus
+if systemd-detect-virt --quiet; then
+    echo "VM detected, Bootable USB tools intentionally skipped"
+else
+    command -v mkusb >/dev/null && \
+    command -v guidus >/dev/null
+fi
 """,True,'Development'))
 
 # Dire Wolf

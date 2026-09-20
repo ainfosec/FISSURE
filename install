@@ -181,6 +181,10 @@ fi
 ########################################
 #        Run the Full Installer        #
 ########################################
+# Ensure user-local Python console scripts installed during this run
+# are immediately available to the installer and verification commands.
+export PATH="$HOME/.local/bin:$PATH"
+
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 LOGFILE="$DIR/Installer/fissure_install.log"
 
