@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-20
+
+Harden Ubuntu installer compatibility and verification
+
+### Changed
+
+- Updated the installer environment to include user-local Python console scripts in PATH during installation and persist the path safely for future shells.
+- Updated Bootable USB installation to use systemd VM detection and the current mkusb toolchain instead of the legacy Systemback/Xenial repository flow.
+- Updated multimon-ng installation to use the current CMake build process and required build dependencies.
+- Updated default installer selections to include Xpra where remote GUI support is used and leave legacy monitor_rtl433 optional due to outdated dependency compatibility.
+
+### Fixed
+
+- Fixed verification for user-local Python tools and packages including Trackerjacker, nwdiag, Grip, pyFDA, PyGPSClient, PyAIS, and Universal Radio Hacker by replacing hardcoded system install paths with PATH- or import-based checks that also work with non-root pip installs and WSL2.
+- Fixed Xpra cleanup commands to remove protected installation files with the required privileges.
+- Fixed Bootable USB verification to pass cleanly when installation is intentionally skipped inside a virtual machine.
+- Fixed multimon-ng reinstall behavior by removing stale source and build state before cloning and rebuilding, and updated verification for the installed executable.
+
 ## 2026-9-18
 
 Add CoT session rollover and safe map replacement

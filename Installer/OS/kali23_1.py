@@ -2006,7 +2006,7 @@ programs_kali.append(('PyGPSClient (5.29 MB)',
 sudo apt remove -y python3-cryptography
 python3 -m pip install --upgrade PyGPSClient --break-system-packages --ignore-installed
 ########## Verify ##########
-ls /usr/local/bin/pygpsclient
+pygpsclient -h
 """,True,'GPS'))
 
 # Gpredict
@@ -2043,7 +2043,7 @@ cmake --build build --parallel 4
 sudo cmake --install build
 
 ########## Verify ##########
-/usr/local/bin/multimon-ng --help
+multimon-ng --help
 """,True,'POCSAG'))
 
 # Xastir
@@ -2505,7 +2505,7 @@ find . -name '*.grc' -exec grcc {} \;
 programs_kali.append(('pyais (628.00 kB)',
 """python3 -m pip install pyais --break-system-packages
 ########## Verify ##########
-ls /usr/local/lib/python3*/dist-packages/pyais
+python3 -c "import pyais; print(pyais.__file__)"
 """,True,'AIS'))
 
 # HAMRS

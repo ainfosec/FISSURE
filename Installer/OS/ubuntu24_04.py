@@ -2266,7 +2266,7 @@ sudo apt remove -y python3-cryptography
 python3 -m pip install --upgrade PyGPSClient --break-system-packages
 python3 -m pip install --upgrade cryptography --break-system-packages
 ########## Verify ##########
-ls /usr/local/bin/pygpsclient
+pygpsclient -h
 """,True,'GPS'))
 
 # Gpredict
@@ -2303,7 +2303,7 @@ cmake --build build --parallel 4
 sudo cmake --install build
 
 ########## Verify ##########
-/usr/local/bin/multimon-ng --help
+multimon-ng --help
 """,True,'POCSAG'))
 
 # Xastir
@@ -2759,7 +2759,7 @@ find . -name '*.grc' -exec grcc {} \;
 programs_ubuntu24_04.append(('pyais (624.00 kB)',
 """python3 -m pip install pyais --break-system-packages
 ########## Verify ##########
-ls /usr/local/lib/python3*/dist-packages/pyais
+python3 -c "import pyais; print(pyais.__file__)"
 """,True,'AIS'))
 
 # HAMRS
