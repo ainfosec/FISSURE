@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-9-21
+
+Refresh README for current FISSURE workflows and deployment
+
+### Added
+
+- Added GRCon26 presentation and workflow demo links plus new README visuals for distributed architecture, signal analysis workflow, the core information model, the current Tactical Dashboard, and deployment options.
+- Added focused sections for the current workflow model, recent capabilities, intended audiences, AI-assisted development, student and classroom use, and commercial support.
+
+### Changed
+
+- Reorganized and rewrote the README around the current FISSURE architecture, including Sensor Nodes, SOIs, Targets, Detections, Artifacts, Findings, plugin Actions and Operations, Fracture, and distributed deployment workflows.
+- Updated installation and usage guidance for supported platforms, installer modes, remote Sensor Nodes, headless HIPRFISR operation, WSL2, TAK integration, Apptainer deployments, and current hardware support status.
+- Consolidated videos, white papers, blog posts, events, and related links under Resources & Publications, and refreshed the roadmap, documentation, challenge status, contact information, license, testimonials, acknowledgments, and AIS project links.
+
+### Fixed
+
+- Fixed stale README guidance and claims, including the legacy Sensor Node count limit, outdated TAK connection instructions and paths, and older WSL2 setup examples.
+
 ## 2026-9-20
 
 Harden Ubuntu installer compatibility and verification

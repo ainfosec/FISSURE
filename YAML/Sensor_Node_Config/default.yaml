@@ -6,8 +6,8 @@ Sensor Node:
      gps:
           gps_autostart: true
           gps_position:                    # Default starting position
-               latitude: 40.7580   
-               longitude: -73.9855
+               latitude: 40.7766   
+               longitude: -73.9643
                altitude: 10.5
           gps_source: saved           # Options: gpsd, Meshtastic, saved, internet
           gps_update_interval_seconds: 20
