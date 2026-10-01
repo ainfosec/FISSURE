@@ -2307,7 +2307,8 @@ def plot_tactical_node_detection(
         return
 
     ssid = str(detection.get("ssid") or "").strip()
-    label = ssid or detection.get("frequency") or uid
+    # A Detection's optional display label is independent of any CoT callsign.
+    label = str(detection.get("label") or "").strip() or ssid or detection.get("frequency") or uid
 
     dashboard.tactical_map.add_detection(
         detection_id=uid,

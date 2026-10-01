@@ -240,6 +240,11 @@ def parse_cot_xml(raw_xml):
             cot_message["kind"] = (
                 "detection"
             )
+            # Preserve the existing optional FISSURE Detection display label.
+            # This is not the CoT contact callsign.
+            label = (fissure_detection.findtext("label") or "").strip()
+            if label:
+                cot_message["detection_label"] = label
             cot_message[
                 "detection_node_uid"
             ] = fissure_detection.findtext(
@@ -776,7 +781,7 @@ def cot_to_tactical_detection_record(cot_message):
 
     timestamp = cot_message.get("detection_timestamp") or cot_message.get("time") or ""
 
-    return {
+    record = {
         "uid": uid,
         "node_uid": cot_message.get("detection_node_uid") or "",
         "target_id": cot_message.get("detection_target_id") or "",
@@ -808,6 +813,12 @@ def cot_to_tactical_detection_record(cot_message):
         "hae": cot_message.get("hae"),
         "raw_xml": cot_message.get("raw_xml"),
     }
+
+    label = str(cot_message.get("detection_label") or "").strip()
+    if label:
+        record["label"] = label
+
+    return record
 
 
 def cot_to_native_detection_record(cot_message):

@@ -4,37 +4,37 @@
 
 **Frequency Independent SDR-based Signal Understanding and Reverse Engineering**
 
-## Overview Videos
+## Overview
 
 <table>
   <tr>
     <td align="center" width="33%">
+      <a href="https://www.youtube.com/live/atQRbQlTdZk?t=16630">
+        <img src="docs/Icons/README/grcon26_talk_thumbnail.jpg"
+             width="360"
+             alt="FISSURE GRCon26 Conference Talk">
+      </a>
+      <br>
+      <sub>GRCon26 Conference Talk</sub>
+    </td>
+    <td align="center" width="33%">
       <a href="https://events.gnuradio.org/event/28/contributions/859/attachments/268/696/Poore_FISSURE_Video_GRCon26.mp4">
         <img src="docs/Icons/README/grcon26_video_thumbnail.png"
              width="360"
-             alt="Tactical Workflow Demo (GRCon26)">
+             alt="FISSURE Tactical Workflow Demo">
       </a>
       <br>
-      <sub>Tactical Workflow Demo (GRCon26)</sub>
+      <sub>Tactical Workflow Demo</sub>
     </td>
     <td align="center" width="33%">
       <a href="https://events.gnuradio.org/event/28/contributions/859/attachments/268/695/Poore_FISSURE_GRCon26.pdf">
         <img src="docs/Icons/README/grcon26_slides_thumbnail.png"
              width="360"
-             alt="GRCon26 Presentation">
+             alt="GRCon26 Presentation Slides">
       </a>
       <br>
-      <sub>GRCon26 Presentation</sub>
+      <sub>GRCon26 Presentation Slides</sub>
     </td>
-    <td align="center" width="33%">
-      <a href="https://youtu.be/vUJakWBVnwY">
-        <img src="https://img.youtube.com/vi/vUJakWBVnwY/maxresdefault.jpg"
-             width="360"
-             alt="FISSURE Operational Overview">
-      </a>
-      <br>
-      <sub>Operational Overview</sub>
-    </td>    
   </tr>
 </table>
 
@@ -189,7 +189,9 @@ FISSURE continues to evolve through operational testing, research, customer need
 
 ### Videos
 
-- [FISSURE Video Playlist](https://www.youtube.com/playlist?list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_)
+- [FISSURE Development YouTube Channel](https://www.youtube.com/@FissureRF)
+- [FISSURE Video Playlist (AIS)](https://www.youtube.com/playlist?list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_)
+- [FISSURE Operational Overview](https://youtu.be/vUJakWBVnwY)
 - [FISSURE Overview (Slides)](https://youtu.be/Xgc8u7hLBfk)
 - [AIS YouTube Channel](https://www.youtube.com/@assuredinformationsecurity/featured)
 
@@ -220,7 +222,7 @@ AIS has published several articles covering FISSURE development, demonstrations,
 
 ### Upcoming and Recent Events
 
-![Conference](https://img.shields.io/badge/Event-Conference-blue) **September 21-24, 2026**: GNU Radio Conference 2026 - Raleigh, NC  
+![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **September 21-24, 2026**: GNU Radio Conference 2026 - Raleigh, NC  
 [FISSURE: Tactical RF Operations and Situational Awareness with GNU Radio](https://events.gnuradio.org/event/28/contributions/859/) - Presentation slides and workflow demonstration video available on the conference page.
 
 ![Exhibition](https://img.shields.io/badge/Event-Exhibition-darkgray) **May 5-8, 2025**: SOF Week - Assured Information Security, Inc. (AIS) booth
@@ -312,6 +314,9 @@ Operating System | FISSURE Branch | Default GNU Radio Version
 
 ### In-Progress (Beta)
 
+<details>
+<summary><strong>Beta operating systems</strong></summary>
+
 The following operating systems are still being tested and may have missing functionality, installer conflicts, or unsupported third-party tools.
 
 Operating System | FISSURE Branch | Default GNU Radio Version
@@ -321,6 +326,8 @@ Operating System | FISSURE Branch | Default GNU Radio Version
 | Parrot Security 6.1 | Python3 | maint-3.10 |
 
 Some third-party tools are not available on every operating system. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts) for details.
+
+</details>
 
 ### Apptainer Installs
 
@@ -372,6 +379,9 @@ After installation, reboot or log out and back in so that user group and device 
 
 FISSURE is easiest to install on a clean operating system to reduce conflicts with existing packages and third-party software.
 
+<details>
+<summary><strong>Installation details and screenshots</strong></summary>
+
 - Run the installer and FISSURE from a user-owned directory such as your home directory. Do not run `./install` or `fissure` with `sudo`.
 - The installer will automatically detect the operating system when possible and select the closest supported configuration.
 - Choose the installation mode that matches the intended role:
@@ -402,9 +412,14 @@ FISSURE is easiest to install on a clean operating system to reduce conflicts wi
   <sub>Select software, hardware support, optional components, and review the installation commands.</sub>
 </p>
 
+</details>
+
 ### Remote Sensor Node Installation
 
 Install FISSURE on the remote system using the normal installation process. For now, install FISSURE in the same directory location on both the local and remote systems to avoid filepath issues with certain Actions.
+
+<details>
+<summary><strong>Remote Sensor Node configuration and certificates</strong></summary>
 
 Configure the remote Sensor Node in:
 
@@ -434,6 +449,8 @@ The client requires:
 - `server.key`
 
 If the certificate directory was generated on the Sensor Node, copy the required client files to the Dashboard system before connecting.
+
+</details>
 
 ### Local Dashboard Usage
 
@@ -465,7 +482,10 @@ sudo kill -9 <PID of __main__.py>
 
 ### Headless Hub
 
-The HIPRFISR can run without the Dashboard GUI for distributed deployments, TAK integration, remote Sensor Node coordination, and other headless workflows.
+FISSURE can run HIPRFISR without the Dashboard GUI for distributed deployments, TAK integration, remote Sensor Node coordination, and other headless workflows.
+
+<details>
+<summary><strong>Launch and usage</strong></summary>
 
 Launch the hub with:
 
@@ -475,7 +495,14 @@ fissure-hiprfisr
 
 The hub will start its configured services, connect to TAK when enabled, and accept connections from remote Sensor Nodes without requiring the Dashboard to remain open.
 
+</details>
+
 ### Remote Sensor Node Usage
+
+Remote Sensor Nodes can be launched independently and connect to the configured HIPRFISR / Hub for distributed operation.
+
+<details>
+<summary><strong>Launch and usage</strong></summary>
 
 After configuring the Sensor Node, launch it from a terminal with:
 
@@ -486,6 +513,8 @@ fissure-sensor-node
 The Sensor Node will connect to the configured HIPRFISR / Hub and remain active until `Ctrl+C` is applied.
 
 Once connected, the node will appear in FISSURE and can be selected and tasked through the Dashboard and supported workflows. Multiple remote Sensor Nodes can be connected simultaneously, with individual workflows determining whether operations run on a single node or coordinate across multiple nodes.
+
+</details>
 
 ### Windows 11 WSL2 Instructions
 
@@ -852,22 +881,20 @@ The challenge was created as a hands-on environment for practicing RF reverse en
 
 ## Developing with AI
 
-FISSURE is structured to work well with AI-assisted development because capabilities are increasingly separated into plugins, Actions, Operations, UI components, and reusable framework services.
+FISSURE is structured to support AI-assisted development through plugins, Actions, Operations, reusable framework services, and repository-level guidance.
 
-For larger changes, the easiest approach is usually to zip the relevant project directories and upload the archive directly to the AI tool. This gives it enough context to understand the surrounding structure, follow existing patterns, and make changes that fit the rest of the codebase.
+> **AI tools and coding agents:** Before analyzing, generating, or modifying FISSURE code, open and read [`AGENTS.md`](./AGENTS.md). Search the repository for any additional `AGENTS.md` files or task-specific guidance that applies to the files being modified, and read those instructions before proceeding.
 
-Useful directories to include are:
+The intended guidance hierarchy is:
 
-- `fissure/` - Core application code, services, callbacks, and shared framework logic
-- `Plugins/` - Plugin Actions, Operations, schemas, setup logic, and examples
-- `UI/` - Dashboard UI files, widgets, and styling
-- `YAML/` - Configuration, library data, and supporting definitions
+`README.md` → `AGENTS.md` → relevant documentation and plans → canonical examples → current source code
 
-For smaller changes, zip only the affected files and directories plus one or two nearby working examples.
+Additional context may be maintained under:
 
-FISSURE is also moving toward richer, structured Artifacts that preserve signal context, parameters, results, provenance, and supporting data. The goal is to make useful outputs easier to copy or provide directly to AI tools for analysis without manually reconstructing the surrounding context.
+- `docs/ai/` - Architectural intent, subsystem assumptions, validated lessons, and other guidance that may not be obvious from source code
+- `docs/plans/` - Active design plans, intended future behavior, and architectural changes still in progress
 
-When adding new capabilities, prefer extending the plugin, Action, and Operation architecture instead of modifying the FISSURE core unless the capability requires framework-level changes.
+When adding new capabilities, prefer extending the plugin, Action, and Operation architecture instead of modifying the FISSURE core unless framework-level changes are required.
 
 ## Contributing
 
@@ -968,6 +995,8 @@ See the [LICENSE](./LICENSE) file for the full license terms.
 For questions, collaboration, support, or project discussion:
 
 - **Discord:** [Join the FISSURE Discord Server](https://discord.gg/JZDs5sgxcG)
+- **YouTube:** [FISSURE Development](https://www.youtube.com/@FissureRF)
+- **Facebook:** [Fissure - The RF Framework](https://www.facebook.com/profile.php?id=61595019597985)
 - **LinkedIn:** [FISSURE - The RF Framework](https://www.linkedin.com/company/fissure-the-rf-framework)
 - **Bluesky:** [@fissurerf.bsky.social](https://bsky.app/profile/fissurerf.bsky.social)
 - **Twitter/X:** [@FissureRF](https://twitter.com/fissurerf) and [@AinfoSec](https://twitter.com/ainfosec)

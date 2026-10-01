@@ -1,0 +1,4 @@
+# FISSURE plugin manifest.
+name: ADS-B
+version: "1.0.0"
+description: Live ADS-B aircraft tracking and structured aircraft-state logging with RTL-SDR and dump1090.
