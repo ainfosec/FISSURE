@@ -9,7 +9,7 @@
 <table>
   <tr>
     <td align="center" width="33%">
-      <a href="https://www.youtube.com/live/atQRbQlTdZk?t=16630">
+      <a href="https://www.youtube.com/watch?v=ODQt0qyI9Z0">
         <img src="docs/Icons/README/grcon26_talk_thumbnail.jpg"
              width="360"
              alt="FISSURE GRCon26 Conference Talk">
