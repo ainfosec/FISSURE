@@ -1,0 +1,3 @@
+name: RTL433
+version: "1.0.0"
+description: Discover and monitor decoded 433.92 MHz IoT devices using RTL-SDR and rtl_433, with optional Artifact logging.

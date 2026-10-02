@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-2
+
+Add RTL433 device discovery and refine AI plugin guidance
+
+### Added
+
+- Added an RTL433 plugin for RTL-SDR-based wireless IoT device discovery, with native Tactical Detections that update by device, decoded measurements, Sensor Node position fallback, operation status, and optional observation Artifacts.
+
+### Changed
+
+- Expanded AI plugin development guidance with Action dropdown conventions, Detection identity and display fields, location and signal-measurement handling, optional Artifact logging, separation of live reception and file playback, and end-to-end Tactical validation.
+
 ## 2026-10-1
 
 Add ADS-B tracking and AI development guidance
