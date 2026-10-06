@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-6
+
+Add APRS monitoring and refine Tactical plugin workflows
+
+### Added
+
+- Added an APRS plugin for RTL-SDR-based 144.390 MHz monitoring, with decoded packet Detections, optional station Target creation and updates, moving APRS positions, operation status, and optional packet Artifacts.
+
+### Changed
+
+- Refined AI plugin development guidance to favor meaningful operator-facing Action parameters, keep low-level SDR tuning as Operation defaults when practical, avoid unrequested replay or analysis Actions, preserve only meaningful measurement uncertainty, and verify third-party tool support through the current environment and FISSURE installer patterns when practical.
+- Updated Tactical Action parameter rendering so long labels and controls use as-needed horizontal and vertical scrolling without widening the Tactical sidebar.
+
+### Fixed
+
+- Fixed Tactical Targets already plotted on the map so later Target updates redraw their positions instead of leaving stale markers.
+
 ## 2026-10-2
 
 Add RTL433 device discovery and refine AI plugin guidance

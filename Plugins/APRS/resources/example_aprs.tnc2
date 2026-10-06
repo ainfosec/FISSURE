@@ -1,0 +1,6 @@
+# Synthetic APRS replay; examples for tests only, not actual RF observations.
+APRS: N0CALL-9>APRS,WIDE1-1,WIDE2-1:!4903.50N/07201.75W>Testing position /A=001234
+AFSK1200: K1ABC>APRS,WIDE2-1:>Simulated receiver status
+N0CALL-9>APRS,WIDE1-1:!4903.51N/07201.76W>Moved 18 m
+N0CALL-9>APRS::K1ABC    :Hello from simulation
+K1ABC>APRS:!3751.65N/12218.72W-Position two

@@ -106,11 +106,21 @@ Action schemas are named:
 
 and normally contain a `params` list.
 
-Schema parameter names should line up with the Operation inputs they ultimately control. Expose real user-configurable parameters rather than hiding important Operation behavior behind unexplained constants.
+Schema parameter names should line up with the Operation inputs they ultimately control. Expose meaningful user-configurable choices rather than every value an Operation happens to accept. Internal batching, refresh, retry, throttling, calibration, and implementation-tuning values should normally remain Operation defaults unless the task or workflow gives the user a clear reason to control them.
+
+For radio hardware, frequency and gain are commonly useful operator-facing controls. Channel and antenna selection are also appropriate when the protocol or selected hardware presents real choices. Other low-level radio settings should normally be set to sensible Operation defaults and changed there when needed rather than exposed automatically. If a protocol may operate on multiple frequencies or channels and the Action monitors only one at a time, expose the relevant selector so the user can choose what to monitor.
 
 Avoid unnecessary Dashboard-specific parameter translation. Prefer schema-driven Actions that can execute through the normal plugin path.
 
 If an Operation intentionally accepts one nested `parameters` dictionary, the Action may wrap the values for that constructor. Otherwise prefer passing the Action parameters directly.
+
+### Keep User-Facing Scope Intentional
+
+Do not create extra user-facing Actions, replay modes, file-analysis paths, sample-data workflows, or other capabilities merely because they are convenient for development or testing. Implement the capability the user requested and keep validation helpers internal when they do not represent an intended operator workflow.
+
+Tests may use fixtures, prerecorded data, mock inputs, helper Operations, or support scripts without exposing those mechanisms as Actions.
+
+If file replay, offline analysis, inspection, demodulation, or similar functionality is explicitly requested, place it in the workflow that matches its purpose rather than automatically tagging it as Tactical. Follow existing FISSURE workflow and tagging patterns.
 
 ## Action Tags
 
@@ -249,6 +259,8 @@ If an Operation needs the Sensor Node's current position, use the injected `posi
 Do not create an independent GPS/gpsd polling implementation inside each plugin. The Sensor Node owns position acquisition and caching.
 
 If a detection or Target has its own true location, such as a remote emitter or reported object position, preserve that object location rather than substituting the Sensor Node position.
+
+Preserve accuracy, uncertainty, confidence, or similar quality values when they are supplied by the source or can be legitimately derived. Do not invent values merely to populate optional fields or make a map visualization appear more complete. For example, do not draw an uncertainty circle unless its radius represents actual source information or a defensible calculation.
 
 ## Artifacts and Generated Files
 
@@ -450,6 +462,21 @@ If setup behavior is later added:
 
 The fact that an Operation calls an external command does not by itself justify automatically installing that command on a user's system.
 
+### External Tool Assumptions and Validation
+
+When a plugin depends on third-party software, first determine what FISSURE already knows about that tool before inventing setup or assuming a command-line interface.
+
+When the development environment is available:
+
+- identify the current operating system/version when it affects support;
+- inspect the relevant FISSURE installer scripts, modes, verification commands, and existing integrations for the tool;
+- use those repository patterns to understand whether the command/version is expected to be supported in that environment;
+- if the executable is already present, non-destructive checks such as `command -v`, `--version`, `--help`, or an existing FISSURE verification command may be used to confirm assumptions about the installed tool.
+
+Do not install packages, change system configuration, or otherwise modify the host merely to validate a plugin unless the user explicitly requested that work.
+
+Mocks, fixtures, and fake subprocesses are still useful for validating FISSURE integration, parsing, lifecycle, and error handling. They should not be treated as proof that an unavailable real executable accepts the same arguments or produces the same output. If the real tool cannot be checked, validate what is practical and leave that external-tool behavior for real-system testing.
+
 ## Prefer Plugin Changes Before UI/Core Changes
 
 When implementing a new capability, first determine whether it can be expressed through:
@@ -490,8 +517,10 @@ Before considering a new or modified plugin complete, check the actual path thro
 
 - The intended async Action is discovered.
 - No helper function is accidentally exposed as an Action.
+- No development/test-only capability was exposed as an Action unless it is also an intended user workflow.
 - The schema name exactly matches the Action.
 - Schema parameters reach the intended Operation inputs.
+- User-facing parameters represent meaningful choices rather than incidental implementation tuning.
 - Tags place the Action in the intended workflows.
 - `client.*` and `node.*` tags do not create unintended restrictions.
 - `ACTION_HARDWARE` uses exact FISSURE hardware names.
@@ -514,6 +543,7 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Existing callbacks are used for standard FISSURE data types.
 - Callback payloads follow current canonical shapes.
 - Node position comes through `position_callback` when needed.
+- Accuracy, uncertainty, confidence, and similar values are sourced or legitimately derived rather than invented.
 - Artifacts use the existing Artifact framework.
 - Generated results reach HIPRFISR/Dashboard through normal framework paths.
 - Map/TAK behavior uses existing target/detection/CoT mechanisms instead of a plugin-specific transport.
@@ -523,6 +553,7 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Support files live under the appropriate plugin supplemental directory.
 - Paths are plugin-relative and do not depend on an accidental working directory.
 - `plugin.yaml` is accurate and versioned appropriately.
+- For third-party commands, relevant FISSURE installer/support information was checked and any practical non-destructive local verification was performed.
 - `setup.py` is still a safe no-op unless external setup was explicitly requested.
 - Cleanup remains disabled unless safe plugin-owned cleanup was deliberately implemented.
 - The plugin does not silently alter the user's system during deployment or first execution.

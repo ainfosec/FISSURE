@@ -1014,6 +1014,11 @@ def handle_tactical_target_message(dashboard, cot_message):
 
     target_id = target_record["target_id"]
     existing_target = frontend.tactical_targets.get(target_id)
+    tactical_map = getattr(frontend, "tactical_map", None)
+    target_was_plotted = bool(
+        tactical_map is not None
+        and target_id in getattr(tactical_map, "target_items", {})
+    )
 
     if cot_message.get("replay_dashboard"):
         # Never replace a current/live Target with historical replay state.
@@ -1030,6 +1035,8 @@ def handle_tactical_target_message(dashboard, cot_message):
     TargetsTabSlots.update_target_record(frontend, target_record)
 
     if is_new_target and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked():
+        TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
+    elif target_was_plotted:
         TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
 
     if frontend.selected_tactical_target_id == target_id:

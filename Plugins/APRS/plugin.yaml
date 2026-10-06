@@ -1,0 +1,3 @@
+name: APRS
+version: 1.0.0
+description: Receive 144.390 MHz APRS with an RTL2832U, discover stations, publish packet detections and self-reported positions, and optionally record an Artifact.
