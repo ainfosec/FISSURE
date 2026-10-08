@@ -75,7 +75,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="iconSize">
     <size>
@@ -2476,7 +2476,7 @@
 }*/</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_sa_sois">
       <attribute name="title">
@@ -6813,7 +6813,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>50</x>
           <y>28</y>
-          <width>300</width>
+          <width>280</width>
           <height>17</height>
          </rect>
         </property>
@@ -6912,7 +6912,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>60</x>
             <y>55</y>
-            <width>275</width>
+            <width>265</width>
             <height>28</height>
            </rect>
           </property>
@@ -6920,7 +6920,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_sa_inspection_actions_query">
           <property name="geometry">
            <rect>
-            <x>40</x>
+            <x>35</x>
             <y>140</y>
             <width>120</width>
             <height>28</height>
@@ -6936,7 +6936,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="geometry">
            <rect>
-            <x>200</x>
+            <x>180</x>
             <y>140</y>
             <width>120</width>
             <height>28</height>
@@ -6949,10 +6949,10 @@ p, li { white-space: pre-wrap; }
          <widget class="QScrollArea" name="scrollArea_sa_inspection_actions_parameters">
           <property name="geometry">
            <rect>
-            <x>355</x>
+            <x>337</x>
             <y>25</y>
-            <width>275</width>
-            <height>160</height>
+            <width>302</width>
+            <height>167</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -6963,8 +6963,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>273</width>
-             <height>158</height>
+             <width>300</width>
+             <height>165</height>
             </rect>
            </property>
           </widget>
@@ -6974,7 +6974,7 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>60</x>
             <y>90</y>
-            <width>275</width>
+            <width>265</width>
             <height>28</height>
            </rect>
           </property>
@@ -7042,7 +7042,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label2_sa_inspection_actions_parameters_title">
           <property name="geometry">
            <rect>
-            <x>355</x>
+            <x>345</x>
             <y>0</y>
             <width>90</width>
             <height>22</height>
@@ -7116,9 +7116,9 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>640</x>
-            <y>0</y>
+            <y>-1</y>
             <width>3</width>
-            <height>193</height>
+            <height>195</height>
            </rect>
           </property>
           <property name="orientation">
@@ -7128,10 +7128,10 @@ p, li { white-space: pre-wrap; }
          <widget class="Line" name="line_5">
           <property name="geometry">
            <rect>
-            <x>345</x>
-            <y>1</y>
+            <x>335</x>
+            <y>-1</y>
             <width>3</width>
-            <height>193</height>
+            <height>195</height>
            </rect>
           </property>
           <property name="orientation">
@@ -7325,7 +7325,7 @@ p, li { white-space: pre-wrap; }
            <x>0</x>
            <y>0</y>
            <width>251</width>
-           <height>121</height>
+           <height>136</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_sa_inspection_selection_details" columnstretch="0,0">

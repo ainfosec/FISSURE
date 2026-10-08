@@ -112,6 +112,10 @@ For radio hardware, frequency and gain are commonly useful operator-facing contr
 
 Avoid unnecessary Dashboard-specific parameter translation. Prefer schema-driven Actions that can execute through the normal plugin path.
 
+Choose schema types and display precision deliberately. Use integer types for genuinely bounded integer values. For large integer-like values such as sample rates or RF frequencies that may exceed a normal Qt integer widget range, prefer a numeric parameter with an explicit integer-like presentation such as `decimals: 0`, plus appropriate `min`, `max`, and `step`. Do not rely on generic default precision when it makes operator controls misleading or unnecessarily noisy.
+
+Framework-supplied execution inputs are not user-facing schema parameters. Do not expose active evidence paths, Operation IDs, Inspection context, provenance context, or similar framework values merely because the Operation needs them.
+
 If an Operation intentionally accepts one nested `parameters` dictionary, the Action may wrap the values for that constructor. Otherwise prefer passing the Action parameters directly.
 
 ### Keep User-Facing Scope Intentional
@@ -140,6 +144,25 @@ Absence of a `client.*` namespace is permissive. Absence of a `node.*` namespace
 Only add client or node restrictions when the Action truly cannot work in the other context. Do not accidentally make a generally useful Action local-only or Dashboard-only.
 
 Keep plugin-specific workflow metadata with the plugin instead of creating a new central configuration dumping ground.
+
+## Inspection Actions
+
+Inspection Actions operate on evidence already selected by the Dashboard. Treat the Inspection workflow as an existing framework contract rather than rebuilding file selection or result handling inside the plugin.
+
+For an Action tagged for Inspection:
+
+- use the active `_fissure_inspection_context` supplied in Action parameters for the selected evidence path and available metadata such as sample rate, center frequency, data type, and selected range;
+- do not add a redundant user-facing `Input File` parameter when Inspection already owns the active evidence;
+- use Inspection metadata when present and expose only meaningful fallbacks the operator may need to provide when metadata is absent;
+- preserve the framework-provided `operation_id` through the Action and Operation when one is supplied;
+- return structured analysis through the existing `inspection_callback` path;
+- let the Dashboard turn an Inspection result into an editable Finding rather than inventing a plugin-specific Finding transport.
+
+The Dashboard correlates an Inspection run with its Operation ID. Do not generate a second unrelated ID after the Dashboard has supplied one. The same correlated Operation ID must be used by the Sensor Node Operation, final Inspection callback, Stop path, and Operation-scoped outputs.
+
+Follow the current canonical Inspection Action/Operation pattern for launch behavior. Do not add synchronous waiting or a parallel completion protocol unless the existing workflow explicitly requires it. Completion should arrive through the normal Inspection callback with the correct final state.
+
+Inspection evidence may be waveform data, tabular data, or another supported representation. Keep representation-specific analysis in the plugin. Do not force core Inspection to treat every file as IQ, and do not assume an unobservable property is false merely because that representation cannot measure it.
 
 ## Hardware Compatibility
 
@@ -275,6 +298,10 @@ or the injected `artifact_manager` when an existing required workflow is not cov
 
 Do not invent a second artifact registry, ad hoc file-transfer protocol, or callback just to return files.
 
+Runtime Artifact files must be created inside the Operation's managed Artifact storage before they are registered. Do not write a result beside the input file, into the plugin directory, or into an arbitrary temporary/output directory and then pass that path to `create_artifact(...)`. Use the current `ArtifactManager` / `Operation` helpers to obtain the Operation-managed files directory and create the files there. Artifact path validation is intentional.
+
+Keep the Operation ID used for managed Artifact storage aligned with the correlated Operation ID used by the workflow. Creating output under one Operation ID while returning results under another breaks lifecycle and provenance expectations.
+
 Generated files that are implementation support rather than runtime results belong in plugin-owned `scripts/`, `resources/`, or `flow_graphs/` as appropriate.
 
 ## Supplemental Scripts and Libraries
@@ -360,6 +387,20 @@ When launching generated flow graphs or subprocesses:
 - drain or otherwise handle subprocess output when necessary;
 - terminate cleanly on Stop;
 - escalate to kill only when graceful termination fails.
+
+## Offline and Data-Analysis Operations
+
+For file-oriented or analysis-heavy Operations, validate more than algorithmic correctness on tiny fixtures.
+
+- Exercise representative input sizes when practical.
+- Avoid rereading or re-decoding the same large file multiple times when intermediate results can be reused.
+- Prefer memory mapping, streaming, chunking, or bounded working sets when the format permits it.
+- Reuse expensive intermediate analysis such as pulse detection rather than recomputing it independently for reports and plots.
+- Keep detailed supporting measurements in Artifacts when appropriate, while returning a concise operator-visible Inspection result.
+- Preserve `unknown`, `unsupported`, and `not observable` as distinct states from `false`, `zero`, or `not detected`.
+- Do not tune an algorithm solely until synthetic validation fixtures match; distinguish a general analysis improvement from overfitting the test corpus.
+
+Performance validation should reflect the expected operational scale. A test that passes on a small synthetic file does not establish acceptable behavior on a large capture.
 
 ## Long-Running Operations and Stop Behavior
 
@@ -511,7 +552,7 @@ Do not treat a newly generated or not-yet-reviewed plugin as a canonical example
 
 ## Validation Checklist
 
-Before considering a new or modified plugin complete, check the actual path through FISSURE.
+Before considering a new or modified plugin complete, check the actual path through FISSURE. Unit tests and direct Operation tests are not sufficient evidence of integration when the capability is normally launched through a Dashboard workflow. Exercise at least one representative end-to-end run through the intended UI path when practical.
 
 ### Action exposure
 
@@ -522,6 +563,8 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Schema parameters reach the intended Operation inputs.
 - User-facing parameters represent meaningful choices rather than incidental implementation tuning.
 - Tags place the Action in the intended workflows.
+- Inspection Actions use the active Inspection context rather than exposing redundant file/context parameters.
+- Framework-provided Operation IDs are preserved when the workflow uses them for correlation.
 - `client.*` and `node.*` tags do not create unintended restrictions.
 - `ACTION_HARDWARE` uses exact FISSURE hardware names.
 - The Action appears for supported configured hardware and is hidden only where intended.
@@ -545,7 +588,11 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Node position comes through `position_callback` when needed.
 - Accuracy, uncertainty, confidence, and similar values are sourced or legitimately derived rather than invented.
 - Artifacts use the existing Artifact framework.
+- Artifact files are written into managed Operation storage before registration.
 - Generated results reach HIPRFISR/Dashboard through normal framework paths.
+- Inspection results complete the actual Dashboard workflow: Start -> Operation -> Inspection callback -> Completed -> View Result / Save as Finding, with the same correlated Operation ID.
+- Analysis results preserve unsupported/not-observable states instead of coercing them to false values.
+- Representative data sizes were checked for avoidable repeated I/O or recomputation when the Operation performs offline analysis.
 - Map/TAK behavior uses existing target/detection/CoT mechanisms instead of a plugin-specific transport.
 
 ### Plugin packaging and host safety

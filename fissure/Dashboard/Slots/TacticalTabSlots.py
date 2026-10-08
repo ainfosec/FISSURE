@@ -1034,8 +1034,8 @@ def update_tactical_node_action_parameters(
     if layout is None:
         layout = QtWidgets.QVBoxLayout(content_widget)
 
-    layout.setContentsMargins(4, 2, 4, 2)
-    layout.setSpacing(2)
+    layout.setContentsMargins(4, 2, 2, 2)
+    layout.setSpacing(4)
 
     while layout.count():
         item = layout.takeAt(0)
@@ -1075,7 +1075,7 @@ def update_tactical_node_action_parameters(
         parameter_label_width = max(
             125,
             max(
-                label_metrics.horizontalAdvance(label_text) + 8
+                label_metrics.horizontalAdvance(label_text)
                 for label_text in parameter_label_texts
             ),
         )
@@ -1209,8 +1209,9 @@ def update_tactical_node_action_parameters(
 
     apply_pending_tactical_customize_defaults(dashboard)
 
-    # The outer layout has 4 px left + 4 px right margins. Giving the content
-    # widget a real minimum width is what lets QScrollArea determine that a
+    # Give the content widget a real minimum width so QScrollArea can determine
+    # when horizontal scrolling is actually required for long labels.
+    # This uses the same compact spacing as Inspection.
     # horizontal scrollbar is actually required for long labels.
     content_widget.setMinimumWidth(parameter_row_minimum_width + 8)
     content_widget.adjustSize()

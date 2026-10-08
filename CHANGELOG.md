@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-8
+
+Add radar analysis and refine Inspection plugin workflows
+
+### Added
+
+- Added a RadarAnalysis plugin for Inspection workflows with PDW CSV, log-video float32, and complex float32 IQ analysis, including PRI behavior, pulse width, scan modulation, carrier offset, LFM characterization, Findings, diagnostic plots, and managed Artifacts.
+- Added automatic Inspection data-type inference for common real and complex signal-file extensions such as CF32, CF64, CI/CS, CU, F32/F64, signed integer, and unsigned integer formats.
+
+### Changed
+
+- Updated the Inspection local-file picker to default to All Files while retaining filters for known signal-data formats.
+- Refined Tactical Action parameter spacing to better match the compact Inspection parameter layout.
+- Expanded AI plugin development guidance with Inspection context and operation-ID contracts, managed Artifact storage, schema precision, offline-analysis performance guidance, unsupported/not-observable result semantics, and end-to-end UI validation expectations.
+
+### Fixed
+
+- Fixed Inspection Action parameter rendering so labels and controls remain readable and aligned with responsive widths and as-needed scrolling instead of clipping long parameter names.
+
 ## 2026-10-6
 
 Add APRS monitoring and refine Tactical plugin workflows

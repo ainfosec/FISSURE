@@ -88,6 +88,69 @@ _FISSURE_TYPE_MAP = {
     "Unsigned Int 8": (np.dtype("u1"), False, False),
 }
 
+_INSPECTION_FILE_TYPE_BY_EXTENSION = {
+    # Complex floating-point I/Q.
+    ".cf32": "Complex Float 32",
+    ".fc32": "Complex Float 32",
+    ".cfile": "Complex Float 32",
+    ".cf64": "Complex Float 64",
+    ".fc64": "Complex Float 64",
+
+    # Complex signed integer I/Q.
+    ".ci8": "Complex Int 8",
+    ".cs8": "Complex Int 8",
+    ".sc8": "Complex Int 8",
+    ".ci16": "Complex Int 16",
+    ".cs16": "Complex Int 16",
+    ".sc16": "Complex Int 16",
+    ".ci32": "Complex Int 32",
+    ".cs32": "Complex Int 32",
+    ".sc32": "Complex Int 32",
+    ".ci64": "Complex Int 64",
+    ".cs64": "Complex Int 64",
+    ".sc64": "Complex Int 64",
+
+    # Complex unsigned integer I/Q.
+    ".cu8": "Complex Unsigned Int 8",
+    ".cu16": "Complex Unsigned Int 16",
+    ".cu32": "Complex Unsigned Int 32",
+    ".cu64": "Complex Unsigned Int 64",
+
+    # Real/scalar floating-point data.
+    ".f32": "Float/Float 32",
+    ".rf32": "Float/Float 32",
+    ".f64": "Float/Float 64",
+    ".rf64": "Float/Float 64",
+
+    # Real/scalar signed integer data.
+    ".i8": "Byte/Int 8",
+    ".s8": "Byte/Int 8",
+    ".ri8": "Byte/Int 8",
+    ".i16": "Short/Int 16",
+    ".s16": "Short/Int 16",
+    ".ri16": "Short/Int 16",
+    ".i32": "Int/Int 32",
+    ".s32": "Int/Int 32",
+    ".ri32": "Int/Int 32",
+
+    # Real/scalar unsigned integer data.
+    ".u8": "Unsigned Int 8",
+    ".ru8": "Unsigned Int 8",
+    ".u16": "Unsigned Int 16",
+    ".ru16": "Unsigned Int 16",
+    ".u32": "Unsigned Int 32",
+    ".ru32": "Unsigned Int 32",
+}
+
+_INSPECTION_DATA_EXTENSIONS = (
+    ".sigmf-data",
+    ".iq",
+    ".dat",
+    ".bin",
+    ".raw",
+    *_INSPECTION_FILE_TYPE_BY_EXTENSION.keys(),
+)
+
 
 class _InspectionCanvas(FigureCanvasQTAgg):
     """Small reusable matplotlib canvas for Inspection."""
@@ -321,17 +384,6 @@ def _initialize_sa_inspection_visuals(dashboard: QtCore.QObject):
     for button in text_buttons:
         button.setIcon(QtGui.QIcon())
 
-    for scroll_area in (
-        dashboard.ui.scrollArea_sa_inspection_actions_parameters,
-        dashboard.ui.scrollArea_sa_inspection_external_tools,
-    ):
-        scroll_area.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
-        scroll_area.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAsNeeded
-        )
-
 
 def restyle_sa_inspection_canvases(dashboard: QtCore.QObject):
     """Redraw Inspection plots after a FISSURE theme change."""
@@ -496,20 +548,29 @@ def _sa_inspection_file_name(file_record: dict) -> str:
 
 def _sa_inspection_manifest_files(record: dict) -> list:
     files = record.get("files", []) if isinstance(record, dict) else []
+
     if not isinstance(files, list):
         return []
 
     inspectable = []
     fallback = []
+
     for item in files:
         if not isinstance(item, dict):
             continue
+
         role = _sa_inspection_file_role(item)
         name = _sa_inspection_file_name(item).lower()
-        if role in {"sigmf_data", "iq_data"} or name.endswith((".sigmf-data", ".iq", ".dat", ".bin", ".raw")):
+
+        if (
+            role in {"sigmf_data", "iq_data"}
+            or name.endswith(_INSPECTION_DATA_EXTENSIONS)
+        ):
             inspectable.append(dict(item))
+
         elif role == "bundle" or name.endswith(".zip"):
             fallback.append(dict(item))
+
     return inspectable or fallback
 
 
@@ -537,22 +598,41 @@ def _sa_inspection_safe_extract(zip_path: str, destination: str):
         handle.extractall(destination_real)
 
 
-def _sa_inspection_extracted_files(dashboard: QtCore.QObject, artifact_id: str) -> list:
-    root = _sa_inspection_extracted_root(dashboard, artifact_id)
+def _sa_inspection_extracted_files(
+    dashboard: QtCore.QObject,
+    artifact_id: str,
+) -> list:
+    root = _sa_inspection_extracted_root(
+        dashboard,
+        artifact_id,
+    )
+
     if not os.path.isdir(root):
         return []
+
     rows = []
+
     for current_root, _dirs, names in os.walk(root):
         for name in sorted(names):
             path = os.path.join(current_root, name)
             lower = name.lower()
-            if lower.endswith((".sigmf-data", ".iq", ".dat", ".bin", ".raw")):
-                rows.append({
+
+            if not lower.endswith(_INSPECTION_DATA_EXTENSIONS):
+                continue
+
+            rows.append(
+                {
                     "id": f"extracted:{os.path.relpath(path, root)}",
                     "name": name,
-                    "role": "sigmf_data" if lower.endswith(".sigmf-data") else "iq_data",
+                    "role": (
+                        "sigmf_data"
+                        if lower.endswith(".sigmf-data")
+                        else "iq_data"
+                    ),
                     "local_path": path,
-                })
+                }
+            )
+
     return rows
 
 
@@ -699,45 +779,164 @@ def _sa_inspection_build_file_metadata(
     file_record = dict(file_record or {})
     artifact_record = dict(artifact_record or {})
     filepath = os.path.abspath(str(filepath or "").strip())
+
     sigmf = _sa_inspection_load_sigmf(filepath)
-    sigmf_global = sigmf.get("global", {}) if isinstance(sigmf.get("global"), dict) else {}
-    captures = sigmf.get("captures", []) if isinstance(sigmf.get("captures"), list) else []
-    first_capture = captures[0] if captures and isinstance(captures[0], dict) else {}
+    sigmf_global = (
+        sigmf.get("global", {})
+        if isinstance(sigmf.get("global"), dict)
+        else {}
+    )
+    captures = (
+        sigmf.get("captures", [])
+        if isinstance(sigmf.get("captures"), list)
+        else []
+    )
+    first_capture = (
+        captures[0]
+        if captures and isinstance(captures[0], dict)
+        else {}
+    )
 
-    sigmf_type = str(sigmf_global.get("core:datatype") or "").strip()
-    data_type = str(_sa_inspection_metadata_value(file_record, artifact_record, "data_type") or "").strip()
-    data_type_assumed = not bool(sigmf_type or data_type)
-    data_type, dtype, is_complex, interleaved = _sa_inspection_resolve_type(data_type, sigmf_type)
+    sigmf_type = str(
+        sigmf_global.get("core:datatype")
+        or ""
+    ).strip()
 
-    sample_rate_hz = _sa_inspection_float(sigmf_global.get("core:sample_rate"))
+    declared_data_type = str(
+        _sa_inspection_metadata_value(
+            file_record,
+            artifact_record,
+            "data_type",
+        )
+        or ""
+    ).strip()
+
+    extension = os.path.splitext(filepath)[1].lower()
+    extension_data_type = _INSPECTION_FILE_TYPE_BY_EXTENSION.get(
+        extension,
+        "",
+    )
+
+    # Prefer explicit SigMF / Artifact metadata. If none exists, use a
+    # conventional typed extension such as .cf32 or .sc16. Generic extensions
+    # such as .iq/.dat/.bin/.raw remain assumptions and therefore still receive
+    # the UI's assumed-data-type marker.
+    data_type = declared_data_type or extension_data_type
+    data_type_assumed = not bool(
+        sigmf_type
+        or declared_data_type
+        or extension_data_type
+    )
+
+    data_type, dtype, is_complex, interleaved = (
+        _sa_inspection_resolve_type(
+            data_type,
+            sigmf_type,
+        )
+    )
+
+    sample_rate_hz = _sa_inspection_float(
+        sigmf_global.get("core:sample_rate")
+    )
+
     if sample_rate_hz is None:
         sample_rate_msps = _sa_inspection_float(
-            _sa_inspection_metadata_value(file_record, artifact_record, "sample_rate_msps")
+            _sa_inspection_metadata_value(
+                file_record,
+                artifact_record,
+                "sample_rate_msps",
+            )
         )
-        sample_rate_hz = sample_rate_msps * 1e6 if sample_rate_msps is not None else None
+        sample_rate_hz = (
+            sample_rate_msps * 1e6
+            if sample_rate_msps is not None
+            else None
+        )
+
     if sample_rate_hz is None:
         sample_rate_hz = _sa_inspection_float(
-            _sa_inspection_metadata_value(file_record, artifact_record, "sample_rate", "sample_rate_hz")
+            _sa_inspection_metadata_value(
+                file_record,
+                artifact_record,
+                "sample_rate",
+                "sample_rate_hz",
+            )
         )
 
-    center_frequency_hz = _sa_inspection_float(first_capture.get("core:frequency"))
+    center_frequency_hz = _sa_inspection_float(
+        first_capture.get("core:frequency")
+    )
+
     if center_frequency_hz is None:
         frequency_mhz = _sa_inspection_float(
-            _sa_inspection_metadata_value(file_record, artifact_record, "frequency_mhz", "center_frequency_mhz")
+            _sa_inspection_metadata_value(
+                file_record,
+                artifact_record,
+                "frequency_mhz",
+                "center_frequency_mhz",
+            )
         )
-        center_frequency_hz = frequency_mhz * 1e6 if frequency_mhz is not None else None
+        center_frequency_hz = (
+            frequency_mhz * 1e6
+            if frequency_mhz is not None
+            else None
+        )
 
     if center_frequency_hz is None:
-        soi_key = str(dashboard.ui.comboBox_sa_inspection_selection_soi.currentData(QtCore.Qt.UserRole) or "").strip()
-        soi = _sa_inspection_find_soi(dashboard, soi_key)
-        frequency_mhz = _sa_inspection_float(_sa_sois_value(soi, "frequency_mhz", "center_frequency_mhz")) if soi else None
-        center_frequency_hz = frequency_mhz * 1e6 if frequency_mhz is not None else None
+        soi_key = str(
+            dashboard.ui.comboBox_sa_inspection_selection_soi.currentData(
+                QtCore.Qt.UserRole
+            )
+            or ""
+        ).strip()
 
-    size_bytes = os.path.getsize(filepath) if os.path.isfile(filepath) else int(file_record.get("size") or 0)
+        soi = _sa_inspection_find_soi(
+            dashboard,
+            soi_key,
+        )
+
+        frequency_mhz = (
+            _sa_inspection_float(
+                _sa_sois_value(
+                    soi,
+                    "frequency_mhz",
+                    "center_frequency_mhz",
+                )
+            )
+            if soi
+            else None
+        )
+
+        center_frequency_hz = (
+            frequency_mhz * 1e6
+            if frequency_mhz is not None
+            else None
+        )
+
+    size_bytes = (
+        os.path.getsize(filepath)
+        if os.path.isfile(filepath)
+        else int(file_record.get("size") or 0)
+    )
+
     scalar_size = int(dtype.itemsize)
-    bytes_per_sample = scalar_size * 2 if interleaved else scalar_size
-    sample_count = int(size_bytes // bytes_per_sample) if bytes_per_sample > 0 else 0
-    duration_s = sample_count / sample_rate_hz if sample_rate_hz and sample_rate_hz > 0 else None
+    bytes_per_sample = (
+        scalar_size * 2
+        if interleaved
+        else scalar_size
+    )
+
+    sample_count = (
+        int(size_bytes // bytes_per_sample)
+        if bytes_per_sample > 0
+        else 0
+    )
+
+    duration_s = (
+        sample_count / sample_rate_hz
+        if sample_rate_hz and sample_rate_hz > 0
+        else None
+    )
 
     return {
         "path": filepath,
@@ -2289,29 +2488,63 @@ def _slotSA_InspectionNextFileClicked(dashboard: QtCore.QObject):
         combo.setCurrentIndex(min(combo.count() - 1, combo.currentIndex() + 1))
 
 
-def _slotSA_InspectionLocalFileSelectClicked(dashboard: QtCore.QObject):
-    """Choose a local IQ file and display only its basename."""
-    current = str(getattr(dashboard, "sa_inspection_local_file_path", "") or "").strip()
-    directory = os.path.dirname(current) if current else fissure.utils.IQ_RECORDINGS_DIR
+def _slotSA_InspectionLocalFileSelectClicked(
+    dashboard: QtCore.QObject,
+):
+    """Choose a local Inspection data file and display only its basename."""
+    current = str(
+        getattr(
+            dashboard,
+            "sa_inspection_local_file_path",
+            "",
+        )
+        or ""
+    ).strip()
+
+    directory = (
+        os.path.dirname(current)
+        if current
+        else fissure.utils.IQ_RECORDINGS_DIR
+    )
+
+    known_extensions = (
+        ".sigmf-meta",
+        *_INSPECTION_DATA_EXTENSIONS,
+    )
+    known_patterns = " ".join(
+        f"*{extension}"
+        for extension in known_extensions
+    )
 
     filepath, _selected_filter = QtWidgets.QFileDialog.getOpenFileName(
         dashboard,
-        "Select IQ File",
+        "Select Inspection File",
         directory,
-        "IQ / SigMF (*.sigmf-data *.sigmf-meta *.iq *.dat *.bin *.raw);;All Files (*)",
+        (
+            "All Files (*);;"
+            f"Known Signal Data ({known_patterns})"
+        ),
     )
+
     if not filepath:
         return
 
     if filepath.lower().endswith(".sigmf-meta"):
         candidate = filepath[:-11] + ".sigmf-data"
+
         if os.path.isfile(candidate):
             filepath = candidate
 
-    _sa_inspection_set_local_file_path(dashboard, filepath)
+    _sa_inspection_set_local_file_path(
+        dashboard,
+        filepath,
+    )
     dashboard.sa_inspection_artifact_id = ""
     dashboard.sa_inspection_file_id = ""
-    _sa_inspection_load_file(dashboard, filepath)
+    _sa_inspection_load_file(
+        dashboard,
+        filepath,
+    )
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -2516,25 +2749,32 @@ def _clear_sa_inspection_parameter_widgets(dashboard: QtCore.QObject):
     """Clear dynamically generated Inspection action parameters."""
     contents = dashboard.ui.scrollAreaWidgetContents_sa_inspection_actions_parameters
     layout = contents.layout()
+
     if layout is None:
-        layout = QtWidgets.QFormLayout(contents)
-        layout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)
+        layout = QtWidgets.QVBoxLayout(contents)
 
     while layout.count():
         item = layout.takeAt(0)
-        if item.widget() is not None:
-            item.widget().deleteLater()
-        elif item.layout() is not None:
-            child_layout = item.layout()
+
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+            continue
+
+        child_layout = item.layout()
+        if child_layout is not None:
             while child_layout.count():
                 child_item = child_layout.takeAt(0)
-                if child_item.widget() is not None:
-                    child_item.widget().deleteLater()
+                child_widget = child_item.widget()
+                if child_widget is not None:
+                    child_widget.deleteLater()
             child_layout.deleteLater()
 
-    layout.setContentsMargins(6, 6, 6, 6)
-    layout.setHorizontalSpacing(8)
-    layout.setVerticalSpacing(6)
+    layout.setContentsMargins(0, 2, 2, 2)
+    layout.setSpacing(4)
+
+    contents.setMinimumWidth(0)
+
     dashboard.sa_inspection_action_parameter_widgets = {}
     dashboard.sa_inspection_action_schema = {}
     dashboard.sa_inspection_action_customized = False
@@ -3001,52 +3241,175 @@ def handle_sa_inspection_action_schema(
     parameters: list = None,
 ):
     """Render a plugin Inspection action schema in the Parameters area."""
-    if str(node_uid or "").strip() != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+    if str(node_uid or "").strip() != str(
+        getattr(dashboard, "selected_node_uid", "") or ""
+    ).strip():
         return
-    if str(plugin_name or "").strip() != str(getattr(dashboard, "sa_inspection_selected_plugin", "") or "").strip():
+
+    if str(plugin_name or "").strip() != str(
+        getattr(dashboard, "sa_inspection_selected_plugin", "") or ""
+    ).strip():
         return
-    if str(action_name or "").strip() != str(getattr(dashboard, "sa_inspection_selected_action", "") or "").strip():
+
+    if str(action_name or "").strip() != str(
+        getattr(dashboard, "sa_inspection_selected_action", "") or ""
+    ).strip():
         return
 
     parameters = parameters if isinstance(parameters, list) else []
+
     _clear_sa_inspection_parameter_widgets(dashboard)
+
     dashboard.sa_inspection_action_schema = {
         "plugin": str(plugin_name or "").strip(),
         "action": str(action_name or "").strip(),
-        "params": [dict(parameter) for parameter in parameters if isinstance(parameter, dict)],
+        "params": [
+            dict(parameter)
+            for parameter in parameters
+            if isinstance(parameter, dict)
+        ],
     }
 
+    scroll_area = dashboard.ui.scrollArea_sa_inspection_actions_parameters
     contents = dashboard.ui.scrollAreaWidgetContents_sa_inspection_actions_parameters
     layout = contents.layout()
-    count = 0
+
+    parameter_label_texts = []
+
     for parameter in parameters:
         if not isinstance(parameter, dict):
             continue
+
         name = str(parameter.get("name") or "").strip()
         if not name:
             continue
-        label = QtWidgets.QLabel(f"{str(parameter.get('label') or name).strip()}:", contents)
-        label.setObjectName(f"label2_sa_inspection_action_parameter_{name}")
+
+        parameter_label_texts.append(
+            str(parameter.get("label") or name).strip()
+        )
+
+    label_probe = QtWidgets.QLabel()
+    parameter_label_font = label_probe.font()
+    parameter_label_font.setPointSize(
+        max(parameter_label_font.pointSize() - 1, 8)
+    )
+    label_probe.setFont(parameter_label_font)
+    label_metrics = label_probe.fontMetrics()
+
+    parameter_label_width = 125
+
+    if parameter_label_texts:
+        parameter_label_width = max(
+            125,
+            max(
+                label_metrics.horizontalAdvance(label_text)
+                for label_text in parameter_label_texts
+            ),
+        )
+
+    parameter_widget_minimum_width = 105
+
+    parameter_row_minimum_width = (
+        parameter_label_width
+        + 3
+        + parameter_widget_minimum_width
+        + 2
+    )
+
+    count = 0
+
+    for parameter in parameters:
+        if not isinstance(parameter, dict):
+            continue
+
+        name = str(parameter.get("name") or "").strip()
+        if not name:
+            continue
+
+        row_widget = QtWidgets.QWidget(contents)
+        row_widget.setMinimumWidth(parameter_row_minimum_width)
+        row_widget.setMinimumHeight(20)
+        row_widget.setMaximumHeight(26)
+
+        row_layout = QtWidgets.QHBoxLayout(row_widget)
+        row_layout.setContentsMargins(0, 0, 2, 0)
+        row_layout.setSpacing(3)
+
+        label_text = str(parameter.get("label") or name).strip()
+
+        label = QtWidgets.QLabel(f"{label_text}:", row_widget)
+        label.setObjectName(
+            f"label2_sa_inspection_action_parameter_{name}"
+        )
         label.setProperty("uiRole", "inspectionParameterLabel")
+        label.setFixedWidth(parameter_label_width)
+        label.setMinimumHeight(20)
+        label.setMaximumHeight(24)
+        label.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter
+        )
+        label.setFont(parameter_label_font)
+
         description = str(parameter.get("description") or "").strip()
-        if description:
-            label.setToolTip(description)
-        widget = _create_sa_inspection_parameter_widget(contents, parameter)
+        label.setToolTip(description or label_text)
+
+        row_layout.addWidget(label)
+        row_layout.setStretch(0, 0)
+
+        widget = _create_sa_inspection_parameter_widget(
+            row_widget,
+            parameter,
+        )
         widget.setProperty("uiRole", "inspectionParameterEditor")
-        layout.addRow(label, widget)
+        widget.setMinimumWidth(parameter_widget_minimum_width)
+        widget.setMinimumHeight(20)
+        widget.setMaximumHeight(24)
+
+        widget_font = widget.font()
+        widget_font.setPointSize(max(widget_font.pointSize() - 1, 8))
+        widget.setFont(widget_font)
+
+        size_policy = widget.sizePolicy()
+        size_policy.setHorizontalPolicy(QtWidgets.QSizePolicy.Expanding)
+        size_policy.setVerticalPolicy(QtWidgets.QSizePolicy.Fixed)
+        widget.setSizePolicy(size_policy)
+
+        if isinstance(widget, QtWidgets.QAbstractSpinBox):
+            widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.UpDownArrows)
+
+        row_layout.addWidget(widget, 1)
+        layout.addWidget(row_widget)
+
         dashboard.sa_inspection_action_parameter_widgets[name] = {
             "widget": widget,
             "schema": dict(parameter),
         }
+
         count += 1
 
     if count == 0:
-        label = QtWidgets.QLabel("No configurable parameters.", contents)
-        label.setObjectName("label2_sa_inspection_action_no_parameters")
-        layout.addRow(label)
+        label = QtWidgets.QLabel(
+            "No configurable parameters.",
+            contents,
+        )
+        label.setObjectName(
+            "label2_sa_inspection_action_no_parameters"
+        )
+        layout.addWidget(label)
+
+    layout.addStretch()
+
+    contents.setMinimumWidth(parameter_row_minimum_width + 8)
+    contents.adjustSize()
+
+    scroll_area.horizontalScrollBar().setValue(0)
+    scroll_area.verticalScrollBar().setValue(0)
+    scroll_area.update()
 
     dashboard.sa_inspection_action_customized = True
-    dashboard.ui.pushButton_sa_inspection_actions_customize.setText("Customize")
+    dashboard.ui.pushButton_sa_inspection_actions_customize.setText(
+        "Customize"
+    )
     _update_sa_inspection_action_controls(dashboard)
 
 
