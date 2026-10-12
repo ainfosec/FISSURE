@@ -6,4 +6,5 @@ from .survey import *
 from .capture import *
 from .inspection import *
 from .classifier import *
+from .pd_demodulation import *
 from .legacy import *

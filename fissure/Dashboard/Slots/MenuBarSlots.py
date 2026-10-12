@@ -324,6 +324,11 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     except Exception:
         pass
 
+    try:
+        TSITabSlots.restyle_sa_pd_demodulation_canvases(dashboard)
+    except Exception:
+        pass
+
 
 @QtCore.pyqtSlot()
 def _slotMenuHelpUserManualClicked():

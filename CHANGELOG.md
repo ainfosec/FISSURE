@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-12
+
+Add Protocol Discovery demodulation and retire legacy attack caching
+
+### Added
+
+- Added a new Protocol Discovery Demodulation workspace with SOI/Artifact and local-file input, SigMF and editable IQ metadata, waveform overview, region selection, and I/Q, magnitude, and instantaneous-frequency views.
+- Added reusable OOK/ASK and binary 2-FSK demodulation with automatic symbol-rate estimation, adjustable decision and timing parameters, and live rate, level, and phase tuning.
+- Added demodulation diagnostics for detected signals, symbols, bits, spectrum, spectrogram, and constellation, plus recovered-bit previews in Bits, Hex, and ASCII formats.
+- Added Bitstream & Framing and Packet Analysis tabs as placeholders for the next stages of the Protocol Discovery workflow.
+
+### Changed
+
+- Reorganized Protocol Discovery navigation to hide obsolete Status, legacy Demodulation, Bit Slicing, Dissectors, and Sniffer tabs while retaining Data Viewer and CRC Calculator.
+- Refined Demodulation plot sizing, navigation controls, empty states, collapsible advanced settings, and Light/Dark/Custom theme consistency.
+- Removed legacy `attacks` and `attack_categories` tables from the Dashboard startup cache and Library Browse options without deleting the underlying database records.
+
 ## 2026-10-8
 
 Add radar analysis and refine Inspection plugin workflows

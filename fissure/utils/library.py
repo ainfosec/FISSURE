@@ -58,15 +58,14 @@ def openDatabaseConnection(retries=10, delay=2) -> connection:
 
 def cacheTableData(source="Dashboard"):
     """
-    Loads a copy of frequently used tables for local access and to avoid network queries to the database.
+    Loads frequently used database tables into a local cache.
+    Report row counts and elapsed load times for the Dashboard startup cache.
     """
     if source == "Dashboard":
         tables_to_load = [
-            "archive_collection", 
-            "archive_favorites", 
-            "attack_categories",
+            "archive_collection",
+            "archive_favorites",
             "protocols",
-            "attacks",
             "demodulation_flow_graphs",
             "modulation_types",
             "packet_types",
@@ -82,8 +81,8 @@ def cacheTableData(source="Dashboard"):
         ]
     else:
         tables_to_load = [
-            "archive_collection", 
-            "archive_favorites", 
+            "archive_collection",
+            "archive_favorites",
             "attack_categories",
             "protocols",
             "attacks",
@@ -94,29 +93,36 @@ def cacheTableData(source="Dashboard"):
         ]
 
     # Load environment variables from .env file
-    load_dotenv(os.path.join(FISSURE_ROOT,".env"))
+    load_dotenv(os.path.join(FISSURE_ROOT, ".env"))
 
     conn = None
+    table_data = {}
+    # cache_start = time.perf_counter()
     try:
-        # Connect to PostgreSQL database
         conn = openDatabaseConnection()
+        # if source == "Dashboard":
+        #     print(f"[Database Cache] Connection: {time.perf_counter() - cache_start:.3f} s")
 
-        # Read Data
-        table_data = {}
         with conn.cursor() as cur:
             for table_name in tables_to_load:
-                query = f"SELECT * FROM {table_name};"
-                cur.execute(query)
+                # table_start = time.perf_counter()
+                cur.execute(f"SELECT * FROM {table_name};")
                 rows = cur.fetchall()
                 table_data[table_name] = [convert_data_types(row) for row in rows]
-    
+                # if source == "Dashboard":
+                #     print(
+                #         f"[Database Cache] {table_name}: {len(rows):,} rows, "
+                #         f"{time.perf_counter() - table_start:.3f} s"
+                #     )
+
     except psycopg2.Error as e:
         print(f"Database error: {e}")
 
     finally:
-        # Close the connection if it was successfully opened
         if conn is not None:
             conn.close()
+        # if source == "Dashboard":
+        #     print(f"[Database Cache] Total: {time.perf_counter() - cache_start:.3f} s")
 
     return table_data
 

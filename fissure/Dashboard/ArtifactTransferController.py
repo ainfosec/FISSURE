@@ -364,6 +364,14 @@ class ArtifactTransferController:
             pass
 
         try:
+            from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
+            pd_demodulation.handle_sa_pd_demodulation_artifact_download_complete(
+                self.frontend, failed_artifact_id
+            )
+        except Exception:
+            pass
+
+        try:
             from fissure.Dashboard.Slots import TSITabSlots
             TSITabSlots.handle_tsi_fe_artifact_download_complete(
                 self.frontend,
@@ -789,7 +797,6 @@ class ArtifactTransferController:
             current.final_path,
         )
 
-
     def _handle_complete(
         self,
         frame: ArtifactTransferFrame,
@@ -1058,6 +1065,17 @@ class ArtifactTransferController:
                 "Could not refresh Signal Analysis Inspection "
                 "after Artifact download: %s",
                 error,
+            )
+
+        try:
+            from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
+            pd_demodulation.handle_sa_pd_demodulation_artifact_download_complete(
+                self.frontend, transfer.artifact_id
+            )
+        except Exception as error:
+            self.logger.debug(
+                "Could not refresh Protocol Discovery Demodulation after "
+                "Artifact download: %s", error
             )
 
         try:

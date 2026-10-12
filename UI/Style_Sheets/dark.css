@@ -5729,3 +5729,230 @@ QPushButton#pushButton_ta_targets_geolocation_start_stop[running="true"]:disable
         stop:1 @color9
     );
 }
+
+
+/* ==========================================================
+   Signal Analysis - Protocol Discovery / Demodulation
+   Adapted from Inspection's card and action styles.
+   ========================================================== */
+
+QFrame#frame_sa_pd_demodulation_selection,
+QFrame#frame_sa_pd_demodulation_signal,
+QFrame#frame_sa_pd_demodulation_settings,
+QFrame#frame_sa_pd_demodulation_output,
+QFrame#frame_sa_pd_demodulation_bits,
+QFrame#frame_sa_pd_demodulation_results {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sa_pd_demodulation_selection_badge,
+QLabel#label_sa_pd_demodulation_signal_badge,
+QLabel#label_sa_pd_demodulation_settings_badge,
+QLabel#label_sa_pd_demodulation_output_badge,
+QLabel#label_sa_pd_demodulation_bits_badge,
+QLabel#label_sa_pd_demodulation_results_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px; max-width: 28px;
+    min-height: 28px; max-height: 28px;
+}
+
+QLabel#label_sa_pd_demodulation_selection_title,
+QLabel#label_sa_pd_demodulation_signal_title,
+QLabel#label_sa_pd_demodulation_settings_title,
+QLabel#label_sa_pd_demodulation_output_title,
+QLabel#label_sa_pd_demodulation_bits_title,
+QLabel#label_sa_pd_demodulation_results_title {
+    color: #e3edf7;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_demodulation_selection_subtitle,
+QLabel#label_sa_pd_demodulation_signal_subtitle,
+QLabel#label_sa_pd_demodulation_output_subtitle {
+    color: #b8c7d6;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QFrame#frame_sa_pd_demodulation_signal_small_plot,
+QFrame#frame_sa_pd_demodulation_signal_plot,
+QFrame#frame_sa_pd_demodulation_output_plot {
+    background-color: @color5;
+    border: none;
+    border-radius: 0px;
+}
+
+QFrame#frame_sa_pd_demodulation_selection_details,
+QFrame#frame_sa_pd_demodulation_output_parameters,
+QStackedWidget#stackedWidget_sa_pd_demodulation_selection_source,
+QWidget#widget_sa_pd_demodulation_settings {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label2_sa_pd_demodulation_selection_sample_rate_label,
+QLabel#label2_sa_pd_demodulation_selection_center_frequency_label,
+QLabel#label2_sa_pd_demodulation_selection_data_type_label,
+QLabel#label2_sa_pd_demodulation_selection_samples_label,
+QLabel#label2_sa_pd_demodulation_selection_duration_label,
+QLabel#label2_sa_pd_demodulation_selection_size_label {
+    color: @color4;
+    background-color: transparent;
+    font: bold 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_sa_pd_demodulation_selection_sample_rate,
+QDoubleSpinBox#doubleSpinBox_sa_pd_demodulation_selection_center_frequency,
+QComboBox#comboBox_sa_pd_demodulation_selection_data_type {
+    font: 9pt "Ubuntu";
+    padding: 1px 1px 1px 2px;
+    min-height: 19px;
+}
+
+QDoubleSpinBox#doubleSpinBox_sa_pd_demodulation_settings_item1,
+QDoubleSpinBox#doubleSpinBox_sa_pd_demodulation_settings_item2,
+QDoubleSpinBox#doubleSpinBox_sa_pd_demodulation_settings_item3 {
+    font: 9pt "Ubuntu";
+    padding: 1px 2px;
+    min-height: 18px;
+}
+
+QPushButton#pushButton_sa_pd_demodulation_selection_source_artifact,
+QPushButton#pushButton_sa_pd_demodulation_selection_source_local_file {
+    color: @color12;
+    background-color: @color7;
+    border: 1px solid @color13;
+    border-radius: 0px;
+    font: bold 9pt "Ubuntu";
+}
+QPushButton#pushButton_sa_pd_demodulation_selection_source_artifact:checked,
+QPushButton#pushButton_sa_pd_demodulation_selection_source_local_file:checked {
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+}
+
+QPushButton#pushButton_sa_pd_demodulation_selection_open_in_inspection,
+QPushButton#pushButton_sa_pd_demodulation_settings_estimate,
+QPushButton#pushButton_sa_pd_demodulation_results_bitstream_and_framing,
+QPushButton#pushButton_sa_pd_demodulation_results_save_as_artifact {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F, stop:0.45 #1D456D, stop:1 #0B2D52);
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    font: bold 9pt "Ubuntu";
+}
+QPushButton#pushButton_sa_pd_demodulation_settings_demodulate {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1, stop:0 #18A522, stop:1 #008C0B);
+    border: 1px solid #006F08;
+    border-radius: 4px;
+    font: bold 10pt "Ubuntu";
+}
+QPushButton#pushButton_sa_pd_demodulation_selection_open_in_inspection:disabled,
+QPushButton#pushButton_sa_pd_demodulation_settings_estimate:disabled,
+QPushButton#pushButton_sa_pd_demodulation_settings_demodulate:disabled,
+QPushButton#pushButton_sa_pd_demodulation_results_bitstream_and_framing:disabled,
+QPushButton#pushButton_sa_pd_demodulation_results_save_as_artifact:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label2_sa_pd_demodulation_results_status,
+QLabel[objectName^="label2_sa_pd_demodulation_output_parameters_"] {
+    font: 9pt "Ubuntu";
+    color: @color4;
+}
+QToolButton#toolButton_sa_pd_demodulation_settings {
+    font: 9pt "Ubuntu";
+    color: @color4;
+    border: none;
+    background-color: transparent;
+    padding: 1px 3px;
+    text-align: left;
+}
+QToolBar#toolbar_sa_pd_demodulation_signal,
+QToolBar#toolbar_sa_pd_demodulation_output {
+    background-color: @color2;
+    border: none;
+    border-bottom: 1px solid @color13;
+    spacing: 1px;
+    padding: 0px;
+}
+
+QToolBar#toolbar_sa_pd_demodulation_signal QToolButton,
+QToolBar#toolbar_sa_pd_demodulation_output QToolButton {
+    color: @color4;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 1px;
+    margin: 0px;
+    min-width: 22px;
+    max-width: 22px;
+    min-height: 22px;
+    max-height: 22px;
+}
+
+QToolBar#toolbar_sa_pd_demodulation_signal QToolButton:hover,
+QToolBar#toolbar_sa_pd_demodulation_output QToolButton:hover {
+    background-color: @color7;
+    border: 1px solid @color13;
+}
+QPlainTextEdit#plainTextEdit_sa_pd_demodulation_bits {
+    font: 9pt "Ubuntu Mono";
+    background-color: @color5;
+    color: @color4;
+    border: 1px solid @color13;
+}
+
+QLabel#label_sa_pd_demodulation_output_parameters_title {
+    color: #e3edf7;
+    background: transparent;
+    border: none;
+    font: bold 9pt "Ubuntu";
+}
+
+QTabWidget#tabWidget_sa_pd_demodulation_output QTabBar::tab {
+    padding: 2px 5px;
+    min-width: 0px;
+    font: bold 9pt "Ubuntu";
+}
+
+QFrame#frame_sa_pd_demodulation_selection_details QLabel {
+    font: 8pt "Ubuntu";
+    padding: 0;
+    margin: 0;
+}
+
+QFrame#frame_sa_pd_demodulation_selection_details QDoubleSpinBox,
+QFrame#frame_sa_pd_demodulation_selection_details QComboBox {
+    font: 8pt "Ubuntu";
+    padding: 0 2px;
+    min-height: 17px;
+    max-height: 19px;
+}
+
+/* Protocol Discovery / Demodulation: compact settings and recovered-data selectors. */
+QComboBox#comboBox_sa_pd_demodulation_settings_method,
+QComboBox#comboBox_sa_pd_demodulation_settings_item1,
+QComboBox#comboBox_sa_pd_demodulation_settings_item2,
+QComboBox#comboBox_sa_pd_demodulation_settings_item3,
+QComboBox#comboBox_sa_pd_demodulation_bits_format,
+QComboBox#comboBox_sa_pd_demodulation_bits_group {
+    font: 10pt "Ubuntu";
+}

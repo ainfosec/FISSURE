@@ -75,7 +75,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="iconSize">
     <size>
@@ -2476,7 +2476,7 @@
 }*/</string>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_sa_sois">
       <attribute name="title">
@@ -15995,7 +15995,7 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>-1</x>
          <y>0</y>
          <width>1220</width>
          <height>865</height>
@@ -16010,6 +16010,1580 @@ p, li { white-space: pre-wrap; }
        <property name="currentIndex">
         <number>0</number>
        </property>
+       <widget class="QWidget" name="tab_sa_pd_demodulation">
+        <attribute name="title">
+         <string>  Demodulation  </string>
+        </attribute>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_settings">
+         <property name="geometry">
+          <rect>
+           <x>830</x>
+           <y>145</y>
+           <width>380</width>
+           <height>316</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_settings_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Demodulation Settings</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_settings_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_settings_item1">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>80</y>
+            <width>110</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_settings_estimate">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>280</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Estimate</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_settings_demodulate">
+          <property name="geometry">
+           <rect>
+            <x>195</x>
+            <y>280</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Demodulate</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_settings_method">
+          <property name="geometry">
+           <rect>
+            <x>65</x>
+            <y>45</y>
+            <width>305</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_507">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>49</y>
+            <width>55</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Method:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_settings_item1">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>80</y>
+            <width>70</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_sa_pd_demodulation_settings_item1">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>80</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_settings_item2">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>110</y>
+            <width>70</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_sa_pd_demodulation_settings_item2">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>110</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_settings_item2">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>110</y>
+            <width>110</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_settings_item3">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>140</y>
+            <width>70</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_sa_pd_demodulation_settings_item3">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>140</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_settings_item3">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>140</y>
+            <width>110</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QToolButton" name="toolButton_sa_pd_demodulation_settings">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>170</y>
+            <width>166</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Advanced Settings</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+          <property name="arrowType">
+           <enum>Qt::RightArrow</enum>
+          </property>
+         </widget>
+         <widget class="QWidget" name="widget_sa_pd_demodulation_settings" native="true">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>195</y>
+            <width>366</width>
+            <height>80</height>
+           </rect>
+          </property>
+          <widget class="QWidget" name="formLayoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>366</width>
+             <height>80</height>
+            </rect>
+           </property>
+           <layout class="QFormLayout" name="formLayout_sa_pd_demodulation_settings"/>
+          </widget>
+         </widget>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_sa_pd_demodulation_settings_item1">
+          <property name="geometry">
+           <rect>
+            <x>195</x>
+            <y>80</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_sa_pd_demodulation_settings_item2">
+          <property name="geometry">
+           <rect>
+            <x>195</x>
+            <y>110</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_sa_pd_demodulation_settings_item3">
+          <property name="geometry">
+           <rect>
+            <x>195</x>
+            <y>140</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_signal">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>145</y>
+           <width>816</width>
+           <height>316</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_signal_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Signal View</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_signal_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>530</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Visualize the input signal and select a region for analysis.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_signal_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_demodulation_signal_small_plot">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>800</width>
+            <height>70</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_17">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>280</y>
+            <width>70</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Selection:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_signal_selection">
+          <property name="geometry">
+           <rect>
+            <x>85</x>
+            <y>280</y>
+            <width>160</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_signal_zoom">
+          <property name="geometry">
+           <rect>
+            <x>662</x>
+            <y>35</y>
+            <width>135</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Zoom to Selection</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_signal_full">
+          <property name="geometry">
+           <rect>
+            <x>547</x>
+            <y>35</y>
+            <width>110</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Full</string>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_demodulation_signal_plot">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>135</y>
+            <width>800</width>
+            <height>140</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_28">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>280</y>
+            <width>70</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Samples:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_signal_samples">
+          <property name="geometry">
+           <rect>
+            <x>345</x>
+            <y>280</y>
+            <width>160</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_sa_pd_demodulation_signal_iq">
+          <property name="geometry">
+           <rect>
+            <x>605</x>
+            <y>280</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>I/Q</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_30">
+          <property name="geometry">
+           <rect>
+            <x>555</x>
+            <y>280</y>
+            <width>40</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Show:</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_sa_pd_demodulation_signal_magnitude">
+          <property name="geometry">
+           <rect>
+            <x>675</x>
+            <y>280</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Mag.</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_sa_pd_demodulation_signal_if">
+          <property name="geometry">
+           <rect>
+            <x>745</x>
+            <y>280</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>IF</string>
+          </property>
+         </widget>
+         <zorder>label_sa_pd_demodulation_signal_title</zorder>
+         <zorder>label_sa_pd_demodulation_signal_subtitle</zorder>
+         <zorder>label_sa_pd_demodulation_signal_badge</zorder>
+         <zorder>frame_sa_pd_demodulation_signal_small_plot</zorder>
+         <zorder>label2_17</zorder>
+         <zorder>label2_sa_pd_demodulation_signal_selection</zorder>
+         <zorder>frame_sa_pd_demodulation_signal_plot</zorder>
+         <zorder>label2_28</zorder>
+         <zorder>label2_sa_pd_demodulation_signal_samples</zorder>
+         <zorder>radioButton_sa_pd_demodulation_signal_iq</zorder>
+         <zorder>label2_30</zorder>
+         <zorder>radioButton_sa_pd_demodulation_signal_magnitude</zorder>
+         <zorder>radioButton_sa_pd_demodulation_signal_if</zorder>
+         <zorder>pushButton_sa_pd_demodulation_signal_full</zorder>
+         <zorder>pushButton_sa_pd_demodulation_signal_zoom</zorder>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_output">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>465</y>
+           <width>816</width>
+           <height>315</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_output_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Demodulation Output</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_output_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>600</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Recovered signal and detected symbols/bits for the selected region</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_output_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QTabWidget" name="tabWidget_sa_pd_demodulation_output">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>590</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_detected_signal">
+           <attribute name="title">
+            <string>Detected Signal</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_symbols">
+           <attribute name="title">
+            <string>Symbols</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_bits">
+           <attribute name="title">
+            <string>Bits</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_spectrum">
+           <attribute name="title">
+            <string>Spectrum</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_spectrogram">
+           <attribute name="title">
+            <string>Spectrogram</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_demodulation_constellation">
+           <attribute name="title">
+            <string>Constellation</string>
+           </attribute>
+          </widget>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_demodulation_output_plot">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>79</y>
+            <width>595</width>
+            <height>230</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_demodulation_output_parameters">
+          <property name="geometry">
+           <rect>
+            <x>605</x>
+            <y>80</y>
+            <width>205</width>
+            <height>230</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QWidget" name="gridLayoutWidget_6">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>25</y>
+             <width>206</width>
+             <height>136</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_sa_label2_sa_pd_demodulation_output_parameters" columnstretch="0,0">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_confidence_label">
+              <property name="text">
+               <string>Confidence:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_symbol_rate_label">
+              <property name="text">
+               <string>Symbol Rate:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_modulation">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_confidence">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_modulation_label">
+              <property name="text">
+               <string>Modulation:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_deviation">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_symbol_rate">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_frequency_offset_label">
+              <property name="text">
+               <string>Freq. Offset</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_deviation_label">
+              <property name="text">
+               <string>Deviation:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_output_parameters_frequency_offset">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QLabel" name="label_sa_pd_demodulation_output_parameters_title">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>0</y>
+             <width>191</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Detected Parameters</string>
+           </property>
+          </widget>
+         </widget>
+         <zorder>label_sa_pd_demodulation_output_title</zorder>
+         <zorder>label_sa_pd_demodulation_output_subtitle</zorder>
+         <zorder>label_sa_pd_demodulation_output_badge</zorder>
+         <zorder>frame_sa_pd_demodulation_output_plot</zorder>
+         <zorder>frame_sa_pd_demodulation_output_parameters</zorder>
+         <zorder>tabWidget_sa_pd_demodulation_output</zorder>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_selection">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>130</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_selection_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Input Source</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_selection_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>500</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select an SOI, artifact, or local file to demodulate.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_selection_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_502">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>94</y>
+            <width>50</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>SOI:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_selection_soi">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>90</y>
+            <width>230</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_demodulation_selection_details">
+          <property name="geometry">
+           <rect>
+            <x>940</x>
+            <y>5</y>
+            <width>251</width>
+            <height>120</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QWidget" name="gridLayoutWidget_5">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>251</width>
+             <height>160</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_sa_pd_demodulation_selection_details" columnstretch="0,0">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="5" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_size">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_center_frequency_label">
+              <property name="text">
+               <string>Center Frequency:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_samples">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_size_label">
+              <property name="text">
+               <string>Size:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_data_type_label">
+              <property name="text">
+               <string>Data Type:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_samples_label">
+              <property name="text">
+               <string>Samples:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_duration_label">
+              <property name="text">
+               <string>Duration:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_duration">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label2_sa_pd_demodulation_selection_sample_rate_label">
+              <property name="text">
+               <string>Sample Rate:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBox_sa_pd_demodulation_selection_sample_rate"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBox_sa_pd_demodulation_selection_center_frequency"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="comboBox_sa_pd_demodulation_selection_data_type"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="Line" name="line1_7">
+          <property name="geometry">
+           <rect>
+            <x>930</x>
+            <y>1</y>
+            <width>3</width>
+            <height>128</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_source_artifact">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>55</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Artifact</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_source_local_file">
+          <property name="geometry">
+           <rect>
+            <x>175</x>
+            <y>55</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Local File</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QStackedWidget" name="stackedWidget_sa_pd_demodulation_selection_source">
+          <property name="geometry">
+           <rect>
+            <x>310</x>
+            <y>50</y>
+            <width>455</width>
+            <height>75</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="page_sa_pd_demodulation_selection_artifact">
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_file_right">
+            <property name="geometry">
+             <rect>
+              <x>325</x>
+              <y>40</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_artifact_right">
+            <property name="geometry">
+             <rect>
+              <x>325</x>
+              <y>5</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_504">
+            <property name="geometry">
+             <rect>
+              <x>5</x>
+              <y>9</y>
+              <width>50</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Artifact:</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_505">
+            <property name="geometry">
+             <rect>
+              <x>5</x>
+              <y>44</y>
+              <width>50</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>File:</string>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="comboBox_sa_pd_demodulation_selection_file">
+            <property name="geometry">
+             <rect>
+              <x>60</x>
+              <y>40</y>
+              <width>230</width>
+              <height>28</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_artifact_left">
+            <property name="geometry">
+             <rect>
+              <x>295</x>
+              <y>5</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="comboBox_sa_pd_demodulation_selection_artifact">
+            <property name="geometry">
+             <rect>
+              <x>60</x>
+              <y>5</y>
+              <width>230</width>
+              <height>28</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_file_left">
+            <property name="geometry">
+             <rect>
+              <x>295</x>
+              <y>40</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_prepare">
+            <property name="geometry">
+             <rect>
+              <x>360</x>
+              <y>5</y>
+              <width>85</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Prepare</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="page_sa_pd_demodulation_selection_file">
+           <widget class="QTextEdit" name="textEdit_sa_pd_demodulation_selection_file_name">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>20</y>
+              <width>275</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_31">
+            <property name="geometry">
+             <rect>
+              <x>40</x>
+              <y>20</y>
+              <width>45</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>File:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_file_select">
+            <property name="geometry">
+             <rect>
+              <x>370</x>
+              <y>20</y>
+              <width>27</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_selection_open_in_inspection">
+          <property name="geometry">
+           <rect>
+            <x>775</x>
+            <y>70</y>
+            <width>140</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Open in Inspection</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_503">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>59</y>
+            <width>50</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Source:</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_bits">
+         <property name="geometry">
+          <rect>
+           <x>830</x>
+           <y>465</y>
+           <width>380</width>
+           <height>151</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_bits_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Recovered Bits (Preview)</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_bits_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_35">
+          <property name="geometry">
+           <rect>
+            <x>220</x>
+            <y>120</y>
+            <width>50</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Group:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_16">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>120</y>
+            <width>50</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Format:</string>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_demodulation_bits">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>45</y>
+            <width>370</width>
+            <height>71</height>
+           </rect>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="lineWrapMode">
+           <enum>QPlainTextEdit::WidgetWidth</enum>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_bits_format">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>120</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_demodulation_bits_group">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>120</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_demodulation_results">
+         <property name="geometry">
+          <rect>
+           <x>830</x>
+           <y>620</y>
+           <width>380</width>
+           <height>160</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_demodulation_results_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Actions and Results</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_demodulation_results_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>6</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_status_label">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_results_bitstream_and_framing">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>125</y>
+            <width>205</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Open in Bitstream &amp;&amp; Framing</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_demodulation_results_save_as_artifact">
+          <property name="geometry">
+           <rect>
+            <x>225</x>
+            <y>125</y>
+            <width>145</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Save as Artifact</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_status">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>40</y>
+            <width>235</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_bits_label">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>65</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Bits Recovered:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_bits">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>65</y>
+            <width>235</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_processing_time_label">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Processing Time:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_demodulation_results_processing_time">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>90</y>
+            <width>235</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_sa_pd_bitstream">
+        <attribute name="title">
+         <string>  Bitstream &amp;&amp; Framing  </string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_sa_pd_packet_analysis">
+        <attribute name="title">
+         <string>  Packet Analysis  </string>
+        </attribute>
+       </widget>
        <widget class="QWidget" name="tab_pd_status">
         <property name="styleSheet">
          <string notr="true"/>
@@ -22499,7 +24073,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_pd_crc_calculator">
         <attribute name="title">
-         <string>CRC Calculator</string>
+         <string>  CRC Calculator  </string>
         </attribute>
         <widget class="QFrame" name="frame1_33">
          <property name="geometry">

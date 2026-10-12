@@ -160,6 +160,18 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Classification")
         self.remove_tab_by_text(self.ui.tabWidget_signal_analysis, "Direction Finding")
 
+        # Keep the retired Protocol Discovery pages available in code, but hide them in the UI.
+        for tab in (
+            self.ui.tab_pd_status,
+            self.ui.tab_pd_flow_graphs,
+            self.ui.tab_pd_bit_slicing,
+            self.ui.tab_pd_dissectors,
+            self.ui.tab_pd_sniffer,
+        ):
+            index = self.ui.tabWidget_protocol.indexOf(tab)
+            if index >= 0:
+                self.ui.tabWidget_protocol.removeTab(index)
+
         # Load FISSURE Logo
         self.ui.label_diagram.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "logo.png")))
         self.ui.pushButton_demo.setVisible(False)
@@ -581,9 +593,7 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
         try:
-            TSITabSlots.initialize_sa_capture_controls(
-                self
-            )
+            TSITabSlots.initialize_sa_capture_controls(self)
         except Exception as e:
             self.logger.debug(
                 "Could not initialize Signal Analysis Capture "
@@ -591,22 +601,26 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
         try:
-            TSITabSlots.initialize_sa_inspection_controls(
-                self
-            )
+            TSITabSlots.initialize_sa_inspection_controls(self)
         except Exception as e:
             self.logger.debug(
                 "Could not initialize Signal Analysis Inspection "
                 f"controls: {e}"
             )            
 
+        # Signal Analysis / Protocol Discovery - new Demodulation workspace.
+        try:
+            TSITabSlots.initialize_sa_pd_demodulation_controls(self)
+        except Exception as e:
+            self.logger.exception(
+                "Could not initialize Protocol Discovery Demodulation: %s", e
+            )
+
         self.target_soi = []
         self.soi_blacklist = []
 
         try:
-            TSITabSlots.initialize_tsi_conditioner_controls(
-                self
-            )
+            TSITabSlots.initialize_tsi_conditioner_controls(self)
         except Exception as e:
             self.logger.debug(
                 "Could not initialize TSI Conditioner "
@@ -614,9 +628,7 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
         try:
-            TSITabSlots.initialize_tsi_feature_extractor_controls(
-                self
-            )
+            TSITabSlots.initialize_tsi_feature_extractor_controls(self)
         except Exception as e:
             self.logger.debug(
                 "Could not initialize TSI Feature "
@@ -691,13 +703,7 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_pd_sniffer_netcat_port.setPlainText("55555")
 
         # Disable the Tabs
-        self.ui.tabWidget_protocol.setTabEnabled(1, False)
-        self.ui.tabWidget_protocol.setTabEnabled(2, False)
-        # self.ui.tabWidget_protocol.setTabEnabled(3,False)
-        # self.ui.tabWidget_protocol.setTabEnabled(4,False)
-        # self.ui.tabWidget_protocol.setTabEnabled(5,False)
-        # self.ui.tabWidget_protocol.setTabEnabled(6,False)
-        # self.ui.tabWidget_protocol.setTabEnabled(7,False)
+        # self.ui.tabWidget_protocol.setTabEnabled(1, False)
 
         # Configure PD\Construct Packet Tables
         self.ui.tableWidget_pd_dissectors.resizeRowsToContents()
@@ -1139,6 +1145,12 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Hide the Searching Label
         self.ui.label2_library_search_searching.setVisible(False)
+
+        # Legacy attack tables are no longer part of the Dashboard startup cache.
+        for table_name in ("attacks", "attack_categories"):
+            index = self.ui.comboBox_library_browse.findText(table_name)
+            if index >= 0:
+                self.ui.comboBox_library_browse.removeItem(index)
 
         # Refresh Browse Table
         LibraryTabSlots._slotLibraryBrowseChanged(self)
@@ -3834,7 +3846,123 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.textEdit_tsi_fe_run_description.textChanged.connect(
         lambda: TSITabSlots._slotTSI_FE_RunDescriptionChanged(dashboard)
     )
+    
+    # Signal Analysis / Protocol Discovery - Demodulation
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_source_artifact.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationSourceArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_source_local_file.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationSourceLocalFileClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_artifact_left.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationPreviousArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_artifact_right.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationNextArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_file_left.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationPreviousFileClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_file_right.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationNextFileClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_file_select.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationLocalFileSelectClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_prepare.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationPrepareClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_selection_open_in_inspection.clicked.connect(
+        lambda: TSITabSlots._slotSA_PDDemodulationOpenInInspectionClicked(dashboard)
+    )
 
+    # Signal View
+    dashboard.ui.pushButton_sa_pd_demodulation_signal_zoom.clicked.connect(
+        lambda: TSITabSlots._pd_zoom_selection(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_signal_full.clicked.connect(
+        lambda: TSITabSlots._pd_full_file(dashboard)
+    )
+
+    for radio in (
+        dashboard.ui.radioButton_sa_pd_demodulation_signal_iq,
+        dashboard.ui.radioButton_sa_pd_demodulation_signal_magnitude,
+        dashboard.ui.radioButton_sa_pd_demodulation_signal_if,
+    ):
+        radio.toggled.connect(
+            lambda checked: TSITabSlots._pd_draw_signal(dashboard) if checked else None
+        )
+
+    # Input Metadata
+    dashboard.ui.doubleSpinBox_sa_pd_demodulation_selection_sample_rate.valueChanged.connect(
+        lambda _value: TSITabSlots._pd_metadata_controls_changed(dashboard)
+    )
+    dashboard.ui.doubleSpinBox_sa_pd_demodulation_selection_center_frequency.valueChanged.connect(
+        lambda _value: TSITabSlots._pd_metadata_controls_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_selection_data_type.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._pd_metadata_controls_changed(dashboard)
+    )
+
+    # Demodulation Settings
+    dashboard.ui.pushButton_sa_pd_demodulation_settings_estimate.clicked.connect(
+        lambda: TSITabSlots._pd_estimate(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_settings_demodulate.clicked.connect(
+        lambda: TSITabSlots._pd_start(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_settings_method.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._pd_method_settings(dashboard)
+    )
+
+    for index in (1, 2, 3):
+        check = getattr(
+            dashboard.ui,
+            f"checkBox_sa_pd_demodulation_settings_item{index}"
+        )
+        spin = getattr(
+            dashboard.ui,
+            f"doubleSpinBox_sa_pd_demodulation_settings_item{index}"
+        )
+        check.toggled.connect(spin.setDisabled)
+        check.toggled.connect(
+            lambda _checked: TSITabSlots._pd_live_settings_changed(dashboard)
+        )
+        spin.valueChanged.connect(
+            lambda _value: TSITabSlots._pd_live_settings_changed(dashboard)
+        )
+
+    dashboard.ui.toolButton_sa_pd_demodulation_settings.toggled.connect(
+        lambda checked: TSITabSlots._pd_toggle_advanced(dashboard, checked)
+    )
+
+    # Demodulation Output
+    dashboard.ui.tabWidget_sa_pd_demodulation_output.currentChanged.connect(
+        lambda _index: TSITabSlots._pd_draw_output(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_bits_format.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._pd_format_bits(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_bits_group.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._pd_format_bits(dashboard)
+    )
+
+    # SOI and Artifact Selection
+    dashboard.ui.comboBox_sa_pd_demodulation_selection_soi.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._slotSA_PDDemodulationSoiChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_selection_artifact.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._slotSA_PDDemodulationArtifactChanged(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_demodulation_selection_file.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._slotSA_PDDemodulationFileChanged(dashboard)
+    )
+
+    dashboard.ui.tabWidget_signal_analysis.currentChanged.connect(
+        lambda _index: TSITabSlots.refresh_sa_pd_demodulation_soi_context(dashboard)
+        if dashboard.ui.tabWidget_signal_analysis.currentWidget()
+        is dashboard.ui.tab_protocol_discovery else None
+    )
 
 def connect_pd_slots(dashboard: Dashboard):
     # Check Box

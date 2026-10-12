@@ -2286,6 +2286,16 @@ async def sendArtifactsListTakReturn(
         )
 
     try:
+        from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
+        pd_demodulation.handle_sa_pd_demodulation_artifact_metadata(
+            dashboard, node_uid=node_uid, artifacts=normalized_records
+        )
+    except Exception as error:
+        component.logger.debug(
+            f"Could not route Artifact metadata to Demodulation: {error}"
+        )
+
+    try:
         TSITabSlots.refresh_sa_sois_selected_details(
             dashboard
         )
@@ -2393,6 +2403,14 @@ async def sendSoisListTakReturn(
     except Exception as error:
         component.logger.debug(
             f"Could not refresh Inspection SOI context after SOI refresh: {error}"
+        )
+
+    try:
+        from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
+        pd_demodulation.refresh_sa_pd_demodulation_soi_context(frontend)
+    except Exception as error:
+        component.logger.debug(
+            f"Could not refresh Demodulation SOI context: {error}"
         )
 
     try:
