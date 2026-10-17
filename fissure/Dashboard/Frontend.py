@@ -616,6 +616,14 @@ class Dashboard(QtWidgets.QMainWindow):
                 "Could not initialize Protocol Discovery Demodulation: %s", e
             )
 
+        # Signal Analysis / Protocol Discovery - Bitstream & Framing.
+        try:
+            TSITabSlots.initialize_sa_pd_bf_controls(self)
+        except Exception as e:
+            self.logger.exception(
+                "Could not initialize Bitstream & Framing: %s", e
+            )
+
         self.target_soi = []
         self.soi_blacklist = []
 
@@ -3962,6 +3970,54 @@ def connect_tsi_slots(dashboard: Dashboard):
         lambda _index: TSITabSlots.refresh_sa_pd_demodulation_soi_context(dashboard)
         if dashboard.ui.tabWidget_signal_analysis.currentWidget()
         is dashboard.ui.tab_protocol_discovery else None
+    )
+
+    # Protocol Discovery - Bitstream & Framing input and visualization.
+    dashboard.ui.pushButton_sa_pd_bf_input_from_demodulation.clicked.connect(
+        lambda: TSITabSlots._bf_choose_source(dashboard, "from_demodulation")
+    )
+    dashboard.ui.pushButton_sa_pd_bf_input_local_file.clicked.connect(
+        lambda: TSITabSlots._bf_choose_source(dashboard, "local_file")
+    )
+    dashboard.ui.pushButton_sa_pd_bf_input_local_file_select.clicked.connect(
+        lambda: TSITabSlots._bf_browse_local(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_bf_bitstream_full.clicked.connect(
+        lambda: TSITabSlots._bf_full(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_bf_bitstream_zoom.clicked.connect(
+        lambda: TSITabSlots._bf_zoom(dashboard)
+    )
+    dashboard.ui.radioButton_sa_pd_bf_bitstream_raw.toggled.connect(
+        lambda checked: TSITabSlots._bf_view_changed(dashboard) if checked else None
+    )
+    dashboard.ui.radioButton_sa_pd_bf_bitstream_decoded.toggled.connect(
+        lambda checked: TSITabSlots._bf_view_changed(dashboard) if checked else None
+    )
+    dashboard.ui.pushButton_sa_pd_demodulation_results_bitstream_and_framing.clicked.connect(
+        lambda: TSITabSlots.open_sa_pd_bf_from_demodulation(dashboard)
+    )
+    # Bitstream decoding, candidate framing and message inspection.
+    dashboard.ui.pushButton_sa_pd_bf_decoding_analyze.clicked.connect(
+        lambda: TSITabSlots._bf_run_analysis(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_bf_decoding_reset.clicked.connect(
+        lambda: TSITabSlots._bf_reset_auto(dashboard)
+    )
+    dashboard.ui.toolButton_sa_pd_bf_decoding_advanced_settings.toggled.connect(
+        lambda checked: TSITabSlots._bf_toggle_advanced(dashboard, checked)
+    )
+    dashboard.ui.comboBox_sa_pd_bf_decoding_framing_method.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._bf_advanced_method_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_bf_messages_view.currentIndexChanged.connect(
+        lambda _index: TSITabSlots._bf_refresh_messages(dashboard)
+    )
+    dashboard.ui.tableWidget_sa_pd_bf_messages.itemSelectionChanged.connect(
+        lambda: TSITabSlots._bf_message_selection_changed(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_bf_selected_copy.clicked.connect(
+        lambda: TSITabSlots._bf_copy_message(dashboard)
     )
 
 def connect_pd_slots(dashboard: Dashboard):

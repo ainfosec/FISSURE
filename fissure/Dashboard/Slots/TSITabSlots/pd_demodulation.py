@@ -2013,11 +2013,14 @@ def _pd_update_available_controls(dashboard):
     ui.comboBox_sa_pd_demodulation_bits_format.setEnabled(has_result)
     ui.comboBox_sa_pd_demodulation_bits_group.setEnabled(has_result)
 
-    # These two handoffs are not implemented yet. Never advertise an action
-    # that currently has no functioning callback, even when bits are present.
-    ui.pushButton_sa_pd_demodulation_results_bitstream_and_framing.setEnabled(False)
+    # Pass complete recovered bits directly to the adjacent framing workspace.
+    bf_ready = bool(getattr(dashboard, "sa_pd_bf_initialized", False))
+    ui.pushButton_sa_pd_demodulation_results_bitstream_and_framing.setEnabled(
+        has_result and bf_ready
+    )
     ui.pushButton_sa_pd_demodulation_results_bitstream_and_framing.setToolTip(
-        "Bitstream & Framing handoff has not been implemented"
+        "Open recovered bits in Bitstream & Framing" if bf_ready
+        else "Bitstream & Framing has not finished initializing"
     )
     ui.pushButton_sa_pd_demodulation_results_save_as_artifact.setEnabled(False)
     ui.pushButton_sa_pd_demodulation_results_save_as_artifact.setToolTip(
@@ -2040,12 +2043,86 @@ def _pd_update_available_controls(dashboard):
     _pd_update_content_visibility(dashboard, has_file, has_result)
 
 
+def _pd_detected_x_limits_changed(dashboard):
+    """Refresh Detected after toolbar pan, zoom, or Home (debounced)."""
+    if getattr(dashboard, "sa_pd_demodulation_detected_busy", False):
+        return
+    if getattr(dashboard, "sa_pd_demodulation_result", None) is None:
+        return
+    if dashboard.ui.tabWidget_sa_pd_demodulation_output.currentIndex() != 0:
+        return
+    timer = getattr(dashboard, "sa_pd_demodulation_detected_timer", None)
+    if timer is None:
+        timer = QtCore.QTimer(dashboard.sa_pd_demodulation_output_canvas)
+        timer.setSingleShot(True)
+        timer.timeout.connect(lambda: _pd_draw_output(dashboard, preserve_view=True))
+        dashboard.sa_pd_demodulation_detected_timer = timer
+    # Restarting defers the expensive re-render until the user stops dragging.
+    timer.start(130)
+
+
+def _pd_plot_detected_region(dashboard, canvas, result, bounds):
+    """Draw the *entire visible region* of the discriminator at appropriate detail.
+
+    Dense views use per-bin minimum/maximum rather than sampling every Nth
+    point, so narrow OOK bursts and FSK transitions are not silently dropped.
+    """
+    data = np.asarray(result["base"])
+    count = len(data)
+    if count == 0:
+        return
+    left = max(0, min(count - 1, int(np.floor(min(bounds)))))
+    right = min(count, max(left + 1, int(np.ceil(max(bounds)))))
+    _background, _face, _text, _grid, i_color, _q_color, _if_color = _pd_theme(dashboard)
+    dark = "Dark" in str((getattr(dashboard.backend, "settings", {}) or {}).get("color_mode", ""))
+    above_color = "#60c783" if dark else "#148a3b"
+    below_color = "#ee8585" if dark else "#ba4444"
+    threshold_color = "#eda765" if dark else "#bf7333"
+    axes = canvas.axes
+
+    if right - left <= 12000:
+        # Display every discriminator sample when zoomed into a manageable range.
+        positions = np.arange(left, right)
+        axes.plot(positions, data[left:right], linewidth=0.85, color=i_color)
+    else:
+        # Each display column includes its minimum and maximum. Decimation by
+        # stride would obscure the sparse OOK pulses we're trying to inspect.
+        bin_count = min(1600, right - left)
+        edges = np.linspace(0, right - left, bin_count + 1, dtype=np.int64)
+        starts = edges[:-1]
+        values = data[left:right]
+        lows = np.minimum.reduceat(values, starts)
+        highs = np.maximum.reduceat(values, starts)
+        x_positions = left + (edges[:-1] + edges[1:] - 1) * 0.5
+        axes.vlines(x_positions, lows, highs, colors=i_color, linewidth=0.8)
+
+    threshold = float(result["threshold"])
+    axes.axhline(threshold, color=threshold_color, linestyle="--", linewidth=0.9)
+    centers = np.asarray(result["centers"])
+    visible = centers[(centers >= left) & (centers < right)]
+    # Limit marker clutter in the full-recording view but never lose markers
+    # when the user zooms in for precise timing adjustment.
+    if len(visible) > 750:
+        visible = visible[::int(np.ceil(len(visible) / 750))]
+    if len(visible):
+        indices = np.clip(visible.astype(np.int64), 0, count - 1)
+        fractions = visible - indices
+        sampled = data[indices] + (data[np.minimum(indices + 1, count - 1)] - data[indices]) * fractions
+        colors = np.where(sampled >= threshold, above_color, below_color)
+        axes.scatter(visible, sampled, s=13 if right - left <= 12000 else 9,
+                     c=colors, zorder=5, linewidths=0)
+    axes.set_ylabel("Magnitude" if result["method"] == "ook" else "Frequency (Hz)")
+
+
 def _pd_draw_output(dashboard, preserve_view=False):
-    """Draw cached recovery results in Inspection's palette; retain zoom when requested."""
+    """Draw output; Detected supports full-range and pan/zoom adaptive rendering."""
     _pd_update_available_controls(dashboard)
     canvas = dashboard.sa_pd_demodulation_output_canvas
     result = getattr(dashboard, "sa_pd_demodulation_result", None)
     if result is None:
+        timer = getattr(dashboard, "sa_pd_demodulation_detected_timer", None)
+        if timer is not None:
+            timer.stop()
         _pd_clear_plot(dashboard, canvas)
         return
     tab = dashboard.ui.tabWidget_sa_pd_demodulation_output.currentIndex()
@@ -2053,68 +2130,64 @@ def _pd_draw_output(dashboard, preserve_view=False):
     keep = bool(preserve_view and same_tab and canvas.axes.has_data())
     xlim = canvas.axes.get_xlim() if keep else None
     ylim = canvas.axes.get_ylim() if keep else None
-    canvas.axes.clear()
-    _pd_style_axes(dashboard, canvas)
-    _background, _face, text, grid, i_color, q_color, if_color = _pd_theme(dashboard)
-    dark = "Dark" in str((getattr(dashboard.backend, "settings", {}) or {}).get("color_mode", ""))
-    above_color = "#60c783" if dark else "#148a3b"
-    below_color = "#ee8585" if dark else "#ba4444"
-    threshold_color = "#eda765" if dark else "#bf7333"
-    base = np.asarray(result["base"])
-    n = min(8000, len(base))
-    if tab == 0:
-        if keep:
-            left = max(0, int(np.floor(min(xlim))) - 8)
-            right = min(len(base), int(np.ceil(max(xlim))) + 9)
+    timer = getattr(dashboard, "sa_pd_demodulation_detected_timer", None)
+    if timer is not None:
+        timer.stop()
+    dashboard.sa_pd_demodulation_detected_busy = True
+    try:
+        canvas.axes.clear()
+        _pd_style_axes(dashboard, canvas)
+        _background, _face, text, grid, i_color, q_color, if_color = _pd_theme(dashboard)
+        base = np.asarray(result["base"])
+        n = min(8000, len(base))
+        if tab == 0:
+            if len(base):
+                # The initial view is the FULL selected capture; subsequent
+                # toolbar navigation requests only the newly visible portion.
+                bounds = xlim if keep else (0, len(base))
+                _pd_plot_detected_region(dashboard, canvas, result, bounds)
+                if keep:
+                    canvas.axes.set_xlim(xlim)
+                    canvas.axes.set_ylim(ylim)
+                else:
+                    canvas.axes.set_xlim(0, len(base))
+                # Axes.clear() discards its callbacks. Reinstall after every
+                # draw so future Home/Zoom/Pan operations stay interactive.
+                canvas.axes.callbacks.connect(
+                    "xlim_changed", lambda _axes: _pd_detected_x_limits_changed(dashboard)
+                )
+        elif tab == 1:
+            canvas.axes.step(np.arange(n), result["levels"][:n].astype(int),
+                             where="post", linewidth=0.8, color=i_color)
+            canvas.axes.set_ylabel("Symbol decision")
+        elif tab == 2:
+            bits = result["bits"][:4096]
+            canvas.axes.step(np.arange(len(bits)), bits, where="post", linewidth=0.8,
+                             color=i_color)
+            canvas.axes.set_ylabel("Recovered bit")
+        elif tab in (3, 4):
+            trace = base[:min(32768, len(base))]
+            if tab == 3:
+                power = np.abs(np.fft.rfft(trace - np.mean(trace))) ** 2
+                canvas.axes.plot(np.fft.rfftfreq(len(trace), 1 / result["sample_rate"]),
+                                 10 * np.log10(np.maximum(power, 1e-12)), color=i_color)
+            else:
+                canvas.axes.specgram(trace, Fs=result["sample_rate"], NFFT=256,
+                                     noverlap=192)
         else:
-            left, right = 0, n
-        step = max(1, int(np.ceil((right - left) / 15000)))
-        xs = np.arange(left, right, step)
-        canvas.axes.plot(xs, base[xs], linewidth=0.85, color=i_color)
-        canvas.axes.axhline(result["threshold"], color=threshold_color,
-                            linestyle="--", linewidth=0.9)
-        centers = np.asarray(result["centers"])
-        visible = centers[(centers >= left) & (centers < right)]
-        if len(visible) > 2500:
-            visible = visible[::int(np.ceil(len(visible) / 2500))]
-        if len(visible):
-            base_indices = np.clip(visible.astype(np.int64), 0, max(0, len(base) - 1))
-            fractional = visible - base_indices
-            sampled = (base[base_indices]
-                       + (base[np.minimum(base_indices + 1, len(base) - 1)] - base[base_indices])
-                       * fractional)
-            decisions = sampled >= result["threshold"]
-            colors = np.where(decisions, above_color, below_color)
-            canvas.axes.scatter(visible, sampled, s=15, c=colors, zorder=5, linewidths=0)
-        canvas.axes.set_ylabel("Magnitude" if result["method"] == "ook" else "Frequency (Hz)")
-    elif tab == 1:
-        canvas.axes.step(np.arange(n), result["levels"][:n].astype(int),
-                         where="post", linewidth=0.8, color=i_color)
-        canvas.axes.set_ylabel("Symbol decision")
-    elif tab == 2:
-        bits = result["bits"][:4096]
-        canvas.axes.step(np.arange(len(bits)), bits, where="post", linewidth=0.8,
-                         color=i_color)
-        canvas.axes.set_ylabel("Recovered bit")
-    elif tab in (3, 4):
-        trace = base[:min(32768, len(base))]
-        if tab == 3:
-            power = np.abs(np.fft.rfft(trace - np.mean(trace))) ** 2
-            canvas.axes.plot(np.fft.rfftfreq(len(trace), 1 / result["sample_rate"]),
-                             10 * np.log10(np.maximum(power, 1e-12)), color=i_color)
-        else:
-            canvas.axes.specgram(trace, Fs=result["sample_rate"], NFFT=256,
-                                 noverlap=192)
-    else:
-        canvas.axes.text(0.5, 0.5, "Constellation requires carrier/symbol recovery",
-                         color=text, ha="center", va="center", transform=canvas.axes.transAxes)
-    # Preserve x-axis ticks in every output tab but avoid a clipped title.
-    canvas.axes.set_xlabel("")
-    if keep:
-        canvas.axes.set_xlim(xlim)
-        canvas.axes.set_ylim(ylim)
-    dashboard.sa_pd_demodulation_last_output_tab = tab
-    canvas.draw_idle()
+            canvas.axes.text(0.5, 0.5, "Constellation requires carrier/symbol recovery",
+                             color=text, ha="center", va="center", transform=canvas.axes.transAxes)
+        # Preserve existing output-tab label layout, including the unclipped X ticks.
+        canvas.axes.set_xlabel("")
+        if keep and tab != 0:
+            canvas.axes.set_xlim(xlim)
+            canvas.axes.set_ylim(ylim)
+        dashboard.sa_pd_demodulation_last_output_tab = tab
+        canvas.draw_idle()
+    finally:
+        dashboard.sa_pd_demodulation_detected_busy = False
+
+
 
 
 def _pd_toggle_advanced(dashboard, checked):

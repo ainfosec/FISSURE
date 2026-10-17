@@ -17578,6 +17578,1343 @@ p, li { white-space: pre-wrap; }
         <attribute name="title">
          <string>  Bitstream &amp;&amp; Framing  </string>
         </attribute>
+        <widget class="QFrame" name="frame_sa_pd_bf_decoding">
+         <property name="geometry">
+          <rect>
+           <x>830</x>
+           <y>145</y>
+           <width>380</width>
+           <height>375</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_bf_decoding_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Decoding &amp; Framing</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_decoding_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_decoding_reset">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>340</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Reset to Auto</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_decoding_analyze">
+          <property name="geometry">
+           <rect>
+            <x>195</x>
+            <y>340</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Analyze</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_encoding">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>45</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_508">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>49</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Encoding:</string>
+          </property>
+         </widget>
+         <widget class="QToolButton" name="toolButton_sa_pd_bf_decoding_advanced_settings">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>230</y>
+            <width>166</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Advanced Settings</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+          <property name="arrowType">
+           <enum>Qt::RightArrow</enum>
+          </property>
+         </widget>
+         <widget class="QWidget" name="widget_sa_pd_bf_decoding_settings" native="true">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>255</y>
+            <width>366</width>
+            <height>80</height>
+           </rect>
+          </property>
+          <widget class="QWidget" name="formLayoutWidget_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>366</width>
+             <height>80</height>
+            </rect>
+           </property>
+           <layout class="QFormLayout" name="formLayout_sa_pd_bf_decoding_settings"/>
+          </widget>
+         </widget>
+         <widget class="QLabel" name="label2_512">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>79</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Polarity:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_polarity">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>75</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_514">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>109</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Analysis Range:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_analysis_range">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>105</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_515">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>139</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Framing Method:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_framing_method">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>135</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_516">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>169</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Sync Pattern:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_sync_pattern">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>165</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_517">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>199</y>
+            <width>120</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frame Length (bits):</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_decoding_frame_length">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>195</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_bf_messages">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>465</y>
+           <width>816</width>
+           <height>315</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_bf_messages_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Extracted Messages</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_messages_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>600</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Review candidate messages, identify repetitions, and compare differences.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_messages_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_messages_view">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>60</y>
+            <width>170</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>All Messages</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Unique Messages</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Repeated Messages</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QLabel" name="label2_50">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>40</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>View:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_bf_messages_count">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>285</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>0 messages</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sa_pd_bf_messages">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>95</y>
+            <width>795</width>
+            <height>190</height>
+           </rect>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>#</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Start Bit</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>End Bit</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (bits)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Occurrences</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Sync Match</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Preview (Hex)</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_messages_compare">
+          <property name="geometry">
+           <rect>
+            <x>225</x>
+            <y>60</y>
+            <width>140</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Compare Selected</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_messages_export">
+          <property name="geometry">
+           <rect>
+            <x>370</x>
+            <y>60</y>
+            <width>85</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Export</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_bf_messages_status">
+          <property name="geometry">
+           <rect>
+            <x>155</x>
+            <y>285</y>
+            <width>500</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Not analyzed</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_bf_input">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>130</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_bf_input_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Input Source</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_input_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>500</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select a recovered bitstream or load data from an artifact or local file.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_input_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_506">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>94</y>
+            <width>50</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>SOI:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_bf_input_soi">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>90</y>
+            <width>345</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_bf_input_selection_details">
+          <property name="geometry">
+           <rect>
+            <x>940</x>
+            <y>5</y>
+            <width>250</width>
+            <height>120</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QWidget" name="gridLayoutWidget_8">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>251</width>
+             <height>121</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_sa_pd_bf_input_selection_details" columnstretch="0,0">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_timing_available">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_length">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_symbol_rate">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_symbol_rate_label">
+              <property name="text">
+               <string>Symbol Rate:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_length_label">
+              <property name="text">
+               <string>Length:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_data_type">
+              <property name="text">
+               <string>—</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_timing_available_label">
+              <property name="text">
+               <string>Timing Available:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label2_sa_pd_bf_input_data_type_label">
+              <property name="text">
+               <string>Data Type:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="Line" name="line1_8">
+          <property name="geometry">
+           <rect>
+            <x>930</x>
+            <y>1</y>
+            <width>3</width>
+            <height>128</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_input_artifact">
+          <property name="geometry">
+           <rect>
+            <x>175</x>
+            <y>55</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Artifact</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_input_local_file">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>55</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Local File</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QStackedWidget" name="stackedWidget_sa_pd_bf_input_source">
+          <property name="geometry">
+           <rect>
+            <x>470</x>
+            <y>50</y>
+            <width>455</width>
+            <height>75</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>2</number>
+          </property>
+          <widget class="QWidget" name="page_sa_pd_bf_input_artifact">
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_artifact_file_right">
+            <property name="geometry">
+             <rect>
+              <x>325</x>
+              <y>40</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_artifact_right">
+            <property name="geometry">
+             <rect>
+              <x>325</x>
+              <y>5</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_509">
+            <property name="geometry">
+             <rect>
+              <x>5</x>
+              <y>9</y>
+              <width>50</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Artifact:</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_510">
+            <property name="geometry">
+             <rect>
+              <x>5</x>
+              <y>44</y>
+              <width>50</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>File:</string>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="comboBox_sa_pd_bf_input_artifact_file">
+            <property name="geometry">
+             <rect>
+              <x>60</x>
+              <y>40</y>
+              <width>230</width>
+              <height>28</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_artifact_left">
+            <property name="geometry">
+             <rect>
+              <x>295</x>
+              <y>5</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="comboBox_sa_pd_bf_input_artifact">
+            <property name="geometry">
+             <rect>
+              <x>60</x>
+              <y>5</y>
+              <width>230</width>
+              <height>28</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_artifact_file_left">
+            <property name="geometry">
+             <rect>
+              <x>295</x>
+              <y>40</y>
+              <width>28</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_prepare">
+            <property name="geometry">
+             <rect>
+              <x>360</x>
+              <y>5</y>
+              <width>85</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Prepare</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="page_sa_pd_bf_input_local_file">
+           <widget class="QTextEdit" name="textEdit_sa_pd_bf_input_local_file">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>20</y>
+              <width>275</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label2_37">
+            <property name="geometry">
+             <rect>
+              <x>40</x>
+              <y>20</y>
+              <width>45</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>File:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_sa_pd_bf_input_local_file_select">
+            <property name="geometry">
+             <rect>
+              <x>370</x>
+              <y>20</y>
+              <width>27</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="page_sa_pd_bf_input_from_demodulation"/>
+         </widget>
+         <widget class="QLabel" name="label2_511">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>59</y>
+            <width>50</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Source:</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_input_from_demodulation">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>55</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>From Demodulation</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_bf_bitstream">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>145</y>
+           <width>816</width>
+           <height>316</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_bf_bitstream_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Bitstream View</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_bitstream_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>420</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Visualize the bitstream and detected message boundaries.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_bitstream_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_bf_bitstream_small_plot">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>800</width>
+            <height>70</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_bitstream_zoom">
+          <property name="geometry">
+           <rect>
+            <x>662</x>
+            <y>35</y>
+            <width>135</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Zoom to Selection</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_bitstream_full">
+          <property name="geometry">
+           <rect>
+            <x>547</x>
+            <y>35</y>
+            <width>110</width>
+            <height>24</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Full</string>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_bf_bitstream_big_plot">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>135</y>
+            <width>800</width>
+            <height>140</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_sa_pd_bf_bitstream_raw">
+          <property name="geometry">
+           <rect>
+            <x>645</x>
+            <y>280</y>
+            <width>60</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Raw</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_47">
+          <property name="geometry">
+           <rect>
+            <x>595</x>
+            <y>280</y>
+            <width>40</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>View:</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_sa_pd_bf_bitstream_decoded">
+          <property name="geometry">
+           <rect>
+            <x>715</x>
+            <y>280</y>
+            <width>85</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Decoded</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_sa_pd_bf_bitstream_show_boundaries">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>280</y>
+            <width>130</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>Show Boundaries</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_bf_bitstream_selection">
+          <property name="geometry">
+           <rect>
+            <x>310</x>
+            <y>280</y>
+            <width>200</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_bf_selected">
+         <property name="geometry">
+          <rect>
+           <x>830</x>
+           <y>525</y>
+           <width>380</width>
+           <height>255</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_bf_selected_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Selected Message</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_bf_selected_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </widget>
+         <widget class="QTabWidget" name="tabWidget_sa_pd_bf_selected">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>45</y>
+            <width>370</width>
+            <height>170</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_sa_pd_bf_selected_hex">
+           <attribute name="title">
+            <string>Hex</string>
+           </attribute>
+           <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_bf_selected_hex">
+            <property name="geometry">
+             <rect>
+              <x>-1</x>
+              <y>-1</y>
+              <width>370</width>
+              <height>142</height>
+             </rect>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_bf_selected_binary">
+           <attribute name="title">
+            <string>Binary</string>
+           </attribute>
+           <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_bf_selected_binary">
+            <property name="geometry">
+             <rect>
+              <x>-1</x>
+              <y>-1</y>
+              <width>370</width>
+              <height>142</height>
+             </rect>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_sa_pd_bf_selected_ascii">
+           <attribute name="title">
+            <string>ASCII</string>
+           </attribute>
+           <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_bf_selected_ascii">
+            <property name="geometry">
+             <rect>
+              <x>-1</x>
+              <y>-1</y>
+              <width>370</width>
+              <height>142</height>
+             </rect>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_selected_open_in_pa">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>220</y>
+            <width>165</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Open in Packet Analysis</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_selected_save_as_artifact">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>220</y>
+            <width>115</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Save as Artifact</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_bf_selected_copy">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>220</y>
+            <width>80</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Copy Data</string>
+          </property>
+         </widget>
+        </widget>
        </widget>
        <widget class="QWidget" name="tab_sa_pd_packet_analysis">
         <attribute name="title">

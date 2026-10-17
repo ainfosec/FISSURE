@@ -5799,6 +5799,9 @@ QWidget#widget_sa_pd_demodulation_settings {
     background-color: transparent;
     border: none;
 }
+QWidget#widget_sa_pd_demodulation_settings QLabel {
+    color: @color4;
+}
 
 QLabel#label2_sa_pd_demodulation_selection_sample_rate_label,
 QLabel#label2_sa_pd_demodulation_selection_center_frequency_label,
@@ -5955,4 +5958,255 @@ QComboBox#comboBox_sa_pd_demodulation_settings_item3,
 QComboBox#comboBox_sa_pd_demodulation_bits_format,
 QComboBox#comboBox_sa_pd_demodulation_bits_group {
     font: 10pt "Ubuntu";
+}
+
+/* ==========================================================
+   Signal Analysis - Protocol Discovery / Bitstream & Framing
+   Keep the same card, badge, plot, and toolbar conventions as Demodulation.
+   ========================================================== */
+
+QFrame#frame_sa_pd_bf_input,
+QFrame#frame_sa_pd_bf_bitstream,
+QFrame#frame_sa_pd_bf_decoding,
+QFrame#frame_sa_pd_bf_messages,
+QFrame#frame_sa_pd_bf_selected {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sa_pd_bf_input_badge,
+QLabel#label_sa_pd_bf_bitstream_badge,
+QLabel#label_sa_pd_bf_decoding_badge,
+QLabel#label_sa_pd_bf_messages_badge,
+QLabel#label_sa_pd_bf_selected_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px; max-width: 28px;
+    min-height: 28px; max-height: 28px;
+}
+
+QLabel#label_sa_pd_bf_input_title,
+QLabel#label_sa_pd_bf_bitstream_title,
+QLabel#label_sa_pd_bf_decoding_title,
+QLabel#label_sa_pd_bf_messages_title,
+QLabel#label_sa_pd_bf_selected_title {
+    color: #e3edf7;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_bf_input_subtitle,
+QLabel#label_sa_pd_bf_bitstream_subtitle,
+QLabel#label_sa_pd_bf_messages_subtitle {
+    color: #b8c7d6;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QFrame#frame_sa_pd_bf_bitstream_small_plot,
+QFrame#frame_sa_pd_bf_bitstream_big_plot {
+    background-color: @color5;
+    border: none;
+    border-radius: 0px;
+}
+
+QFrame#frame_sa_pd_bf_input_selection_details,
+QStackedWidget#stackedWidget_sa_pd_bf_input_source,
+QWidget#widget_sa_pd_bf_decoding_settings {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#label2_sa_pd_bf_input_data_type_label,
+QLabel#label2_sa_pd_bf_input_length_label,
+QLabel#label2_sa_pd_bf_input_symbol_rate_label,
+QLabel#label2_sa_pd_bf_input_timing_available_label {
+    color: @color4;
+    background-color: transparent;
+    font: bold 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_bf_input_from_demodulation,
+QPushButton#pushButton_sa_pd_bf_input_artifact,
+QPushButton#pushButton_sa_pd_bf_input_local_file {
+    color: @color12;
+    background-color: @color7;
+    border: 1px solid @color13;
+    border-radius: 0px;
+    font: bold 8pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_bf_input_from_demodulation:checked,
+QPushButton#pushButton_sa_pd_bf_input_artifact:checked,
+QPushButton#pushButton_sa_pd_bf_input_local_file:checked {
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+}
+
+QPushButton#pushButton_sa_pd_bf_decoding_reset,
+QPushButton#pushButton_sa_pd_bf_selected_copy,
+QPushButton#pushButton_sa_pd_bf_selected_save_as_artifact,
+QPushButton#pushButton_sa_pd_bf_selected_open_in_pa,
+QPushButton#pushButton_sa_pd_bf_messages_compare,
+QPushButton#pushButton_sa_pd_bf_messages_export {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F, stop:0.45 #1D456D, stop:1 #0B2D52);
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    font: bold 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_bf_decoding_analyze {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1, stop:0 #18A522, stop:1 #008C0B);
+    border: 1px solid #006F08;
+    border-radius: 4px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_bf_decoding_reset:disabled,
+QPushButton#pushButton_sa_pd_bf_decoding_analyze:disabled,
+QPushButton#pushButton_sa_pd_bf_selected_copy:disabled,
+QPushButton#pushButton_sa_pd_bf_selected_save_as_artifact:disabled,
+QPushButton#pushButton_sa_pd_bf_selected_open_in_pa:disabled,
+QPushButton#pushButton_sa_pd_bf_messages_compare:disabled,
+QPushButton#pushButton_sa_pd_bf_messages_export:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QToolButton#toolButton_sa_pd_bf_decoding_advanced_settings {
+    font: 9pt "Ubuntu";
+    color: @color4;
+    border: none;
+    background-color: transparent;
+    padding: 1px 3px;
+    text-align: left;
+}
+
+QToolBar#toolbar_sa_pd_bf_bitstream {
+    background-color: @color2;
+    border: none;
+    border-bottom: 1px solid @color13;
+    spacing: 1px;
+    padding: 0px;
+}
+QToolBar#toolbar_sa_pd_bf_bitstream QToolButton {
+    color: @color4;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 1px;
+    margin: 0px;
+    min-width: 22px; max-width: 22px;
+    min-height: 22px; max-height: 22px;
+}
+QToolBar#toolbar_sa_pd_bf_bitstream QToolButton:hover {
+    background-color: @color7;
+    border: 1px solid @color13;
+}
+
+QComboBox#comboBox_sa_pd_bf_decoding_encoding,
+QComboBox#comboBox_sa_pd_bf_decoding_polarity,
+QComboBox#comboBox_sa_pd_bf_decoding_analysis_range,
+QComboBox#comboBox_sa_pd_bf_decoding_framing_method,
+QComboBox#comboBox_sa_pd_bf_decoding_sync_pattern,
+QComboBox#comboBox_sa_pd_bf_decoding_frame_length {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label2_sa_pd_bf_bitstream_selection,
+QLabel#label2_sa_pd_bf_messages_count,
+QLabel#label2_sa_pd_bf_messages_status {
+    color: @color4;
+    background-color: transparent;
+    font: 9pt "Ubuntu";
+}
+
+QPlainTextEdit#plainTextEdit_sa_pd_bf_selected_hex,
+QPlainTextEdit#plainTextEdit_sa_pd_bf_selected_binary,
+QPlainTextEdit#plainTextEdit_sa_pd_bf_selected_ascii {
+    font: 9pt "Ubuntu Mono";
+    background-color: @color5;
+    color: @color4;
+    border: 1px solid @color13;
+}
+
+/* Protocol Discovery: visible hover feedback for enabled custom buttons.
+   Append AFTER the existing Demodulation button rules. The same snippet is
+   compatible with light.css, dark.css, and custom.css; @color variables are
+   resolved by FISSURE's existing theme preprocessing. */
+
+/* Neutral controls (Full, Zoom, file picking, compare/export, etc.). */
+QPushButton[objectName^="pushButton_sa_pd_bf_"]:enabled:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 @color10, stop:1 @color11);
+    border: 1px solid @color3;
+}
+
+/* Demodulation source toggles: retain a distinct selected appearance. */
+QPushButton#pushButton_sa_pd_demodulation_selection_source_artifact:enabled:hover:!checked,
+QPushButton#pushButton_sa_pd_demodulation_selection_source_local_file:enabled:hover:!checked {
+    background-color: @color10;
+    border-color: @color3;
+}
+QPushButton#pushButton_sa_pd_demodulation_selection_source_artifact:enabled:hover:checked,
+QPushButton#pushButton_sa_pd_demodulation_selection_source_local_file:enabled:hover:checked,
+QPushButton#pushButton_sa_pd_bf_input_from_demodulation:enabled:hover:checked,
+QPushButton#pushButton_sa_pd_bf_input_artifact:enabled:hover:checked,
+QPushButton#pushButton_sa_pd_bf_input_local_file:enabled:hover:checked {
+    color: #FFFFFF;
+    background-color: #376A98;
+    border-color: #234C75;
+}
+QPushButton#pushButton_sa_pd_bf_input_from_demodulation:enabled:hover:!checked,
+QPushButton#pushButton_sa_pd_bf_input_artifact:enabled:hover:!checked,
+QPushButton#pushButton_sa_pd_bf_input_local_file:enabled:hover:!checked {
+    background-color: @color10;
+    border-color: @color3;
+}
+
+/* Primary blue actions (and BF navigation/actions with the same styling). */
+QPushButton#pushButton_sa_pd_demodulation_selection_open_in_inspection:enabled:hover,
+QPushButton#pushButton_sa_pd_demodulation_settings_estimate:enabled:hover,
+QPushButton#pushButton_sa_pd_demodulation_results_bitstream_and_framing:enabled:hover,
+QPushButton#pushButton_sa_pd_demodulation_results_save_as_artifact:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_decoding_reset:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_selected_copy:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_selected_save_as_artifact:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_selected_open_in_pa:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_input_prepare:enabled:hover {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #4882B7, stop:1 #205584);
+    border: 1px solid #1A4E78;
+}
+
+/* Primary green execution actions. */
+QPushButton#pushButton_sa_pd_demodulation_settings_demodulate:enabled:hover,
+QPushButton#pushButton_sa_pd_bf_decoding_analyze:enabled:hover {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #32C93A, stop:1 #0BAA19);
+    border: 1px solid #087F12;
+}
+
+/* Advanced-settings expander, preserving its transparent default state. */
+QToolButton#toolButton_sa_pd_demodulation_settings:enabled:hover,
+QToolButton#toolButton_sa_pd_bf_decoding_advanced_settings:enabled:hover {
+    background-color: @color7;
+    border: 1px solid @color13;
+    border-radius: 3px;
 }

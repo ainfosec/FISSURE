@@ -33,6 +33,128 @@ def _active_region(magnitude, ignore_quiet=True):
     return max(0, int(active[0]) - 8), min(len(magnitude), int(active[-1]) + 9)
 
 
+def _ook_burst_centers(base, threshold, samples_per_symbol, timing_offset, nominal_centers):
+    """Phase-align independent OOK bursts while retaining idle-bit samples.
+
+    A continuous symbol grid can land in the off half of alternating OOK
+    bursts when successive transmissions begin at different clock phases.
+    Look for well-separated pulse trains, sample each relative to its own
+    first rising edge, and keep the original grid in idle regions. A long
+    zero run is only *candidate* burst evidence, never proof of a packet.
+    """
+    levels = np.asarray(base >= threshold, dtype=np.uint8)
+    nominal = np.asarray(nominal_centers, dtype=np.float64)
+    sps = float(samples_per_symbol)
+    if len(levels) < 32 or sps < 3 or len(nominal) < 8:
+        return nominal, []
+
+    changes = np.flatnonzero(np.diff(levels.astype(np.int8))) + 1
+    edges = np.r_[0, changes, len(levels)]
+    lengths = np.diff(edges)
+    states = levels[edges[:-1]]
+    # Require long, distinct zero intervals, not ordinary multi-symbol zeros.
+    high_runs = lengths[states == 1]
+    off_runs = lengths[(states == 0) & (lengths >= max(3, 0.25 * sps))]
+    if high_runs.size < 6 or off_runs.size < 2:
+        return nominal, []
+    ordinary_off = float(np.median(off_runs[off_runs <= np.median(off_runs)]))
+    gap_limit = max(8.0 * sps, 3.5 * ordinary_off)
+    gaps = np.flatnonzero((states == 0) & (lengths >= gap_limit))
+    if gaps.size == 0:
+        return nominal, []
+
+    # Retain only regions with enough actual pulses to support an independent
+    # clock. Boundaries are positions in the trimmed discriminator, not IQ time.
+    intervals = []
+    lefts = np.r_[0, edges[gaps + 1]]
+    rights = np.r_[edges[gaps], len(levels)]
+    min_high_width = max(3, int(0.15 * sps))
+    for left, right in zip(lefts, rights):
+        left, right = int(left), int(right)
+        if right - left < 6 * sps:
+            continue
+        in_region = np.flatnonzero(
+            (states == 1) & (edges[:-1] >= left) &
+            (edges[:-1] < right) & (lengths >= min_high_width)
+        )
+        if in_region.size < 3:
+            continue
+        first_rise = float(edges[in_region[0]])
+        first_center = first_rise + (0.5 + float(timing_offset)) * sps
+        if not left <= first_center < right:
+            continue
+        count = int(np.ceil((right - first_center) / sps))
+        local = first_center + np.arange(count, dtype=np.float64) * sps
+        local = local[(local >= left) & (local < right)]
+        if local.size < 4:
+            continue
+        intervals.append((left, right, local))
+
+    # Never reinterpret an isolated burst or unstructured noise. That leaves
+    # the existing continuous-grid behavior unchanged for single packets.
+    if len(intervals) < 2:
+        return nominal, []
+
+    keep = np.ones(len(nominal), dtype=bool)
+    for left, right, _local in intervals:
+        keep &= ~((nominal >= left) & (nominal < right))
+    centers = np.sort(np.concatenate([nominal[keep]] + [x[2] for x in intervals]))
+    spans = []
+    for left, right, _local in intervals:
+        first = int(np.searchsorted(centers, left, side='left'))
+        end = int(np.searchsorted(centers, right, side='left'))
+        spans.append(dict(start_sample=left, end_sample=right,
+                          start_bit=first, end_bit=end))
+    return centers, spans
+
+
+def _estimate_fsk_edge_grid_clock(levels, sample_rate, min_samples_per_symbol=4):
+    """Refine an approximate FSK bit clock from coherent discriminator edges.
+
+    Ordinary edge-run histograms quantize intervals to whole IQ samples and
+    can accumulate a one-chip timing slip during a short packet. Fit fractional
+    periods using the circular concentration of *all* transition phases.
+    Reject incoherent/noisy solutions; this is timing evidence, not framing.
+    """
+    levels = np.asarray(levels, dtype=np.uint8)
+    if levels.ndim != 1 or len(levels) < 128 or sample_rate <= 0:
+        return None
+    edges = np.flatnonzero(np.diff(levels.astype(np.int8))) + 1
+    if len(edges) < 25:
+        return None
+    rough_rate = estimate_symbol_rate(levels, sample_rate, min_samples_per_symbol)
+    if rough_rate is None or not np.isfinite(rough_rate) or rough_rate <= 0:
+        return None
+    rough_period = float(sample_rate / rough_rate)
+    if rough_period < min_samples_per_symbol or edges[-1] - edges[0] < 25 * rough_period:
+        return None
+
+    # Remove very short glitches and cap computation for longer recordings.
+    separation = max(3, int(rough_period * .20))
+    retained = np.r_[True, np.diff(edges) >= separation]
+    edges = edges[retained].astype(np.float64)
+    if len(edges) < 25:
+        return None
+    if len(edges) > 1200:
+        edges = edges[np.linspace(0, len(edges) - 1, 1200).astype(np.int64)]
+
+    periods = rough_period * np.linspace(.97, 1.03, 481)
+    concentrations = np.exp((2j * np.pi) * edges[:, None] / periods[None, :]).mean(axis=0)
+    best = int(np.argmax(np.abs(concentrations)))
+    coherence = float(np.abs(concentrations[best]))
+    if best in (0, len(periods) - 1) or coherence < .82:
+        return None
+    period = float(periods[best])
+    # Transition phase is equivalent modulo 1; the actual symbol sample is
+    # one half-symbol later. Match the Dashboard's [-0.49, 0.49] phase range.
+    phase = (float(np.angle(concentrations[best]) / (2 * np.pi)) + .5) % 1.0 - .5
+    phase = float(np.clip(phase, -.49, .49))
+    jitter = float(np.sqrt(max(0., -2. * np.log(max(coherence, 1e-12)))) / (2 * np.pi))
+    return dict(rate=float(sample_rate / period), samples_per_symbol=period,
+                timing_offset=phase, transition_count=int(len(edges)),
+                timing_jitter_fraction=jitter)
+
+
 def _candidate(signal, sample_rate, method, settings, start_offset):
     """Build a native OOK/FSK candidate, with sync-fit clock evidence if found."""
     magnitude = np.abs(signal).astype(np.float64)
@@ -61,6 +183,10 @@ def _candidate(signal, sample_rate, method, settings, start_offset):
             raise ValueError('No useful 2-FSK frequency separation found')
     levels = np.asarray(base >= threshold, dtype=np.uint8)
     clock = _estimate_sync_clock(levels, sample_rate, min_sps)
+    # For FSK without a long alternating sync, resolve fractional rate drift
+    # from coherent frequency-discriminator transitions before sampling bits.
+    if method == 'fsk' and clock is None and settings.get('symbol_rate') is None:
+        clock = _estimate_fsk_edge_grid_clock(levels, sample_rate, min_sps)
     symbol_rate = settings.get('symbol_rate')
     if symbol_rate is None:
         symbol_rate = clock['rate'] if clock else estimate_symbol_rate(levels, sample_rate, min_sps)
@@ -93,6 +219,9 @@ def _candidate(signal, sample_rate, method, settings, start_offset):
         raise ValueError('Timing offset must be within ±0.49 symbol')
     centers = (np.arange(int(np.ceil(len(base) / sps))) + .5 + timing) * sps
     centers = centers[(centers >= 0) & (centers < len(base))]
+    burst_regions = []
+    if method == 'ook':
+        centers, burst_regions = _ook_burst_centers(base, threshold, sps, timing, centers)
     samples = _fractional_samples(base, centers)
     bits = np.asarray(samples >= threshold, dtype=np.uint8)
     if len(bits) < 8:
@@ -111,7 +240,8 @@ def _candidate(signal, sample_rate, method, settings, start_offset):
         frequency_deviation=deviation, threshold=float(threshold),
         samples_per_symbol=sps, bit_count=len(bits), bits=bits, centers=centers,
         base=base, levels=levels, input_count=len(signal), start_trim=int(start_offset),
-        timing_offset=timing,
+        timing_offset=timing, burst_regions=burst_regions,
+        burst_aware=bool(burst_regions),
         clock_transition_count=int(clock['transition_count']) if clock else 0,
         clock_timing_jitter=(clock['timing_jitter_fraction'] if clock else None),
         transition_fraction=transitions_fraction, bit_balance=balance,
@@ -268,6 +398,8 @@ def estimate_parameters(data, sample_rate, settings):
             continue
         levels = np.asarray(base >= threshold, dtype=np.uint8)
         clock = _estimate_sync_clock(levels, sample_rate, min_sps)
+        if candidate_method == 'fsk' and clock is None and settings.get('symbol_rate') is None:
+            clock = _estimate_fsk_edge_grid_clock(levels, sample_rate, min_sps)
         rate = clock['rate'] if clock else estimate_symbol_rate(levels, sample_rate, min_sps)
         if rate is not None and burst_strength < 3.0 and not clock:
             changes = np.flatnonzero(np.diff(levels.astype(np.int8))) + 1
@@ -392,6 +524,9 @@ def retime_cached_candidate(result, symbol_rate=None, threshold=None, timing_off
         raise ValueError('Too many bits for live preview')
     centers = (np.arange(count, dtype=np.float64) + .5 + phase) * sps
     centers = centers[(centers >= 0) & (centers < len(base))]
+    burst_regions = []
+    if result.get('method') == 'ook':
+        centers, burst_regions = _ook_burst_centers(base, level, sps, phase, centers)
     samples = _fractional_samples(base, centers)
     levels = np.asarray(base >= level, dtype=np.uint8)
     bits = np.asarray(samples >= level, dtype=np.uint8)
@@ -402,6 +537,7 @@ def retime_cached_candidate(result, symbol_rate=None, threshold=None, timing_off
         symbol_rate=rate, samples_per_symbol=sps,
         threshold=level, timing_offset=phase,
         levels=levels, centers=centers, bits=bits,
+        burst_regions=burst_regions, burst_aware=bool(burst_regions),
         bit_count=len(bits), live_preview=True,
         frequency_offset=level if result.get('method') == 'fsk' else None,
     )

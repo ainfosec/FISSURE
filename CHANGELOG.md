@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-16
+
+Add automatic bitstream framing and refine signal recovery
+
+### Added
+
+- Added a functional Bitstream & Framing workspace with Demodulation handoff, local bitstream loading, overview and detail plots, Raw/Decoded views, and configurable decoding and framing controls.
+- Added reusable bitstream decoding and framing utilities for polarity handling, Manchester and differential decoding, candidate boundary discovery, OOK burst separation, and repeated-message detection.
+- Added automatic framing evidence from sync patterns, CRC-16 matches, and mixed uncoded-prefix/Manchester-to-differential payloads with CRC-8 and redundant-field checks.
+- Added an extracted-message table with occurrence counts, boundary evidence, raw-chip provenance, and selected-message inspection in Hex, Binary, and ASCII.
+- Added an unframed RF-segment fallback for FSK recordings without identifiable packet boundaries, keeping the recovered data available for inspection without claiming a verified frame.
+
+### Changed
+
+- Improved OOK demodulation with burst-aware symbol timing that independently aligns transmissions while retaining idle gaps for framing.
+- Refined 2-FSK clock estimation and fractional symbol timing for more accurate recovery across longer transmissions.
+- Improved Bitstream & Framing visualization and navigation with selectable message regions, synchronized plots, and preserved viewing context.
+- Refined Protocol Discovery styling across Light, Dark, and Custom themes with button hover states and readable advanced-setting labels.
+
+### Fixed
+
+- Fixed the Demodulation Detected plot being limited to the first 8,000 samples by enabling full-recording navigation with adaptive detail when zooming.
+
 ## 2026-10-12
 
 Add Protocol Discovery demodulation and retire legacy attack caching

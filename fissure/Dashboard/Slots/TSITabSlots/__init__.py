@@ -7,4 +7,5 @@ from .capture import *
 from .inspection import *
 from .classifier import *
 from .pd_demodulation import *
+from .pd_bitstream_framing import *
 from .legacy import *
