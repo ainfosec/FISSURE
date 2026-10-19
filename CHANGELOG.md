@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-19
+
+Add evidence-based packet analysis and protocol validation
+
+### Added
+
+- Added a Packet Analysis workspace for importing extracted messages or local packet data, analyzing selected packets, comparing protocol candidates, and inspecting evidence and decoded fields.
+- Added reusable packet analysis and database-driven format validation with bit-accurate field extraction, structural and integrity checks, and evidence-based Strong, Possible, and Rejected results.
+- Added packet format definitions for TPMS sensor status, Z-Wave Color Switch Set (MAC-only and sync + MAC), and X10 RF command frames, with independent checks rather than length-only identification.
+- Added generic pulse-distance OOK framing to recover interval-encoded packets such as X10 from demodulated symbols.
+- Added a packet-format JSON validation and import tool and Protocol Discovery AI development guidance.
+
+### Changed
+
+- Extended Bitstream & Framing handoff to transfer selected or all extracted messages into Packet Analysis while preserving individual observations and framing context.
+- Updated Library caching to load enabled packet-format definitions for analysis without querying PostgreSQL for each packet.
+- Refined Protocol Discovery layouts and Light, Dark, and Custom styles to present candidate evidence, decoded fields, and validation explanations more clearly.
+- Replaced the distributed PostgreSQL dump with an updated custom-format `.backup` archive and updated operating-system installers to restore it.
+
+### Fixed
+
+- Fixed automatic demodulation misclassifying short, cropped 2-FSK recordings as OOK by using frequency-state timing evidence during modulation selection.
+
 ## 2026-10-16
 
 Add automatic bitstream framing and refine signal recovery

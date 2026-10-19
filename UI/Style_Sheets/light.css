@@ -6247,3 +6247,196 @@ QToolButton#toolButton_sa_pd_bf_decoding_advanced_settings:enabled:hover {
     border: 1px solid @color13;
     border-radius: 3px;
 }
+
+/* Packet Analysis: theme-aware candidate cards and working buttons. */
+QFrame#frame_sa_pd_pa_candidate_card {
+    background-color: @color5;
+    border: 1px solid @color13;
+    border-radius: 4px;
+}
+QFrame#frame_sa_pd_pa_candidate_card:hover {
+    background-color: @color7;
+    border: 1px solid @color3;
+}
+QFrame#frame_sa_pd_pa_candidate_card[paSelected="true"] {
+    background-color: @color7;
+    border: 2px solid @color3;
+}
+QFrame#frame_sa_pd_pa_candidate_card QLabel {
+    background-color: transparent;
+    color: @color4;
+}
+QLabel#label_sa_pd_pa_candidate_title { font: bold 10pt "Ubuntu"; }
+QLabel#label_sa_pd_pa_candidate_strength { font: 9pt "Ubuntu"; }
+QLabel#label_sa_pd_pa_candidate_summary { font: 9pt "Ubuntu"; }
+QScrollArea#scrollArea_sa_pd_pa_results_candidates,
+QWidget#scrollAreaWidgetContents_sa_pd_pa_results_candidates {
+    background-color: @color5;
+    border: none;
+}
+QPushButton#pushButton_sa_pd_pa_input_analyze {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #18A522, stop:1 #008C0B);
+    border: 1px solid #006F08;
+    border-radius: 4px;
+    font: bold 10pt "Ubuntu";
+}
+QPushButton#pushButton_sa_pd_pa_input_analyze:enabled:hover {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #32C93A, stop:1 #0BAA19);
+    border: 1px solid #087F12;
+}
+QPushButton#pushButton_sa_pd_pa_input_analyze:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+QPushButton#pushButton_sa_pd_pa_input_add_file:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_select_all:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_select_none:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_delete_selected:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:hover {
+    background-color: @color7;
+    border: 1px solid @color3;
+}
+
+/* Numbered top-level sections, matching Demodulation and B&F. */
+QFrame#frame_sa_pd_pa_input,
+QFrame#frame_sa_pd_pa_results {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sa_pd_pa_input_badge,
+QLabel#label_sa_pd_pa_results_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_sa_pd_pa_input_title,
+QLabel#label_sa_pd_pa_results_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_pa_input_subtitle,
+QLabel#label_sa_pd_pa_results_subtitle {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+/* Candidate and inspector panels within Analysis Results. */
+QFrame#frame_sa_pd_pa_results_candidates,
+QFrame#frame_sa_pd_pa_results_candidate_details {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 6px;
+}
+
+QLabel#label_sa_pd_pa_results_candidates_title,
+QLabel#label_sa_pd_pa_results_candidate_details_title,
+QLabel#label_sa_pd_pa_results_fields_packet_bits_title,
+QLabel#label_sa_pd_pa_results_fields_decoded_fields_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 9pt "Ubuntu";
+}
+
+/* Collection count (not a strength badge). */
+QLabel#label2_sa_pd_pa_input_count {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 9pt "Ubuntu";
+}
+
+/* Evidence/Fields pane surfaces and bit-accurate tables. */
+QWidget#tab_sa_pd_pa_results_candidate_evidence,
+QWidget#tab_sa_pd_pa_results_candidate_fields {
+    background-color: @color2;
+}
+
+QTableWidget#tableWidget_sa_pd_pa_input,
+QTableWidget#tableWidget_sa_pd_pa_results_evidence,
+QTableWidget#tableWidget_sa_pd_pa_results_fields_packet_bits,
+QTableWidget#tableWidget_sa_pd_pa_results_fields_decoded_fields {
+    background-color: @color5;
+    color: @color4;
+    border: 1px solid @color13;
+    font: 9pt "Ubuntu";
+}
+
+QTableWidget#tableWidget_sa_pd_pa_results_fields_packet_bits {
+    font: 8pt "Ubuntu Mono";
+}
+
+/* Neutral collection actions; Analyze retains its existing green theme. */
+QPushButton#pushButton_sa_pd_pa_input_add_file,
+QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary,
+QPushButton#pushButton_sa_pd_pa_input_select_all,
+QPushButton#pushButton_sa_pd_pa_input_select_none,
+QPushButton#pushButton_sa_pd_pa_input_delete_selected,
+QPushButton#pushButton_sa_pd_pa_input_clear_all {
+    font: 9pt "Ubuntu";
+}
+
+/* Context descriptions and ranked candidate badges. */
+QLabel#label_sa_pd_pa_results_evidence_details,
+QLabel#label_sa_pd_pa_results_fields_details {
+    color: #12395F;
+    background-color: #EAF3FF;
+    border: 1px solid #A6C7E8;
+    border-radius: 5px;
+    padding: 6px 9px;
+    font: 9pt "Ubuntu";
+}
+QLabel#label2_sa_pd_pa_results_candidate_details_badge,
+QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge {
+    color: #FFFFFF;
+    background-color: #65758A;
+    border: 1px solid #4D5E73;
+    border-radius: 9px;
+    font: bold 9pt "Ubuntu";
+    padding: 2px 7px;
+}
+QLabel#label2_sa_pd_pa_results_candidate_details_badge[paStrength="strong"],
+QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge[paStrength="strong"] {
+    color: #FFFFFF;
+    background-color: #17803D;
+    border-color: #09642B;
+}
+QLabel#label2_sa_pd_pa_results_candidate_details_badge[paStrength="moderate"],
+QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge[paStrength="moderate"] {
+    color: #24200D;
+    background-color: #E8BC4A;
+    border-color: #C39116;
+}
+QLabel#label2_sa_pd_pa_results_candidate_details_badge[paStrength="weak"],
+QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge[paStrength="weak"] {
+    color: #FFFFFF;
+    background-color: #B86E22;
+    border-color: #914C10;
+}
+QLabel#label2_sa_pd_pa_results_candidate_details_badge[paStrength="structural_only"],
+QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge[paStrength="structural_only"] {
+    color: #FFFFFF;
+    background-color: #63758D;
+    border-color: #46556B;
+}

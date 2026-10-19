@@ -69,6 +69,7 @@ def cacheTableData(source="Dashboard"):
             "demodulation_flow_graphs",
             "modulation_types",
             "packet_types",
+            "packet_formats",
             "soi_data"
         ]
     elif source == "Protocol Discovery":
@@ -77,6 +78,7 @@ def cacheTableData(source="Dashboard"):
             "demodulation_flow_graphs",
             "modulation_types",
             "packet_types",
+            "packet_formats",
             "soi_data"
         ]
     else:
@@ -89,6 +91,7 @@ def cacheTableData(source="Dashboard"):
             "demodulation_flow_graphs",
             "modulation_types",
             "packet_types",
+            "packet_formats",
             "soi_data"
         ]
 
@@ -106,7 +109,18 @@ def cacheTableData(source="Dashboard"):
         with conn.cursor() as cur:
             for table_name in tables_to_load:
                 # table_start = time.perf_counter()
-                cur.execute(f"SELECT * FROM {table_name};")
+                if table_name == "packet_formats":
+                    # During gradual upgrades, a database without this new
+                    # table continues using the established TPMS validator.
+                    cur.execute("SELECT to_regclass('public.packet_formats');")
+                    if cur.fetchone()[0] is None:
+                        table_data[table_name] = []
+                        continue
+                    # Only opted-in profiles reach HIPRFISR's existing cache
+                    # distribution. Nodes receive selected definitions later.
+                    cur.execute("SELECT * FROM public.packet_formats WHERE enabled = true ORDER BY format_key;")
+                else:
+                    cur.execute(f"SELECT * FROM {table_name};")
                 rows = cur.fetchall()
                 table_data[table_name] = [convert_data_types(row) for row in rows]
                 # if source == "Dashboard":

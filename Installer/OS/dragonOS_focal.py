@@ -293,7 +293,7 @@ bash -c '
         echo "Waiting for PostgreSQL to be ready..."
         sleep 2
     done
-    pg_restore -U $POSTGRES_USER -d $POSTGRES_DB -h $POSTGRES_HOST -p $POSTGRES_EXTERNAL_PORT -v db/fissure_db_dump.sql
+    pg_restore -U $POSTGRES_USER -d $POSTGRES_DB -h $POSTGRES_HOST -p $POSTGRES_EXTERNAL_PORT -v db/fissure_db_dump.backup
 '
 ########## Verify ##########
 bash -c '

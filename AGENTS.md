@@ -35,6 +35,7 @@ Before making changes, read the guidance relevant to the task:
 - System architecture, component boundaries, state ownership, and data flow: `docs/ai/architecture.md`
 - Plugins, Actions, Operations, callbacks, hardware, flow graphs, and plugin lifecycle: `docs/ai/plugins.md`
 - Active future-state designs and migrations: `docs/plans/README.md` and any relevant linked plan
+- Protocol Discovery, demodulation, framing, packet analysis, and packet-format definitions: `docs/ai/protocol-discovery.md`
 
 Read multiple guidance files when a task crosses subsystem boundaries.
 

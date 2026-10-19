@@ -324,7 +324,7 @@ else
             sleep 2
         done
         echo "[*] Restoring FISSURE database..."
-        pg_restore -U $POSTGRES_USER -d $POSTGRES_DB -h $POSTGRES_HOST -p $POSTGRES_EXTERNAL_PORT -v db/fissure_db_dump.sql
+        pg_restore -U $POSTGRES_USER -d $POSTGRES_DB -h $POSTGRES_HOST -p $POSTGRES_EXTERNAL_PORT -v db/fissure_db_dump.backup
     '
 fi
 ########## Verify ##########

@@ -356,6 +356,60 @@ def estimate_symbol_rate(levels, sample_rate, min_samples_per_symbol=4):
     return float(sample_rate / reference)
 
 
+def _auto_fsk_evidence(signal, sample_rate, candidate, smoothing=5):
+    """Check if a coherent two-tone discriminator outweighs envelope contrast.
+
+    This is modulation evidence only. It does not validate recovered bits,
+    framing, or protocol identity. Favor 2-FSK only when its two tone states
+    retain appreciable carrier energy and have stable, separated frequencies.
+    """
+    rate = candidate.get('symbol_rate')
+    threshold = candidate.get('frequency_offset')
+    if threshold is None:
+        threshold = candidate.get('threshold')
+    if rate is None or threshold is None or not np.isfinite(rate) or rate <= 0:
+        return dict(prefer_fsk=False)
+    sps = float(sample_rate / rate)
+    if sps < 3 or len(signal) < 32 * sps:
+        return dict(prefer_fsk=False)
+
+    diff = np.angle(signal[1:] * np.conj(signal[:-1])) * sample_rate / (2 * np.pi)
+    frequency = _smooth(np.r_[diff[0], diff], smoothing)
+    magnitude = _smooth(np.abs(signal), smoothing)
+    phase = candidate.get('timing_offset')
+    phase = float(phase) if phase is not None else 0.0
+    centers = (np.arange(int(np.ceil(len(signal) / sps))) + .5 + phase) * sps
+    centers = centers[(centers >= 0) & (centers < len(signal))]
+    if len(centers) < 32:
+        return dict(prefer_fsk=False)
+    f = _fractional_samples(frequency, centers)
+    a = _fractional_samples(magnitude, centers)
+    high = f >= float(threshold)
+    if min(np.count_nonzero(high), np.count_nonzero(~high)) < 12:
+        return dict(prefer_fsk=False)
+
+    frequencies = (float(np.median(f[~high])), float(np.median(f[high])))
+    dispersion = (float(np.median(np.abs(f[~high] - frequencies[0]))),
+                  float(np.median(np.abs(f[high] - frequencies[1]))))
+    amplitudes = (float(np.median(a[~high])), float(np.median(a[high])))
+    separation = abs(frequencies[1] - frequencies[0])
+    tone_contrast = separation / max(sum(dispersion), 1.0)
+    carrier_ratio = min(amplitudes) / max(max(amplitudes), 1e-12)
+    transitions = int(candidate.get('clock_transition_count') or 0)
+    jitter = candidate.get('clock_timing_jitter')
+    alignment = float(candidate.get('run_alignment') or 0.)
+    clock_ok = transitions >= 25 and (
+        (jitter is not None and float(jitter) <= .12) or alignment >= .82
+    )
+    prefer_fsk = bool(
+        clock_ok and carrier_ratio >= .45 and tone_contrast >= 2.5
+        and separation >= max(300., .15 * float(rate))
+    )
+    return dict(prefer_fsk=prefer_fsk, tone_separation_hz=separation,
+                tone_contrast=tone_contrast, carrier_ratio=carrier_ratio,
+                clock_transition_count=transitions)
+
+
 def estimate_parameters(data, sample_rate, settings):
     """Estimate parameters without recovering symbols or bits."""
     started = time.monotonic()
@@ -416,17 +470,32 @@ def estimate_parameters(data, sample_rate, settings):
                                 frequency_deviation=deviation,
                                 timing_offset=clock['timing_offset'] if clock else None,
                                 clock_transition_count=clock['transition_count'] if clock else 0,
+                                clock_timing_jitter=clock['timing_jitter_fraction'] if clock else None,
                                 priority=priority))
     if not suggestions or (burst_strength < 3 and not any(s['symbol_rate'] is not None for s in suggestions)):
         raise ValueError('No reliable modulation parameters; signal may be noise')
     suggestions.sort(key=lambda item: item['priority'], reverse=True)
     best = suggestions[0]
+    auto_evidence = None
+    if method == 'auto':
+        fsk = next((item for item in suggestions if item['method'] == 'fsk'), None)
+        if fsk is not None:
+            auto_evidence = _auto_fsk_evidence(
+                active, sample_rate, fsk, smoothing=smoothing
+            )
+            if auto_evidence['prefer_fsk']:
+                best = fsk
+    note = (f'Envelope contrast {contrast:.2f}; fitted clock transitions: '
+            f"{best['clock_transition_count']}.")
+    if auto_evidence and auto_evidence['prefer_fsk']:
+        note += (f" Strong 2-FSK frequency evidence: "
+                 f"{auto_evidence['tone_separation_hz']:,.0f} Hz tone separation, "
+                 f"carrier-state amplitude ratio {auto_evidence['carrier_ratio']:.2f}.")
+    note += ' Parameter estimate only; no bits/framing/CRC verified.'
     best.update(elapsed=float(time.monotonic() - started),
                 candidates=[item['method'] for item in suggestions],
                 timing_uncertain=best['symbol_rate'] is None,
-                note=(f'Envelope contrast {contrast:.2f}; fitted clock transitions: '
-                      f"{best['clock_transition_count']}. Parameter estimate only; "
-                      'no bits/framing/CRC verified.'))
+                note=note)
     return best
 
 
@@ -486,11 +555,22 @@ def recover_candidate(data, sample_rate, settings):
         raise ValueError("; ".join(errors))
     if method == "auto":
         preferred = "ook" if contrast > 0.5 else "fsk"
-        matches = [item for item in successes if item["method"] == preferred]
+        fsk = next((item for item in successes if item['method'] == 'fsk'
+                    and not item.get('diagnostic_only')), None)
+        auto_evidence = (_auto_fsk_evidence(trimmed, sample_rate, fsk,
+                                           smoothing=int(settings.get('smoothing') or 5))
+                         if fsk is not None else dict(prefer_fsk=False))
+        if auto_evidence['prefer_fsk']:
+            preferred = 'fsk'
+        matches = [item for item in successes if item['method'] == preferred]
         result = matches[0] if matches else successes[0]
-        note = (f"Auto considered OOK and 2-FSK. Preferred {preferred.upper()} "
-                f"from active-burst envelope contrast ({contrast:.2f}); "
+        note = (f"Auto considered OOK and 2-FSK. Envelope contrast {contrast:.2f}; "
                 f"selected {result['method'].upper()}.")
+        if auto_evidence['prefer_fsk']:
+            note += (f" Coherent 2-FSK discriminator with "
+                     f"{auto_evidence['tone_separation_hz']:,.0f} Hz tone separation "
+                     f"and carrier-state amplitude ratio "
+                     f"{auto_evidence['carrier_ratio']:.2f} outweighs envelope contrast.")
     else:
         result = successes[0]
         note = f"Manual {method.upper()} trial."

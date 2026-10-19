@@ -103,6 +103,8 @@ def load_sa_pd_bf_from_demodulation(dashboard):
         return False
     metadata = {
         "data_type": "Recovered Bits",
+        "path": (getattr(dashboard, "sa_pd_demodulation_file_metadata", {}) or {}).get("path"),
+        "soi_id": (getattr(dashboard, "sa_pd_demodulation_file_metadata", {}) or {}).get("soi_id"),
         "symbol_rate": result.get("symbol_rate"),
         "modulation": result.get("method"),
         "sample_centers": result.get("centers"),
@@ -177,11 +179,17 @@ def _bf_update_controls(dashboard):
     ui.toolButton_sa_pd_bf_decoding_advanced_settings.setEnabled(has_bits)
     ui.comboBox_sa_pd_bf_messages_view.setEnabled(has_frames)
     ui.pushButton_sa_pd_bf_selected_copy.setEnabled(has_message)
-    # Stage 2 does not yet have durable bitstream Artifacts, packet handoff,
-    # frame comparison or CSV export. Leave their actions visibly unavailable.
-    for name in ("pushButton_sa_pd_bf_messages_compare",
-                 "pushButton_sa_pd_bf_messages_export",
-                 "pushButton_sa_pd_bf_selected_open_in_pa",
+    # The two Packet Analysis transfers preserve individual observations.
+    # The former unused Compare button now opens the full extracted collection.
+    ui.pushButton_sa_pd_bf_selected_open_in_pa.setEnabled(has_message)
+    ui.pushButton_sa_pd_bf_selected_open_in_pa.setToolTip(
+        "Append selected message row(s) to Packet Analysis"
+    )
+    ui.pushButton_sa_pd_bf_messages_compare.setEnabled(has_frames)
+    ui.pushButton_sa_pd_bf_messages_compare.setToolTip(
+        "Append all extracted messages to Packet Analysis, including repeated messages"
+    )
+    for name in ("pushButton_sa_pd_bf_messages_export",
                  "pushButton_sa_pd_bf_selected_save_as_artifact"):
         getattr(ui, name).setEnabled(False)
     ui.pushButton_sa_pd_bf_input_artifact.setEnabled(False)
@@ -434,6 +442,21 @@ def initialize_sa_pd_bf_controls(dashboard):
     # A result might have been completed before this tab was initialized.
     if getattr(dashboard, "sa_pd_demodulation_result", None) is not None:
         load_sa_pd_bf_from_demodulation(dashboard)
+
+    # Packet Analysis is initialized after its preceding stage, without
+    # adding more connections or replacing unrelated Frontend functions.
+    from .pd_packet_analysis import initialize_sa_pd_pa_controls, open_sa_pd_pa_from_bf
+
+    initialize_sa_pd_pa_controls(dashboard)
+    ui.pushButton_sa_pd_bf_selected_open_in_pa.clicked.connect(
+        lambda: open_sa_pd_pa_from_bf(dashboard, all_frames=False)
+    )
+    ui.pushButton_sa_pd_bf_selected_open_in_pa.setText("Open Selected")
+    ui.pushButton_sa_pd_bf_messages_compare.setText("Open All")
+    ui.pushButton_sa_pd_bf_messages_compare.clicked.connect(
+        lambda: open_sa_pd_pa_from_bf(dashboard, all_frames=True)
+    )
+    _bf_update_controls(dashboard)
 
 
 def _bf_initialize_advanced(dashboard):

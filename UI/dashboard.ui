@@ -3391,7 +3391,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_sa_sois_record">
         <attribute name="title">
@@ -18920,6 +18920,618 @@ p, li { white-space: pre-wrap; }
         <attribute name="title">
          <string>  Packet Analysis  </string>
         </attribute>
+        <widget class="QFrame" name="frame_sa_pd_pa_results">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>260</y>
+           <width>1200</width>
+           <height>520</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_pa_results_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Analysis Results</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_pa_results_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>600</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>View Identification results, evidence, and decoded fields for the selected message.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_pa_results_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_pa_results_candidates">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>400</width>
+            <height>450</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QLabel" name="label_sa_pd_pa_results_candidates_title">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>5</y>
+             <width>375</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Candidate Protocols / Message Types</string>
+           </property>
+          </widget>
+          <widget class="QScrollArea" name="scrollArea_sa_pd_pa_results_candidates">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>35</y>
+             <width>390</width>
+             <height>410</height>
+            </rect>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_sa_pd_pa_results_candidates">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>388</width>
+              <height>408</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+         <widget class="QFrame" name="frame_sa_pd_pa_results_candidate_details">
+          <property name="geometry">
+           <rect>
+            <x>415</x>
+            <y>60</y>
+            <width>775</width>
+            <height>450</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QLabel" name="label_sa_pd_pa_results_candidate_details_title">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>5</y>
+             <width>375</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Selected Candidate:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label2_sa_pd_pa_results_candidate_details_badge">
+           <property name="geometry">
+            <rect>
+             <x>650</x>
+             <y>5</y>
+             <width>112</width>
+             <height>27</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>—</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+          <widget class="QTabWidget" name="tabWidget_sa_pd_pa_results_candidate_details">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>35</y>
+             <width>775</width>
+             <height>415</height>
+            </rect>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="tab_sa_pd_pa_results_candidate_evidence">
+            <attribute name="title">
+             <string>Evidence</string>
+            </attribute>
+            <widget class="QTableWidget" name="tableWidget_sa_pd_pa_results_evidence">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>5</y>
+               <width>760</width>
+               <height>275</height>
+              </rect>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Check</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Expected</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Observed</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Result</string>
+              </property>
+             </column>
+            </widget>
+            <widget class="QLabel" name="label_sa_pd_pa_results_evidence_details">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>283</y>
+               <width>760</width>
+               <height>100</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>—</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="tab_sa_pd_pa_results_candidate_fields">
+            <attribute name="title">
+             <string>Fields</string>
+            </attribute>
+            <widget class="QTableWidget" name="tableWidget_sa_pd_pa_results_fields_decoded_fields">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>109</y>
+               <width>760</width>
+               <height>175</height>
+              </rect>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Field</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Start Bit</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Length (bits)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Raw Value (bin)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Raw Value (hex)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Decoded Value</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Interpretation</string>
+              </property>
+             </column>
+            </widget>
+            <widget class="QTableWidget" name="tableWidget_sa_pd_pa_results_fields_packet_bits">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>25</y>
+               <width>760</width>
+               <height>55</height>
+              </rect>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectItems</enum>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+            </widget>
+            <widget class="QLabel" name="label_sa_pd_pa_results_fields_packet_bits_title">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>5</y>
+               <width>375</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Packet Bits</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_sa_pd_pa_results_fields_decoded_fields_title">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>84</y>
+               <width>375</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Decoded Fields</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_sa_pd_pa_results_fields_details">
+             <property name="geometry">
+              <rect>
+               <x>5</x>
+               <y>289</y>
+               <width>760</width>
+               <height>91</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>—</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_pa_input">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>245</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_pa_input_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Message Collection</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_pa_input_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>700</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Import messages extracted from Bitstream &amp; Framing or paste data. Select messages to analyze.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_pa_input_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sa_pd_pa_input">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>1180</width>
+            <height>114</height>
+           </rect>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Include</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>#</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Capture #</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (bits)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Analysis Result</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Status</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Notes</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_add_file">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>85</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Add File</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_paste_hex_binary">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>55</y>
+            <width>130</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Paste Hex/Binary</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_delete_selected">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>208</y>
+            <width>120</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Delete Selected</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_clear_all">
+          <property name="geometry">
+           <rect>
+            <x>325</x>
+            <y>208</y>
+            <width>85</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Clear All</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_select_all">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>208</y>
+            <width>80</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select All</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_select_none">
+          <property name="geometry">
+           <rect>
+            <x>95</x>
+            <y>208</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select None</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_analyze">
+          <property name="geometry">
+           <rect>
+            <x>1015</x>
+            <y>208</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Analyze Checked</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_pa_input_count">
+          <property name="geometry">
+           <rect>
+            <x>860</x>
+            <y>208</y>
+            <width>150</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </widget>
        </widget>
        <widget class="QWidget" name="tab_pd_status">
         <property name="styleSheet">

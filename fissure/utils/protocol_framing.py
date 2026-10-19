@@ -436,6 +436,106 @@ def _mixed_manchester_crc8_candidate(raw, start, end, *, pattern=None,
     return winner
 
 
+def _pulse_distance_candidate(raw_bits, start, end, min_length, max_length, polarity="Auto"):
+    """Tentatively decode an OOK pulse-spacing train into data bits.
+
+    A prolonged initial mark and gap must precede a train of uniform short
+    marks with two well-separated, stable pulse-to-pulse intervals. The
+    shorter interval represents 0 by convention, not independently verified
+    polarity. No protocol length, byte values or checksum is assumed.
+    """
+    raw = np.asarray(raw_bits, dtype=np.uint8)
+    scope = raw[start:end]
+    if len(scope) < max(40, 2 * min_length):
+        return None
+
+    changes = np.flatnonzero(np.diff(scope.astype(np.int8))) + 1
+    boundaries = np.r_[0, changes, len(scope)]
+    highs = [(start + int(boundaries[i]), start + int(boundaries[i + 1]))
+             for i in range(len(boundaries) - 1)
+             if scope[boundaries[i]] == 1]
+    if len(highs) < max(18, min_length // 2 + 1):
+        return None
+
+    possibilities = []
+    for header_index in range(len(highs) - 17):
+        header_start, header_end = highs[header_index]
+        data_begin = header_index + 1
+        first_start = highs[data_begin][0]
+        header_gap = first_start - header_end
+        if header_gap < 4:
+            continue
+
+        # A long mark + quiet interval followed by short, regular marks.
+        possible_marks = highs[data_begin:]
+        mark_lengths = np.array([b - a for a, b in possible_marks], dtype=float)
+        mark_width = float(np.median(mark_lengths))
+        if mark_width < 1 or header_end - header_start < 5 * mark_width:
+            continue
+        if header_gap < 4 * mark_width:
+            continue
+
+        # End the train at a distinct idle gap, if one exists. Do not confuse
+        # short/long payload intervals with a new packet delimiter.
+        positions = np.array([a for a, _b in possible_marks], dtype=float)
+        intervals = np.diff(positions)
+        if len(intervals) < 16:
+            continue
+        typical = float(np.median(intervals))
+        breaks = np.flatnonzero(intervals > max(typical * 2.7, typical + 6))
+        stop = int(breaks[0] + 1) if len(breaks) else len(possible_marks)
+        if stop < max(17, min_length + 1):
+            continue
+        marks = possible_marks[:stop]
+        widths = np.array([b - a for a, b in marks], dtype=float)
+        typical_width = float(np.median(widths))
+        if max(abs(widths - typical_width)) > max(0.5, typical_width * 0.25):
+            continue
+
+        distances = np.diff([a for a, _b in marks]).astype(float)
+        unique = sorted(set(distances.tolist()))
+        if len(unique) < 2:
+            continue
+        best = None
+        for left, right in zip(unique, unique[1:]):
+            boundary = (left + right) / 2
+            short = distances[distances < boundary]
+            long = distances[distances >= boundary]
+            if min(len(short), len(long)) < 3:
+                continue
+            short_m, long_m = float(np.median(short)), float(np.median(long))
+            if not 1.4 <= long_m / max(short_m, 1e-8) <= 4.0:
+                continue
+            tolerance = max(0.25, 0.18 * short_m)
+            if (np.max(abs(short - short_m)) > tolerance or
+                    np.max(abs(long - long_m)) > max(0.25, 0.18 * long_m)):
+                continue
+            error = float(np.mean((short - short_m) ** 2) +
+                          np.mean((long - long_m) ** 2))
+            if best is None or error < best[0]:
+                best = (error, boundary, short_m, long_m)
+        if best is None:
+            continue
+
+        _error, boundary, short_interval, long_interval = best
+        decoded = np.asarray(distances >= boundary, dtype=np.uint8)
+        if polarity == "Inverted":
+            decoded = 1 - decoded
+        if not min_length <= len(decoded) <= max_length:
+            continue
+        possibilities.append((len(decoded), header_start, marks[0][0], marks[-1][1],
+                              decoded, short_interval, long_interval))
+
+    if not possibilities:
+        return None
+    # Prefer more decoded data, then the earliest unambiguous burst.
+    size, header_start, data_start, raw_end, decoded, short, long = max(
+        possibilities, key=lambda item: (item[0], -item[1]))
+    return {"bits": decoded, "raw_start": data_start, "raw_end": raw_end,
+            "header_start": header_start, "short_interval": short,
+            "long_interval": long, "inverted": polarity == "Inverted"}
+
+
 def analyze_bitstream(raw_bits, *, encoding="Auto", polarity="Auto", method="Auto",
                       sync_pattern=None, frame_length=None, start=0, end=None,
                       min_frame_bits=16, max_frame_bits=4096, min_preamble_bits=24,
@@ -464,6 +564,38 @@ def analyze_bitstream(raw_bits, *, encoding="Auto", polarity="Auto", method="Aut
     fixed_length = int(frame_length) if frame_length is not None else None
     if fixed_length is not None and not 1 <= fixed_length <= 1_000_000:
         raise ValueError("Invalid frame length")
+    # Pulse-distance OOK can encode one data bit per pulse interval, not per
+    # recovered OOK chip. Try this only in Auto from an observed OOK source,
+    # and require an isolated header plus a stable two-interval pulse train.
+    if (method == "Auto" and encoding == "Auto" and
+            str(modulation or "").strip().lower() == "ook"):
+        distance = _pulse_distance_candidate(
+            raw, start, end, min_frame_bits, max_frame_bits, polarity)
+        if distance is not None:
+            decoded = distance["bits"]
+            inverted = distance["inverted"]
+            description = (f"Pulse distance ({distance['short_interval']:g}/"
+                           f"{distance['long_interval']:g} chips)")
+            frame = {"start": 0, "end": len(decoded), "bits": decoded.copy(),
+                     "length": len(decoded), "origin": description,
+                     "sync_match": False, "occurrences": 1,
+                     "crc_evidence": None, "crc8_evidence": None,
+                     "boundary_evidence": "Pulse-distance pattern",
+                     "raw_start": distance["raw_start"],
+                     "raw_end": distance["raw_end"],
+                     "validated": False, "unframed": False}
+            return {"bits": decoded, "frames": [frame],
+                    "encoding": "Pulse Distance", "polarity": (
+                        "Inverted" if inverted else "Normal (hypothesis)"),
+                    "stride": 1, "offset": 0, "method": method,
+                    "status": (f"1 pulse-distance candidate ({len(decoded)} bits); "
+                               "short/long spacing decoded; boundary and polarity unverified"),
+                    "evidence": 20, "transition_quality": None,
+                    "validated": False, "unframed": False,
+                    "polarity_ambiguous": polarity == "Auto",
+                    "crc_matches": 0, "crc8_matches": 0,
+                    "alternatives": []}
+
     encodings = ("Raw / NRZ", "NRZI", "Manchester", "Differential Manchester") if encoding == "Auto" else (encoding,)
     polarities = ("Normal", "Inverted") if polarity == "Auto" else (polarity,)
 
