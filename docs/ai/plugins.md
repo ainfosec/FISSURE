@@ -45,6 +45,12 @@ Use the directories according to their purpose:
 
 Do not create alternate install trees or copy normal plugin code into system locations merely to make a plugin run. Resolve files relative to the plugin directory.
 
+### Plugin Naming and Extensibility
+
+Name plugins for the broader protocol, technology, or capability area rather than only the initial Action. A scanner or monitor may later gain listening, logging, inspection, or other related Actions. Name individual Actions for their specific workflows without making the plugin identity unnecessarily narrow.
+
+Keep the plugin directory, `plugin.yaml` name, and `PLUGIN_NAME` consistent. Before renaming a deployed plugin, consider saved playlists, references to its Actions, and Hub/Sensor Node installations. Preserve existing Action function identifiers when practical to avoid breaking callers.
+
 ## `actions.py` Must Stay Thin
 
 `actions.py` is an exposure and routing layer, not an implementation module.
@@ -118,6 +124,12 @@ Framework-supplied execution inputs are not user-facing schema parameters. Do no
 
 If an Operation intentionally accepts one nested `parameters` dictionary, the Action may wrap the values for that constructor. Otherwise prefer passing the Action parameters directly.
 
+### Operator-Friendly Parameter Design
+
+Treat the Action schema as an operator interface, not an inventory of every implementation setting. Unless the request requires otherwise, expose a small set of useful controls with plain-language labels, units, understandable defaults, and explanations of special values such as automatic gain. The operator should not have to understand the underlying algorithm or external command-line flags.
+
+Keep internal thresholds, survey/integration timing, retry rules, calibration values, and similar low-level tuning as Operation defaults unless there is a clear operator reason to change them. For related Actions, use consistent labels, units, ranges, and semantics. Review how the schema will actually appear in the Dashboard before calling the interface complete.
+
 ### Keep User-Facing Scope Intentional
 
 Do not create extra user-facing Actions, replay modes, file-analysis paths, sample-data workflows, or other capabilities merely because they are convenient for development or testing. Implement the capability the user requested and keep validation helpers internal when they do not represent an intended operator workflow.
@@ -189,6 +201,8 @@ Do not advertise a hardware/version combination merely because an empty director
 - `get_resources()` describes runtime resources that must be allocated/locked by the Operation framework.
 
 Use each for its intended purpose.
+
+When multiple Actions or plugins use the same physical hardware, inspect existing `get_resources()` implementations and follow compatible resource identity conventions. Different Actions must not create unrelated locks for the same device merely because they choose different type, model, or serial values. Check both Action hardware availability and Operation resource allocation against the actual supported device.
 
 ## Operations
 
@@ -301,6 +315,10 @@ Do not invent a second artifact registry, ad hoc file-transfer protocol, or call
 Runtime Artifact files must be created inside the Operation's managed Artifact storage before they are registered. Do not write a result beside the input file, into the plugin directory, or into an arbitrary temporary/output directory and then pass that path to `create_artifact(...)`. Use the current `ArtifactManager` / `Operation` helpers to obtain the Operation-managed files directory and create the files there. Artifact path validation is intentional.
 
 Keep the Operation ID used for managed Artifact storage aligned with the correlated Operation ID used by the workflow. Creating output under one Operation ID while returning results under another breaks lifecycle and provenance expectations.
+
+When an Action is intended to scan, discover, enumerate, or summarize results and the user has not specified an output format, include a concise human-readable result file in its Artifact by default. A TXT, Markdown, or CSV summary should make the useful findings easy to read without opening verbose JSON or raw logs. Keep detailed machine-readable observations and diagnostic logs as supplementary outputs when useful, not as the only way to see the results.
+
+Include meaningful names or identifiers, measurements with units, classifications, totals, and completion state as appropriate. Distinguish confirmed results from uncertain candidates, and clearly report an empty result set. Complementary files may belong to a single logical Artifact; avoid duplicating large diagnostic logs in the readable summary.
 
 Generated files that are implementation support rather than runtime results belong in plugin-owned `scripts/`, `resources/`, or `flow_graphs/` as appropriate.
 
@@ -418,9 +436,17 @@ The Sensor Node runner owns Operation registration, finalization, teardown seque
 
 Use `status_callback` for useful Operation progress, but do not create a parallel started/stopped lifecycle protocol. Be careful about forcing a global-looking `Idle` status from one Operation when other Operations may still be active; the Sensor Node runner owns the overall idle transition after the last active Operation completes.
 
+### Completion, Failure, and Artifact Outcomes
+
+Distinguish completed, interrupted, and failed runs in operator-visible status where the existing framework supports it and in result metadata. Avoid requiring the operator to open a diagnostic JSON file just to learn the reason an Action failed: include a concise actionable error in the available status path, while preserving the original tool output and context in logs or a diagnostic Artifact. Inspect current status callback semantics and the Sensor Node Operation wrapper; raising an exception may be caught and logged without automatically surfacing an operator-visible failure.
+
+Check required result operations for success. For example, `Operation.create_artifact(...)` can return an empty identifier instead of raising an exception. If an Artifact is an expected deliverable, verify registration and report its failure using existing mechanisms. A partial or failed run must not be presented as fully successful. Keep cancellation distinct from failure and always clean up subprocesses and hardware resources.
+
 ## Local and Remote Execution
 
 Assume an Action may execute on a remote Sensor Node unless its tags explicitly restrict it.
+
+External executables, Python modules, device access, and version-specific capabilities must be available in the environment of the Sensor Node that runs the Operation, not merely on the Dashboard or development machine. Use the normal FISSURE deployment and dependency assumptions; do not add automatic host installation or configuration as a workaround without explicit authorization.
 
 Do not write plugin logic that only works because the Dashboard and Sensor Node happen to share:
 
@@ -507,6 +533,8 @@ The fact that an Operation calls an external command does not by itself justify 
 
 When a plugin depends on third-party software, first determine what FISSURE already knows about that tool before inventing setup or assuming a command-line interface.
 
+Treat FISSURE's documented and installer-supported environment as the baseline unless the user specifies a different target. Do not write a cross-platform or multi-version compatibility matrix merely because the developer's operating system is unknown. Before using unfamiliar executable options or parsing external output, consult the relevant installer, existing integrations, and available tool documentation; verify the real command when a suitable environment is accessible. If an option or installed version cannot be verified, identify that assumption for testing on the executing Sensor Node rather than claiming that mock subprocess tests established compatibility.
+
 When the development environment is available:
 
 - identify the current operating system/version when it affects support;
@@ -548,11 +576,15 @@ Useful places to inspect include:
 - `fissure/Sensor_Node/SensorNode.py` - authoritative Operation runner/lifecycle behavior;
 - `fissure/utils/plugin.py` - Action discovery, schema loading, tags, hardware filtering, delegation, manifests, and setup lifecycle.
 
+Before implementing hardware acquisition, frequency scanning, decoding, or other common RF workflows, make a targeted search of `Plugins/Base/`, relevant existing plugins, and the Dummy/reference examples for applicable patterns. Reuse the framework contracts and compatible existing components where practical instead of recreating them. Inspect only the examples relevant to the task; do not require an exhaustive repository review for every plugin.
+
 Do not treat a newly generated or not-yet-reviewed plugin as a canonical example.
 
 ## Validation Checklist
 
 Before considering a new or modified plugin complete, check the actual path through FISSURE. Unit tests and direct Operation tests are not sufficient evidence of integration when the capability is normally launched through a Dashboard workflow. Exercise at least one representative end-to-end run through the intended UI path when practical.
+
+Report validation in distinct levels: (1) static checks and mocked/unit tests establish structure and controlled code paths; (2) tests through the real FISSURE Action/Operation, status, resource, and Artifact paths establish framework integration; (3) tests on the actual Sensor Node with its installed tools, SDR, and RF environment establish hardware behavior. Perform the levels that are practical and clearly state which ones were not run. Do not invent detections or infer real utility compatibility from fake subprocess output.
 
 ### Action exposure
 
@@ -562,6 +594,7 @@ Before considering a new or modified plugin complete, check the actual path thro
 - The schema name exactly matches the Action.
 - Schema parameters reach the intended Operation inputs.
 - User-facing parameters represent meaningful choices rather than incidental implementation tuning.
+- Operator labels, units, defaults, and special values are understandable without internal algorithm knowledge; shared controls are consistent between Actions.
 - Tags place the Action in the intended workflows.
 - Inspection Actions use the active Inspection context rather than exposing redundant file/context parameters.
 - Framework-provided Operation IDs are preserved when the workflow uses them for correlation.
@@ -579,6 +612,8 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Long-running loops respond to Stop.
 - Stop targets the correct Operation ID.
 - Subprocesses/flow graphs/resources are cleaned up reliably.
+- Hardware resource claims use consistent physical-device identities across relevant Actions and plugins.
+- Failed and interrupted Operations report an accurate outcome through the available status and result mechanisms.
 - The Operation does not manipulate the Sensor Node's operation registry directly.
 
 ### Results and framework integration
@@ -588,6 +623,8 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Node position comes through `position_callback` when needed.
 - Accuracy, uncertainty, confidence, and similar values are sourced or legitimately derived rather than invented.
 - Artifacts use the existing Artifact framework.
+- Result-listing Artifacts include a concise human-readable summary by default when the user has not specified another format.
+- Required Artifact registration is checked for failure, including empty identifiers returned without exceptions.
 - Artifact files are written into managed Operation storage before registration.
 - Generated results reach HIPRFISR/Dashboard through normal framework paths.
 - Inspection results complete the actual Dashboard workflow: Start -> Operation -> Inspection callback -> Completed -> View Result / Save as Finding, with the same correlated Operation ID.
@@ -600,7 +637,9 @@ Before considering a new or modified plugin complete, check the actual path thro
 - Support files live under the appropriate plugin supplemental directory.
 - Paths are plugin-relative and do not depend on an accidental working directory.
 - `plugin.yaml` is accurate and versioned appropriately.
+- Plugin naming leaves room for related Actions, and renames account for deployed and saved references.
 - For third-party commands, relevant FISSURE installer/support information was checked and any practical non-destructive local verification was performed.
+- Unverified executable options or version assumptions are documented for testing on the executing Sensor Node rather than presented as tested compatibility.
 - `setup.py` is still a safe no-op unless external setup was explicitly requested.
 - Cleanup remains disabled unless safe plugin-owned cleanup was deliberately implemented.
 - The plugin does not silently alter the user's system during deployment or first execution.

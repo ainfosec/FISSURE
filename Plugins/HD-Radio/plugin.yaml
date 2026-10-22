@@ -1,0 +1,3 @@
+name: HD-Radio
+version: "1.0.0"
+description: Two RTL2832U HD Radio scan Actions (complete NRSC-5 band scan and FFT-prioritized quick scan), producing readable and detailed FISSURE Artifacts.

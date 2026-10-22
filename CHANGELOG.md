@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-22
+
+Add HD Radio scanning and refine AI plugin guidance
+
+### Added
+
+- Added an HD-Radio plugin with RTL-SDR Full Scan and spectrum-assisted Quick Scan Actions for NRSC-5 station and program discovery.
+- Added managed scan Artifacts with human-readable TXT/CSV station summaries and detailed JSON observations, statistics, and diagnostics.
+- Added automated plugin tests covering scan execution, late metadata, cancellation, and Artifact handling.
+
+### Changed
+
+- Simplified scan Action parameters, consolidated shared scanner functionality, and aligned RTL-SDR resource identification with existing conventions.
+- Expanded AI plugin guidance for extensible plugin naming, operator-friendly parameters, readable results, existing RF examples, Sensor Node dependencies, external tool compatibility, failure reporting, and validation levels.
+
 ## 2026-10-19
 
 Add evidence-based packet analysis and protocol validation
