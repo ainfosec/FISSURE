@@ -1,0 +1,99 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%labels
+    org.opencontainers.image.title FISSURE Remote Sensor Node
+    org.opencontainers.image.description Headless FISSURE remote sensor node
+    org.opencontainers.image.source https://github.com/ainfosec/FISSURE
+
+%help
+    FISSURE remote sensor-node image
+
+    Runtime configuration and CURVE keys must be bind-mounted at:
+      /opt/FISSURE/YAML/Sensor_Node_Config/default.yaml
+      /opt/FISSURE/certificates
+
+    Run the image with the repository deployment helper:
+      Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py user@node
+
+%files
+    {{ fissure_source }}/ /opt/FISSURE
+
+%environment
+    export PYTHONPATH=/opt/FISSURE:${PYTHONPATH:-}
+    export PYTHONUNBUFFERED=1
+    export MPLCONFIGDIR=${MPLCONFIGDIR:-/tmp/fissure-matplotlib}
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+
+    # The FISSURE installer expects sudo even though Apptainer %post is root.
+    install -d /usr/local/bin
+    printf '#!/bin/sh\nexec "$@"\n' > /usr/local/bin/sudo
+    chmod 0755 /usr/local/bin/sudo
+
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        lsb-release \
+        python3 \
+        python3-crcmod \
+        python3-pip \
+        python3-setuptools \
+        xauth \
+        xvfb
+
+    # Ubuntu 24.04's installer upgrades setuptools before building legacy
+    # setup.py packages. Setuptools 81+ removes pkg_resources, which those
+    # packages still load, so constrain the entire installer subprocess.
+    printf 'setuptools<81\n' > /tmp/fissure-pip-constraints.txt
+    export PIP_CONSTRAINT=/tmp/fissure-pip-constraints.txt
+
+    cd /opt/FISSURE
+    chmod 0755 install
+    xvfb-run -a ./install --os "Ubuntu 24.04" --mode SensorNode
+    python3 -c "import pkg_resources, pydotplus"
+    rm -f /tmp/fissure-pip-constraints.txt
+
+    # Runtime keys are supplied by a read-only bind. Never ship build-host
+    # private material in the final SIF.
+    rm -rf /opt/FISSURE/certificates
+    install -d -m 0755 \
+        /opt/FISSURE/certificates/clients \
+        /opt/FISSURE/certificates/server \
+        /opt/FISSURE/Logs \
+        /opt/FISSURE/logs \
+        /opt/FISSURE/Plugins \
+        '/opt/FISSURE/Flow Graph Library' \
+        /opt/FISSURE/artifacts \
+        /opt/FISSURE/artifacts_node \
+        /opt/FISSURE/artifacts_system \
+        /opt/FISSURE/Archive \
+        '/opt/FISSURE/IQ Recordings' \
+        /opt/FISSURE/fissure/Sensor_Node/Archive_Replay \
+        /opt/FISSURE/fissure/Sensor_Node/Autorun_Playlists \
+        /opt/FISSURE/fissure/Sensor_Node/IQ_Data_Playback \
+        /opt/FISSURE/fissure/Sensor_Node/Import_Export_Files \
+        /opt/FISSURE/fissure/Sensor_Node/Recordings
+
+    # Preserve the stable runtime path used by SIFs built before the deployment
+    # source files were consolidated under Installer/Remote_Sensor_Node.
+    ln -s Remote_Sensor_Node/remote_sensor_node_image_check.py \
+        /opt/FISSURE/Installer/remote_sensor_node_image_check.py
+
+    # Mutable runtime paths are supplied by explicit host bind mounts. Keep the
+    # application tree immutable so writes cannot silently disappear into SIF
+    # or overlay state.
+
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%runscript
+    cd /opt/FISSURE
+    exec xvfb-run -a python3 fissure/Sensor_Node/SensorNode.py "$@"
+
+%test
+    cd /opt/FISSURE
+    python3 Installer/Remote_Sensor_Node/remote_sensor_node_image_check.py \
+        --skip-certificates \
+        --allow-placeholder-config
