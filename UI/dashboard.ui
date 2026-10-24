@@ -19146,7 +19146,7 @@ p, li { white-space: pre-wrap; }
               </rect>
              </property>
              <property name="text">
-              <string>—</string>
+              <string/>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -19272,7 +19272,7 @@ p, li { white-space: pre-wrap; }
               </rect>
              </property>
              <property name="text">
-              <string>—</string>
+              <string/>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -19360,11 +19360,6 @@ p, li { white-space: pre-wrap; }
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>
           </attribute>
-          <column>
-           <property name="text">
-            <string>Include</string>
-           </property>
-          </column>
           <column>
            <property name="text">
             <string>#</string>
@@ -19491,7 +19486,7 @@ p, li { white-space: pre-wrap; }
            </rect>
           </property>
           <property name="text">
-           <string>Select None</string>
+           <string>Deselect All</string>
           </property>
           <property name="checkable">
            <bool>false</bool>
@@ -19507,7 +19502,7 @@ p, li { white-space: pre-wrap; }
            </rect>
           </property>
           <property name="text">
-           <string>Analyze Checked</string>
+           <string>Analyze Selected</string>
           </property>
          </widget>
          <widget class="QLabel" name="label2_sa_pd_pa_input_count">
@@ -19529,6 +19524,805 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_pa_input_compare_selected">
+          <property name="geometry">
+           <rect>
+            <x>415</x>
+            <y>208</y>
+            <width>140</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Compare Selected</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_sa_pd_comparison">
+        <attribute name="title">
+         <string>Comparison</string>
+        </attribute>
+        <widget class="QFrame" name="frame_sa_pd_comparison_editor">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>1200</width>
+           <height>245</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Message Editor</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>700</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Edit, convert, and manipulate a message. Load from the table below or paste new data.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_undiff0">
+          <property name="geometry">
+           <rect>
+            <x>220</x>
+            <y>210</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>UnDiff 0</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_undiff1">
+          <property name="geometry">
+           <rect>
+            <x>325</x>
+            <y>210</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>UnDiff 1</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_invert">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>210</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Invert</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_differential">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>210</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Differential</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_add_to_comparison">
+          <property name="geometry">
+           <rect>
+            <x>835</x>
+            <y>210</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Add to Comparison</string>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_comparison_editor_binary">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>75</y>
+            <width>450</width>
+            <height>130</height>
+           </rect>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_comparison_editor_hex">
+          <property name="geometry">
+           <rect>
+            <x>500</x>
+            <y>75</y>
+            <width>325</width>
+            <height>130</height>
+           </rect>
+          </property>
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_comparison_editor_ascii">
+          <property name="geometry">
+           <rect>
+            <x>865</x>
+            <y>75</y>
+            <width>297</width>
+            <height>130</height>
+           </rect>
+          </property>
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_manchester_encode">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>210</y>
+            <width>120</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Manchester Enc.</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_manchester_decode">
+          <property name="geometry">
+           <rect>
+            <x>555</x>
+            <y>210</y>
+            <width>120</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Manchester Dec.</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_binary">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Binary</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_hex">
+          <property name="geometry">
+           <rect>
+            <x>500</x>
+            <y>55</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Hex</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_ascii">
+          <property name="geometry">
+           <rect>
+            <x>865</x>
+            <y>55</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>ASCII</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_ascii_chars">
+          <property name="geometry">
+           <rect>
+            <x>958</x>
+            <y>55</y>
+            <width>200</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0 chars</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_ascii_copy">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>1165</x>
+            <y>75</y>
+            <width>27</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_hex_copy">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>828</x>
+            <y>75</y>
+            <width>27</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_binary_copy">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>463</x>
+            <y>75</y>
+            <width>27</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_hex_bytes">
+          <property name="geometry">
+           <rect>
+            <x>620</x>
+            <y>55</y>
+            <width>200</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0 bytes</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_editor_binary_bits">
+          <property name="geometry">
+           <rect>
+            <x>255</x>
+            <y>55</y>
+            <width>200</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0 bits</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_editor_update_selected">
+          <property name="geometry">
+           <rect>
+            <x>1015</x>
+            <y>210</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Update Selected</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_comparison_collection">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>260</y>
+           <width>1200</width>
+           <height>220</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_comparison_collection_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Message Collection</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_collection_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>650</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select messages to compare bitwise differences. Double-click a message to edit it above.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_collection_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sa_pd_comparison_collection">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>1180</width>
+            <height>125</height>
+           </rect>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>#</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (bits)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Notes</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Preview (Hex)</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_collection_remove_selected">
+          <property name="geometry">
+           <rect>
+            <x>775</x>
+            <y>185</y>
+            <width>130</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Remove Selected</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_collection_clear_all">
+          <property name="geometry">
+           <rect>
+            <x>910</x>
+            <y>185</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Clear All</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_collection_compare_selected">
+          <property name="geometry">
+           <rect>
+            <x>1015</x>
+            <y>185</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Compare Selected</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_comparison_collection_group">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>185</y>
+            <width>100</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>2</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Bits (1)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Nibbles (4)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Bytes (8)</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_comparison_collection_group">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>185</y>
+            <width>50</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Group:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_comparison_collection_alignment">
+          <property name="geometry">
+           <rect>
+            <x>255</x>
+            <y>185</y>
+            <width>75</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Left</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Right</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_comparison_collection_alignment">
+          <property name="geometry">
+           <rect>
+            <x>175</x>
+            <y>185</y>
+            <width>80</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Alignment:</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_sa_pd_comparison_results">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>485</y>
+           <width>1200</width>
+           <height>295</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_sa_pd_comparison_results_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Library Field Comparison</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_results_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>650</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Apply a Library packet definition to interpret and compare selected message fields.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_sa_pd_comparison_results_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sa_pd_comparison_results">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>820</width>
+            <height>200</height>
+           </rect>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Field</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (bits)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message 1</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message 2</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message 3</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Result</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_pd_comparison_results_apply">
+          <property name="geometry">
+           <rect>
+            <x>655</x>
+            <y>55</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Apply</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_comparison_results_protocol">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>55</y>
+            <width>65</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Protocol:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_sa_pd_comparison_results_packet_type">
+          <property name="geometry">
+           <rect>
+            <x>320</x>
+            <y>55</y>
+            <width>90</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Packet Type:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_comparison_results_protocol">
+          <property name="geometry">
+           <rect>
+            <x>75</x>
+            <y>55</y>
+            <width>230</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sa_pd_comparison_results_packet_type">
+          <property name="geometry">
+           <rect>
+            <x>410</x>
+            <y>55</y>
+            <width>230</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_sa_pd_comparison_results">
+          <property name="geometry">
+           <rect>
+            <x>835</x>
+            <y>90</y>
+            <width>355</width>
+            <height>200</height>
+           </rect>
+          </property>
+          <property name="lineWrapMode">
+           <enum>QPlainTextEdit::WidgetWidth</enum>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="plainText">
+           <string/>
           </property>
          </widget>
         </widget>
@@ -23658,805 +24452,6 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Bit Slicing</string>
          </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="tab_pd_bit_viewer">
-        <attribute name="title">
-         <string>Data Viewer</string>
-        </attribute>
-        <widget class="QLabel" name="label1_171">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>500</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bits</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_pd_bit_viewer_hex">
-         <property name="geometry">
-          <rect>
-           <x>520</x>
-           <y>100</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>&gt;&gt; To Hex &gt;&gt;</string>
-         </property>
-        </widget>
-        <widget class="QCheckBox" name="checkBox_pd_bit_viewer_replace">
-         <property name="geometry">
-          <rect>
-           <x>530</x>
-           <y>160</y>
-           <width>85</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Replace</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="Line" name="line3_49">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>360</y>
-           <width>1220</width>
-           <height>2</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_pd_bit_viewer_bin">
-         <property name="geometry">
-          <rect>
-           <x>520</x>
-           <y>130</y>
-           <width>100</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>&lt;&lt; To Bin &lt;&lt;</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_172">
-         <property name="geometry">
-          <rect>
-           <x>630</x>
-           <y>10</y>
-           <width>350</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Hex</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label1_176">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>370</y>
-           <width>1190</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>Protocol Matching</string>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_41">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>390</y>
-           <width>1190</width>
-           <height>395</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_table_sort">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>365</y>
-            <width>100</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Sort</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_apply">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>880</x>
-            <y>25</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Apply</string>
-          </property>
-         </widget>
-         <widget class="QTableWidget" name="tableWidget_pd_bit_viewer_hex">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>55</y>
-            <width>1170</width>
-            <height>305</height>
-           </rect>
-          </property>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>10</number>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Hex</string>
-           </property>
-          </column>
-         </widget>
-         <widget class="QComboBox" name="comboBox_pd_bit_viewer_subcategory">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>560</x>
-            <y>25</y>
-            <width>310</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="currentIndex">
-           <number>-1</number>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_pd_bit_viewer_protocols">
-          <property name="geometry">
-           <rect>
-            <x>255</x>
-            <y>25</y>
-            <width>291</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="currentIndex">
-           <number>-1</number>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_pd_bit_viewer_subcategory">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>560</x>
-            <y>7</y>
-            <width>121</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Subcategory</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_177">
-          <property name="geometry">
-           <rect>
-            <x>255</x>
-            <y>7</y>
-            <width>121</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Protocol</string>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="radioButton_pd_bit_viewer_left_align">
-          <property name="geometry">
-           <rect>
-            <x>995</x>
-            <y>30</y>
-            <width>90</width>
-            <height>22</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Left-Align</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="radioButton_pd_bit_viewer_right_align">
-          <property name="geometry">
-           <rect>
-            <x>1090</x>
-            <y>30</y>
-            <width>90</width>
-            <height>22</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Right-Align</string>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QFrame" name="frame1_42">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>500</width>
-           <height>320</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_undiff1">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>210</x>
-            <y>290</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>UnDiff-1</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_man_enc">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>110</x>
-            <y>260</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Man. Enc.</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_man_dec">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>110</x>
-            <y>290</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Man. Dec.</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_undiff0">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>210</x>
-            <y>260</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>UnDiff-0</string>
-          </property>
-         </widget>
-         <widget class="QPlainTextEdit" name="plainTextEdit_pd_bit_viewer_bits">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>480</width>
-            <height>245</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QPlainTextEdit::WidgetWidth</enum>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_invert">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>260</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Invert</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_differential">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>290</y>
-            <width>97</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Differential</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_182">
-          <property name="geometry">
-           <rect>
-            <x>405</x>
-            <y>295</y>
-            <width>40</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Bits:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_pd_bit_viewer_bits">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>295</y>
-            <width>45</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QFrame" name="frame1_43">
-         <property name="geometry">
-          <rect>
-           <x>630</x>
-           <y>30</y>
-           <width>350</width>
-           <height>320</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QCheckBox" name="checkBox_pd_bit_viewer_table_replace">
-          <property name="geometry">
-           <rect>
-            <x>120</x>
-            <y>288</y>
-            <width>85</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Replace</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_sort">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>30</x>
-            <y>260</y>
-            <width>80</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Sort</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_send_to_buffer">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>210</x>
-            <y>260</y>
-            <width>111</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Send to Buffer</string>
-          </property>
-         </widget>
-         <widget class="QPlainTextEdit" name="plainTextEdit_pd_bit_viewer_hex">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>330</width>
-            <height>245</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QPlainTextEdit::WidgetWidth</enum>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_pd_bit_viewer_fill_table">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>115</x>
-            <y>260</y>
-            <width>90</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Fill Table</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_pd_bit_viewer_nibbles">
-          <property name="geometry">
-           <rect>
-            <x>300</x>
-            <y>295</y>
-            <width>45</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_202">
-          <property name="geometry">
-           <rect>
-            <x>235</x>
-            <y>295</y>
-            <width>60</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Nibbles:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QLabel" name="label1_253">
-         <property name="geometry">
-          <rect>
-           <x>990</x>
-           <y>10</y>
-           <width>220</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text">
-          <string>ASCII</string>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_67">
-         <property name="geometry">
-          <rect>
-           <x>990</x>
-           <y>30</y>
-           <width>220</width>
-           <height>320</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QPlainTextEdit" name="plainTextEdit_pd_bit_viewer_ascii">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>200</width>
-            <height>300</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QPlainTextEdit::WidgetWidth</enum>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
         </widget>
        </widget>
        <widget class="QWidget" name="tab_pd_dissectors">

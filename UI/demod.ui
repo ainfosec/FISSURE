@@ -137,7 +137,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Copy to Data Viewer</string>
+     <string>Copy to Comparison</string>
     </property>
     <property name="autoDefault">
      <bool>false</bool>

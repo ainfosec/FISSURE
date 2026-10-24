@@ -17,7 +17,7 @@ def _slotCopyToDataViewerClicked(DemodDlg: QtCore.QObject):
         msg = QtWidgets.QMessageBox(DemodDlg)
         msg.setIcon(QtWidgets.QMessageBox.Warning)
         msg.setWindowTitle("No Data")
-        msg.setText("No bitstream data is available to send to the Data Viewer.")
+        msg.setText("No bitstream data is available to send to Comparison.")
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msg.setStyleSheet("""
             QPushButton {
@@ -32,10 +32,10 @@ def _slotCopyToDataViewerClicked(DemodDlg: QtCore.QObject):
     # Confirmation dialog
     confirm = QtWidgets.QMessageBox(DemodDlg)
     confirm.setIcon(QtWidgets.QMessageBox.Question)
-    confirm.setWindowTitle("Copy to Data Viewer")
+    confirm.setWindowTitle("Copy to Comparison")
     confirm.setText(
         "This will close the Demodulation window and send the current Bits data "
-        "to the Data Viewer.\n\nContinue?"
+        "to Comparison.\n\nContinue?"
     )
 
     yes_button = confirm.addButton(QtWidgets.QMessageBox.Yes)
@@ -56,10 +56,10 @@ def _slotCopyToDataViewerClicked(DemodDlg: QtCore.QObject):
     # If confirmed, close dialog and pass data back
     if confirm.clickedButton() == yes_button:
         DemodDlg.return_value = bit_text
-        DemodDlg.logger.info(f"Sent {len(bit_text)} bits to Data Viewer.")
+        DemodDlg.logger.info(f"Sent {len(bit_text)} bits to Comparison.")
         DemodDlg.accept()
     else:
-        DemodDlg.logger.info("Copy to Data Viewer cancelled.")
+        DemodDlg.logger.info("Copy to Comparison cancelled.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

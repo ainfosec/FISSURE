@@ -819,11 +819,6 @@ async def libraryUpdateFinished(component: object):
             protocols_with_packet_types.append(p)
     component.frontend.ui.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
 
-    # Bit Viewer Protocols
-    component.frontend.ui.comboBox_pd_bit_viewer_protocols.clear()
-    component.frontend.ui.comboBox_pd_bit_viewer_protocols.addItem("Raw")
-    component.frontend.ui.comboBox_pd_bit_viewer_protocols.addItems(sorted(protocols_with_packet_types))
-
     # Dissector Protocols
     component.frontend.ui.comboBox_pd_dissectors_protocol.clear()
     component.frontend.ui.comboBox_pd_dissectors_protocol.addItems(sorted(protocols_with_packet_types))

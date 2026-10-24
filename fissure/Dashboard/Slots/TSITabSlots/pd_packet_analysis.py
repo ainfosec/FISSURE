@@ -141,8 +141,8 @@ def initialize_sa_pd_pa_controls(dashboard):
     dashboard.sa_pd_pa_candidates_layout = layout
 
     table = ui.tableWidget_sa_pd_pa_input
-    table.setColumnCount(8)
-    table.setHorizontalHeaderLabels(('Include', '#', 'Source', 'Capture #', 'Length (bits)',
+    table.setColumnCount(7)
+    table.setHorizontalHeaderLabels(('#', 'Source', 'Capture #', 'Length (bits)',
                                       'Analysis Result', 'Status', 'Notes'))
     table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
     table.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
@@ -152,8 +152,7 @@ def initialize_sa_pd_pa_controls(dashboard):
     table.verticalHeader().setVisible(False)
     table.verticalHeader().setDefaultSectionSize(22)
     table.horizontalHeader().setFixedHeight(23)
-    table.setItemDelegateForColumn(0, _PACenteredCheckDelegate(table))
-    for index, width in enumerate((65, 45, 215, 85, 110, 170, 115, 220)):
+    for index, width in enumerate((45, 215, 85, 110, 170, 115, 220)):
         table.setColumnWidth(index, width)
     table.horizontalHeader().setStretchLastSection(True)
     table.itemSelectionChanged.connect(lambda: _pa_selection_changed(dashboard))
@@ -187,6 +186,7 @@ def initialize_sa_pd_pa_controls(dashboard):
     dashboard.sa_pd_pa_initialized = True
     _pa_refresh_table(dashboard)
 
+
 def _pa_append_packets(dashboard, packets):
     """Append fresh observations, including deliberate duplicate imports."""
     if not getattr(dashboard, 'sa_pd_pa_initialized', False):
@@ -195,6 +195,7 @@ def _pa_append_packets(dashboard, packets):
         return 0
     last_uid = None
     added = 0
+    new_uids = set()
     for entry in packets:
         try:
             packet = make_packet(entry['bits'], source=entry.get('source', 'Unknown'),
@@ -207,10 +208,12 @@ def _pa_append_packets(dashboard, packets):
         dashboard.sa_pd_pa_next_uid += 1
         dashboard.sa_pd_pa_records.append(packet)
         last_uid = packet['uid']
+        new_uids.add(packet['uid'])
         added += 1
     if added:
         dashboard.sa_pd_pa_active_uid = last_uid
         dashboard.sa_pd_pa_candidate_index = 0
+        dashboard.sa_pd_pa_select_after_import = new_uids
         _pa_refresh_table(dashboard)
     return added
 
@@ -319,74 +322,95 @@ def _pa_paste(dashboard):
     
 
 def _pa_refresh_table(dashboard):
+    """Rebuild rows while preserving multi-row selection and active details."""
     ui = dashboard.ui
     records = dashboard.sa_pd_pa_records
     table = ui.tableWidget_sa_pd_pa_input
-    previous_checked = {}
-    for row in range(table.rowCount()):
-        cell = table.item(row, 0)
-        if cell is not None:
-            previous_checked[cell.data(QtCore.Qt.UserRole)] = cell.checkState()
+    previous = set()
+    if table.selectionModel() is not None:
+        for index in table.selectionModel().selectedRows():
+            cell = table.item(index.row(), 0)
+            if cell is not None:
+                previous.add(cell.data(QtCore.Qt.UserRole))
+    requested = getattr(dashboard, 'sa_pd_pa_select_after_import', None)
+    if requested is not None:
+        previous = set(requested)
+        dashboard.sa_pd_pa_select_after_import = None
+    if not previous and dashboard.sa_pd_pa_active_uid is not None:
+        previous = {dashboard.sa_pd_pa_active_uid}
+
     blocker = QtCore.QSignalBlocker(table)
     table.setRowCount(len(records))
-    selected_row = -1
+    active_row = -1
+    selected_rows = []
     for row, record in enumerate(records):
         uid = record['uid']
         result = dashboard.sa_pd_pa_results.get(uid)
-        values = ('', str(row + 1), record['source'], str(record['capture']),
+        values = (str(row + 1), record['source'], str(record['capture']),
                   str(len(record['bits'])),
                   str(result.get('summary') if result else 'Not analyzed'),
                   'Analyzed' if result else 'Ready', '')
         for col, value in enumerate(values):
             item = QtWidgets.QTableWidgetItem(value)
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
-            if col == 0:
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                item.setCheckState(previous_checked.get(uid, QtCore.Qt.Checked))
             item.setData(QtCore.Qt.UserRole, uid)
-            if col != 7:
+            if col != 6:
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
             if value:
                 item.setToolTip(value)
             table.setItem(row, col, item)
         if uid == dashboard.sa_pd_pa_active_uid:
-            selected_row = row
+            active_row = row
+        if uid in previous:
+            selected_rows.append(row)
     table.clearSelection()
-    if selected_row >= 0:
-        table.selectRow(selected_row)
+    model = table.selectionModel()
+    if model is not None:
+        for row in selected_rows:
+            model.select(table.model().index(row, 0),
+                         QtCore.QItemSelectionModel.Select | QtCore.QItemSelectionModel.Rows)
+        if active_row >= 0:
+            table.setCurrentCell(active_row, 0, QtCore.QItemSelectionModel.NoUpdate)
     del blocker
     _pa_update_controls(dashboard)
     _pa_show_active(dashboard)
 
+
 def _pa_checked_uids(dashboard):
+    """Compatibility name: inclusion is now determined by highlighted rows."""
     table = dashboard.ui.tableWidget_sa_pd_pa_input
-    return {table.item(row, 0).data(QtCore.Qt.UserRole)
-            for row in range(table.rowCount())
-            if table.item(row, 0) is not None and
-            table.item(row, 0).checkState() == QtCore.Qt.Checked}
+    model = table.selectionModel()
+    if model is None:
+        return set()
+    uids = set()
+    for index in model.selectedRows():
+        cell = table.item(index.row(), 0)
+        if cell is not None:
+            uids.add(cell.data(QtCore.Qt.UserRole))
+    return uids
 
 
 def _pa_update_controls(dashboard):
     ui = dashboard.ui
     count = len(dashboard.sa_pd_pa_records)
-    checked = len(_pa_checked_uids(dashboard))
-    ui.label2_sa_pd_pa_input_count.setText(f'{checked} of {count} selected')
-    ui.pushButton_sa_pd_pa_input_analyze.setEnabled(checked > 0 and not dashboard.sa_pd_pa_analyzing)
+    selected = len(_pa_checked_uids(dashboard))
+    ui.label2_sa_pd_pa_input_count.setText(f'{selected} of {count} selected')
+    ui.pushButton_sa_pd_pa_input_analyze.setEnabled(selected > 0 and not dashboard.sa_pd_pa_analyzing)
     ui.pushButton_sa_pd_pa_input_select_all.setEnabled(count > 0)
-    ui.pushButton_sa_pd_pa_input_select_none.setEnabled(count > 0)
+    ui.pushButton_sa_pd_pa_input_select_none.setEnabled(selected > 0)
     ui.pushButton_sa_pd_pa_input_clear_all.setEnabled(count > 0)
-    ui.pushButton_sa_pd_pa_input_delete_selected.setEnabled(
-        bool(ui.tableWidget_sa_pd_pa_input.selectionModel().selectedRows()))
+    ui.pushButton_sa_pd_pa_input_delete_selected.setEnabled(selected > 0)
+    if hasattr(ui, 'pushButton_sa_pd_pa_input_compare_selected'):
+        ui.pushButton_sa_pd_pa_input_compare_selected.setEnabled(selected > 0)
 
 
 def _pa_check_all(dashboard, checked=True):
+    """Select/deselect rows, without a second checkbox-selection mechanism."""
     table = dashboard.ui.tableWidget_sa_pd_pa_input
-    blocker = QtCore.QSignalBlocker(table)
-    for row in range(table.rowCount()):
-        cell = table.item(row, 0)
-        if cell is not None:
-            cell.setCheckState(QtCore.Qt.Checked if checked else QtCore.Qt.Unchecked)
-    del blocker
+    if checked:
+        table.selectAll()
+    else:
+        table.clearSelection()
     _pa_update_controls(dashboard)
 
 

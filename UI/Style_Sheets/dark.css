@@ -6094,7 +6094,8 @@ QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary,
 QPushButton#pushButton_sa_pd_pa_input_select_all,
 QPushButton#pushButton_sa_pd_pa_input_select_none,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected,
-QPushButton#pushButton_sa_pd_pa_input_clear_all {
+QPushButton#pushButton_sa_pd_pa_input_clear_all,
+QPushButton#pushButton_sa_pd_pa_input_compare_selected {
     color: #FFFFFF;
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         stop:0 #2F5F8F, stop:0.45 #1D456D, stop:1 #0B2D52);
@@ -6107,7 +6108,8 @@ QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_select_all:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_select_none:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected:enabled:hover,
-QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:hover {
+QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_compare_selected:enabled:hover {
     color: #FFFFFF;
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         stop:0 #3C76AD, stop:0.45 #265A88, stop:1 #123B63);
@@ -6118,7 +6120,8 @@ QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary:enabled:pressed,
 QPushButton#pushButton_sa_pd_pa_input_select_all:enabled:pressed,
 QPushButton#pushButton_sa_pd_pa_input_select_none:enabled:pressed,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected:enabled:pressed,
-QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:pressed {
+QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:pressed,
+QPushButton#pushButton_sa_pd_pa_input_compare_selected:enabled:pressed {
     color: #FFFFFF;
     background-color: #0B2D52;
     border: 1px solid #061F3A;
@@ -6128,7 +6131,8 @@ QPushButton#pushButton_sa_pd_pa_input_paste_hex_binary:disabled,
 QPushButton#pushButton_sa_pd_pa_input_select_all:disabled,
 QPushButton#pushButton_sa_pd_pa_input_select_none:disabled,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected:disabled,
-QPushButton#pushButton_sa_pd_pa_input_clear_all:disabled {
+QPushButton#pushButton_sa_pd_pa_input_clear_all:disabled,
+QPushButton#pushButton_sa_pd_pa_input_compare_selected:disabled {
     color: @color13;
     background-color: @color9;
     border: 1px solid @color13;
@@ -6176,4 +6180,152 @@ QFrame#frame_sa_pd_pa_candidate_card QLabel#label_sa_pd_pa_candidate_badge[paStr
     color: #FFFFFF;
     background-color: #63758D;
     border-color: #46556B;
+}
+
+
+/* Protocol Discovery / Comparison: append once to EACH stylesheet
+ * (UI/Style_Sheets/light.css, dark.css, custom.css).
+ * @color2/@color3 follow the existing FISSURE stylesheet palette.
+ * label2_ names intentionally inherit the existing generic selector.
+ */
+QFrame#frame_sa_pd_comparison_editor,
+QFrame#frame_sa_pd_comparison_collection,
+QFrame#frame_sa_pd_comparison_results {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sa_pd_comparison_editor_badge,
+QLabel#label_sa_pd_comparison_collection_badge,
+QLabel#label_sa_pd_comparison_results_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_sa_pd_comparison_editor_title,
+QLabel#label_sa_pd_comparison_collection_title,
+QLabel#label_sa_pd_comparison_results_title {
+    color: #E3EDF7;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_comparison_editor_subtitle,
+QLabel#label_sa_pd_comparison_collection_subtitle,
+QLabel#label_sa_pd_comparison_results_subtitle {
+    color: #B8C7D6;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+/* Protocol Discovery / Comparison polish. Append AFTER previous Comparison rules.
+ * Applies to light.css, dark.css and custom.css; FISSURE resolves @colors.
+ */
+QLabel#label_sa_pd_comparison_editor_binary,
+QLabel#label_sa_pd_comparison_editor_hex,
+QLabel#label_sa_pd_comparison_editor_ascii {
+    color: #D6E6F4;
+    background-color: transparent;
+    border: none;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_comparison_editor_binary_bits,
+QLabel#label_sa_pd_comparison_editor_hex_bytes,
+QLabel#label_sa_pd_comparison_editor_ascii_chars {
+    color: #ABC3DA;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QPlainTextEdit#plainTextEdit_sa_pd_comparison_editor_binary,
+QPlainTextEdit#plainTextEdit_sa_pd_comparison_editor_hex,
+QPlainTextEdit#plainTextEdit_sa_pd_comparison_editor_ascii {
+    font: 9pt "Ubuntu Mono";
+    background-color: @color5;
+    color: @color4;
+    border: 1px solid @color13;
+}
+
+QPlainTextEdit#plainTextEdit_sa_pd_comparison_editor_hex {
+    font: 8pt "Ubuntu Mono";
+}
+
+QPlainTextEdit#plainTextEdit_sa_pd_comparison_results {
+    color: #E3EDF7;
+    background-color: @color5;
+    font: 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_comparison_editor_add_to_comparison,
+QPushButton#pushButton_sa_pd_comparison_editor_update_selected {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #2F5F8F, stop:1 #0B2D52);
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    font: bold 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_comparison_collection_compare_selected,
+QPushButton#pushButton_sa_pd_comparison_results_apply {
+    color: #FFFFFF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #18A522, stop:1 #008C0B);
+    border: 1px solid #006F08;
+    border-radius: 4px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_comparison_editor_add_to_comparison:enabled:hover,
+QPushButton#pushButton_sa_pd_comparison_editor_update_selected:enabled:hover {
+    background-color: #2F5F8F;
+}
+
+QPushButton#pushButton_sa_pd_comparison_collection_compare_selected:enabled:hover,
+QPushButton#pushButton_sa_pd_comparison_results_apply:enabled:hover {
+    background-color: #20B72B;
+}
+
+QPushButton#pushButton_sa_pd_comparison_editor_add_to_comparison:disabled,
+QPushButton#pushButton_sa_pd_comparison_editor_update_selected:disabled,
+QPushButton#pushButton_sa_pd_comparison_collection_compare_selected:disabled,
+QPushButton#pushButton_sa_pd_comparison_results_apply:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QPushButton#pushButton_sa_pd_comparison_collection_remove_selected:enabled:hover,
+QPushButton#pushButton_sa_pd_comparison_collection_clear_all:enabled:hover {
+    background-color: @color7;
+    border: 1px solid @color3;
+}
+
+QPushButton#pushButton_sa_pd_comparison_editor_invert,
+QPushButton#pushButton_sa_pd_comparison_editor_differential,
+QPushButton#pushButton_sa_pd_comparison_editor_undiff0,
+QPushButton#pushButton_sa_pd_comparison_editor_undiff1,
+QPushButton#pushButton_sa_pd_comparison_editor_manchester_encode,
+QPushButton#pushButton_sa_pd_comparison_editor_manchester_decode,
+QPushButton#pushButton_sa_pd_comparison_collection_remove_selected,
+QPushButton#pushButton_sa_pd_comparison_collection_clear_all {
+    font: 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_comparison_collection_compare_selected,
+QPushButton#pushButton_sa_pd_comparison_results_apply {
+    font: bold 9pt "Ubuntu";
 }

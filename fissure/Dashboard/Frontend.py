@@ -698,6 +698,9 @@ class Dashboard(QtWidgets.QMainWindow):
         """
         Initializes PD Tabs on Dashboard launch.
         """
+        # Signal Analysis / Protocol Discovery - Comparison.
+        TSITabSlots.initialize_sa_pd_comparison_controls(self)
+
         ##### Protocol Discovery #####
         self.ui.textEdit_pd_status_min_buffer_size.setPlainText("100")
         self.ui.textEdit_pd_status_buffer_size.setPlainText("262144")
@@ -805,11 +808,6 @@ class Dashboard(QtWidgets.QMainWindow):
             str(os.path.join(fissure.utils.FISSURE_ROOT, "Crafted Packets"))
         )
         self.ui.comboBox_pd_sniffer_test_folders.setCurrentIndex(0)
-
-        # Load Protocols into Combobox
-        self.ui.comboBox_pd_bit_viewer_protocols.clear()
-        self.ui.comboBox_pd_bit_viewer_protocols.addItem("Raw")
-        self.ui.comboBox_pd_bit_viewer_protocols.addItems(sorted(protocols_with_packet_types))
 
         # Common CRC Algorithms
         self.crc_algorithms8 = [
@@ -4048,12 +4046,6 @@ def connect_pd_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_pd_crc_reveng_algorithm.currentIndexChanged.connect(
         lambda: PDTabSlots._slotPD_CRC_RevEngAlgorithmChanged(dashboard)
     )
-    dashboard.ui.comboBox_pd_bit_viewer_protocols.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_BitViewerProtocolsChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_bit_viewer_subcategory.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_BitViewerSubcategoryChanged(dashboard)
-    )
     dashboard.ui.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(
         lambda: PDTabSlots._slotPD_SnifferProtocolsChanged(dashboard)
     )
@@ -4142,45 +4134,6 @@ def connect_pd_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_pd_bit_slicing_shift_right.clicked.connect(
         lambda: PDTabSlots._slotPD_BitSlicingShiftRightClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_hex.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerHexClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_sort.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerSortClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_send_to_buffer.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerSendToBufferClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_table_sort.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerTableSortClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_fill_table.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerFillTableClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_apply.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerApplyClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_invert.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerInvertClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_differential.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerDifferentialClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_man_enc.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerManEncClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_man_dec.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerManDecClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_undiff0.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerUnDiff0Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_undiff1.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerUnDiff1Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_viewer_bin.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitViewerBinClicked(dashboard)
     )
     dashboard.ui.pushButton_pd_dissectors_new.clicked.connect(
         lambda: PDTabSlots._slotPD_DissectorsNewClicked(dashboard)
@@ -4319,17 +4272,95 @@ def connect_pd_slots(dashboard: Dashboard):
     dashboard.ui.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(
         lambda col: PDTabSlots._slotPD_BitSlicingColumnClicked(dashboard, col)
     )
-    dashboard.ui.tableWidget_pd_bit_viewer_hex.horizontalHeader().sectionClicked.connect(
-        lambda col: PDTabSlots._slotPD_BitViewerColumnClicked(dashboard, col)
+
+    # Protocol Discovery / Comparison - Packet Analysis transfer.
+    dashboard.ui.pushButton_sa_pd_pa_input_compare_selected.clicked.connect(
+        lambda: TSITabSlots.open_sa_pd_comparison_from_pa(dashboard)
     )
 
-    # Text Edit
-    dashboard.ui.plainTextEdit_pd_bit_viewer_hex.textChanged.connect(
-        lambda: PDTabSlots._slotPD_BitViewerHexChanged(dashboard)
+    # Comparison - Editors.
+    dashboard.ui.plainTextEdit_sa_pd_comparison_editor_binary.textChanged.connect(
+        lambda: TSITabSlots.sa_pd_comparison_editor_changed(dashboard, "binary")
     )
-    dashboard.ui.plainTextEdit_pd_bit_viewer_bits.textChanged.connect(
-        lambda: PDTabSlots._slotPD_BitViewerBitsChanged(dashboard)
-    )   
+    dashboard.ui.plainTextEdit_sa_pd_comparison_editor_hex.textChanged.connect(
+        lambda: TSITabSlots.sa_pd_comparison_editor_changed(dashboard, "hex")
+    )
+    dashboard.ui.plainTextEdit_sa_pd_comparison_editor_ascii.textChanged.connect(
+        lambda: TSITabSlots.sa_pd_comparison_editor_changed(dashboard, "ascii")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_binary_copy.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_copy_editor(dashboard, "binary")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_hex_copy.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_copy_editor(dashboard, "hex")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_ascii_copy.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_copy_editor(dashboard, "ascii")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_invert.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "invert")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_differential.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "differential")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_undiff0.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "undiff0")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_undiff1.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "undiff1")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_manchester_encode.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "manchester_encode")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_manchester_decode.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_transform_editor(dashboard, "manchester_decode")
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_add_to_comparison.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_add_from_editor(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_editor_update_selected.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_update_from_editor(dashboard)
+    )
+
+    # Comparison - Message Collection.
+    dashboard.ui.tableWidget_sa_pd_comparison_collection.customContextMenuRequested.connect(
+        lambda pos: TSITabSlots.sa_pd_comparison_collection_context_menu(dashboard, pos)
+    )
+    dashboard.ui.tableWidget_sa_pd_comparison_collection.cellDoubleClicked.connect(
+        lambda row, _column: TSITabSlots.sa_pd_comparison_load_collection_row(dashboard, row)
+    )
+    dashboard.ui.tableWidget_sa_pd_comparison_collection.itemSelectionChanged.connect(
+        lambda: TSITabSlots.sa_pd_comparison_update_buttons(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_collection_remove_selected.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_remove_selected(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_collection_clear_all.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_clear_all(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_collection_compare_selected.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_compare_selected(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_comparison_collection_group.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_comparison_refresh_collection(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_comparison_collection_alignment.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_comparison_refresh_collection(dashboard)
+    )
+
+    # Comparison - Library Field Comparison.
+    dashboard.ui.comboBox_sa_pd_comparison_results_protocol.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_comparison_protocol_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_comparison_results_packet_type.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_comparison_packet_type_changed(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_results_apply.clicked.connect(
+        lambda: TSITabSlots.sa_pd_comparison_apply_library(dashboard)
+    )
+    dashboard.ui.tableWidget_sa_pd_comparison_results.itemSelectionChanged.connect(
+        lambda: TSITabSlots.sa_pd_comparison_field_selected(dashboard)
+    )       
 
 
 def connect_iq_slots(dashboard: Dashboard):

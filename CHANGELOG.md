@@ -1,6 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-24
+
+Add message comparison and replace legacy Data Viewer
+
+### Added
+
+- Added a Protocol Discovery Comparison workspace with synchronized, editable Binary, Hex, and ASCII views, bit transformations, and support for non-byte-aligned messages.
+- Added multi-message collection and bitwise comparison with configurable grouping, left/right alignment, per-message bit adjustments, and highlighting for differences and missing data.
+- Added Library-based packet field comparison with dynamic message columns, field-level differences, and a Field Inspector showing offsets, binary/hex/decimal values, and differing bit positions.
+
+### Changed
+
+- Updated Packet Analysis to use multi-row selection for analysis and direct message transfer into Comparison, preserving message data and source context.
+- Replaced the legacy Data Viewer and its slots with the new Comparison workflow, including migration of IQ Demodulation transfers.
+- Refined Protocol Discovery layouts and Light, Dark, and Custom styling with grouped hex displays, improved editor readability, streamlined controls, and consistent comparison highlighting.
+
 ## 2026-10-22
 
 Add HD Radio scanning and refine AI plugin guidance
