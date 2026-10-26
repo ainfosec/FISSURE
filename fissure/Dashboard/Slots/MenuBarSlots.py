@@ -334,6 +334,11 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     except Exception:
         pass
 
+    try:
+        TSITabSlots.restyle_sa_pd_crc_inspector(dashboard)
+    except Exception:
+        pass
+
 
 @QtCore.pyqtSlot()
 def _slotMenuHelpUserManualClicked():

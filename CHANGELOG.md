@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-26
+
+Add CRC analysis and retire legacy calculator
+
+### Added
+
+- Added a CRC Analysis workspace with Calculate & Validate and Discover modes, editable packet collections, per-packet inspection, and match/failure reporting.
+- Added configurable CRC models with standard presets, custom parameters, CRC field positions, coverage ranges, wire byte order, and support for non-byte-aligned packets.
+- Added guided CRC discovery using RevEng known models and extended 8/16-bit polynomial searches, with Fit, Verify, and Ignore packet roles and direct application of discovered candidates.
+- Added packet import and JSON session export/import to preserve CRC models, collection settings, packet overrides, and calculation results.
+
+### Changed
+
+- Replaced the legacy CRC Calculator and its handlers with the new CRC Analysis workflow.
+- Extended Bitstream & Framing, Packet Analysis, and Comparison to transfer packet data into CRC Analysis.
+- Refined Protocol Discovery layouts and Light, Dark, and Custom styling for CRC settings, packet coverage visualization, results, and discovery candidates.
+
+### Fixed
+
+- Fixed Comparison's Update Selected action targeting a previously loaded message instead of the currently selected row.
+- Fixed Library Field Comparison omitting packet data outside defined fields, including trailing bytes that differ between messages.
+
 ## 2026-10-24
 
 Add message comparison and replace legacy Data Viewer

@@ -701,6 +701,9 @@ class Dashboard(QtWidgets.QMainWindow):
         # Signal Analysis / Protocol Discovery - Comparison.
         TSITabSlots.initialize_sa_pd_comparison_controls(self)
 
+        # Signal Analysis / Protocol Discovery - CRC Analysis.
+        TSITabSlots.initialize_sa_pd_crc_controls(self)
+
         ##### Protocol Discovery #####
         self.ui.textEdit_pd_status_min_buffer_size.setPlainText("100")
         self.ui.textEdit_pd_status_buffer_size.setPlainText("262144")
@@ -808,74 +811,6 @@ class Dashboard(QtWidgets.QMainWindow):
             str(os.path.join(fissure.utils.FISSURE_ROOT, "Crafted Packets"))
         )
         self.ui.comboBox_pd_sniffer_test_folders.setCurrentIndex(0)
-
-        # Common CRC Algorithms
-        self.crc_algorithms8 = [
-            "Custom",
-            "CRC8",
-            "CRC8_CDMA2000",
-            "CRC8_DARC",
-            "CRC8_DVB-S2",
-            "CRC8_EBU",
-            "CRC8_I-CODE",
-            "CRC8_ITU",
-            "CRC8_MAXIM",
-            "CRC8_ROHC",
-            "CRC8_WCDMA",
-        ]
-        self.crc_algorithms16 = [
-            "Custom",
-            "CRC16_CCIT_ZERO",
-            "CRC16_ARC",
-            "CRC16_AUG_CCITT (Z-Wave)",
-            "CRC16_BUYPASS",
-            "CRC16_CCITT_FALSE",
-            "CRC16_CDMA2000",
-            "CRC16_DDS_110",
-            "CRC16_DECT_R",
-            "CRC16_DECT_X",
-            "CRC16_DNP",
-            "CRC16_EN_13757",
-            "CRC16_GENIBUS",
-            "CRC16_MAXIM",
-            "CRC16_MCRF4XX",
-            "CRC16_RIELLO",
-            "CRC16_T10_DIF",
-            "CRC16_TELEDISK",
-            "CRC16_TMS37157",
-            "CRC16_USB",
-            "CRC16_A",
-            "CRC16_KERMIT",
-            "CRC16_MODBUS",
-            "CRC16_X_25",
-            "CRC16_XMODEM",
-        ]
-        self.crc_algorithms32 = [
-            "Custom",
-            "CRC32",
-            "CRC32_BZIP2",
-            "CRC32_C",
-            "CRC32_D",
-            "CRC32_MPEG-2",
-            "CRC32_POSIX",
-            "CRC32-32Q",
-            "CRC32_JAMCRC",
-            "CRC32_XFER",
-        ]
-        self.ui.comboBox_pd_crc_common_width.setCurrentIndex(0)
-        self.ui.comboBox_pd_crc_reveng_width.setCurrentIndex(0)
-        self.ui.textEdit_pd_crc_polynomial_common.setPlainText("00")
-        self.ui.textEdit_pd_crc_seed_common.setPlainText("00")
-        self.ui.textEdit_pd_crc_final_xor_common.setPlainText("00")
-        self.ui.textEdit_pd_crc_input_common.setPlainText("12345678")
-        self.ui.textEdit_pd_crc_input_reveng.setPlainText("12345678")
-        self.ui.textEdit_pd_crc_seed.setPlainText("0000")
-        self.ui.textEdit_pd_crc_final_xor.setPlainText("0000")
-        self.ui.textEdit_pd_crc_input1.setPlainText("FFFFFFFF")
-        self.ui.textEdit_pd_crc_input2.setPlainText("AAAAAAAA")
-        self.ui.textEdit_pd_crc_crc1.setPlainText("99CF")
-        self.ui.textEdit_pd_crc_crc2.setPlainText("1E95")
-        # self._slotPD_CRC_RevEngAlgorithmChanged()
 
 
     def __init_Attack__(self):
@@ -4034,18 +3969,6 @@ def connect_pd_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_pd_dissectors_packet_type.currentIndexChanged.connect(
         lambda: PDTabSlots._slotPD_DissectorsPacketTypeChanged(dashboard)
     )
-    dashboard.ui.comboBox_pd_crc_algorithm.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_CRC_AlgorithmChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_crc_common_width.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_CRC_CommonWidthChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_crc_reveng_width.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_CRC_RevEngWidthChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_crc_reveng_algorithm.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_CRC_RevEngAlgorithmChanged(dashboard)
-    )
     dashboard.ui.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(
         lambda: PDTabSlots._slotPD_SnifferProtocolsChanged(dashboard)
     )
@@ -4173,15 +4096,6 @@ def connect_pd_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_pd_sniffer_test_send.clicked.connect(
         lambda: PDTabSlots._slotPD_SnifferTestSendClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_crc_start.clicked.connect(
-        lambda: PDTabSlots._slotPD_CRC_StartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_crc_calculate_common.clicked.connect(
-        lambda: PDTabSlots._slotPD_CRC_CalculateClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_crc_calculate_reveng.clicked.connect(
-        lambda: PDTabSlots._slotPD_CRC_RevEngCalculateClicked(dashboard)
     )
     dashboard.ui.pushButton_pd_bit_slicing_plot_entropy.clicked.connect(
         lambda: PDTabSlots._slotPD_BitSlicingPlotEntropyClicked(dashboard)
@@ -4361,6 +4275,136 @@ def connect_pd_slots(dashboard: Dashboard):
     dashboard.ui.tableWidget_sa_pd_comparison_results.itemSelectionChanged.connect(
         lambda: TSITabSlots.sa_pd_comparison_field_selected(dashboard)
     )       
+
+
+    # CRC Analysis - mode and model.
+    dashboard.ui.pushButton_sa_pd_crc_top_calculate_and_validate.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_mode(dashboard, False)
+    )
+    dashboard.ui.pushButton_sa_pd_crc_top_discover.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_mode(dashboard, True)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_algorithm.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_changed(dashboard)
+    )
+    dashboard.ui.lineEdit_sa_pd_crc_model_polynomial.editingFinished.connect(
+        lambda: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.lineEdit_sa_pd_crc_model_init.editingFinished.connect(
+        lambda: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.lineEdit_sa_pd_crc_model_final_xor.editingFinished.connect(
+        lambda: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.spinBox_sa_pd_crc_model_width.valueChanged.connect(
+        lambda _value: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_reflect_in.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_reflect_out.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_default_crc_field.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_coverage.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.comboBox_sa_pd_crc_model_wire_byte_order.currentIndexChanged.connect(
+        lambda _index: TSITabSlots.sa_pd_crc_model_parameters_changed(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_crc_model_calculate_all.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_calculate(dashboard)
+    )
+
+    # CRC Analysis - Calculate & Validate packets.
+    dashboard.ui.pushButton_sa_pd_crc_packet_add.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Add')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_packet_paste_multiple.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Paste Multiple')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_packet_import.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Import')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_packet_edit_selected.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Edit Selected')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_packet_remove.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Remove')
+    )
+    dashboard.ui.tableWidget_sa_pd_crc_packet.itemSelectionChanged.connect(
+        lambda: TSITabSlots.sa_pd_crc_selection_changed(dashboard)
+    )
+    dashboard.ui.tableWidget_sa_pd_crc_packet.cellDoubleClicked.connect(
+        lambda _row, _column: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Edit Selected')
+    )
+
+    # CRC Analysis - Inspector and calculation results.
+    dashboard.ui.pushButton_sa_pd_crc_results_copy_model.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_results_action(dashboard, 'Copy')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_results_export.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_results_action(dashboard, 'Export')
+    )
+
+    # CRC Analysis - Discover packet collection.
+    dashboard.ui.pushButton_sa_pd_crc_discover_packet_add.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Add')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_packet_paste_multiple.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Paste Multiple')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_packet_import.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Import')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_packet_edit_selected.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Edit Selected')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_packet_remove.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Remove')
+    )
+    dashboard.ui.tableWidget_sa_pd_crc_discover_packet.itemSelectionChanged.connect(
+        lambda: TSITabSlots.sa_pd_crc_selection_changed(dashboard)
+    )
+    dashboard.ui.tableWidget_sa_pd_crc_discover_packet.cellDoubleClicked.connect(
+        lambda _row, _column: TSITabSlots.sa_pd_crc_packet_action(dashboard, 'Edit Selected')
+    )
+
+    # CRC Analysis - Discovery and candidates.
+    dashboard.ui.pushButton_sa_pd_crc_discover_settings_discover_crcs.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_discover(dashboard)
+    )
+    dashboard.ui.toolButton_sa_pd_crc_discover_settings_advanced_settings.toggled.connect(
+        lambda checked: TSITabSlots.sa_pd_crc_toggle_advanced(dashboard, checked)
+    )
+    dashboard.ui.checkBox_sa_pd_crc_discover_settings_other.toggled.connect(
+        lambda checked: TSITabSlots.sa_pd_crc_other_widths(dashboard, checked)
+    )
+    dashboard.ui.tableWidget_sa_pd_crc_discover_candidate.itemSelectionChanged.connect(
+        lambda: TSITabSlots.sa_pd_crc_candidate_selected(dashboard)
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_candidate_copy.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_candidate_action(dashboard, 'Copy')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_candidate_export.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_candidate_action(dashboard, 'Export')
+    )
+    dashboard.ui.pushButton_sa_pd_crc_discover_candidate_use_in_calculate.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_candidate_action(dashboard, 'Use')
+    )
+
+    # CRC Analysis - Transfers from adjacent Protocol Discovery tabs.
+    dashboard.ui.pushButton_sa_pd_bf_messages_open_in_crc.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_transfer(dashboard, 'BF')
+    )
+    dashboard.ui.pushButton_sa_pd_pa_input_open_in_crc.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_transfer(dashboard, 'PA')
+    )
+    dashboard.ui.pushButton_sa_pd_comparison_collection_open_in_crc.clicked.connect(
+        lambda: TSITabSlots.sa_pd_crc_transfer(dashboard, 'Comparison')
+    )
 
 
 def connect_iq_slots(dashboard: Dashboard):

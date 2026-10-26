@@ -6299,6 +6299,7 @@ QPushButton#pushButton_sa_pd_pa_input_select_all:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_select_none:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_compare_selected:enabled:hover,
+QPushButton#pushButton_sa_pd_pa_input_open_in_crc:enabled:hover,
 QPushButton#pushButton_sa_pd_pa_input_clear_all:enabled:hover {
     background-color: @color7;
     border: 1px solid @color3;
@@ -6395,6 +6396,7 @@ QPushButton#pushButton_sa_pd_pa_input_select_all,
 QPushButton#pushButton_sa_pd_pa_input_select_none,
 QPushButton#pushButton_sa_pd_pa_input_delete_selected,
 QPushButton#pushButton_sa_pd_pa_input_compare_selected,
+QPushButton#pushButton_sa_pd_pa_input_open_in_crc,
 QPushButton#pushButton_sa_pd_pa_input_clear_all {
     font: 9pt "Ubuntu";
 }
@@ -6571,7 +6573,8 @@ QPushButton#pushButton_sa_pd_comparison_results_apply:disabled {
 }
 
 QPushButton#pushButton_sa_pd_comparison_collection_remove_selected:enabled:hover,
-QPushButton#pushButton_sa_pd_comparison_collection_clear_all:enabled:hover {
+QPushButton#pushButton_sa_pd_comparison_collection_clear_all:enabled:hover,
+QPushButton#pushButton_sa_pd_comparison_collection_open_in_crc:enabled:hover {
     background-color: @color7;
     border: 1px solid @color3;
 }
@@ -6583,11 +6586,195 @@ QPushButton#pushButton_sa_pd_comparison_editor_undiff1,
 QPushButton#pushButton_sa_pd_comparison_editor_manchester_encode,
 QPushButton#pushButton_sa_pd_comparison_editor_manchester_decode,
 QPushButton#pushButton_sa_pd_comparison_collection_remove_selected,
-QPushButton#pushButton_sa_pd_comparison_collection_clear_all {
+QPushButton#pushButton_sa_pd_comparison_collection_clear_all,
+QPushButton#pushButton_sa_pd_comparison_collection_open_in_crc {
     font: 9pt "Ubuntu";
 }
 
 QPushButton#pushButton_sa_pd_comparison_collection_compare_selected,
 QPushButton#pushButton_sa_pd_comparison_results_apply {
+    font: bold 9pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   Protocol Discovery / CRC Analysis
+   ========================================================== */
+
+/* Main header and numbered sections. */
+QFrame#frame_sa_pd_crc_top,
+QFrame#frame_sa_pd_crc_model,
+QFrame#frame_sa_pd_crc_packet,
+QFrame#frame_sa_pd_crc_inspector,
+QFrame#frame_sa_pd_crc_results,
+QFrame#frame_sa_pd_crc_discover_settings,
+QFrame#frame_sa_pd_crc_discover_packet,
+QFrame#frame_sa_pd_crc_discover_candidate,
+QFrame#frame_sa_pd_crc_discover_selected {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_sa_pd_crc_model_badge,
+QLabel#label_sa_pd_crc_packet_badge,
+QLabel#label_sa_pd_crc_inspector_badge,
+QLabel#label_sa_pd_crc_results_badge,
+QLabel#label_sa_pd_crc_discover_settings_badge,
+QLabel#label_sa_pd_crc_discover_packet_badge,
+QLabel#label_sa_pd_crc_discover_candidate_badge,
+QLabel#label_sa_pd_crc_discover_selected_badge {
+    qproperty-alignment: AlignCenter;
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_sa_pd_crc_model_title,
+QLabel#label_sa_pd_crc_packet_title,
+QLabel#label_sa_pd_crc_inspector_title,
+QLabel#label_sa_pd_crc_results_title,
+QLabel#label_sa_pd_crc_discover_settings_title,
+QLabel#label_sa_pd_crc_discover_packet_title,
+QLabel#label_sa_pd_crc_discover_candidate_title,
+QLabel#label_sa_pd_crc_discover_selected_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_crc_model_subtitle,
+QLabel#label_sa_pd_crc_packet_subtitle,
+QLabel#label_sa_pd_crc_inspector_subtitle,
+QLabel#label_sa_pd_crc_results_subtitle,
+QLabel#label_sa_pd_crc_discover_settings_subtitle,
+QLabel#label_sa_pd_crc_discover_packet_subtitle,
+QLabel#label_sa_pd_crc_discover_candidate_subtitle,
+QLabel#label_sa_pd_crc_discover_selected_subtitle,
+QLabel#label_sa_pd_crc_top_subtitle {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QLabel#label_sa_pd_crc_top_title {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 12pt "Ubuntu";
+}
+
+/* CRC Analysis secondary actions: match the other PD tabs. */
+QPushButton[objectName^="pushButton_sa_pd_crc_packet_"],
+QPushButton[objectName^="pushButton_sa_pd_crc_discover_packet_"],
+QPushButton[objectName^="pushButton_sa_pd_crc_results_"],
+QPushButton#pushButton_sa_pd_crc_discover_candidate_copy,
+QPushButton#pushButton_sa_pd_crc_discover_candidate_export {
+    font: 9pt "Ubuntu";
+}
+
+/* Calculate / Discover mode selectors. */
+QPushButton#pushButton_sa_pd_crc_top_calculate_and_validate,
+QPushButton#pushButton_sa_pd_crc_top_discover {
+    color: @color12;
+    background-color: @color7;
+    border: 1px solid @color13;
+    border-radius: 0px;
+    font: bold 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_crc_top_calculate_and_validate:checked,
+QPushButton#pushButton_sa_pd_crc_top_discover:checked {
+    color: #FFFFFF;
+    background-color: @color3;
+    border: 1px solid @color3;
+}
+
+/* Primary actions. */
+QPushButton#pushButton_sa_pd_crc_model_calculate_all,
+QPushButton#pushButton_sa_pd_crc_discover_settings_discover_crcs,
+QPushButton#pushButton_sa_pd_crc_discover_candidate_use_in_calculate {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #18A522, stop:1 #008C0B
+    );
+    border: 1px solid #006F08;
+    border-radius: 4px;
+    font: bold 9pt "Ubuntu";
+}
+
+QPushButton#pushButton_sa_pd_crc_model_calculate_all:enabled:hover,
+QPushButton#pushButton_sa_pd_crc_discover_settings_discover_crcs:enabled:hover,
+QPushButton#pushButton_sa_pd_crc_discover_candidate_use_in_calculate:enabled:hover {
+    background-color: #20B72B;
+}
+
+/* Inspector and model definition. */
+QFrame#frame_sa_pd_crc_inspector_interpretation,
+QFrame#frame_sa_pd_crc_inspector_calculation {
+    background-color: @color2;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+QLabel#label_sa_pd_crc_inspector_interpretation_heading,
+QLabel#label_sa_pd_crc_inspector_calculation_heading,
+QLabel#label_sa_pd_crc_results_model_definition {
+    color: @color3;
+    background-color: transparent;
+    border: none;
+    font: bold 9pt "Ubuntu";
+}
+
+QGraphicsView#graphicsView_sa_pd_crc_inspector {
+    background-color: @color2;
+    color: @color4;
+    border: 1px solid @color13;
+}
+
+QPlainTextEdit#plainTextEdit_sa_pd_crc_results_model_definition {
+    background-color: @color5;
+    color: @color4;
+    border: 1px solid @color13;
+    font: 9pt "Ubuntu Mono";
+}
+
+/* Static fields and results: readable in all themes. */
+QFrame#frame_sa_pd_crc_model QLabel[objectName^="label2_"],
+QFrame#frame_sa_pd_crc_discover_settings QLabel[objectName^="label2_"],
+QFrame#frame_sa_pd_crc_discover_selected QLabel[objectName^="label2_"],
+QLabel#label_sa_pd_crc_results_packets,
+QLabel#label_sa_pd_crc_results_match,
+QLabel#label_sa_pd_crc_results_fail,
+QLabel#label_sa_pd_crc_results_calculated,
+QLabel#label_sa_pd_crc_results_not_run {
+    color: #111111;
+    background-color: transparent;
+    border: none;
+}
+
+QFrame#frame_sa_pd_crc_model QLabel[objectName^="label2_"],
+QFrame#frame_sa_pd_crc_discover_settings QLabel[objectName^="label2_"],
+QFrame#frame_sa_pd_crc_discover_selected QLabel[objectName^="label2_"] {
+    font: 9pt "Ubuntu";
+}
+
+QToolButton#toolButton_sa_pd_crc_discover_settings_advanced_settings,
+QToolButton#toolButton_sa_pd_crc_discover_settings_advanced_settings:hover,
+QToolButton#toolButton_sa_pd_crc_discover_settings_advanced_settings:pressed,
+QToolButton#toolButton_sa_pd_crc_discover_settings_advanced_settings:checked,
+QToolButton#toolButton_sa_pd_crc_discover_settings_advanced_settings:focus {
+    background: transparent;
+    border: none;
+    color: @color4;
     font: bold 9pt "Ubuntu";
 }

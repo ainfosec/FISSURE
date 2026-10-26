@@ -181,10 +181,11 @@ def _update_editor_counts(dashboard):
     ui.label_sa_pd_comparison_editor_hex_bytes.setText(
         f"{len(bits) // 8:,} bytes" + (f" + {len(bits) % 8} bits" if len(bits) % 8 else ""))
     ui.label_sa_pd_comparison_editor_ascii_chars.setText(f"{len(bits) // 8:,} chars")
-    valid = bool(bits) and not dashboard.sa_pd_comparison_editor_invalid and not dashboard.sa_pd_comparison_editor_truncated
+    valid = (bool(bits) and not dashboard.sa_pd_comparison_editor_invalid
+             and not dashboard.sa_pd_comparison_editor_truncated)
     ui.pushButton_sa_pd_comparison_editor_add_to_comparison.setEnabled(valid)
     ui.pushButton_sa_pd_comparison_editor_update_selected.setEnabled(
-        valid and dashboard.sa_pd_comparison_editing_uid is not None)
+        valid and len(_collection_selected(dashboard)) == 1)
 
 
 def _editor_changed(dashboard, mode):
@@ -506,6 +507,8 @@ def _update_buttons(dashboard):
     ui.pushButton_sa_pd_comparison_collection_compare_selected.setEnabled(len(selected) >= 2)
     ui.pushButton_sa_pd_comparison_collection_clear_all.setEnabled(count > 0)
     ui.pushButton_sa_pd_comparison_collection_remove_selected.setEnabled(bool(selected))
+    ui.pushButton_sa_pd_comparison_collection_open_in_crc.setEnabled(bool(selected))
+    _update_editor_counts(dashboard)
 
 
 def _invalidate_comparison(dashboard):
@@ -560,12 +563,21 @@ def _add_from_editor(dashboard):
 
 
 def _update_from_editor(dashboard):
-    uid = dashboard.sa_pd_comparison_editing_uid
-    record = _record_by_uid(dashboard, uid)
-    if record is None or dashboard.sa_pd_comparison_editor_invalid or dashboard.sa_pd_comparison_editor_truncated:
+    if dashboard.sa_pd_comparison_editor_invalid or dashboard.sa_pd_comparison_editor_truncated:
         return
     if not dashboard.sa_pd_comparison_editor_bits:
         return
+
+    selected = _collection_selected(dashboard)
+    if len(selected) != 1:
+        QtWidgets.QMessageBox.information(
+            dashboard, "Update Selected", "Select exactly one message row to update.")
+        return
+    uid = next(iter(selected))
+    record = _record_by_uid(dashboard, uid)
+    if record is None:
+        return
+
     try:
         entries = _editor_entries(dashboard)
     except ValueError as exc:
@@ -576,11 +588,13 @@ def _update_from_editor(dashboard):
                                       "Update Selected accepts one message. Use Add to Comparison "
                                       "to add multiple pasted lines as separate messages.")
         return
+
     record["bits"] = entries[0]
     record["notes"] = ((record["notes"] + "; ") if record["notes"] else "") + "Edited"
     record.update(lead=0, tail=0, lead_fill=None, tail_fill=None)
+    dashboard.sa_pd_comparison_editing_uid = uid
     _invalidate_comparison(dashboard)
-    _update_collection(dashboard)
+    _update_collection(dashboard, selected_uids={uid})
 
 
 def _load_row(dashboard, row):
@@ -594,14 +608,17 @@ def _load_row(dashboard, row):
 
 
 def _remove_selected(dashboard):
-    checked = _collection_checked(dashboard)
-    if not checked:
+    selected = _collection_selected(dashboard)
+    if not selected:
         return
-    dashboard.sa_pd_comparison_records = [r for r in dashboard.sa_pd_comparison_records if r["uid"] not in checked]
-    if dashboard.sa_pd_comparison_editing_uid in checked:
+    dashboard.sa_pd_comparison_records = [
+        record for record in dashboard.sa_pd_comparison_records
+        if record["uid"] not in selected
+    ]
+    if dashboard.sa_pd_comparison_editing_uid in selected:
         _set_editor(dashboard, "")
     _invalidate_comparison(dashboard)
-    _update_collection(dashboard)
+    _update_collection(dashboard, selected_uids=set())
 
 
 def _clear_all(dashboard):
@@ -779,6 +796,67 @@ def _format_field_bits(bits):
     return f"0x{int(''.join(bits), 2):0{(len(bits) + 3) // 4}X}" if bits else "—"
 
 
+def _unmapped_library_rows(records, vectors, fields):
+    """Expose packet positions that no Library field accounts for.
+
+    Use each packet's actual length for from-end definitions and distinguish
+    unmapped positions from positions that are defined or absent in that packet.
+    """
+    covered_by_uid = {}
+    last_mapped = -1
+    for record in records:
+        uid = record["uid"]
+        vector = vectors[uid]
+        covered = bytearray(len(vector))
+        for field in fields:
+            width = int(field["length"])
+            start = (len(vector) - int(field["from_end_bits"])
+                     if "from_end_bits" in field else int(field["start"]))
+            begin = max(0, start)
+            end = min(len(vector), start + width)
+            if begin < end:
+                covered[begin:end] = b"\x01" * (end - begin)
+                last_mapped = max(last_mapped, end - 1)
+        covered_by_uid[uid] = covered
+
+    max_length = max((len(vectors[r["uid"]]) for r in records), default=0)
+    spans = []
+    run_start = 0
+    previous = ()
+    for position in range(max_length + 1):
+        active = (() if position == max_length else tuple(
+            record["uid"] for record in records
+            if position < len(vectors[record["uid"]])
+            and not covered_by_uid[record["uid"]][position]))
+        if active == previous:
+            continue
+        if previous:
+            spans.append((run_start, position, previous))
+        run_start = position
+        previous = active
+
+    result = []
+    for start, end, unmapped_uids in spans:
+        trailing = start > last_mapped
+        name = ("Unmapped trailing data" if trailing else
+                "Unmapped leading data" if start == 0 else "Unmapped data")
+        field = {"name": name, "start": start, "length": end - start,
+                 "description": (f"Packet bits {start}–{end - 1} are outside the "
+                                 "selected Library field layout. This may indicate "
+                                 "framing bytes, a shifted field layout, or extra payload."),
+                 "_unmapped": True}
+        cells = []
+        for record in records:
+            uid = record["uid"]
+            if uid not in unmapped_uids:
+                cells.append((start, None))
+                continue
+            value = vectors[uid][start:end]
+            cells.append((start, value if all(bit is not None for bit in value) else None))
+        result.append((field, cells))
+    return result
+
+
 def _apply_library(dashboard):
     ui = dashboard.ui
     protocol = ui.comboBox_sa_pd_comparison_results_protocol.currentText()
@@ -786,8 +864,7 @@ def _apply_library(dashboard):
     if not protocol or not packet:
         _set_library_status(dashboard)
         return
-    # Keep the last compared set when a user clicks one row to inspect/edit.
-    # Before the first Compare Selected, allow Apply on 2+ highlighted rows.
+    # Preserve the last compared set when a row is clicked for inspection.
     current = {r["uid"] for r in dashboard.sa_pd_comparison_records}
     selected = dashboard.sa_pd_comparison_active_uids & current
     if len(selected) < 2:
@@ -804,33 +881,43 @@ def _apply_library(dashboard):
         QtWidgets.QMessageBox.warning(dashboard, "Library Comparison", str(exc))
         return
     if not fields:
-        QtWidgets.QMessageBox.information(dashboard, "Library Comparison", "No fields are defined for this packet type.")
+        QtWidgets.QMessageBox.information(
+            dashboard, "Library Comparison", "No fields are defined for this packet type.")
         return
-    vectors = {r["uid"]: _aligned_bits(r) for r in records}
+
+    vectors = {record["uid"]: _aligned_bits(record) for record in records}
+    display_rows = []
+    for field in fields:
+        display_rows.append((field, [_field_bits(vectors[record["uid"]], field)
+                                     for record in records]))
+    unmatched = _unmapped_library_rows(records, vectors, fields)
+    display_rows.extend(unmatched)
+
     table = ui.tableWidget_sa_pd_comparison_results
     blocker = QtCore.QSignalBlocker(table)
-    table.setRowCount(len(fields))
+    table.setRowCount(len(display_rows))
     table.setColumnCount(len(records) + 3)
     table.setHorizontalHeaderLabels(["Field", "Length (bits)"] +
                                     [f"Msg {dashboard.sa_pd_comparison_records.index(r) + 1}"
                                      for r in records] + ["Result"])
     dashboard.sa_pd_comparison_field_details = []
-    diffs = 0
+    defined_diffs = 0
+    unmapped_diffs = 0
     missing_fields = 0
-    for row, field in enumerate(fields):
-        cells = []
-        for record in records:
-            start, value = _field_bits(vectors[record["uid"]], field)
-            cells.append((start, value))
+    for row, (field, cells) in enumerate(display_rows):
         available = {"".join(value) for start, value in cells if value is not None}
         missing = any(value is None for start, value in cells)
         different = len(available) > 1
         status = ("Different + missing" if missing and different else
                   "Missing" if missing else "Different" if different else "Match")
-        diffs += int(different)
-        missing_fields += int(missing)
+        if field.get("_unmapped"):
+            unmapped_diffs += int(different)
+        else:
+            defined_diffs += int(different)
+            missing_fields += int(missing)
         values = [str(field.get("name") or field.get("key") or f"Field {row + 1}"),
-                  str(field["length"])] + [_format_field_bits(value) for start, value in cells] + [status]
+                  str(field["length"])] + [_format_field_bits(value)
+                                          for start, value in cells] + [status]
         for col, value in enumerate(values):
             item = QtWidgets.QTableWidgetItem(value)
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
@@ -854,12 +941,19 @@ def _apply_library(dashboard):
     del blocker
     dashboard.sa_pd_comparison_applied = True
     _update_collection(dashboard)
+    summary = (f"{len(records)} messages; {len(fields)} defined fields; "
+               f"{defined_diffs} varying defined fields; "
+               f"{missing_fields} fields with unavailable bits.\n")
+    if unmatched:
+        summary += (f"Warning: {len(unmatched)} unmapped region(s), "
+                    f"{unmapped_diffs} varying. The Library layout does not "
+                    "account for every bit of the captures.\n")
+    else:
+        summary += "All captured positions are accounted for by the Library layout.\n"
     ui.plainTextEdit_sa_pd_comparison_results.setPlainText(
-        f"{len(records)} messages; {len(fields)} fields; {diffs} varying fields; "
-        f"{missing_fields} fields with unavailable bits.\n"
-        f"{kind[0].capitalize()} layout only; this is not protocol identification.\n"
+        summary + f"{kind[0].capitalize()} layout only; this is not protocol identification.\n"
         "Select a field row for values and bit offsets.")
-    if fields:
+    if display_rows:
         table.selectRow(0)
         _field_selected(dashboard)
 
@@ -1035,7 +1129,8 @@ def initialize_sa_pd_comparison_controls(dashboard):
                 ui.label2_sa_pd_comparison_collection_alignment,
                 ui.pushButton_sa_pd_comparison_collection_remove_selected,
                 ui.pushButton_sa_pd_comparison_collection_clear_all,
-                ui.pushButton_sa_pd_comparison_collection_compare_selected]
+                ui.pushButton_sa_pd_comparison_collection_compare_selected,
+                ui.pushButton_sa_pd_comparison_collection_open_in_crc]
     dashboard.sa_pd_comparison_geometry = {
         "frame": QtCore.QRect(ui.frame_sa_pd_comparison_collection.geometry()),
         "results": QtCore.QRect(ui.frame_sa_pd_comparison_results.geometry()),
