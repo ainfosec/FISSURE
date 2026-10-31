@@ -3993,7 +3993,7 @@
          <widget class="QPushButton" name="pushButton_sa_survey_settings_query">
           <property name="geometry">
            <rect>
-            <x>130</x>
+            <x>50</x>
             <y>410</y>
             <width>135</width>
             <height>28</height>
@@ -4045,6 +4045,22 @@
           </property>
           <property name="wordWrap">
            <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_survey_parameters_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>410</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
           </property>
          </widget>
         </widget>
@@ -4108,7 +4124,7 @@
             <x>10</x>
             <y>50</y>
             <width>500</width>
-            <height>355</height>
+            <height>390</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -4120,26 +4136,10 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>353</height>
+             <height>388</height>
             </rect>
            </property>
           </widget>
-         </widget>
-         <widget class="QPushButton" name="pushButton_sa_survey_parameters_customize">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>193</x>
-            <y>410</y>
-            <width>135</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Customize</string>
-          </property>
          </widget>
         </widget>
         <widget class="QFrame" name="frame_sa_survey_tools">
@@ -4682,14 +4682,30 @@
          <widget class="QPushButton" name="pushButton_tsi_detector_query">
           <property name="geometry">
            <rect>
-            <x>109</x>
+            <x>50</x>
             <y>325</y>
-            <width>175</width>
+            <width>135</width>
             <height>28</height>
            </rect>
           </property>
           <property name="text">
-           <string>Query</string>
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_tsi_detector_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>325</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
           </property>
          </widget>
         </widget>
@@ -4753,7 +4769,7 @@
             <x>5</x>
             <y>75</y>
             <width>383</width>
-            <height>235</height>
+            <height>285</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -4765,26 +4781,10 @@
              <x>0</x>
              <y>0</y>
              <width>381</width>
-             <height>233</height>
+             <height>283</height>
             </rect>
            </property>
           </widget>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tsi_detector_customize">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>109</x>
-            <y>325</y>
-            <width>175</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Customize</string>
-          </property>
          </widget>
         </widget>
         <widget class="QFrame" name="frame_tsi_detector_run">
@@ -5388,7 +5388,7 @@
          <widget class="QPushButton" name="pushButton_sa_capture_setup_query">
           <property name="geometry">
            <rect>
-            <x>130</x>
+            <x>50</x>
             <y>330</y>
             <width>135</width>
             <height>28</height>
@@ -5440,6 +5440,22 @@
           </property>
           <property name="wordWrap">
            <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sa_capture_parameters_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>330</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
           </property>
          </widget>
         </widget>
@@ -5503,7 +5519,7 @@
             <x>10</x>
             <y>50</y>
             <width>775</width>
-            <height>275</height>
+            <height>310</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -5515,26 +5531,10 @@
              <x>0</x>
              <y>0</y>
              <width>773</width>
-             <height>273</height>
+             <height>308</height>
             </rect>
            </property>
           </widget>
-         </widget>
-         <widget class="QPushButton" name="pushButton_sa_capture_parameters_customize">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>330</x>
-            <y>330</y>
-            <width>135</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Customize</string>
-          </property>
          </widget>
         </widget>
         <widget class="QFrame" name="frame_sa_capture_context">
@@ -8465,7 +8465,7 @@ p, li { white-space: pre-wrap; }
            </rect>
           </property>
           <property name="text">
-           <string>Query Parameters</string>
+           <string>Customize</string>
           </property>
          </widget>
          <widget class="QScrollArea" name="scrollArea_tsi_conditioner_method">
@@ -13228,9 +13228,9 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="geometry">
              <rect>
-              <x>65</x>
+              <x>45</x>
               <y>310</y>
-              <width>125</width>
+              <width>135</width>
               <height>28</height>
              </rect>
             </property>
@@ -13244,9 +13244,9 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="geometry">
              <rect>
-              <x>195</x>
+              <x>210</x>
               <y>310</y>
-              <width>125</width>
+              <width>135</width>
               <height>28</height>
              </rect>
             </property>
@@ -28486,9 +28486,9 @@ p, li { white-space: pre-wrap; }
            <widget class="QPushButton" name="pushButton_iq_record_query">
             <property name="geometry">
              <rect>
-              <x>109</x>
+              <x>50</x>
               <y>165</y>
-              <width>175</width>
+              <width>135</width>
               <height>28</height>
              </rect>
             </property>
@@ -28522,6 +28522,22 @@ p, li { white-space: pre-wrap; }
               <width>300</width>
               <height>28</height>
              </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_iq_record_customize">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>210</x>
+              <y>165</y>
+              <width>135</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Customize</string>
             </property>
            </widget>
           </widget>
@@ -28588,7 +28604,7 @@ p, li { white-space: pre-wrap; }
               <x>5</x>
               <y>50</y>
               <width>383</width>
-              <height>110</height>
+              <height>145</height>
              </rect>
             </property>
             <property name="widgetResizable">
@@ -28600,26 +28616,10 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>381</width>
-               <height>108</height>
+               <height>143</height>
               </rect>
              </property>
             </widget>
-           </widget>
-           <widget class="QPushButton" name="pushButton_iq_record_customize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>109</x>
-              <y>165</y>
-              <width>175</width>
-              <height>28</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Customize</string>
-            </property>
            </widget>
           </widget>
           <widget class="QFrame" name="frame_iq_record_run">
@@ -28991,9 +28991,9 @@ p, li { white-space: pre-wrap; }
            <widget class="QPushButton" name="pushButton_iq_playback_query">
             <property name="geometry">
              <rect>
-              <x>109</x>
+              <x>50</x>
               <y>165</y>
-              <width>175</width>
+              <width>135</width>
               <height>28</height>
              </rect>
             </property>
@@ -29027,6 +29027,22 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string>Plugin:</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_iq_playback_customize">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>210</x>
+              <y>165</y>
+              <width>135</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Customize</string>
             </property>
            </widget>
           </widget>
@@ -29093,7 +29109,7 @@ p, li { white-space: pre-wrap; }
               <x>5</x>
               <y>50</y>
               <width>383</width>
-              <height>110</height>
+              <height>145</height>
              </rect>
             </property>
             <property name="widgetResizable">
@@ -29105,26 +29121,10 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>381</width>
-               <height>108</height>
+               <height>143</height>
               </rect>
              </property>
             </widget>
-           </widget>
-           <widget class="QPushButton" name="pushButton_iq_playback_customize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>109</x>
-              <y>165</y>
-              <width>175</width>
-              <height>28</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Customize</string>
-            </property>
            </widget>
           </widget>
           <widget class="QFrame" name="frame_iq_playback_run">
@@ -29498,9 +29498,9 @@ p, li { white-space: pre-wrap; }
            <widget class="QPushButton" name="pushButton_iq_inspection_query">
             <property name="geometry">
              <rect>
-              <x>109</x>
+              <x>50</x>
               <y>165</y>
-              <width>175</width>
+              <width>135</width>
               <height>28</height>
              </rect>
             </property>
@@ -29534,6 +29534,22 @@ p, li { white-space: pre-wrap; }
               <width>300</width>
               <height>28</height>
              </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_iq_inspection_customize">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="geometry">
+             <rect>
+              <x>210</x>
+              <y>165</y>
+              <width>135</width>
+              <height>28</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Customize</string>
             </property>
            </widget>
           </widget>
@@ -29600,7 +29616,7 @@ p, li { white-space: pre-wrap; }
               <x>5</x>
               <y>50</y>
               <width>383</width>
-              <height>110</height>
+              <height>145</height>
              </rect>
             </property>
             <property name="widgetResizable">
@@ -29612,26 +29628,10 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>381</width>
-               <height>108</height>
+               <height>143</height>
               </rect>
              </property>
             </widget>
-           </widget>
-           <widget class="QPushButton" name="pushButton_iq_inspection_customize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>109</x>
-              <y>165</y>
-              <width>175</width>
-              <height>28</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Customize</string>
-            </property>
            </widget>
           </widget>
           <widget class="QFrame" name="frame_iq_inspection_run">
@@ -39715,9 +39715,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label_ta_single_action_execution_status">
           <property name="geometry">
            <rect>
-            <x>115</x>
+            <x>105</x>
             <y>55</y>
-            <width>200</width>
+            <width>230</width>
             <height>27</height>
            </rect>
           </property>
@@ -39736,9 +39736,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label_ta_single_action_execution_operation_id">
           <property name="geometry">
            <rect>
-            <x>115</x>
-            <y>90</y>
-            <width>400</width>
+            <x>105</x>
+            <y>85</y>
+            <width>250</width>
             <height>27</height>
            </rect>
           </property>
@@ -39758,7 +39758,7 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>15</x>
-            <y>90</y>
+            <y>85</y>
             <width>100</width>
             <height>27</height>
            </rect>
@@ -39816,6 +39816,64 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="readOnly">
            <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_single_action_download_artifact">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>370</x>
+            <y>150</y>
+            <width>150</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Download Artifact</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_single_action_execution_artifact_id_label">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>115</y>
+            <width>80</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Artifact ID:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_ta_single_action_execution_artifact_id">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>105</x>
+            <y>115</y>
+            <width>250</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>—</string>
           </property>
          </widget>
         </widget>
@@ -39932,7 +39990,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_ta_single_action_query">
           <property name="geometry">
            <rect>
-            <x>130</x>
+            <x>50</x>
             <y>300</y>
             <width>135</width>
             <height>28</height>
@@ -39984,6 +40042,22 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="wordWrap">
            <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_ta_single_action_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>215</x>
+            <y>300</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
           </property>
          </widget>
         </widget>
@@ -40047,7 +40121,7 @@ p, li { white-space: pre-wrap; }
             <x>10</x>
             <y>50</y>
             <width>775</width>
-            <height>245</height>
+            <height>275</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -40059,26 +40133,10 @@ p, li { white-space: pre-wrap; }
              <x>0</x>
              <y>0</y>
              <width>773</width>
-             <height>243</height>
+             <height>273</height>
             </rect>
            </property>
           </widget>
-         </widget>
-         <widget class="QPushButton" name="pushButton_ta_single_action_customize">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>330</x>
-            <y>300</y>
-            <width>135</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Customize</string>
-          </property>
          </widget>
         </widget>
         <widget class="QFrame" name="frame_ta_single_action_triggers">
@@ -41481,7 +41539,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QPushButton" name="pushButton_ta_fuzzing_query">
           <property name="geometry">
            <rect>
-            <x>168</x>
+            <x>75</x>
             <y>255</y>
             <width>135</width>
             <height>28</height>
@@ -41588,6 +41646,22 @@ p, li { white-space: pre-wrap; }
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
+         <widget class="QPushButton" name="pushButton_ta_fuzzing_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>255</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
         </widget>
         <widget class="QFrame" name="frame_ta_fuzzing_parameters">
          <property name="geometry">
@@ -41649,7 +41723,7 @@ p, li { white-space: pre-wrap; }
             <x>10</x>
             <y>50</y>
             <width>700</width>
-            <height>200</height>
+            <height>235</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -41661,26 +41735,10 @@ p, li { white-space: pre-wrap; }
              <x>0</x>
              <y>0</y>
              <width>698</width>
-             <height>198</height>
+             <height>233</height>
             </rect>
            </property>
           </widget>
-         </widget>
-         <widget class="QPushButton" name="pushButton_ta_fuzzing_customize">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>293</x>
-            <y>255</y>
-            <width>135</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Customize</string>
-          </property>
          </widget>
         </widget>
         <widget class="QFrame" name="frame_ta_fuzzing_fields">

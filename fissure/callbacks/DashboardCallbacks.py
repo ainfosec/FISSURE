@@ -1974,11 +1974,8 @@ async def nodeStateRemove(component: object, node_uid=""):
     component.logger.debug(f"nodeStateRemove: {node_uid}")
 
 
-async def sendArtifactsListTakReturn(
-    component: object,
-    node_uid: str = "",
-    artifacts=None,
-):
+
+async def sendArtifactsListTakReturn(component: object, node_uid: str = "", artifacts=None):
     """
     Replace or upsert Dashboard Artifact records using the canonical
     manifest-only schema, then route the same complete records to Tactical,
@@ -1987,317 +1984,163 @@ async def sendArtifactsListTakReturn(
     artifacts = artifacts or []
     dashboard = component.frontend
 
-    if not hasattr(
-        dashboard,
-        "tactical_artifacts",
-    ):
+    if not hasattr(dashboard, "tactical_artifacts"):
         dashboard.tactical_artifacts = {}
 
     normalized_records = []
 
     for artifact in artifacts:
-        if not isinstance(
-            artifact,
-            dict,
-        ):
+        if not isinstance(artifact, dict):
             continue
 
         artifact_id = str(
-            artifact.get("id", "")
-            or artifact.get(
-                "artifact_id",
-                "",
-            )
-            or ""
+            artifact.get("id", "") or artifact.get("artifact_id", "") or ""
         ).strip()
-
         if not artifact_id:
             continue
 
-        files = artifact.get(
-            "files"
-        )
-        relations = artifact.get(
-            "relations"
-        )
-        metadata = artifact.get(
-            "metadata"
-        )
+        files = artifact.get("files")
+        relations = artifact.get("relations")
+        metadata = artifact.get("metadata")
 
-        if not isinstance(
-            files,
-            list,
-        ):
+        if not isinstance(files, list):
             files = []
-
-        if not isinstance(
-            relations,
-            list,
-        ):
+        if not isinstance(relations, list):
             relations = []
-
-        if not isinstance(
-            metadata,
-            dict,
-        ):
+        if not isinstance(metadata, dict):
             metadata = {}
 
         source_id = str(
-            artifact.get(
-                "source_id",
-                "",
-            )
-            or artifact.get(
-                "node_uid",
-                "",
-            )
+            artifact.get("source_id", "")
+            or artifact.get("node_uid", "")
             or node_uid
             or ""
         ).strip()
-
         operation_id = str(
-            artifact.get(
-                "operation_id",
-                "",
-            )
-            or metadata.get(
-                "operation_id",
-                "",
-            )
+            artifact.get("operation_id", "")
+            or metadata.get("operation_id", "")
             or ""
         ).strip()
 
-        normalized = dict(
-            artifact
-        )
-
+        normalized = dict(artifact)
         normalized.update(
             {
-                "id":
-                    artifact_id,
-                "artifact_id":
-                    artifact_id,
-                "node_uid":
-                    source_id,
-                "source_id":
-                    source_id,
-                "operation_id":
-                    operation_id,
-                "name":
-                    str(
-                        artifact.get(
-                            "name",
-                            "Artifact",
-                        )
-                        or "Artifact"
-                    ),
-                "artifact_type":
-                    str(
-                        artifact.get(
-                            "artifact_type",
-                            "",
-                        )
-                        or metadata.get(
-                            "artifact_type",
-                            "",
-                        )
-                        or ""
-                    ),
-                "created_at":
-                    str(
-                        artifact.get(
-                            "created_at",
-                            "",
-                        )
-                        or ""
-                    ),
-                "modified_at":
-                    str(
-                        artifact.get(
-                            "modified_at",
-                            "",
-                        )
-                        or ""
-                    ),
-                "time":
-                    str(
-                        artifact.get(
-                            "modified_at",
-                            "",
-                        )
-                        or artifact.get(
-                            "created_at",
-                            "",
-                        )
-                        or ""
-                    ),
-                "files":
-                    files,
-                "relations":
-                    relations,
-                "file_count":
-                    int(
-                        artifact.get(
-                            "file_count",
-                            len(files),
-                        )
-                        or len(files)
-                    ),
-                "total_size":
-                    int(
-                        artifact.get(
-                            "total_size",
-                            sum(
-                                int(
-                                    item.get(
-                                        "size",
-                                        0,
-                                    )
-                                    or 0
-                                )
-                                for item in files
-                                if isinstance(
-                                    item,
-                                    dict,
-                                )
-                            ),
-                        )
-                        or 0
-                    ),
-                "metadata":
-                    metadata,
+                "id": artifact_id,
+                "artifact_id": artifact_id,
+                "node_uid": source_id,
+                "source_id": source_id,
+                "operation_id": operation_id,
+                "name": str(artifact.get("name", "Artifact") or "Artifact"),
+                "artifact_type": str(
+                    artifact.get("artifact_type", "")
+                    or metadata.get("artifact_type", "")
+                    or ""
+                ),
+                "created_at": str(artifact.get("created_at", "") or ""),
+                "modified_at": str(artifact.get("modified_at", "") or ""),
+                "time": str(
+                    artifact.get("modified_at", "")
+                    or artifact.get("created_at", "")
+                    or ""
+                ),
+                "files": files,
+                "relations": relations,
+                "file_count": int(artifact.get("file_count", len(files)) or len(files)),
+                "total_size": int(
+                    artifact.get(
+                        "total_size",
+                        sum(
+                            int(item.get("size", 0) or 0)
+                            for item in files
+                            if isinstance(item, dict)
+                        ),
+                    )
+                    or 0
+                ),
+                "metadata": metadata,
             }
         )
 
-        dashboard.tactical_artifacts[
-            artifact_id
-        ] = normalized
-
-        normalized_records.append(
-            normalized
-        )
+        dashboard.tactical_artifacts[artifact_id] = normalized
+        normalized_records.append(normalized)
 
     selected_node_uid = str(
-        getattr(
-            dashboard,
-            "selected_tactical_node_uid",
-            "",
-        )
-        or ""
+        getattr(dashboard, "selected_tactical_node_uid", "") or ""
     ).strip()
-
-    if selected_node_uid == str(
-        node_uid or ""
-    ).strip():
+    if selected_node_uid == str(node_uid or "").strip():
         try:
-            TacticalTabSlots.rebuild_tactical_node_artifacts(
-                dashboard,
-                node_uid,
-            )
-
+            TacticalTabSlots.rebuild_tactical_node_artifacts(dashboard, node_uid)
         except Exception as error:
-            component.logger.debug(
-                "Could not rebuild Tactical artifacts: "
-                f"{error}"
-            )
+            component.logger.debug(f"Could not rebuild Tactical artifacts: {error}")
 
     try:
         TSITabSlots.handle_tsi_conditioner_artifact_metadata(
-            dashboard,
-            node_uid=node_uid,
-            artifacts=normalized_records,
+            dashboard, node_uid=node_uid, artifacts=normalized_records
         )
-
     except Exception as error:
-        component.logger.debug(
-            "Could not route Artifact metadata "
-            "to Conditioner: "
-            f"{error}"
-        )
+        component.logger.debug(f"Could not route Artifact metadata to Conditioner: {error}")
 
     try:
         TSITabSlots.handle_tsi_fe_artifact_metadata(
-            dashboard,
-            node_uid=node_uid,
-            artifacts=normalized_records,
+            dashboard, node_uid=node_uid, artifacts=normalized_records
         )
-
     except Exception as error:
-        component.logger.debug(
-            "Could not route Artifact metadata "
-            "to Feature Extractor: "
-            f"{error}"
-        )
+        component.logger.debug(f"Could not route Artifact metadata to Feature Extractor: {error}")
 
     try:
         TSITabSlots.handle_sa_classifier_artifact_metadata(
-            dashboard,
-            node_uid=node_uid,
-            artifacts=normalized_records,
+            dashboard, node_uid=node_uid, artifacts=normalized_records
         )
     except Exception as error:
-        component.logger.debug(
-            "Could not route Artifact metadata to Classifier: "
-            f"{error}"
-        )        
+        component.logger.debug(f"Could not route Artifact metadata to Classifier: {error}")
 
     for artifact_record in normalized_records:
         try:
-            IQDataTabSlots.handle_iq_record_artifact_complete(
-                dashboard,
-                artifact_record,
-            )
+            IQDataTabSlots.handle_iq_record_artifact_complete(dashboard, artifact_record)
+        except Exception as error:
+            component.logger.debug(f"Could not route Artifact metadata to IQ Record: {error}")
 
-        except Exception as error:
-            component.logger.debug(
-                "Could not route Artifact metadata "
-                "to IQ Record: "
-                f"{error}"
-            )
-        
         try:
-            TSITabSlots.handle_sa_capture_artifact_complete(
-                dashboard,
-                artifact_record,
-            )
+            TSITabSlots.handle_sa_capture_artifact_complete(dashboard, artifact_record)
         except Exception as error:
             component.logger.debug(
-                "Could not route Artifact metadata "
-                "to Signal Analysis Capture: "
-                f"{error}"
+                f"Could not route Artifact metadata to Signal Analysis Capture: {error}"
             )
 
     try:
         TSITabSlots.handle_sa_inspection_artifact_metadata(
-            dashboard,
-            node_uid=node_uid,
-            artifacts=normalized_records,
-        )
-    except Exception as error:
-        component.logger.debug(
-            "Could not route Artifact metadata "
-            "to Signal Analysis Inspection: "
-            f"{error}"
-        )
-
-    try:
-        from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
-        pd_demodulation.handle_sa_pd_demodulation_artifact_metadata(
             dashboard, node_uid=node_uid, artifacts=normalized_records
         )
     except Exception as error:
         component.logger.debug(
-            f"Could not route Artifact metadata to Demodulation: {error}"
+            f"Could not route Artifact metadata to Signal Analysis Inspection: {error}"
         )
 
     try:
-        TSITabSlots.refresh_sa_sois_selected_details(
-            dashboard
+        from fissure.Dashboard.Slots.TSITabSlots import pd_demodulation
+
+        pd_demodulation.handle_sa_pd_demodulation_artifact_metadata(
+            dashboard, node_uid=node_uid, artifacts=normalized_records
         )
+    except Exception as error:
+        component.logger.debug(f"Could not route Artifact metadata to Demodulation: {error}")
+
+    # Route the same normalized records to Single Action for its Artifact button.
+    try:
+        from fissure.Dashboard.Slots import SingleActionTabSlots
+
+        SingleActionTabSlots.handle_single_action_artifact_metadata(
+            dashboard, node_uid=node_uid, artifacts=normalized_records
+        )
+    except Exception as error:
+        component.logger.debug(f"Could not route Artifact metadata to Single Action: {error}")
+
+    try:
+        TSITabSlots.refresh_sa_sois_selected_details(dashboard)
     except Exception as error:
         component.logger.debug(
             f"Could not refresh Signal Analysis SOI evidence: {error}"
-        )            
+        )
 
 
 async def sendSoisListTakReturn(

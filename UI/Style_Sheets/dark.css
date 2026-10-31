@@ -3032,7 +3032,7 @@ QLabel#label_ta_single_action_execution_status {
 }
 
 QLabel#label_ta_single_action_execution_operation_id {
-    color: @color13;
+    color: @color4;
     background-color: transparent;
     border: none;
     font: 9pt "Ubuntu";
@@ -5414,6 +5414,7 @@ QPushButton#pushButton_sa_classifier_classify_model_query,
 QPushButton#pushButton_sa_classifier_classify_model_customize,
 QPushButton#pushButton_sa_classifier_classify_model_manage_models,
 QPushButton#pushButton_sa_classifier_classify_run_artifact,
+QPushButton#pushButton_ta_single_action_download_artifact,
 QPushButton#pushButton_sa_classifier_classify_results_details,
 QPushButton#pushButton_sa_classifier_classify_results_export_json,
 QPushButton#pushButton_sa_classifier_classify_results_save_soi {
@@ -5436,6 +5437,7 @@ QPushButton#pushButton_sa_classifier_classify_model_query:hover,
 QPushButton#pushButton_sa_classifier_classify_model_customize:hover,
 QPushButton#pushButton_sa_classifier_classify_model_manage_models:hover,
 QPushButton#pushButton_sa_classifier_classify_run_artifact:hover,
+QPushButton#pushButton_ta_single_action_download_artifact:hover,
 QPushButton#pushButton_sa_classifier_classify_results_details:hover,
 QPushButton#pushButton_sa_classifier_classify_results_export_json:hover,
 QPushButton#pushButton_sa_classifier_classify_results_save_soi:hover {
@@ -5454,6 +5456,7 @@ QPushButton#pushButton_sa_classifier_classify_model_query:pressed,
 QPushButton#pushButton_sa_classifier_classify_model_customize:pressed,
 QPushButton#pushButton_sa_classifier_classify_model_manage_models:pressed,
 QPushButton#pushButton_sa_classifier_classify_run_artifact:pressed,
+QPushButton#pushButton_ta_single_action_download_artifact:pressed,
 QPushButton#pushButton_sa_classifier_classify_results_details:pressed,
 QPushButton#pushButton_sa_classifier_classify_results_export_json:pressed,
 QPushButton#pushButton_sa_classifier_classify_results_save_soi:pressed {
@@ -5472,6 +5475,7 @@ QPushButton#pushButton_sa_classifier_classify_model_query:disabled,
 QPushButton#pushButton_sa_classifier_classify_model_customize:disabled,
 QPushButton#pushButton_sa_classifier_classify_model_manage_models:disabled,
 QPushButton#pushButton_sa_classifier_classify_run_artifact:disabled,
+QPushButton#pushButton_ta_single_action_download_artifact:disabled,
 QPushButton#pushButton_sa_classifier_classify_results_details:disabled,
 QPushButton#pushButton_sa_classifier_classify_results_export_json:disabled,
 QPushButton#pushButton_sa_classifier_classify_results_save_soi:disabled {

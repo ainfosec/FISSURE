@@ -417,6 +417,7 @@ For file-oriented or analysis-heavy Operations, validate more than algorithmic c
 - Keep detailed supporting measurements in Artifacts when appropriate, while returning a concise operator-visible Inspection result.
 - Preserve `unknown`, `unsupported`, and `not observable` as distinct states from `false`, `zero`, or `not detected`.
 - Do not tune an algorithm solely until synthetic validation fixtures match; distinguish a general analysis improvement from overfitting the test corpus.
+- For probabilistic or AI-based analysis, test representative positive and negative inputs, including empty, noisy, and unsupported data where applicable. Do not treat a plausible-looking output as proof of a valid result. Preserve uncertainty and report no result when the available evidence is insufficient.
 
 Performance validation should reflect the expected operational scale. A test that passes on a small synthetic file does not establish acceptable behavior on a large capture.
 
@@ -534,6 +535,8 @@ The fact that an Operation calls an external command does not by itself justify 
 When a plugin depends on third-party software, first determine what FISSURE already knows about that tool before inventing setup or assuming a command-line interface.
 
 Treat FISSURE's documented and installer-supported environment as the baseline unless the user specifies a different target. Do not write a cross-platform or multi-version compatibility matrix merely because the developer's operating system is unknown. Before using unfamiliar executable options or parsing external output, consult the relevant installer, existing integrations, and available tool documentation; verify the real command when a suitable environment is accessible. If an option or installed version cannot be verified, identify that assumption for testing on the executing Sensor Node rather than claiming that mock subprocess tests established compatibility.
+
+When a plugin requires external executables, model files, or supporting utilities, document the required dependencies, installation or acquisition steps, expected paths, and commands for verifying readiness. Check for missing dependencies at runtime and report actionable errors. Do not automatically install or modify the host unless explicitly requested.
 
 When the development environment is available:
 

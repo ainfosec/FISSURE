@@ -1,0 +1,3 @@
+name: Audio Transcription
+version: "1.0.0"
+description: Offline, CPU-compatible transcription of recorded audio files using a locally installed whisper.cpp model; saves timestamped TXT Artifacts.

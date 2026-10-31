@@ -4891,6 +4891,7 @@ def connect_single_action_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_ta_single_action_detector_add.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionDetectorAddClicked(dashboard))
     dashboard.ui.pushButton_ta_single_action_detector_remove.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionDetectorRemoveClicked(dashboard))
     dashboard.ui.pushButton_ta_single_action_start_stop.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionStartStopClicked(dashboard))
+    dashboard.ui.pushButton_ta_single_action_download_artifact.clicked.connect(lambda: SingleActionTabSlots._slotSingleActionDownloadArtifactClicked(dashboard))    
 
 
 def connect_sequential_action_slots(dashboard: Dashboard):

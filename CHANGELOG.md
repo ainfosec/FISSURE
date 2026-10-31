@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-10-31
+
+Add audio transcription and improve Action artifact access
+
+### Added
+
+- Added an Audio Transcription plugin with a single Action for local, multilingual speech recognition using Whisper, automatic language detection, and timestamped transcript Artifacts.
+- Added automated plugin tests covering transcription, audio conversion, cancellation, error handling, and Artifact generation.
+- Added Artifact ID tracking and Download/Open Artifact functionality to Single Action, using the existing Artifact management and transfer system.
+
+### Changed
+
+- Improved Audio Transcription with noise and silence detection to reduce false transcriptions, more readable transcript formatting, timestamped segments, and enhanced Artifact metadata.
+- Updated Single Action to retain completed Operation IDs, associate Artifacts with their originating operations, and provide selectable IDs with full-value tooltips.
+- Relocated Customize buttons alongside Query Actions in Single Action, Survey, Detector, and Capture to improve workflow consistency and prevent accidental parameter resets.
+- Renamed Conditioner's Query Parameters button to Customize for consistency with other tabs.
+- Refined Single Action execution layouts, status indicators, button styling, and Light, Dark, and Custom stylesheet support for the new Artifact controls.
+- Refined AI plugin development guidance for external dependencies, runtime validation, and testing probabilistic analysis against negative inputs such as silence and noise.
+- Removed the legacy Attack Recordings directory as recording outputs transition to plugin-managed Artifacts.
+
 ## 2026-10-26
 
 Add CRC analysis and retire legacy calculator

@@ -13,6 +13,183 @@ ACTION_QUERY_CONTEXT = "targets_actions.single_action.actions"
 ACTION_SCHEMA_CONTEXT = "targets_actions.single_action.schema"
 
 
+def _single_action_set_id_label(label: QtWidgets.QLabel, full_id: str):
+    """Display an elided, selectable ID with the full value in its tooltip."""
+    label.setEnabled(True)
+    label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+
+    full_id = str(full_id or "").strip()
+    if not full_id:
+        label.setText("—")
+        label.setToolTip("")
+        return
+
+    width = max(40, label.contentsRect().width() - 6)
+    label.setText(
+        label.fontMetrics().elidedText(full_id, QtCore.Qt.ElideMiddle, width)
+    )
+    label.setToolTip(full_id)
+
+
+def _single_action_transfer_pending(dashboard: QtCore.QObject, artifact_id: str) -> bool:
+    """True while the shared transfer controller is processing this Artifact."""
+    controller = getattr(dashboard.backend, "artifact_transfer_controller", None)
+    if controller is None or not artifact_id:
+        return False
+
+    if any(
+        str(request.get("artifact_id", "") or "").strip() == artifact_id
+        for request in controller.pending_requests.values()
+        if isinstance(request, dict)
+    ):
+        return True
+
+    return any(
+        str(getattr(transfer, "artifact_id", "") or "").strip() == artifact_id
+        for transfer in controller.active_downloads.values()
+    )
+
+
+def _single_action_update_artifact_ui(dashboard: QtCore.QObject):
+    """Update IDs and the Artifact button without modifying Last Result/status."""
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    run_uid = str(getattr(dashboard, "single_action_last_node_uid", "") or "").strip()
+    relevant = bool(selected_uid and run_uid == selected_uid)
+
+    operation_id = str(getattr(dashboard, "single_action_last_operation_id", "") or "") if relevant else ""
+    artifact_id = str(getattr(dashboard, "single_action_artifact_id", "") or "") if relevant else ""
+    _single_action_set_id_label(dashboard.ui.label_ta_single_action_execution_operation_id, operation_id)
+    artifact_label = dashboard.ui.label2_ta_single_action_execution_artifact_id
+    _single_action_set_id_label(artifact_label, artifact_id)
+
+    records = getattr(dashboard, "single_action_artifacts", {}) or {}
+    if relevant and len(records) > 1 and artifact_id:
+        details = [f"{len(records)} Artifacts from this Action (newest shown):"]
+        for record in sorted(records.values(), key=lambda x: str(x.get("modified_at") or x.get("created_at") or ""), reverse=True):
+            details.append(f"{record.get('name') or 'Artifact'}: {record.get('artifact_id') or record.get('id')}")
+        artifact_label.setToolTip("\n".join(details))
+
+    button = dashboard.ui.pushButton_ta_single_action_download_artifact
+    controller = getattr(dashboard.backend, "artifact_transfer_controller", None)
+    local_path = controller.get_local_path(artifact_id) if controller is not None and artifact_id else None
+    transferring = _single_action_transfer_pending(dashboard, artifact_id)
+    button.setText("Downloading..." if transferring else "Open Artifact" if local_path else "Download Artifact")
+    button.setEnabled(bool(artifact_id and controller is not None and not transferring))
+    button.setToolTip(
+        (f"Open verified local Artifact: {local_path}" if local_path else f"Download Artifact {artifact_id}")
+        if artifact_id else "No Artifact has been reported for the selected Action."
+    )
+
+
+def handle_single_action_artifact_metadata(dashboard: QtCore.QObject, node_uid: str = "", artifacts=None):
+    """Associate registered Artifacts with the last Single Action, not older runs."""
+    operation_id = str(getattr(dashboard, "single_action_last_operation_id", "") or "").strip()
+    run_uid = str(getattr(dashboard, "single_action_last_node_uid", "") or "").strip()
+    if not operation_id or not run_uid:
+        return
+
+    records = getattr(dashboard, "single_action_artifacts", None)
+    if not isinstance(records, dict):
+        records = {}
+        dashboard.single_action_artifacts = records
+
+    for artifact in artifacts or []:
+        if not isinstance(artifact, dict):
+            continue
+        metadata = artifact.get("metadata") if isinstance(artifact.get("metadata"), dict) else {}
+        source_id = str(artifact.get("source_id") or artifact.get("node_uid") or node_uid or "").strip()
+        candidate_operation = str(artifact.get("operation_id") or metadata.get("operation_id") or "").strip()
+        artifact_id = str(artifact.get("artifact_id") or artifact.get("id") or "").strip()
+        if source_id != run_uid or candidate_operation != operation_id or not artifact_id:
+            continue
+        records[artifact_id] = dict(artifact)
+
+    if records:
+        newest = max(
+            records.values(),
+            key=lambda item: (str(item.get("modified_at") or item.get("created_at") or ""), str(item.get("artifact_id") or item.get("id") or "")),
+        )
+        dashboard.single_action_artifact_id = str(newest.get("artifact_id") or newest.get("id") or "").strip()
+
+    _single_action_update_artifact_ui(dashboard)
+
+
+def _single_action_open_local_artifact(dashboard: QtCore.QObject, local_path: str):
+    """Open readable single-file results directly, other Artifacts by folder."""
+    import subprocess
+
+    readable = {".txt", ".json", ".csv", ".md", ".html", ".pdf"}
+    path = str(local_path or "").strip()
+    if os.path.isfile(path) and os.path.splitext(path)[1].lower() in readable:
+        open_path = path
+    else:
+        open_path = path if os.path.isdir(path) else os.path.dirname(path)
+
+    if not open_path or not os.path.exists(open_path):
+        dashboard.statusBar().showMessage("Artifact file is not available locally.", 5000)
+        return
+    try:
+        subprocess.Popen(["xdg-open", open_path])
+    except Exception as error:
+        dashboard.logger.error(f"Could not open Single Action Artifact: {error}")
+        dashboard.statusBar().showMessage(f"Could not open Artifact: {error}", 5000)
+
+
+def _single_action_poll_artifact_download(dashboard: QtCore.QObject):
+    """Refresh the button after the existing asynchronous transfer completes."""
+    artifact_id = str(getattr(dashboard, "single_action_download_open_id", "") or "").strip()
+    if not artifact_id:
+        dashboard.single_action_artifact_timer.stop()
+        _single_action_update_artifact_ui(dashboard)
+        return
+
+    if _single_action_transfer_pending(dashboard, artifact_id):
+        _single_action_update_artifact_ui(dashboard)
+        return
+
+    dashboard.single_action_artifact_timer.stop()
+    dashboard.single_action_download_open_id = ""
+    _single_action_update_artifact_ui(dashboard)
+    controller = getattr(dashboard.backend, "artifact_transfer_controller", None)
+    path = controller.get_local_path(artifact_id) if controller is not None else None
+    if (
+        path
+        and artifact_id == str(getattr(dashboard, "single_action_artifact_id", "") or "")
+        and str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+            == str(getattr(dashboard, "single_action_last_node_uid", "") or "").strip()
+    ):
+        _single_action_open_local_artifact(dashboard, path)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotSingleActionDownloadArtifactClicked(dashboard: QtCore.QObject):
+    """Download the last Action's Artifact, or open its verified local copy."""
+    artifact_id = str(getattr(dashboard, "single_action_artifact_id", "") or "").strip()
+    node_uid = str(getattr(dashboard, "single_action_last_node_uid", "") or "").strip()
+    if not artifact_id or node_uid != str(getattr(dashboard, "selected_node_uid", "") or "").strip():
+        return
+
+    controller = getattr(dashboard.backend, "artifact_transfer_controller", None)
+    if controller is None or _single_action_transfer_pending(dashboard, artifact_id):
+        return
+
+    local_path = controller.get_local_path(artifact_id)
+    if local_path:
+        _single_action_open_local_artifact(dashboard, local_path)
+        return
+
+    try:
+        dashboard.single_action_download_open_id = artifact_id
+        await dashboard.backend.requestDashboardArtifactDownload(artifact_id, open_when_complete=False)
+        dashboard.single_action_artifact_timer.start()
+        _single_action_update_artifact_ui(dashboard)
+    except Exception as error:
+        dashboard.single_action_download_open_id = ""
+        dashboard.logger.error(f"Single Action Artifact download failed: {error}")
+        dashboard.statusBar().showMessage(f"Artifact download failed: {error}", 5000)
+        _single_action_update_artifact_ui(dashboard)
+
+
 def initialize_single_action_tab(dashboard: QtCore.QObject):
     """Initialize the generic Targets & Actions Single Action workflow."""
     dashboard.single_action_action_catalog = []
@@ -31,6 +208,11 @@ def initialize_single_action_tab(dashboard: QtCore.QObject):
     dashboard.single_action_running = False
     dashboard.single_action_node_uid = ""
     dashboard.single_action_operation_id = ""
+    dashboard.single_action_last_operation_id = ""
+    dashboard.single_action_last_node_uid = ""
+    dashboard.single_action_artifacts = {}
+    dashboard.single_action_artifact_id = ""
+    dashboard.single_action_download_open_id = ""
     dashboard.single_action_target_id = ""
     dashboard.single_action_run_plugin = ""
     dashboard.single_action_run_action = ""
@@ -60,7 +242,15 @@ def initialize_single_action_tab(dashboard: QtCore.QObject):
     _set_single_action_start_stop_button(dashboard, False)
     dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(False)
     dashboard.ui.label_ta_single_action_execution_status.setText("Idle")
-    dashboard.ui.label_ta_single_action_execution_operation_id.setText("—")
+    _single_action_set_id_label(dashboard.ui.label_ta_single_action_execution_operation_id, "")
+    _single_action_set_id_label(dashboard.ui.label2_ta_single_action_execution_artifact_id, "")
+    dashboard.ui.pushButton_ta_single_action_download_artifact.setEnabled(False)
+    dashboard.ui.pushButton_ta_single_action_download_artifact.setText("Download Artifact")
+    dashboard.single_action_artifact_timer = QtCore.QTimer(dashboard)
+    dashboard.single_action_artifact_timer.setInterval(500)
+    dashboard.single_action_artifact_timer.timeout.connect(
+        lambda: _single_action_poll_artifact_download(dashboard)
+    )
     dashboard.ui.textEdit_ta_single_action_execution_result.clear()
     dashboard.ui.textEdit_ta_single_action_execution_result.setReadOnly(True)
 
@@ -127,6 +317,7 @@ def update_single_action_selected_node_gate(dashboard: QtCore.QObject):
         dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(
             not bool(getattr(dashboard, "single_action_stop_requested", False))
         )
+        _single_action_update_artifact_ui(dashboard)
         return
 
     dashboard.ui.comboBox_ta_single_action_hardware.setEnabled(has_selected_node)
@@ -150,6 +341,8 @@ def update_single_action_selected_node_gate(dashboard: QtCore.QObject):
         dashboard.ui.label_ta_single_action_execution_status.setText("Unavailable")
     elif not dashboard.single_action_action_catalog:
         dashboard.ui.label_ta_single_action_execution_status.setText("Idle")
+
+    _single_action_update_artifact_ui(dashboard)
 
 
 def _refresh_single_action_hardware_filter(dashboard: QtCore.QObject):
@@ -1244,18 +1437,31 @@ async def _finish_single_action(
     except Exception as error:
         dashboard.logger.error(f"Could not record Single Action Target history: {error}")
 
+    # Preserve the last completed operation for late-arriving Artifact metadata.
+    dashboard.single_action_last_operation_id = str(
+        getattr(dashboard, "single_action_operation_id", "") or ""
+    ).strip()
+    dashboard.single_action_last_node_uid = node_uid
     _single_action_clear_run_state(dashboard)
     _single_action_set_execution_locked(dashboard, False)
     update_single_action_selected_node_gate(dashboard)
 
     dashboard.ui.label_ta_single_action_execution_status.setText(status_text)
-    dashboard.ui.label_ta_single_action_execution_operation_id.setText("—")
+    _single_action_update_artifact_ui(dashboard)
     dashboard.ui.textEdit_ta_single_action_execution_result.setPlainText(result_text)
+
+    # Query the Hub's existing Artifact registry after the operation completes.
+    # This fetches only metadata; it does not transfer Artifact contents.
+    if node_uid and status_text in ("Completed", "Stopped", "Error"):
+        try:
+            await dashboard.backend.tacticalNodeArtifactsRefresh(node_uid)
+        except Exception as error:
+            dashboard.logger.debug(
+                f"Single Action Artifact metadata refresh failed: {error}"
+            )
 
 
 @qasync.asyncSlot(QtCore.QObject)
-
-
 async def _slotSingleActionStartStopClicked(dashboard: QtCore.QObject):
     """Start the selected action immediately or after optional detector gating."""
     if _single_action_active(dashboard):
@@ -1302,6 +1508,13 @@ async def _slotSingleActionStartStopClicked(dashboard: QtCore.QObject):
     dashboard.single_action_running = False
     dashboard.single_action_node_uid = node_uid
     dashboard.single_action_operation_id = operation_id
+    dashboard.single_action_last_operation_id = operation_id
+    dashboard.single_action_last_node_uid = node_uid
+    dashboard.single_action_artifacts = {}
+    dashboard.single_action_artifact_id = ""
+    dashboard.single_action_download_open_id = ""
+    dashboard.single_action_artifact_timer.stop()
+    _single_action_update_artifact_ui(dashboard)
     dashboard.single_action_target_id = str(
         getattr(dashboard, "selected_targets_actions_target_id", "") or ""
     ).strip()
@@ -1323,7 +1536,7 @@ async def _slotSingleActionStartStopClicked(dashboard: QtCore.QObject):
     dashboard.ui.label_ta_single_action_execution_status.setText(
         "Starting Detectors..." if detector_configs else "Starting..."
     )
-    dashboard.ui.label_ta_single_action_execution_operation_id.setText(operation_id)
+    _single_action_update_artifact_ui(dashboard)
     dashboard.ui.textEdit_ta_single_action_execution_result.setPlainText(
         f"{'Waiting to start' if detector_configs else 'Starting'} {plugin_name}: {action_name}\n"
         f"Sensor Node: {node_uid}\n"
