@@ -229,6 +229,3 @@ def update_component_status(componentName: str, online: bool, statusBar: QtCore.
         statusBar.hiprfisr.setText(f"HIPRFISR: {status}")
     elif componentName.lower() == fissure.comms.Identifiers.TSI.lower():
         statusBar.tsi.setText(f"TSI: {status}")
-    elif componentName.lower() == fissure.comms.Identifiers.PD.lower():
-        statusBar.pd.setText(f"PD: {status}")
-        

@@ -60,7 +60,6 @@ class DashboardBackend:
     heartbeats: Dict[str, float]  # {name: time, name: time, ...}
     hiprfisr_address: fissure.comms.Address
     hiprfisr_connected: bool
-    pd_connected: bool
     tsi_connected: bool
     session_active: bool  # For keeping track of StatusBar status
     shutdown: bool
@@ -92,7 +91,6 @@ class DashboardBackend:
         self.heartbeats = {
             fissure.comms.Identifiers.DASHBOARD: None,
             fissure.comms.Identifiers.HIPRFISR: None,
-            fissure.comms.Identifiers.PD: None,
             fissure.comms.Identifiers.TSI: None,
             fissure.comms.Identifiers.SENSOR_NODE: [
                 {"time": None, "interval": None},
@@ -104,7 +102,6 @@ class DashboardBackend:
         }
         self.hiprfisr_address = None
         self.hiprfisr_connected = False
-        self.pd_connected = False
         self.tsi_connected = False
         self.session_active = False
         self.shutdown = False
@@ -322,8 +319,7 @@ class DashboardBackend:
         if params is None or self.shutdown:
             return
 
-        # PD/TSI heartbeats
-        self.heartbeats[fissure.comms.Identifiers.PD] = params.get(fissure.comms.Identifiers.PD)
+        # TSI heartbeats
         self.heartbeats[fissure.comms.Identifiers.TSI] = params.get(fissure.comms.Identifiers.TSI)
 
         # sensor nodes
@@ -375,24 +371,6 @@ class DashboardBackend:
                     )
                 else:
                     self.session_active = True
-
-        #
-        # --- PD CHECK ---
-        #
-        last_pd = self.heartbeats.get(fissure.comms.Identifiers.PD)
-        pd_cutoff = current_time - (global_interval * failure_multiple)
-
-        if last_pd is not None:
-            if self.pd_connected and last_pd < pd_cutoff:
-                self.pd_connected = False
-                self.frontend.signals.ComponentStatus.emit(
-                    fissure.comms.Identifiers.PD, False, self.frontend.statusBar()
-                )
-            elif (not self.pd_connected) and last_pd > pd_cutoff:
-                self.pd_connected = True
-                self.frontend.signals.ComponentStatus.emit(
-                    fissure.comms.Identifiers.PD, True, self.frontend.statusBar()
-                )
 
         #
         # --- TSI CHECK ---
@@ -603,12 +581,10 @@ class DashboardBackend:
         # Reset connections
         self.heartbeats[fissure.comms.Identifiers.DASHBOARD] = 0
         self.heartbeats[fissure.comms.Identifiers.HIPRFISR] = 0
-        self.heartbeats[fissure.comms.Identifiers.PD] = 0
         self.heartbeats[fissure.comms.Identifiers.TSI] = 0
         # self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE] = 0
 
         self.hiprfisr_connected = False
-        self.pd_connected = False
         self.tsi_connected = False
         self.session_active = False
 
@@ -1217,22 +1193,22 @@ class DashboardBackend:
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def searchLibrary(self, soi_data="", field_data=""):
-        """
-        Sends message to search library.yaml for occurences of hex_str.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "soi_data": soi_data,
-                "field_data": field_data,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "searchLibrary",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
+    # async def searchLibrary(self, soi_data="", field_data=""):
+    #     """
+    #     Sends message to search library.yaml for occurences of hex_str.
+    #     """
+    #     # Send the Message
+    #     if self.hiprfisr_connected is True:
+    #         PARAMETERS = {
+    #             "soi_data": soi_data,
+    #             "field_data": field_data,
+    #         }
+    #         msg = {
+    #                 fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+    #                 fissure.comms.MessageFields.MESSAGE_NAME: "searchLibrary",
+    #                 fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    #         }
+    #         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
 
 
     async def removeFromLibrary(
@@ -1296,195 +1272,7 @@ class DashboardBackend:
                     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def findEntropy(self, message_length=0, preamble=""):
-        """
-        Sends a message to Protocol Discovery to find the entropy for the bit positions of fixed-length messages.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "message_length": message_length,
-                "preamble": preamble,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "findEntropy",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-    
-    async def setBufferSize(self, min_buffer_size=0, max_buffer_size=0):
-        """
-        Sends a message to Protocol Discovery to find the entropy for the bit positions of fixed-length messages.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "min_buffer_size": min_buffer_size,
-                "max_buffer_size": max_buffer_size,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "setBufferSize",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def clearPD_Buffer(self):
-        """
-        Sends a message to Protocol Discovery to clear its buffer.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "clearPD_Buffer",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def stopPD(self, node_uid=""):
-        """
-        Signals to PD to stop protocol discovery.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "stopPD",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-    
-    async def startPD(self, node_uid=""):
-        """
-        Signals to PD and sensor node to start protocol discovery.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "startPD",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-            
-
-    async def setAutoStartPD(self, value=False):
-        """
-        Controls whether Protocol Discovery will begin immediately when a target signal is selected.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "value": value,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "setAutoStartPD",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def addPubSocket(self, ip_address="", port=0):
-        """
-        Signals to Protocol Discovery to add an additional ZMQ PUB for reading bits.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "ip_address": ip_address,
-                "port": port,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "addPubSocket",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def removePubSocket(self, address=""):
-        """
-        Signals to Protocol Discovery to remove a ZMQ PUB.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {"address": address}
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "removePubSocket",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def searchLibraryForFlowGraphs(self, soi_data=[], hardware=""):
-        """
-        Queries protocol discovery to look in its version of the library to recommend flow graphs for the SOI.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "soi_data": soi_data,
-                "hardware": hardware
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "searchLibraryForFlowGraphs",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def protocolDiscoveryFG_Stop(self, node_uid=""):
-        """
-        Sends message to Sensor Node to stop a running flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "protocolDiscoveryFG_Stop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def protocolDiscoveryFG_Start(self, node_uid="", flow_graph_filepath="", variable_names=[], variable_values=[]):
-        """
-        Sends message to Sensor Node to run a flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "flow_graph_filepath": flow_graph_filepath,
-                "variable_names": variable_names,
-                "variable_values": variable_values
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "protocolDiscoveryFG_Start",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
+          
 
     async def setVariable(self, node_uid="", flow_graph="", variable="", value=""):
         """
@@ -1501,45 +1289,6 @@ class DashboardBackend:
             msg = {
                     fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
                     fissure.comms.MessageFields.MESSAGE_NAME: "setVariable",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-            
-    
-    async def findPreambles(self, window_min=0, window_max=0, ranking=0, std_deviations=0):
-        """
-        Sends message to PD to search the buffer for preambles.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "window_min": window_min,
-                "window_max": window_max,
-                "ranking": ranking,
-                "std_deviations": std_deviations
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "findPreambles",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-            
-
-    async def sliceByPreamble(self, preamble="", first_n=0, estimated_length=0):
-        """
-        Sends message to PD to slice the data by a single preamble.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "preamble": preamble,
-                "first_n": first_n,
-                "estimated_length": estimated_length,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "sliceByPreamble",
                     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)

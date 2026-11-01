@@ -4,7 +4,6 @@ from . import (
     GenericCallbacks,
     HiprFisrCallbacks,
     HiprFisrCallbacksLT,
-    ProtocolDiscoveryCallbacks,
     SensorNodeCallbacks,
     SensorNodeCallbacksLT,
     TargetSignalIdentificationCallbacks,

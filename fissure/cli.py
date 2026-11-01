@@ -39,10 +39,6 @@ def run_hiprfisr():
     fissure.Server.HiprFisr.run()
 
 
-def run_protocol_discovery():
-    fissure.Server.ProtocolDiscovery.run()
-
-
 def run_target_signal_identification():
     fissure.Server.TargetSignalIdentification.run()
 

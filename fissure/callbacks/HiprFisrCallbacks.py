@@ -77,9 +77,6 @@ async def removeFromLibrary(
         if (len(table_name) > 0) and (len(row_id) > 0):
             fissure.utils.library.removeFromTable(conn, table_name, row_id, delete_files, component.os_info)
 
-        # Send Message to PD to Update Library
-        await retrieveDatabaseCachePD(component)
-
         # Send Message to Dashboard to Update Library
         await retrieveDatabaseCache(component, True)
  
@@ -107,27 +104,14 @@ async def shutdown(component: object, identifiers: List[str]):
                 fissure.comms.MessageFields.IDENTIFIER: component.identifier,
                 fissure.comms.MessageFields.MESSAGE_NAME: "shutdown",
                 fissure.comms.MessageFields.PARAMETERS: {
-                    fissure.comms.Parameters.IDENTIFIERS: [fissure.comms.Identifiers.PD, fissure.comms.Identifiers.TSI]
+                    fissure.comms.Parameters.IDENTIFIERS: [fissure.comms.Identifiers.TSI]
                 },
             }
-            await component.backend_router.send_msg(
-                fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id, component.tsi_id]
-            )
+            if component.tsi_id is not None:
+                await component.backend_router.send_msg(
+                    fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id]
+                )
 
-            # pd_running = True
-            # tsi_running = True
-            # while pd_running or tsi_running:
-            #     msg = await component.backend_router.recv_msg()
-
-            #     if msg is not None:
-            #         msg_type = msg.get(fissure.comms.MessageFields.TYPE)
-            #         msg_name = msg.get(fissure.comms.MessageFields.MESSAGE_NAME)
-            #         sender = msg.get(fissure.comms.MessageFields.IDENTIFIER)
-            #         if msg_type == fissure.comms.MessageTypes.STATUS and msg_name == "Shutting Down":
-            #             if sender == fissure.comms.Identifiers.PD:
-            #                 pd_running = False
-            #             if sender == fissure.comms.Identifiers.TSI:
-            #                 tsi_running = False
             component.shutdown = True
         else:
             # forward 'Shutdown' command to specified fissure component(s)
@@ -526,20 +510,18 @@ async def newCoTLogSession(component: object):
 ##########################################################################
 
 async def updateFISSURE_Configuration(component: object, settings_dict={}):
-    """Reload fissure_config.yaml after changes."""
-    # Load settings from Fissure Config YAML
-    component.settings = settings_dict #fissure.utils.get_fissure_config()  # Stick with Dashboard computer and someday look into storing on HIPRFISR computer.
+    """Reload FISSURE configuration and forward it to TSI."""
+    component.settings = settings_dict
 
-    # Update TSI/PD/Other Components
-    PARAMETERS = {"settings_dict": settings_dict}
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "updateFISSURE_Configuration",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        fissure.comms.MessageFields.PARAMETERS: {"settings_dict": settings_dict},
     }
-    await component.backend_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id, component.tsi_id]
-    )
+    if component.tsi_connected and component.tsi_id is not None:
+        await component.backend_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id]
+        )
 
 
 async def updateLoggingLevels(component: object, new_console_level="", new_file_level=""):
@@ -559,102 +541,6 @@ async def updateLoggingLevels(component: object, new_console_level="", new_file_
 ############################## To PD ####################################
 ##########################################################################
 
-
-async def startPD(component: object, node_uid=""):
-    """Sends a message to PD and sensor node to start processing on any incoming bits."""
-    # Forward Message to PD
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "startPD",
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def stopPD(component: object, node_uid=""):
-    """
-    Signals to PD and sensor node to stop protocol discovery.
-    """
-    # Forward Message to PD
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "stopPD",
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def pdBitsReturn(component: object, bits_message=""):
-    """
-    Forwards bits captured at the sensor node to the protocol discovery circular buffer.
-    """
-    # Forward Message to PD
-    PARAMETERS = {"bits_message": bits_message}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "pdBitsReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def searchLibraryForFlowGraphs(
-    component: object, soi_data=[], hardware=""
-):  # Future: keep this to wherever the database will be: hiprfisr?
-    """
-    Queries protocol discovery to look in its version of the library to recommend flow graphs for the SOI.
-    """
-    # Forward Message to PD
-    PARAMETERS = {"soi_data": soi_data, "hardware": hardware}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "searchLibraryForFlowGraphs",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def findPreambles(component: object, window_min=0, window_max=0, ranking=0, std_deviations=0):
-    """Sends message to PD to search the buffer for preambles."""
-    # Send Message to PD
-    PARAMETERS = {
-        "window_min": window_min,
-        "window_max": window_max,
-        "ranking": ranking,
-        "std_deviations": std_deviations,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "findPreambles",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
 async def classifierLibraryMatch(component: object, request_id="", frequency_mhz=None, max_results=10):
     """Run the Classifier library lookup on HIPRFISR and return ordered candidates."""
     matches, error = fissure.utils.library.getFrequencyLookupCandidates(frequency_mhz, max_results)
@@ -672,238 +558,37 @@ async def classifierLibraryMatch(component: object, request_id="", frequency_mhz
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def searchLibrary(component: object, soi_data="", field_data=""):
-    """
-    Sends message to PD to search library.yaml from SOI data and field values.
-    """
-    # Send Message to PD
-    PARAMETERS = {"soi_data": soi_data, "field_data": field_data}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "searchLibrary",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def sliceByPreamble(component: object, preamble="", first_n=0, estimated_length=0):
-    """Sends message to PD to slice the data by a single preamble."""
-    # Send Message to PD
-    PARAMETERS = {"preamble": preamble, "first_n": first_n, "estimated_length": estimated_length}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "sliceByPreamble",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def setBufferSize(component: object, min_buffer_size=0, max_buffer_size=0):
-    """
-    Sends message to PD with the new sizes for the protocol discovery buffer.
-    """
-    # Send Message to PD
-    PARAMETERS = {"min_buffer_size": min_buffer_size, "max_buffer_size": max_buffer_size}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "setBufferSize",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def clearPD_Buffer(component: object):
-    """
-    Sends a message to Protocol Discovery to clear its buffer.
-    """
-    # Send Message to PD
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "clearPD_Buffer",
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def findEntropy(component: object, message_length=0, preamble=""):
-    """
-    Sends a message to Protocol Discovery to find the entropy for the bit positions of fixed-length messages.
-    """
-    # Send Message to PD
-    PARAMETERS = {"message_length": message_length, "preamble": preamble}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "findEntropy",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def findEntropyReturn(component: object, ents=[]):
-    """
-    Forwards the findEntropy results to the Dashboard.
-    """
-    # Send Message to PD
-    PARAMETERS = {"ents": ents}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "findEntropyReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def addPubSocket(component: object, ip_address="", port=0):
-    """
-    Signals to Protocol Discovery to add an additional ZMQ PUB for reading bits.
-    """
-    # Send Message to PD
-    PARAMETERS = {"ip_address": ip_address, "port": port}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "addPubSocket",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def removePubSocket(component: object, address=""):
-    """
-    Signals to Protocol Discovery to remove a ZMQ PUB.
-    """
-    # Send Message to PD
-    PARAMETERS = {"address": address}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "removePubSocket",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
+# async def searchLibrary(component: object, soi_data="", field_data=""):
+#     """
+#     Sends message to PD to search library.yaml from SOI data and field values.
+#     """
+#     # Send Message to PD
+#     PARAMETERS = {"soi_data": soi_data, "field_data": field_data}
+#     msg = {
+#         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+#         fissure.comms.MessageFields.MESSAGE_NAME: "searchLibrary",
+#         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+#     }
+#     await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
 
 
 ##########################################################################
 ################################ From PD ################################
 ##########################################################################
 
-async def retrieveDatabaseCachePD(component: object):
-    """
-    Retrieves a copy of important database tables needed for operating Protocol Discovery.
-    """
-    # Retrieve the Database Cache
-    database_return = fissure.utils.library.cacheTableData(source="Protocol Discovery")
-
-    # Return to the Dashboard (or other component?)
-    PARAMETERS = {
-        "database_return": database_return, 
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "retrieveDatabaseCacheReturnPD",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.pd_id])
-
-
-async def findPreamblesReturn(component: object, slice_medians, candidate_preambles, min_std_dev_max_length_preambles):
-    """
-    Sends potential preambles found in the circular buffer to the Dashboard.
-    """
-    PARAMETERS = {
-        "slice_medians": slice_medians,
-        "candidate_preambles": candidate_preambles,
-        "min_std_dev_max_length_preambles": min_std_dev_max_length_preambles,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "findPreamblesReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def searchLibraryReturn(component: object, message=[]):
-    """
-    Forwards the search results to the Dashboard.
-    """
-    # Send Message to PD
-    PARAMETERS = {"message": message}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "searchLibraryReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def demodFG_LibrarySearchReturn(component: object, flow_graphs=[]):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"flow_graphs": flow_graphs}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "demodFG_LibrarySearchReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def bufferSizeReturn(component: object, buffer_size=0):
-    """
-    Forwards the size of the PD circular buffer to the Dashboard.
-    """
-    # Forward Message to Dashboard
-    PARAMETERS = {"buffer_size": buffer_size}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "bufferSizeReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def sliceByPreambleReturn(component: object, packet_lengths=[], packet_dict={}):
-    """
-    Forwards the slice results to the Dashboard.
-    """
-    # Forward Message to Dashboard
-    PARAMETERS = {"packet_lengths": packet_lengths, "packet_dict": packet_dict}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "sliceByPreambleReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def foundPreambles(component: object, parameters={}):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"parameters": parameters}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "foundPreambles",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def foundPreamblesInLibrary(component: object, parameters={}):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"parameters": parameters}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "foundPreamblesInLibrary",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+# async def searchLibraryReturn(component: object, message=[]):
+#     """
+#     Forwards the search results to the Dashboard.
+#     """
+#     # Send Message to PD
+#     PARAMETERS = {"message": message}
+#     msg = {
+#         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+#         fissure.comms.MessageFields.MESSAGE_NAME: "searchLibraryReturn",
+#         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+#     }
+#     if component.dashboard_connected:
+#         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 # ############################ To TSI ####################################
@@ -1690,60 +1375,6 @@ async def setVariable(component: object, node_uid="", flow_graph="", variable=""
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "setVariable",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def protocolDiscoveryFG_Start(
-    component: object, node_uid="", flow_graph_filepath="", variable_names=[], variable_values=[]
-):
-    """
-    Sends message to Sensor Node to run a flow graph.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "flow_graph_filepath": flow_graph_filepath,
-        "variable_names": variable_names,
-        "variable_values": variable_values,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "protocolDiscoveryFG_Start",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )    
-
-
-async def protocolDiscoveryFG_Stop(component: object, node_uid=""):
-    """
-    Sends message to Sensor Node to stop a running flow graph.
-    """
-    # Send Message to Sensor Node
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "protocolDiscoveryFG_Stop",
     }
 
     # Resolve Identity
@@ -3629,16 +3260,6 @@ async def autorunPlaylistStatus(component: object, node_uid="", state="Idle", so
 ##########################################################################
 ####################### Outdated/Incomplete/Unused #######################
 ##########################################################################
-
-async def setAutoStartPD(component: object, value=False):
-    """
-    Controls whether Protocol Discovery will begin immediately when a target signal is selected.
-    """
-    if value is True:
-        component.auto_start_pd = True
-    elif value is False:
-        component.auto_start_pd = False
-
 
 async def clear_SOI_List(component: object):
     """Clears the SOI List"""

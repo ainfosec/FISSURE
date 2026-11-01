@@ -1,5 +1,4 @@
 auto_connect_hiprfisr: true
-buffer_size_interval: 2
 callsign_prefix: FTN
 clear_log_file_on_startup: true
 color1: '#F4F4F4'
@@ -52,7 +51,7 @@ hiprfisr:
   # but other components use this file to discover its address and ports.
   #
   # - 'frontend': External connection used by Dashboard and Sensor Nodes
-  # - 'backend' : Internal connection for local PD/TSI processes (always IPC)
+  # - 'backend' : Internal connection for local TSI processes (always IPC)
   backend:
     address: fissure-backend
     protocol: ipc
@@ -72,9 +71,6 @@ morse_code_between_word_spacing: 7
 morse_code_error_tolerance: 0.05
 morse_code_same_letter_spacing: 1
 moving_avg_points: 5
-pd_bits_port: 5066
-pd_hiprfisr_dealer_port: 5054
-pd_pub_port: 5063
 qt_scale_factor: 1.0
 remember_configuration: false
 sensor_node_hiprfisr_dealer_port: 5053

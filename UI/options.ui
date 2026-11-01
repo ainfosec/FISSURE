@@ -224,16 +224,6 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
-      <row>
-       <property name="text">
-        <string>buffer_size_interval</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
       <column>
        <property name="text">
         <string/>
@@ -793,16 +783,6 @@
       </row>
       <row>
        <property name="text">
-        <string>pd_hiprfisr_dealer_port</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
         <string>hiprfisr_pub_port</string>
        </property>
        <property name="font">
@@ -854,26 +834,6 @@
       <row>
        <property name="text">
         <string>sensor_node_pub_port</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>pd_pub_port</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>pd_bits_port</string>
        </property>
        <property name="font">
         <font>

@@ -13,7 +13,6 @@ from fissure.Dashboard.Slots import (
     ListeningPostsTabSlots,
     LogTabSlots,
     MenuBarSlots,
-    PDTabSlots,
     SensorNodesTabSlots,
     SensorNodesPluginsTabSlots,
     SequentialActionTabSlots,
@@ -53,7 +52,6 @@ import qasync
 import time
 import signal
 import json
-import random
 import subprocess
 
 from fissure.Dashboard.UI_Components.TacticalMapView import TacticalMapView
@@ -159,18 +157,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Training")
         self.remove_tab_by_text(self.ui.tabWidget_tsi_classifier, "Classification")
         self.remove_tab_by_text(self.ui.tabWidget_signal_analysis, "Direction Finding")
-
-        # Keep the retired Protocol Discovery pages available in code, but hide them in the UI.
-        for tab in (
-            self.ui.tab_pd_status,
-            self.ui.tab_pd_flow_graphs,
-            self.ui.tab_pd_bit_slicing,
-            self.ui.tab_pd_dissectors,
-            self.ui.tab_pd_sniffer,
-        ):
-            index = self.ui.tabWidget_protocol.indexOf(tab)
-            if index >= 0:
-                self.ui.tabWidget_protocol.removeTab(index)
 
         # Load FISSURE Logo
         self.ui.label_diagram.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "logo.png")))
@@ -695,122 +681,9 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def __init_PD__(self):
-        """
-        Initializes PD Tabs on Dashboard launch.
-        """
-        # Signal Analysis / Protocol Discovery - Comparison.
+        """Initialize the modern Protocol Discovery workspaces."""
         TSITabSlots.initialize_sa_pd_comparison_controls(self)
-
-        # Signal Analysis / Protocol Discovery - CRC Analysis.
         TSITabSlots.initialize_sa_pd_crc_controls(self)
-
-        ##### Protocol Discovery #####
-        self.ui.textEdit_pd_status_min_buffer_size.setPlainText("100")
-        self.ui.textEdit_pd_status_buffer_size.setPlainText("262144")
-        self.ui.textEdit_pd_status_ip_address.setPlainText("172.16.15.37")
-        self.ui.textEdit_pd_status_port.setPlainText("5066")
-        self.ui.textEdit_pd_flow_graphs_frequency_margin.setPlainText("0")
-        self.ui.textEdit_pd_flow_graphs_bandwidth_margin.setPlainText("0")
-        self.ui.textEdit_pd_flow_graphs_start_frequency_margin.setPlainText("0")
-        self.ui.textEdit_pd_flow_graphs_end_frequency_margin.setPlainText("0")
-        self.ui.textEdit_pd_sniffer_netcat_ip.setPlainText("127.0.0.1")
-        self.ui.textEdit_pd_sniffer_netcat_port.setPlainText("55555")
-
-        # Disable the Tabs
-        # self.ui.tabWidget_protocol.setTabEnabled(1, False)
-
-        # Configure PD\Construct Packet Tables
-        self.ui.tableWidget_pd_dissectors.resizeRowsToContents()
-
-        # Get Protocols
-        protocols = fissure.utils.library.getProtocols(self.backend.library)
-
-        # Load Protocols into Dissectors Protocol Combobox
-        self.ui.comboBox_pd_dissectors_protocol.insertItem(0, "")
-        protocols_with_packet_types = []
-        for p in protocols:
-            if len(fissure.utils.library.getPacketTypes(self.backend.library, p)) > 0:
-                protocols_with_packet_types.append(p)
-        self.ui.comboBox_pd_dissectors_protocol.addItems(sorted(protocols_with_packet_types))
-
-        # Hide the Dissectors Groupbox
-        self.ui.frame_pd_dissectors_editor.setVisible(False)
-
-        # Set the Number of Lines in PD Status Message Text Edit
-        self.ui.textEdit2_pd_status.document().setMaximumBlockCount(18)
-
-        # Resize Protocol Discovery Bit Slicing Preamble Stats Table
-        self.ui.tableWidget_pd_bit_slicing_preamble_stats.setColumnWidth(1, 97)
-        self.ui.tableWidget_pd_bit_slicing_preamble_stats.setColumnWidth(2, 111)
-        self.ui.tableWidget_pd_bit_slicing_preamble_stats.setColumnWidth(3, 111)
-        self.ui.tableWidget_pd_bit_slicing_preamble_stats.setColumnWidth(4, 121)
-        self.ui.tableWidget_pd_bit_slicing_preamble_stats.horizontalHeader().setSectionResizeMode(
-            0, QtWidgets.QHeaderView.Stretch
-        )
-
-        # Resize Protocol Discovery Bit Slicing Recommended Preamble Table
-        # ~ self.tableWidget_pd_bit_slicing_candidate_preambles.setColumnWidth(1,97)
-        # ~ self.tableWidget_pd_bit_slicing_candidate_preambles.setColumnWidth(2,111)
-        # ~ self.tableWidget_pd_bit_slicing_candidate_preambles.setColumnWidth(3,111)
-        # ~ self.tableWidget_pd_bit_slicing_candidate_preambles.setColumnWidth(4,121)
-        # ~ self.tableWidget_pd_bit_slicing_candidate_preambles.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)
-
-        # Set the PD Flow Graph Lookup Not Found Label
-        self.ui.label2_pd_flow_graphs_lookup_not_found.setText("")
-
-        # Hide the Calculating Label
-        self.ui.label2_pd_bit_slicing_calculating.setVisible(False)
-
-        # # Load "All Flow Graphs" List Widget
-        # self._slotPD_DemodHardwareChanged()
-
-        # Bit Slicing Shift Counter
-        self.bit_shift_counter = 0
-        self.bit_slicing_column_type = []
-        self.first_n_packets = None
-        self.median_slicing_results = None
-        self.candidate_preamble_data = None
-        self.suitable_colors = [(204,255,255), (153,255,255), (102,255,255), (51,255,255), (0,255,255), (153,204,255), (153,204,204), \
-                           (102,255,204), (102,255,153), (51,255,204), (0,255,204), (0,255,153), \
-                           (204,204,153), (204,204,102), (204,204,255), (204,153,102), (204,153,51), (204,204,51), (204,204,0), \
-                           (204,255,153), (153,255,204), (153,255,153), (204,255,102), (153,204,153), (51,255,153), (51,255,51), (51,255,102), (0,204,102), (102,204,153), (153,204,102), (204,255,51), (153,255,102), (153,255,51), (102,255,102), (0,238,00), (0,221,0), \
-                           (238,238,238), (221,221,221), (204,204,204), (187,187,187), \
-                           (255,204,102), (255,204,51), \
-                           (255,204,255), (255,204,204), (255,204,153), (255,204,51), \
-                           (204,204,255), \
-                           (255,255,204), (255,255,153), (255,255,102), (255,255,51), (255,255,0),(255,153,102)]
-        random.shuffle(self.suitable_colors)
-
-        # Hide the Unused Bit Slicing Buttons
-        self.ui.pushButton_pd_bit_slicing_detect_fields.setVisible(False)
-        self.ui.pushButton_pd_bit_slicing_varying.setVisible(False)
-        self.ui.pushButton_pd_bit_slicing_recurrent.setVisible(False)
-        self.ui.pushButton_pd_bit_slicing_uniform.setVisible(False)
-
-        # Initialize New Detections/Classifications Notification
-        self.new_detections = 0
-        self.new_classifications = 0
-
-        # Sniffer Port
-        self.ui.label2_pd_sniffer_zmq_port.setText(str(self.backend.settings["pd_bits_port"]))
-        self.guess_index = 0
-
-        # Load Sniffer Protocols
-        self.ui.comboBox_pd_sniffer_protocols.clear()
-        protocols_with_demod_fgs = []
-        for p in protocols:
-            if len(fissure.utils.library.getDemodulationFlowGraphFilenames(self.backend.library, p, "", "", version=fissure.utils.get_library_version())) > 0:
-                protocols_with_demod_fgs.append(p)
-        self.ui.comboBox_pd_sniffer_protocols.addItems(sorted(protocols_with_demod_fgs))
-
-        # Load Sniffer Test Folder
-        self.ui.comboBox_pd_sniffer_test_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Crafted Packets", "Defaults"))
-        )
-        self.ui.comboBox_pd_sniffer_test_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Crafted Packets"))
-        )
-        self.ui.comboBox_pd_sniffer_test_folders.setCurrentIndex(0)
 
 
     def __init_Attack__(self):
@@ -1592,25 +1465,6 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
 
-    def configurePD_Hardware(self):
-        """
-        Configures PD after new selected sensor node selection.
-        """
-        self.ui.comboBox_pd_demod_hardware.clear()
-
-        if not self.selected_node_uid:
-            return
-
-        get_sensor_node_hardware = (
-            fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                self,
-                "pd",
-            )
-        )
-
-        self.ui.comboBox_pd_demod_hardware.addItems(get_sensor_node_hardware)
-
-
     def configureIQ_Hardware(self):
         """
         Configure IQ hardware/source selectors for the selected Sensor Node.
@@ -1858,7 +1712,6 @@ class Dashboard(QtWidgets.QMainWindow):
         """
         self.configureTSI_Hardware()
         TSITabSlots.refresh_sa_inspection_action_state(self)
-        self.configurePD_Hardware()
         SingleActionTabSlots.update_single_action_selected_node_gate(self)
         SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
         FuzzingTabSlots.update_fuzzing_selected_node_gate(self)
@@ -3954,239 +3807,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
 
 def connect_pd_slots(dashboard: Dashboard):
-    # Check Box
-    dashboard.ui.checkBox_pd_bit_slicing_colors.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingDetectFieldsClicked(dashboard)
-    )
-
-    # Combo Box
-    dashboard.ui.comboBox_pd_demod_hardware.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_DemodHardwareChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_dissectors_protocol.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_DissectorsProtocolChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_dissectors_packet_type.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_DissectorsPacketTypeChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_SnifferProtocolsChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_sniffer_packet_type.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_SnifferPacketTypeChanged(dashboard)
-    )
-    dashboard.ui.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(
-        lambda: PDTabSlots._slotPD_SnifferTestFoldersChanged(dashboard)
-    )
-
-    # Double Spin Boxes
-    dashboard.ui.doubleSpinBox_pd_bit_slicing_window_size.valueChanged.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSpinboxWindowChanged(dashboard)
-    )
-    dashboard.ui.doubleSpinBox_pd_bit_slicing_window_size_candidates.valueChanged.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSpinboxWindowCandidatesChanged(dashboard)
-    )
-
-    # List Widget
-    dashboard.ui.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLoadSelectedClicked(dashboard)
-    )
-    dashboard.ui.listWidget_pd_flow_graphs_all_fgs.itemDoubleClicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLoadSelectedAllClicked(dashboard)
-    )
-
-    # Horizontal Sliders
-    dashboard.ui.horizontalSlider_pd_bit_slicing_preamble_stats.valueChanged.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSliderWindowChanged(dashboard)
-    )
-    dashboard.ui.horizontalSlider_pd_bit_slicing_preamble_stats_candidates.valueChanged.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSliderWindowCandidatesChanged(dashboard)
-    )
-
-    # Push Button
-    dashboard.ui.pushButton_pd_status_soi_new.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusSOI_NewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_search_library.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusSearchLibraryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_current_soi.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationCurrentSOI_Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_view.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationViewFlowGraphClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_load.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLoadFlowGraphClicked(dashboard, "")
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_load_selected.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLoadSelectedClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_lookup_clear.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLookupClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_restore_defaults.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationRestoreDefaultsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_load_selected_all.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLoadSelectedAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_detect_fields.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingDetectFieldsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_refresh.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_remove_field.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingRemoveFieldClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_reset.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingLengthsChanged(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_slice.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSliceClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_merge_fields.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingMergeFieldsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_split_fields.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSplitFieldsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_shift_left.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingShiftLeftClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_shift_right.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingShiftRightClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_new.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsNewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_edit.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsEditClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_add_field.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsAddFieldClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_remove_field.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsRemoveFieldClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_up.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsUpClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_down.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsDownClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_preview.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsPreviewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_dissectors_update_all.clicked.connect(
-        lambda: PDTabSlots._slotPD_DissectorsUpdateAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_wireshark_80211.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferWireshark80211Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_guess.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferGuessClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_netcat.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferNetcatClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_test_folder.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferTestFolderClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_test_send.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferTestSendClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_plot_entropy.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingPlotEntropyClicked(dashboard)
-    )
-    # dashboard.ui.pushButton_pd_dissectors_construct.clicked.connect(
-    #     lambda: PDTabSlots._slotPD_DissectorsConstructClicked(dashboard, preview = False)
-    # )
-    dashboard.ui.pushButton_pd_status_buffer_apply.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusBufferApplyClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_buffer_clear.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusBufferClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_start.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_blacklist_soi.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusBlacklistSOI_Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_add_pub.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusAddPubClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_status_remove_pub.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusRemovePubClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_lookup.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLookupClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_start_stop.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationStartStopClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_apply_changes.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationApplyChangesClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_find_preambles.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingFindPreamblesClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_slice_by_preamble.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSliceByPreambleClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_insert_field.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingInsertFieldClicked(dashboard)
-    )
-    # dashboard.ui.pushButton_pd_bit_slicing_add_to_library.clicked.connect(
-    #     lambda: PDTabSlots._slotPD_BitSlicingAddToLibraryClicked(dashboard)
-    # )
-    dashboard.ui.pushButton_pd_bit_slicing_clear_buffer.clicked.connect(
-        lambda: PDTabSlots._slotPD_StatusBufferClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_bit_slicing_search_library.clicked.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingSearchLibraryClicked(dashboard)
-    )
-    # dashboard.ui.pushButton_pd_dissectors_remove.clicked.connect(
-    #     lambda: PDTabSlots._slotPD_DissectorRemoveClicked(dashboard)
-    # )
-    # dashboard.ui.pushButton_pd_dissectors_apply.clicked.connect(
-    #     lambda: PDTabSlots._slotPD_DissectorApplyClicked(dashboard)
-    # )
-    dashboard.ui.pushButton_pd_sniffer_stream.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferStreamClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_tagged_stream.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferTaggedStreamClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_sniffer_msg_pdu.clicked.connect(
-        lambda: PDTabSlots._slotPD_SnifferMsgPduClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_lookup_view.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationLookupViewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_pd_flow_graphs_all_fgs_view.clicked.connect(
-        lambda: PDTabSlots._slotPD_DemodulationAllFGsViewClicked(dashboard)
-    )
-
-    # Table Widget
-    dashboard.ui.tableWidget_pd_flow_graphs_current_values.cellChanged.connect(
-        lambda: PDTabSlots._slotPD_DemodulationCurrentValuesEdited(dashboard)
-    )
-    dashboard.ui.tableWidget_pd_bit_slicing_lengths.itemSelectionChanged.connect(
-        lambda: PDTabSlots._slotPD_BitSlicingLengthsChanged(dashboard)
-    )
-    dashboard.ui.tableWidget_pd_bit_slicing_candidate_preambles.cellDoubleClicked.connect(
-        lambda row, col: PDTabSlots._slotPD_BitSlicingCandidateDoubleClicked(dashboard, row, col)
-    )
-    dashboard.ui.tableWidget_pd_bit_slicing_preamble_stats.cellDoubleClicked.connect(
-        lambda row, col: PDTabSlots._slotPD_BitSlicingAllPreamblesDoubleClicked(dashboard, row, col)
-    )
-    dashboard.ui.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(
-        lambda col: PDTabSlots._slotPD_BitSlicingColumnClicked(dashboard, col)
-    )
-
     # Protocol Discovery / Comparison - Packet Analysis transfer.
     dashboard.ui.pushButton_sa_pd_pa_input_compare_selected.clicked.connect(
         lambda: TSITabSlots.open_sa_pd_comparison_from_pa(dashboard)
@@ -5347,9 +4967,9 @@ def connect_library_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_library_search_current_soi.clicked.connect(
         lambda: LibraryTabSlots._slotLibrarySearchCurrentSOI_Clicked(dashboard)
     )
-    dashboard.ui.pushButton_library_search_search_library.clicked.connect(
-        lambda: LibraryTabSlots._slotLibrarySearchSearchLibraryClicked(dashboard)
-    )
+    # dashboard.ui.pushButton_library_search_search_library.clicked.connect(
+    #     lambda: LibraryTabSlots._slotLibrarySearchSearchLibraryClicked(dashboard)
+    # )
     dashboard.ui.pushButton_library_browse_pgadmin4.clicked.connect(
         lambda: LibraryTabSlots._slotLibraryBrowsePgAdmin4_Clicked(dashboard)
     )

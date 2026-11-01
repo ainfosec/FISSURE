@@ -53,11 +53,6 @@ loggers:
         handlers: [console, file]
         propagate: False
 
-    fissure.pd:
-        level: DEBUG
-        handlers: [console, file]
-        propagate: False
-
     fissure.tsi:
         level: DEBUG
         handlers: [console, file]

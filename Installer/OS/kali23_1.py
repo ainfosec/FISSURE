@@ -2722,3 +2722,31 @@ rm mobac.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/"Mobile Atlas Creator"/Mobile_Atlas_Creator.jar
 """,True,'Development'))
+
+# Whisper.cpp
+programs_kali.append(('Whisper.cpp (small model, ~488 MB)',
+"""sudo apt-get install -y git cmake build-essential curl ffmpeg
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+
+if [ ! -d whisper.cpp ]; then
+    git clone --depth 1 --branch v1.9.5 https://github.com/ggml-org/whisper.cpp.git
+fi
+cd whisper.cpp
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DGGML_CUDA=OFF -DGGML_VULKAN=OFF
+cmake --build build --parallel 4
+
+# Download the multilingual small model if it is missing or invalid.
+model_sha="1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b"
+if ! echo "$model_sha  models/ggml-small.bin" | sha256sum -c --status; then
+    rm -f models/ggml-small.bin
+    bash models/download-ggml-model.sh small
+fi
+
+########## Verify ##########
+test -x build/bin/whisper-cli &&
+echo "$model_sha  models/ggml-small.bin" | sha256sum -c - &&
+ffmpeg -version >/dev/null
+""",False,'Audio'))
+
+

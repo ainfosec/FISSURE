@@ -63,17 +63,11 @@ DATABASE_TABLE_HEADERS = {
 
 # Commands Banned from Logging the Parameters Values in Console and File (messages with a lot of data)
 BANNED_MESSAGE_NAMES = [
-    "demodFG_LibrarySearchReturn",
-    "findEntropyReturn",
-    "findPreamblesReturn",
     "overwriteDefaultAutorunPlaylist",
-    "pdBitsReturn",
     "recallSettingsReturn",
     "retrieveDatabaseCacheReturn",
-    "retrieveDatabaseCacheReturnPD",
     "saveFile",
-    "searchLibraryReturn",
-    "sliceByPreambleReturn",
+    # "searchLibraryReturn",
     "transferSensorNodeFile",
 ]
 

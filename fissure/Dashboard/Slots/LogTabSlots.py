@@ -19,8 +19,6 @@ def _slotLogRefreshClicked(dashboard: QtCore.QObject):
         bad_words.append('fissure.sensor node')
     if dashboard.ui.checkBox_log_dashboard.isChecked():
         bad_words.append('fissure.dashboard')
-    if dashboard.ui.checkBox_log_pd.isChecked():
-        bad_words.append('fissure.pd')
     if dashboard.ui.checkBox_log_hiprfisr.isChecked():
         bad_words.append('fissure.hiprfisr')
     if dashboard.ui.checkBox_log_debug.isChecked():
@@ -62,8 +60,6 @@ def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
         good_words.append('fissure.sensor node')
     if dashboard.ui.checkBox_log_dashboard_permit.isChecked():
         good_words.append('fissure.dashboard')
-    if dashboard.ui.checkBox_log_pd_permit.isChecked():
-        good_words.append('fissure.pd')
     if dashboard.ui.checkBox_log_hiprfisr_permit.isChecked():
         good_words.append('fissure.hiprfisr')
     if dashboard.ui.checkBox_log_debug_permit.isChecked():

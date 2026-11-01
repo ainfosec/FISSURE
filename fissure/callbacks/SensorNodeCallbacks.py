@@ -15,7 +15,6 @@ import time
 import yaml
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
-import zmq
 from typing import List
 import re
 from typing import Optional
@@ -646,65 +645,11 @@ async def startScapyTransmission(
 
 
 async def setVariable(component: object, flow_graph="", variable="", value=""):
-    """
-    Sets a variable of a specified running flow graph.
-    """
-    # Make it Match GNU Radio Format
-    formatted_name = "set_" + variable
-    isNumber = fissure.utils.isFloat(value)
-    if isNumber:
-        if flow_graph == "Protocol Discovery":
-            getattr(component.pdflowtoexec, formatted_name)(float(value))
-        elif flow_graph == "Sniffer":
-            getattr(component.snifferflowtoexec, formatted_name)(float(value))
-    else:
-        if flow_graph == "Protocol Discovery":
-            getattr(component.pdflowtoexec, formatted_name)(value)
-        elif flow_graph == "Sniffer":
-            getattr(component.snifferflowtoexec, formatted_name)(value)
-
-
-async def protocolDiscoveryFG_Start(
-    component: object, flow_graph_filepath="", variable_names=[], variable_values=[]
-):
-    """
-    Runs the flow graph with the specified file path.
-    """
-    # Run Event and Do Not Block
-    class_name = flow_graph_filepath.replace(".py", "")
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.protocolDiscoveryFG_ThreadStart, class_name, variable_names, variable_values)
-
-
-async def protocolDiscoveryFG_Stop(component: object):
-    """
-    Stop the currently running flow graph.
-    """
-    component.pdflowtoexec.stop()
-    component.pdflowtoexec.wait()
-    del component.pdflowtoexec  # Free up the ports
-
-
-async def startPD(component: object):
-    """
-    Starts a ZMQ SUB for forwarding bits from demodulation flow graphs to the PD circular buffer.
-    """
-    component.logger.info("PD: Starting Protocol Discovery...")
-    component.running_PD = True
-
-    # Create the Temporary ZMQ SUB
-    component.pd_bits_context = zmq.Context()
-    component.pd_bits_socket = component.pd_bits_context.socket(zmq.SUB)
-    component.pd_bits_socket.connect("tcp://127.0.0.1:" + str(5066))  # pd_bits_port
-    component.pd_bits_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-
-
-async def stopPD(component: object):
-    """
-    Closes the ZMQ SUB listening for bits.
-    """
-    # Call the Function used Multiple Times
-    component.stopPD()
+    """Set a variable on a supported legacy flow graph."""
+    if flow_graph != "Sniffer":
+        return
+    setter = getattr(component.snifferflowtoexec, "set_" + variable)
+    setter(float(value) if fissure.utils.isFloat(value) else value)
 
 
 async def terminateSensorNode(component: object):

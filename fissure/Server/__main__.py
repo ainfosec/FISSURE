@@ -3,7 +3,6 @@ from fissure.Server import Parser
 import asyncio
 import fissure.comms
 import fissure.Server.HiprFisr
-import fissure.Server.ProtocolDiscovery
 import fissure.Server.TargetSignalIdentification
 import fissure.utils
 
@@ -28,12 +27,10 @@ async def main():
         server_address,
         dashboard_expected=not args.remote,
     )
-    pd = fissure.Server.ProtocolDiscovery.ProtocolDiscovery()
     tsi = fissure.Server.TargetSignalIdentification.TargetSignalIdentification()
 
     tasks = [
         asyncio.create_task(hiprfisr.begin()),
-        asyncio.create_task(pd.begin()),
         asyncio.create_task(tsi.begin())
     ]
 
@@ -86,13 +83,11 @@ def run():
 
 #     # Create components
 #     hiprfisr = fissure.Server.HiprFisr.HiprFisr(server_address)
-#     pd = fissure.Server.ProtocolDiscovery.ProtocolDiscovery()
 #     tsi = fissure.Server.TargetSignalIdentification.TargetSignalIdentification()
 
 #     # Run Asynchronously
 #     server_tasks = asyncio.gather(
 #         hiprfisr.begin(),
-#         pd.begin(),
 #         tsi.begin(),
 #         return_exceptions=True
 #     )

@@ -56,7 +56,6 @@ class FissureStatusBar(QtWidgets.QStatusBar):
     # Components
     hiprfisr: QtWidgets.QPushButton
     tsi: QtWidgets.QPushButton
-    pd: QtWidgets.QPushButton
 
     # Sessions
     session_label: QtWidgets.QLabel
@@ -104,11 +103,9 @@ class FissureStatusBar(QtWidgets.QStatusBar):
         """
         self.hiprfisr = QtWidgets.QPushButton("HIPRFISR: --", objectName="pushButton_status2")
         self.tsi = QtWidgets.QPushButton("TSI: --", objectName="pushButton_status3")
-        self.pd = QtWidgets.QPushButton("PD: --", objectName="pushButton_status4")
 
         self.hiprfisr.setFlat(True)
         self.tsi.setFlat(True)
-        self.pd.setFlat(True)
 
 
     def __init_session__(self):
@@ -161,8 +158,6 @@ class FissureStatusBar(QtWidgets.QStatusBar):
         self.addPermanentWidget(self.hiprfisr)
         self.addPermanentWidget(VLine())
         self.addPermanentWidget(self.tsi)
-        self.addPermanentWidget(VLine())
-        self.addPermanentWidget(self.pd)
         self.addPermanentWidget(VLine())
 
         # Session Status (Dynamic)
@@ -341,13 +336,12 @@ class FissureStatusBar(QtWidgets.QStatusBar):
 
             self.hiprfisr.setText("HIPRFISR: --")
             self.tsi.setText("TSI: --")
-            self.pd.setText("PD: --")
 
 
-    def enterEvent(self, event):
-        self.dialog.show()
-        self.dialog.raise_()
+    # def enterEvent(self, event):
+    #     self.dialog.show()
+    #     self.dialog.raise_()
 
 
-    def leaveEvent(self, event):
-        self.dialog.hide()
+    # def leaveEvent(self, event):
+    #     self.dialog.hide()

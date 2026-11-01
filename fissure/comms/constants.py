@@ -14,7 +14,6 @@ class Identifiers:
     HIPRFISR = "HiprFisr"
     HIPRFISR_LT = "H"
     DASHBOARD = "Dashboard"
-    PD = "PD"
     TSI = "TSI"
     SENSOR_NODE = "Sensor Node"
     SENSOR_NODE_0 = "Sensor Node 0"

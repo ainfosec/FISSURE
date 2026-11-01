@@ -63,8 +63,6 @@ class HiprFisr:
     backend_id: str
     tsi_id: bytes
     tsi_connected: bool
-    pd_id: bytes
-    pd_connected: bool
     # sensor_nodes: List[SensorNode]
     heartbeats: Dict[str, Union[float, Dict[int, float]]]  # {name: time, name: time, ... sensor_nodes: {node_id: time}}
     callbacks: Dict = {}
@@ -101,21 +99,17 @@ class HiprFisr:
         self.soi_parameters = (None, None, "FSK")
 
         # Create the Variable
-        self.auto_start_pd = False
         self.soi_manually_triggered = False
 
         # Initialize Connection/Heartbeat Variables
         self.heartbeats = {
             fissure.comms.Identifiers.HIPRFISR: None,
             fissure.comms.Identifiers.DASHBOARD: None,
-            fissure.comms.Identifiers.PD: None,
             fissure.comms.Identifiers.TSI: None,
             fissure.comms.Identifiers.SENSOR_NODE: None,
         }
         self.session_active = False
         self.dashboard_connected = False
-        self.pd_id = None
-        self.pd_connected = False
         self.tsi_id = None
         self.tsi_connected = False
         self.connect_loop = True
@@ -295,7 +289,7 @@ class HiprFisr:
         Cleanly shut down all ZMQ communications:
         - Close dashboard socket (PAIR)
         - Close backend router (ROUTER)
-        - Close all PD/TSI comm sockets (DEALER)
+        - Close all TSI comm sockets (DEALER)
         - Close all sensor-node listener sockets
         """
         # Mark state inactive
@@ -413,7 +407,7 @@ class HiprFisr:
             if not self.connect_loop:
                 if self.dashboard_connected:
                     await self.read_dashboard_messages()
-                if self.pd_connected or self.tsi_connected:
+                if self.tsi_connected:
                     await self.read_backend_messages()
                 try:
                     await self.read_sensor_node_messages()
@@ -725,12 +719,11 @@ class HiprFisr:
                     break
 
                 # All components connected?
-                if self.dashboard_connected and self.pd_connected and self.tsi_connected:
+                if self.dashboard_connected and self.tsi_connected:
                     msg = {
                         fissure.comms.MessageFields.IDENTIFIER: self.identifier,
                         fissure.comms.MessageFields.MESSAGE_NAME: "Connected",
                         fissure.comms.MessageFields.PARAMETERS: [
-                            fissure.comms.Identifiers.PD,
                             fissure.comms.Identifiers.TSI,
                         ],
                     }
@@ -753,7 +746,7 @@ class HiprFisr:
             # Headless/remote Dashboard
             else:
                 # All components connected?
-                if self.pd_connected and self.tsi_connected:
+                if self.tsi_connected:
                     self.connect_loop = False
 
         self.logger.debug("Exiting connect loop")
@@ -821,10 +814,7 @@ class HiprFisr:
             # ------------------------------------------------------------------
             # Register backend DEALER identities (PD, TSI)
             # ------------------------------------------------------------------
-            if component == fissure.comms.Identifiers.PD:
-                self.pd_id = sender_id
-
-            elif component == fissure.comms.Identifiers.TSI:
+            if component == fissure.comms.Identifiers.TSI:
                 self.tsi_id = sender_id
 
             # ------------------------------------------------------------------
@@ -971,7 +961,6 @@ class HiprFisr:
                 fissure.comms.MessageFields.MESSAGE_NAME: fissure.comms.MessageFields.HEARTBEAT,
                 fissure.comms.MessageFields.TIME: now,
                 fissure.comms.MessageFields.PARAMETERS: {
-                    fissure.comms.Identifiers.PD: self.heartbeats.get(fissure.comms.Identifiers.PD),
                     fissure.comms.Identifiers.TSI: self.heartbeats.get(fissure.comms.Identifiers.TSI),
                     fissure.comms.Identifiers.SENSOR_NODE: {
                         fissure.comms.MessageFields.TIME: node_times,
@@ -991,18 +980,18 @@ class HiprFisr:
                     self.logger.error("[HIPRFISR][HB] Dashboard not connected.")
 
             # -------------------------------------------------------------
-            # PD / TSI HEARTBEAT
+            # TSI HEARTBEAT
             # -------------------------------------------------------------
-            if self.pd_connected or self.tsi_connected:
+            if self.tsi_connected:
                 heartbeat_with_ip = dict(heartbeat)
                 heartbeat_with_ip[fissure.comms.MessageFields.IP] = "localhost"
 
                 await self.backend_router.send_heartbeat(
                     heartbeat_with_ip,
-                    target_ids=[self.pd_id, self.tsi_id],
+                    target_ids=[self.tsi_id],
                 )
             else:
-                self.logger.error("[HIPRFISR][HB] PD/TSI not connected.")
+                self.logger.error("[HIPRFISR][HB] TSI not connected.")
 
             # -------------------------------------------------------------
             # SENSOR NODE HEARTBEAT (Don't heartbeat to nodes)
@@ -1071,9 +1060,6 @@ class HiprFisr:
                 sender_id = hb.get(fissure.comms.MessageFields.SENDER_ID)
                 ident     = hb.get(fissure.comms.MessageFields.IDENTIFIER)
                 t         = float(hb[fissure.comms.MessageFields.TIME])
-
-                if ident == fissure.comms.Identifiers.PD and self.pd_id is None:
-                    self.pd_id = sender_id
 
                 if ident == fissure.comms.Identifiers.TSI and self.tsi_id is None:
                     self.tsi_id = sender_id
@@ -1589,33 +1575,6 @@ class HiprFisr:
                 self.dashboard_connected = True
 
         # -----------------------------------------------------------------
-        # PD check
-        # -----------------------------------------------------------------
-        cutoff_pd = current_time - (global_interval * failure_multiple)
-        last_pd = self.heartbeats.get(fissure.comms.Identifiers.PD)
-
-        if last_pd is not None:
-            if self.pd_connected and (last_pd < cutoff_pd):
-                msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "componentDisconnected",
-                    fissure.comms.MessageFields.PARAMETERS: fissure.comms.Identifiers.PD,
-                }
-                if self.dashboard_connected:
-                    await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-                self.pd_connected = False
-
-            elif (not self.pd_connected) and (last_pd > cutoff_pd):
-                msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "componentConnected",
-                    fissure.comms.MessageFields.PARAMETERS: fissure.comms.Identifiers.PD,
-                }
-                if self.dashboard_connected:
-                    await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-                self.pd_connected = True
-
-        # -----------------------------------------------------------------
         # TSI check
         # -----------------------------------------------------------------
         cutoff_tsi = current_time - (global_interval * failure_multiple)
@@ -1729,11 +1688,11 @@ class HiprFisr:
             fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
         }
 
-        if (self.pd_connected is True) and (self.tsi_connected is True):
+        if self.tsi_connected and self.tsi_id is not None:
             await self.backend_router.send_msg(
                 fissure.comms.MessageTypes.COMMANDS,
                 msg,
-                target_ids=[self.pd_id, self.tsi_id],
+                target_ids=[self.tsi_id],
             )
 
         # -----------------------------------------

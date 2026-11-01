@@ -250,9 +250,6 @@ class SensorNode(object):
         self.heartbeat_interval_connected = int(self.settings_dict["Sensor Node"].get("heartbeat_interval_connected", 20))
         self.sensor_node_heartbeat_time = 0
 
-        self.running_PD = False
-        self.pd_bits_socket = None
-
         self.autorun_boot_requested = bool(self.settings_dict["Sensor Node"].get("autorun", False))
 
         # ZMQ DEALER/ROUTER fields
@@ -1699,13 +1696,6 @@ class SensorNode(object):
     async def shutdown_comms(self):
         """
         """
-        if self.pd_bits_socket:
-            try:
-                self.stopPD()
-                await asyncio.sleep(2)
-            except:
-                pass
-
         artifact_client = self.artifact_transfer_client
         if artifact_client is not None:
             try:
@@ -1895,9 +1885,6 @@ class SensorNode(object):
                 if self.network_type == "IP":
                     if heartbeat_task is not None:
                         await self.read_hiprfisr_messages()
-
-                    if self.pd_bits_socket:
-                        await self.read_pd_bits_messages()
 
         except asyncio.CancelledError:
             raise
@@ -2447,21 +2434,11 @@ class SensorNode(object):
 
 
     def setVariable(self, flow_graph="", variable="", value=""):
-        """ Sets a variable of a specified running flow graph.
-        """
-        # Make it Match GNU Radio Format
-        formatted_name = "set_" + variable
-        isNumber = fissure.utils.isFloat(value)
-        if isNumber:
-            if flow_graph == "Protocol Discovery":
-                getattr(self.pdflowtoexec,formatted_name)(float(value))
-            elif flow_graph == "Sniffer":
-                getattr(self.snifferflowtoexec,formatted_name)(float(value))
-        else:
-            if flow_graph == "Protocol Discovery":
-                getattr(self.pdflowtoexec,formatted_name)(value)
-            elif flow_graph == "Sniffer":
-                getattr(self.snifferflowtoexec,formatted_name)(value)
+        """Set a variable on a supported legacy flow graph."""
+        if flow_graph != "Sniffer":
+            return
+        setter = getattr(self.snifferflowtoexec, "set_" + variable)
+        setter(float(value) if fissure.utils.isFloat(value) else value)
 
 
     ##############  IQ Playback Flow Graphs  #############
@@ -2535,91 +2512,6 @@ class SensorNode(object):
         self.iqflowtoexec.stop()
         self.iqflowtoexec.wait()
         del self.iqflowtoexec  # Free up the ports
-
-
-    #######################  Protocol Discovery  #######################
-
-    def stopPD(self):
-        """
-        Stops PD processing of bits by closing the ZMQ SUB socket.
-        """
-        # Stop Operations
-        self.logger.info("PD: Stopping Protocol Discovery...")
-        self.running_PD = False
-        
-        # Close Temporary SUB Socket
-        if self.pd_bits_socket != None:
-            self.pd_bits_socket.close()
-            self.pd_bits_context.term()
-            self.pd_bits_socket = None
-            self.pd_bits_context = None
-
-
-    async def read_pd_bits_messages(self):
-        """
-        Reads messages on the PD bits ZMQ SUB and forwards them to the HIRPFISR/Dashboard
-        """
-        poller = zmq.Poller()
-        poller.register(self.pd_bits_socket, zmq.POLLIN)
-
-        socks = dict(poller.poll(timeout=0))  # Set timeout to 0 for non-blocking poll
-
-        if self.pd_bits_socket in socks and socks[self.pd_bits_socket] == zmq.POLLIN:
-            while True:
-                try:
-                    # Receive a message
-                    bits_message = self.pd_bits_socket.recv_string(flags=zmq.NOBLOCK)
-                    
-                    # Send the Message
-                    PARAMETERS = {"bits_message": bits_message}
-                    msg = {
-                                fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                                fissure.comms.MessageFields.MESSAGE_NAME: "pdBitsReturn",
-                                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-                    }
-                    await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-                except zmq.Again:
-                    # No more messages are available
-                    break
-
-
-    def protocolDiscoveryFG_ThreadStart(self, flow_graph_filename, variable_names, variable_values):
-        """ 
-        Runs the flow graph in the new thread.
-        """
-        # # Stop Any Running PD Flow Graphs
-        # try:
-        #     self.stopFlowGraph(None)
-        # except:
-        #     pass
-
-        try:
-            # Replace Username in Filepaths
-            if self.local_remote == "remote":
-                for n in range(0,len(variable_names)):
-                    if 'filepath' in variable_names[n]:
-                        variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-
-            # Overwrite Variables
-            loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
-
-            # Call the "__init__" Function
-            self.pdflowtoexec = getattr(loadedmod,class_name)()
-
-            # Start it
-            self.pdflowtoexec.start()
-            asyncio.run(self.flowGraphStarted("PD"))  # Signals to other components
-            self.pdflowtoexec.wait()
-
-            # Signal on the PUB that the PD Flow Graph is Finished
-            asyncio.run(self.flowGraphFinished("PD"))
-
-        # Error Loading Flow Graph
-        except Exception as e:
-            asyncio.run(self.flowGraphStarted("PD"))
-            asyncio.run(self.flowGraphFinished("PD"))
-            asyncio.run(self.flowGraphError(str(e)))
 
 
     ######################  Sniffer Flow Graphs  #######################

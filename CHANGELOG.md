@@ -3,6 +3,24 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-10-31
 
+Retire legacy Protocol Discovery backend and streamline Dashboard
+
+### Added
+
+- Added an optional Whisper.cpp installer item for CPU-based transcription with the multilingual small model and installation verification.
+- Added follow-up TODOs for statistical framing analysis, per-bit entropy and field inference, live bitstream ingestion, and future dissector generation in the modern Protocol Discovery workspaces.
+
+### Changed
+
+- Retired the standalone Protocol Discovery process and removed its HIPRFISR startup, connection, heartbeat, messaging, and shutdown integration.
+- Removed the five hidden legacy Protocol Discovery pages and their obsolete initialization, slot handlers, callbacks, Sensor Node bitstream listener, and component status reporting while preserving the modern analysis workspaces.
+- Cleaned up obsolete PD configuration ports, logging settings, Options controls, and Log tab filters.
+- Left the legacy Library Search workflow hidden and disabled pending reimplementation without the PD backend.
+- Disabled the status bar hover popup while retaining the status bar and its normal updates.
+- Moved legacy Lua dissectors into Tools and disabled their automatic Wireshark installation across operating systems, including the redundant DragonOS Wireshark installer item.
+
+## 2026-10-31
+
 Add audio transcription and improve Action artifact access
 
 ### Added

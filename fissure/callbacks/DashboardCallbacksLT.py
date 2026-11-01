@@ -14,34 +14,19 @@ import datetime
 
 # from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
 # from ..Dashboard.Slots import StatusBarSlots  # how do you go from callbacks to slots?
-from fissure.Dashboard.Slots import (
-    ArchiveTabSlots,
-    DashboardSlots,
-    IQDataTabSlots,
-    LibraryTabSlots,
-    LogTabSlots,
-    MenuBarSlots,
-    PDTabSlots,
-    SensorNodesTabSlots,
-    SensorNodesPluginsTabSlots,
-    StatusBarSlots,
-    TopBarSlots,
-    TSITabSlots,
-)
-
-from fissure.Dashboard.UI_Components.Qt5 import (
-    # CustomColor,
-    # JointPlotDialog,
-    # MiscChooser,
-    # MyMessageBox,
-    MyPlotWindow,
-    # NewSOI,
-    # OperationsThread,
-    # OptionsDialog,
-    # TreeModel,
-    # TreeNode,
-    # TrimSettings,
-)
+# from fissure.Dashboard.Slots import (
+#     ArchiveTabSlots,
+#     DashboardSlots,
+#     IQDataTabSlots,
+#     LibraryTabSlots,
+#     LogTabSlots,
+#     MenuBarSlots,
+#     SensorNodesTabSlots,
+#     SensorNodesPluginsTabSlots,
+#     StatusBarSlots,
+#     TopBarSlots,
+#     TSITabSlots,
+# )
 
 
 async def recallInfoMeshtasticReturnLT(component: object, tab_index="", nickname="", location="", notes=""):

@@ -72,15 +72,6 @@ def cacheTableData(source="Dashboard"):
             "packet_formats",
             "soi_data"
         ]
-    elif source == "Protocol Discovery":
-        tables_to_load = [
-            "protocols",
-            "demodulation_flow_graphs",
-            "modulation_types",
-            "packet_types",
-            "packet_formats",
-            "soi_data"
-        ]
     else:
         tables_to_load = [
             "archive_collection",

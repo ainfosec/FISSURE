@@ -178,74 +178,50 @@ def _slotPD_AddToLibraryIsCRC_Changed(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_library_pd_packet.item(row,4).setFlags(dashboard.ui.tableWidget_library_pd_packet.item(row,4).flags() ^ QtCore.Qt.ItemIsEditable)
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotLibrarySearchSearchLibraryClicked(dashboard: QtCore.QObject):
-    """ 
-    Sends a message to the HIPRFISR/PD to check the library for occurences of the selected preamble.
-    """
-    # Get SOI Data
-    soi_data = ["","","","","","","","","",""]
-    if dashboard.ui.checkBox_library_search_frequency.isChecked():
-        soi_data[0] = str(dashboard.ui.textEdit_library_search_frequency.toPlainText())
-        soi_data[6] = str(dashboard.ui.textEdit_library_search_frequency_margin.toPlainText())
-    if dashboard.ui.checkBox_library_search_modulation.isChecked():
-        soi_data[1] = str(dashboard.ui.textEdit_library_search_modulation.toPlainText())
-    if dashboard.ui.checkBox_library_search_bandwidth.isChecked():
-        soi_data[2] = str(dashboard.ui.textEdit_library_search_bandwidth.toPlainText())
-        soi_data[7] = str(dashboard.ui.textEdit_library_search_bandwidth_margin.toPlainText())
-    if dashboard.ui.checkBox_library_search_continuous.isChecked():
-        soi_data[3] = str(dashboard.ui.comboBox_library_search_continuous.currentText())
-    if dashboard.ui.checkBox_library_search_start_frequency.isChecked():
-        soi_data[4] = str(dashboard.ui.textEdit_library_search_start_frequency.toPlainText())
-        soi_data[8] = str(dashboard.ui.textEdit_library_search_start_frequency_margin.toPlainText())
-    if dashboard.ui.checkBox_library_search_end_frequency.isChecked():
-        soi_data[5] = str(dashboard.ui.textEdit_library_search_end_frequency.toPlainText())
-        soi_data[9] = str(dashboard.ui.textEdit_library_search_end_frequency_margin.toPlainText())
+# @qasync.asyncSlot(QtCore.QObject)
+# async def _slotLibrarySearchSearchLibraryClicked(dashboard: QtCore.QObject):
+#     """ 
+#     Sends a message to the HIPRFISR/PD to check the library for occurences of the selected preamble.
+#     """
+#     # Get SOI Data
+#     soi_data = ["","","","","","","","","",""]
+#     if dashboard.ui.checkBox_library_search_frequency.isChecked():
+#         soi_data[0] = str(dashboard.ui.textEdit_library_search_frequency.toPlainText())
+#         soi_data[6] = str(dashboard.ui.textEdit_library_search_frequency_margin.toPlainText())
+#     if dashboard.ui.checkBox_library_search_modulation.isChecked():
+#         soi_data[1] = str(dashboard.ui.textEdit_library_search_modulation.toPlainText())
+#     if dashboard.ui.checkBox_library_search_bandwidth.isChecked():
+#         soi_data[2] = str(dashboard.ui.textEdit_library_search_bandwidth.toPlainText())
+#         soi_data[7] = str(dashboard.ui.textEdit_library_search_bandwidth_margin.toPlainText())
+#     if dashboard.ui.checkBox_library_search_continuous.isChecked():
+#         soi_data[3] = str(dashboard.ui.comboBox_library_search_continuous.currentText())
+#     if dashboard.ui.checkBox_library_search_start_frequency.isChecked():
+#         soi_data[4] = str(dashboard.ui.textEdit_library_search_start_frequency.toPlainText())
+#         soi_data[8] = str(dashboard.ui.textEdit_library_search_start_frequency_margin.toPlainText())
+#     if dashboard.ui.checkBox_library_search_end_frequency.isChecked():
+#         soi_data[5] = str(dashboard.ui.textEdit_library_search_end_frequency.toPlainText())
+#         soi_data[9] = str(dashboard.ui.textEdit_library_search_end_frequency_margin.toPlainText())
 
-    # Get Field Value
-    field_data = ""
-    if dashboard.ui.checkBox_library_search_field_value.isChecked():
-        # Convert to Binary
-        if dashboard.ui.radioButton_library_search_hex.isChecked():
-            get_data = str(dashboard.ui.textEdit_library_search_field_value.toPlainText())
-            get_data = get_data.replace(' ','')
-            field_data = bin(int(get_data, 16))[2:].zfill(int(len(get_data)*4))
-        else:
-            field_data = str(dashboard.ui.textEdit_library_search_field_value.toPlainText())
-            field_data.replace(' ','')
+#     # Get Field Value
+#     field_data = ""
+#     if dashboard.ui.checkBox_library_search_field_value.isChecked():
+#         # Convert to Binary
+#         if dashboard.ui.radioButton_library_search_hex.isChecked():
+#             get_data = str(dashboard.ui.textEdit_library_search_field_value.toPlainText())
+#             get_data = get_data.replace(' ','')
+#             field_data = bin(int(get_data, 16))[2:].zfill(int(len(get_data)*4))
+#         else:
+#             field_data = str(dashboard.ui.textEdit_library_search_field_value.toPlainText())
+#             field_data.replace(' ','')
 
-    # Clear Results Table
-    dashboard.ui.tableWidget1_library_search_results.setRowCount(0)
+#     # Clear Results Table
+#     dashboard.ui.tableWidget1_library_search_results.setRowCount(0)
 
-    # Send Message
-    await dashboard.backend.searchLibrary(soi_data, field_data)
+#     # Send Message
+#     await dashboard.backend.searchLibrary(soi_data, field_data)
 
-    # Show the Label
-    dashboard.ui.label2_library_search_searching.setVisible(True)
-
-
-def _slotPD_DemodHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Updates the list of demodulation flow graphs. Not a slot.
-    """
-    # Get Hardware
-    get_hardware = str(dashboard.ui.comboBox_pd_demod_hardware.currentText()).split(' - ')[0]
-
-    # Clear the List
-    dashboard.ui.listWidget_pd_flow_graphs_all_fgs.clear()
-
-    # Get All Demodulation Flow Graphs
-    all_demod_fgs = fissure.utils.library.getDemodulationFlowGraphFilenames(
-        dashboard.backend.library, 
-        protocol = None, 
-        modulation = None, 
-        hardware = get_hardware,
-        version = fissure.utils.get_library_version()
-    )
-
-    # Update the List Widget
-    for fg in sorted(all_demod_fgs,key=str.lower):
-        dashboard.ui.listWidget_pd_flow_graphs_all_fgs.addItem(fg)
+#     # Show the Label
+#     dashboard.ui.label2_library_search_searching.setVisible(True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

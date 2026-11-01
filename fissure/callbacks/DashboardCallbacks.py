@@ -22,7 +22,6 @@ from fissure.Dashboard.Slots import (
     ListeningPostsTabSlots,
     LogTabSlots,
     MenuBarSlots,
-    PDTabSlots,
     ScapyTabSlots,
     SensorNodesTabSlots,
     SensorNodesPluginsTabSlots,
@@ -34,48 +33,8 @@ from fissure.Dashboard.Slots import (
     TSITabSlots,
 )
 
-from fissure.Dashboard.UI_Components.Qt5 import (
-    # CustomColor,
-    # JointPlotDialog,
-    # MiscChooser,
-    # MyMessageBox,
-    MyPlotWindow,
-    # NewSOI,
-    # OperationsThread,
-    # OptionsDialog,
-    # TreeModel,
-    # TreeNode,
-    # TrimSettings,
-)
-
 from fissure.utils import cot_utils
 from fissure.utils.selected_node_utils import set_selected_node_connection_state
-
-
-async def flowGraphFinished(component: object, category=""):
-    """Update the Dashboard in response to a legacy flow graph finished message."""
-    if category == "PD":
-        if component.frontend.ui.pushButton_pd_flow_graphs_start_stop.text() == "Stop":
-            component.frontend.ui.pushButton_pd_flow_graphs_start_stop.setText("Start")
-            component.frontend.ui.pushButton_pd_flow_graphs_apply_changes.setEnabled(False)
-            component.frontend.ui.label2_pd_flow_graphs_status.setText("Stopped")
-            component.frontend.ui.label2_pd_status_flow_graph_status.setText("Stopped")
-            component.frontend.refreshStatusBarText()
-
-
-async def flowGraphStarted(component: object, category=""):
-    """Update Dashboard controls when a legacy flow graph reports that it started."""
-    if category == "PD":
-        component.frontend.ui.label2_pd_flow_graphs_status.setText("Running... ")
-        component.frontend.ui.pushButton_pd_flow_graphs_start_stop.setEnabled(True)
-        component.frontend.ui.label2_pd_status_flow_graph_status.setText("Running... ")
-
-        if component.frontend.active_sensor_node > -1:
-            filepath = str(component.frontend.ui.textEdit_pd_flow_graphs_filepath.toPlainText())
-            component.frontend.statusbar_text[component.frontend.active_sensor_node][2] = (
-                "Running Flow Graph... " + filepath.rsplit("/", 1)[-1]
-            )
-            component.frontend.refreshStatusBarText()
 
 
 async def hardwareGuessResults(component: object, table_row=0, hardware_type="", scan_results="", new_guess_index=0):
@@ -253,8 +212,6 @@ async def componentDisconnected(component: object, component_name=""):
         pass
     elif component_name == fissure.comms.Identifiers.TSI:
         component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.TSI, False, component.frontend.statusBar())
-    elif component_name == fissure.comms.Identifiers.PD:
-        component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.PD, False, component.frontend.statusBar())
     else:
         pass
         # component.frontend.popups["NodeConfigureDialog"].sensorNodeDisconnected()
@@ -264,9 +221,7 @@ async def componentConnected(component: object, component_name=""):
     """
     Update status bar and other widgets with new connection status.
     """
-    if component_name == fissure.comms.Identifiers.PD:
-        component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.PD, True, component.frontend.statusBar())
-    elif component_name == fissure.comms.Identifiers.TSI:
+    if component_name == fissure.comms.Identifiers.TSI:
         component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.TSI, True, component.frontend.statusBar())
     elif component_name == fissure.comms.Identifiers.DASHBOARD:
         pass
@@ -346,32 +301,6 @@ async def tsiFE_Finished(component: object, table_strings=[]):
     # Set Progress Bar
     component.frontend.ui.progressBar_tsi_fe_operation.setValue(100)
     component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
-
-
-async def flowGraphStartedSniffer(component: object, category=""):
-    """ 
-    Flow graph started message returned from Sensor Node.
-    """        
-    # Enable the Buttons
-    if category == "Stream":
-        component.frontend.ui.pushButton_pd_sniffer_stream.setEnabled(True)
-    elif category == "Tagged Stream":
-        component.frontend.ui.pushButton_pd_sniffer_tagged_stream.setEnabled(True)
-    elif category == "Message/PDU":
-        component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
-
-
-async def flowGraphFinishedSniffer(component: object, category=""):
-    """ 
-    Flow graph finished message returned from Sensor Node.
-    """
-    # Enable the Buttons
-    component.frontend.ui.pushButton_pd_sniffer_stream.setText("Sniffer - Stream")
-    component.frontend.ui.pushButton_pd_sniffer_tagged_stream.setText("Sniffer - Tagged Str.")
-    component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setText("Sniffer - Msg/PDU")
-    component.frontend.ui.pushButton_pd_sniffer_stream.setEnabled(True)
-    component.frontend.ui.pushButton_pd_sniffer_tagged_stream.setEnabled(True)
-    component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
 
 
 async def flowGraphError(component: object, error=""):
@@ -556,254 +485,6 @@ async def fileDownloaded(component: object):
     SensorNodesTabSlots._slotSensorNodesFileNavigationLocalFolderChanged(component.frontend)
 
 
-async def findPreamblesReturn(component: object, slice_medians, candidate_preambles, min_std_dev_max_length_preambles):
-    """
-    Updates the Dashboard with the preamble results.
-    """
-    status_text = time.strftime("%H:%M:%S", time.localtime()) + ": Found Preambles\n"
-
-    PDTabSlots._slotPD_AddStatus(component.frontend, status_text)
-    
-    # Store to Memory
-    component.frontend.median_slicing_results = slice_medians
-    component.frontend.candidate_preamble_data = candidate_preambles
-
-    # Add the Values to the Table, Set the Slider
-    PDTabSlots.pdBitSlicingSortPreambleStatsTable(component.frontend, int(component.frontend.ui.doubleSpinBox_pd_bit_slicing_window_size.value()))
-    PDTabSlots.pdBitSlicingSortCandidatePreambleTable(component.frontend, int(component.frontend.ui.doubleSpinBox_pd_bit_slicing_window_size_candidates.value()))
-    recommended_preamble = str(list(min_std_dev_max_length_preambles.keys())[0])
-    component.frontend.ui.doubleSpinBox_pd_bit_slicing_window_size_candidates.setValue(len(recommended_preamble))
-    component.frontend.ui.textEdit_pd_bit_slicing_recommended_preamble.setPlainText(recommended_preamble)
-
-    # Enable Controls
-    component.frontend.ui.label2_pd_bit_slicing_window_size.setEnabled(True)
-    component.frontend.ui.doubleSpinBox_pd_bit_slicing_window_size.setEnabled(True)
-    component.frontend.ui.horizontalSlider_pd_bit_slicing_preamble_stats.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_window_size_candidates.setEnabled(True)
-    component.frontend.ui.doubleSpinBox_pd_bit_slicing_window_size_candidates.setEnabled(True)
-    component.frontend.ui.horizontalSlider_pd_bit_slicing_preamble_stats_candidates.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_slice_by_preamble.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_first_n.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_estimated_length.setEnabled(True)
-    component.frontend.ui.spinBox_pd_bit_slicing_return_limit.setEnabled(True)
-    component.frontend.ui.spinBox_pd_bit_slicing_estimated_length.setEnabled(True)
-    component.frontend.ui.tableWidget_pd_bit_slicing_lengths.setEnabled(True)
-    component.frontend.ui.tableWidget_pd_bit_slicing_packets.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_recommended_preamble.setEnabled(True)
-    component.frontend.ui.textEdit_pd_bit_slicing_recommended_preamble.setEnabled(True)
-
-    # Hide the Calculating Label
-    component.frontend.ui.label2_pd_bit_slicing_calculating.setVisible(False)
-
-
-async def foundPreamblesInLibrary(component: object, parameters={}):
-    """
-    Updates the Dashboard with preamble search results.
-    """
-    PDTabSlots._slotPD_AddStatus(
-        component.frontend,
-        time.strftime("%H:%M:%S", time.localtime()) + ": Found Preambles in Library: " + repr(parameters) + "\n"
-    )
-    component.signal_pdBitSlicingLibraryLookupReturned.emit(parameters)
-
-
-async def sliceByPreambleReturn(component: object, packet_lengths=[], packet_dict={}):
-    """ 
-    Updates the tables with the return values from 'Slice By Preamble.'
-    """
-    # Convert Hex Data to Binary
-    component.frontend.first_n_packets = {}
-    for p_length, packet in packet_dict.items():
-        packet_list = []
-        for hex_data in packet:
-            packet_list.append(bin(int(hex_data, 16))[2:].zfill(int(len(hex_data)*4)))  # Converts packet to binary
-        component.frontend.first_n_packets[4*int(p_length)] = packet_list
-
-    # Clear the Packet Length Table
-    for row in reversed(range(0,component.frontend.ui.tableWidget_pd_bit_slicing_lengths.rowCount())):
-        component.frontend.ui.tableWidget_pd_bit_slicing_lengths.removeRow(row)
-    for col in reversed(range(0,component.frontend.ui.tableWidget_pd_bit_slicing_packets.columnCount())):
-        component.frontend.ui.tableWidget_pd_bit_slicing_packets.removeColumn(col)
-
-    # Insert into the Packet Length Table
-    for n in reversed(range(0,len(packet_lengths))):
-        component.frontend.ui.tableWidget_pd_bit_slicing_lengths.insertRow(0)
-
-        # Packet Lengths
-        packet_length_item = QtWidgets.QTableWidgetItem(str(4*packet_lengths[n][0]))  # In bits
-        packet_length_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        component.frontend.ui.tableWidget_pd_bit_slicing_lengths.setItem(0,0,packet_length_item)
-
-        # Packet Length Occurrences
-        length_occurrences_item = QtWidgets.QTableWidgetItem(str(packet_lengths[n][1]))
-        length_occurrences_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        component.frontend.ui.tableWidget_pd_bit_slicing_lengths.setItem(0,1,length_occurrences_item)
-
-    # Select the First Row
-    component.frontend.ui.tableWidget_pd_bit_slicing_lengths.setCurrentCell(0,0)
-
-    # Enable the Controls
-    component.frontend.ui.frame_pd_bit_slicing_manual_slicing.setEnabled(True)
-    component.frontend.ui.frame_pd_bit_slicing_automated_slicing.setEnabled(True)
-    component.frontend.ui.frame_pd_bit_slicing_library.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_interval.setEnabled(True)
-    component.frontend.ui.spinBox_pd_bit_slicing_interval.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_slice.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_reset.setEnabled(True)
-    component.frontend.ui.label2_pd_bit_slicing_split_interval.setEnabled(True)
-    component.frontend.ui.spinBox_pd_bit_slicining_split_interval.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_split_fields.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_merge_fields.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_search_library.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_add_to_library.setEnabled(True)
-    component.frontend.ui.checkBox_pd_bit_slicing_colors.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_plot_entropy.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_shift_left.setEnabled(True)
-    component.frontend.ui.pushButton_pd_bit_slicing_shift_right.setEnabled(True)
-
-    # Resize the Tables
-    #~ component.frontend.ui.tableWidget_pd_bit_slicing_lengths.resizeColumnsToContents()
-    component.frontend.ui.tableWidget_pd_bit_slicing_lengths.resizeRowsToContents()
-
-
-async def bufferSizeReturn(component: object, buffer_size=0):
-    """ 
-    Updates the status labels of the Dashboard with the latest protocol discovery buffer size.
-    """
-    # Protocol Discovery Progress Bars
-    component.frontend.ui.progressBar_pd_status_buffer.setValue(int(buffer_size))
-    component.frontend.ui.progressBar_bit_slicing_buffer.setValue(int(buffer_size))
-
-
-async def demodFG_LibrarySearchReturn(component: object, flow_graphs=[]):
-    """ 
-    Updates the list of recommended flow graphs in the "Flow Graph" tab.
-    """
-    # Clear the List(s)
-    component.frontend.ui.listWidget_pd_flow_graphs_recommended_fgs.clear()
-
-    # Format the String
-    modulation_list = yaml.load(str(flow_graphs), yaml.FullLoader)
-
-    # Add the Filenames to the List
-    component.frontend.ui.listWidget_pd_flow_graphs_recommended_fgs.addItems(modulation_list)
-
-    # Select the First File
-    component.frontend.ui.listWidget_pd_flow_graphs_recommended_fgs.setCurrentRow(0)
-
-    # # Auto-Load PD Flow Graphs is Selected
-    # if component.frontend.ui.checkBox_automation_auto_select_pd_flow_graphs.isChecked():  # Combobox deleted
-    #     # Target Protocol if Targeting
-    #     target_protocol = str(component.frontend.ui.comboBox_automation_target_protocol.currentText())
-
-    #     # Protocol Flow Graph
-    #     match_found = False
-    #     if target_protocol != "None":
-    #         for n in range(0,len(modulation_list)):
-    #             if target_protocol in modulation_list[n]:
-    #                 # Select Flow Graph
-    #                 component.frontend.ui.listWidget_pd_flow_graphs_recommended_fgs.setCurrentRow(n)
-    #                 PDTabSlots._slotPD_DemodulationLoadSelectedClicked(component.frontend)
-    #                 match_found = True
-
-    #     # Generic Flow Graph
-    #     if match_found == False:
-    #         get_modulation = str(component.frontend.ui.textEdit_pd_flow_graphs_modulation.toPlainText()).upper()
-    #         for n in range(0,len(modulation_list)):
-    #             if get_modulation in modulation_list[n]:
-    #                 # Select Flow Graph
-    #                 component.frontend.ui.listWidget_pd_flow_graphs_recommended_fgs.setCurrentRow(n)
-    #                 PDTabSlots._slotPD_DemodulationLoadSelectedClicked(component.fronted)
-
-    # Insert Message into the Status Window
-    get_text = time.strftime('%H:%M:%S', time.localtime()) + ": Recommended Flow Graphs: " + str(modulation_list) +  "\n"
-    PDTabSlots._slotPD_AddStatus(component.frontend, get_text)
-
-    # Show/Hide the PD Flow Graph Lookup Not Found Label
-    if len(modulation_list) == 0:
-        component.frontend.ui.label2_pd_flow_graphs_lookup_not_found.setText("Not Found!")
-    else:
-        component.frontend.ui.label2_pd_flow_graphs_lookup_not_found.setText("Found!")
-
-
-async def searchLibraryReturn(component: object, message=[]):
-    """ 
-    Updates the listbox of library packet types and protocols that match a preamble.
-    """
-    # Remove Existing Items
-    component.frontend.ui.tableWidget1_library_search_results.setRowCount(0)
-
-    # Convert Message to List
-    # message_list = ast.literal_eval(message)
-
-    # Set the Values in the Results Table
-    for row in message:
-        component.frontend.ui.tableWidget1_library_search_results.setRowCount(component.frontend.ui.tableWidget1_library_search_results.rowCount()+1)
-
-        # Protocol
-        protocol_item = QtWidgets.QTableWidgetItem(str(row[1]))
-        protocol_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        protocol_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,0,protocol_item)
-
-        # Subtype
-        subtype_item = QtWidgets.QTableWidgetItem(str(row[2]))
-        subtype_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        subtype_item.setFlags(subtype_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,1,subtype_item)
-
-        # Center Frequency
-        center_freq_item = QtWidgets.QTableWidgetItem(str(row[3]))
-        center_freq_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        center_freq_item.setFlags(center_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,2,center_freq_item)
-
-        # Start Frequency
-        start_freq_item = QtWidgets.QTableWidgetItem(str(row[4]))
-        start_freq_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        start_freq_item.setFlags(start_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,3,start_freq_item)
-
-        # End Frequency
-        end_freq_item = QtWidgets.QTableWidgetItem(str(row[5]))
-        end_freq_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        end_freq_item.setFlags(end_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,4,end_freq_item)
-
-        # Bandwidth
-        bandwidth_item = QtWidgets.QTableWidgetItem(str(row[6]))
-        bandwidth_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        bandwidth_item.setFlags(bandwidth_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,5,bandwidth_item)
-
-        # Modulation
-        modulation_item = QtWidgets.QTableWidgetItem(str(row[8]))
-        modulation_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        modulation_item.setFlags(modulation_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,6,modulation_item)
-
-        # Continuous
-        continuous_item = QtWidgets.QTableWidgetItem(str(row[7]).capitalize())
-        continuous_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        continuous_item.setFlags(continuous_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,7,continuous_item)
-
-        # Notes
-        notes_item = QtWidgets.QTableWidgetItem(str(row[9]))
-        notes_item.setTextAlignment(QtCore.Qt.AlignLeft)
-        notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
-        component.frontend.ui.tableWidget1_library_search_results.setItem(component.frontend.ui.tableWidget1_library_search_results.rowCount()-1,8,notes_item)
-
-    # Resize the Table
-    component.frontend.ui.tableWidget1_library_search_results.resizeColumnsToContents()
-    component.frontend.ui.tableWidget1_library_search_results.resizeRowsToContents()
-    #component.frontend.ui.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(False)
-    #component.frontend.ui.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(True)
-
-    # Hide the Label
-    component.frontend.ui.label2_library_search_searching.setVisible(False)
-
-
 async def libraryUpdateFinished(component: object):
     """ 
     Updates the FISSURE library and widgets with the latest library information.
@@ -819,10 +500,6 @@ async def libraryUpdateFinished(component: object):
             protocols_with_packet_types.append(p)
     component.frontend.ui.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
 
-    # Dissector Protocols
-    component.frontend.ui.comboBox_pd_dissectors_protocol.clear()
-    component.frontend.ui.comboBox_pd_dissectors_protocol.addItems(sorted(protocols_with_packet_types))
-
     # Gallery Protocols
     component.frontend.ui.comboBox_library_gallery_protocol.clear()
     protocols_with_images = []
@@ -833,14 +510,6 @@ async def libraryUpdateFinished(component: object):
 
     # Refresh Browse Table
     LibraryTabSlots._slotLibraryBrowseChanged(component.frontend)
-
-    # Sniffer Protocols
-    component.frontend.ui.comboBox_pd_sniffer_protocols.clear()
-    protocols_with_demod_fgs = []
-    for p in protocols:
-        if len(fissure.utils.library.getDemodulationFlowGraphFilenames(component.library, p, '', '', version = fissure.utils.get_library_version())) > 0:
-            protocols_with_demod_fgs.append(p)
-    component.frontend.ui.comboBox_pd_sniffer_protocols.addItems(sorted(protocols_with_demod_fgs))
 
     # # Automation Target Protocols
     # get_targeted_protocol = str(component.frontend.ui.comboBox_automation_target_protocol.currentText())  # Might want to recheck that this is ok.
@@ -865,18 +534,6 @@ async def libraryUpdateFinished(component: object):
     component.frontend.ui.label_library_attacks_filepath.setText("")
     component.frontend.ui.textEdit_library_attacks_name.setText("")
     component.frontend.ui.textEdit_library_attacks_new_name.setText("")
-
-    # Update All Flow Graphs in Demodulation Tab
-    PDTabSlots._slotPD_DemodHardwareChanged(component.frontend)
-
-
-async def findEntropyReturn(component: object, ents):
-    """ 
-    Plots the entropy for the bit positions upon receiving the message from Protocol Discovery.
-    """
-    # Create a Modeless Dialog Window
-    plotBox = MyPlotWindow(component.frontend, ents)
-    plotBox.exec_()
 
 
 async def retrieveDatabaseCacheReturn(component: object, database_return={}, refresh_frontend_widgets=False):
