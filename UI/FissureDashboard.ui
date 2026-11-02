@@ -1000,9 +1000,6 @@
      <addaction name="actionDemo_IQ_Data_All"/>
      <addaction name="separator"/>
      <addaction name="actionDemo_IQ_Data_Data_Viewer"/>
-     <addaction name="actionDemo_IQ_Data_Record_Tab"/>
-     <addaction name="actionDemo_IQ_Data_Playback_Tab"/>
-     <addaction name="actionDemo_IQ_Data_Inspection_Tab"/>
      <addaction name="actionDemo_IQ_Data_Crop_Tab"/>
      <addaction name="actionDemo_IQ_Data_Convert_Tab"/>
      <addaction name="actionDemo_IQ_Data_Append_Tab"/>

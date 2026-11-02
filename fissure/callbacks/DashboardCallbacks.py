@@ -162,27 +162,7 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
         component.logger.debug(
             f"Could not update Classifier selected-node gate after recallSettingsReturn: {e}"
         )
-    
-    try:
-        IQDataTabSlots.update_iq_record_selected_node_gate(
-            component.frontend
-        )
-    except Exception as e:
-        component.logger.debug(
-            "Could not update IQ Record selected-node gate "
-            f"after recallSettingsReturn: {e}"
-        )
-    
-    try:
-        IQDataTabSlots.update_iq_playback_selected_node_gate(
-            component.frontend
-        )
-    except Exception as e:
-        component.logger.debug(
-            "Could not update IQ Playback selected-node gate "
-            f"after recallSettingsReturn: {e}"
-        )
-    
+
     try:
         ArchiveTabSlots.update_archive_replay_selected_node_gate(
             component.frontend
@@ -756,76 +736,6 @@ async def responsePluginOperationStarted(
             f"operation id: {error}"
         )
 
-    # IQ Playback lifecycle only.
-    operation_name = str(
-        operation or ""
-    ).strip()
-
-    if operation_name not in {
-        "iq_playback",
-        "iq_playback.py",
-    }:
-        return
-
-    frontend = component.frontend
-
-    if not bool(
-        getattr(
-            frontend,
-            "iq_playback_start_pending",
-            False,
-        )
-    ):
-        return
-
-    tracked_node_uid = str(
-        getattr(
-            frontend,
-            "iq_playback_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    if (
-        tracked_node_uid
-        and str(
-            node_uid or ""
-        ).strip() != tracked_node_uid
-    ):
-        return
-
-    frontend.iq_playback_operation_id = str(
-        operation_id or ""
-    )
-    frontend.iq_playback_start_pending = False
-    frontend.iq_playback_running = True
-
-    frontend.ui.label2_iq_playback_status.setText(
-        "Playing..."
-    )
-
-    button = (
-        frontend.ui.pushButton_iq_playback_start_stop
-    )
-    button.setText(
-        "Stop"
-    )
-    button.setEnabled(
-        True
-    )
-    button.setProperty(
-        "running",
-        True,
-    )
-    button.style().unpolish(
-        button
-    )
-    button.style().polish(
-        button
-    )
-    button.update()
-
 
 async def responsePluginOperationStopped(
     component: object,
@@ -834,100 +744,8 @@ async def responsePluginOperationStopped(
     plugin: str,
     operation: str,
 ) -> None:
-    """
-    Handle Request for Plugin Operation Stopped.
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    operation_id : str
-        Operation ID
-    plugin : str
-        Plugin name
-    operation : str
-        Operation name
-    """
-    # IQ Playback lifecycle only.
-    operation_name = str(
-        operation or ""
-    ).strip()
-
-    if operation_name not in {
-        "iq_playback",
-        "iq_playback.py",
-    }:
-        return
-
-    frontend = component.frontend
-
-    playback_active = bool(
-        getattr(
-            frontend,
-            "iq_playback_running",
-            False,
-        )
-        or getattr(
-            frontend,
-            "iq_playback_start_pending",
-            False,
-        )
-    )
-
-    if not playback_active:
-        return
-
-    tracked_operation_id = str(
-        getattr(
-            frontend,
-            "iq_playback_operation_id",
-            "",
-        )
-        or ""
-    ).strip()
-
-    tracked_node_uid = str(
-        getattr(
-            frontend,
-            "iq_playback_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    if (
-        tracked_operation_id
-        and str(
-            operation_id or ""
-        ).strip() != tracked_operation_id
-    ):
-        return
-
-    if (
-        tracked_node_uid
-        and str(
-            node_uid or ""
-        ).strip() != tracked_node_uid
-    ):
-        return
-
-    was_stopping = (
-        str(
-            frontend.ui.label2_iq_playback_status.text()
-            or ""
-        ).strip() == "Stopping..."
-    )
-
-    IQDataTabSlots._set_iq_playback_stopped(
-        frontend,
-        status_text=(
-            "Stopped"
-            if was_stopping
-            else "Completed"
-        ),
-    )
+    """No IQ-specific stop handling; retain callback for message compatibility."""
+    return
 
 
 async def newCoTLogSessionReturn(component: object, success=False, session_dir="", error=""):
@@ -1317,14 +1135,6 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
                 )
 
             try:
-                IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
-            except Exception as e:
-                component.logger.debug(
-                    "Could not update IQ Record selected-node gate "
-                    f"after connection-state change: {e}"
-                )
-
-            try:
                 ArchiveTabSlots.update_archive_replay_selected_node_gate(frontend)
             except Exception as e:
                 component.logger.debug(
@@ -1383,36 +1193,6 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         component.logger.debug(
             f"Could not update Survey status from selected node: {e}"
         )        
-
-    try:
-        IQDataTabSlots.update_iq_playback_status_from_selected_node(
-            frontend,
-            node_uid=node_uid,
-            status=node.get(
-                "status",
-                "",
-            ),
-        )
-    except Exception as e:
-        component.logger.debug(
-            "Could not update IQ Playback status "
-            f"from selected node: {e}"
-        )
-
-    try:
-        IQDataTabSlots.update_iq_inspection_status_from_selected_node(
-            frontend,
-            node_uid=node_uid,
-            status=node.get(
-                "status",
-                "",
-            ),
-        )
-    except Exception as e:
-        component.logger.debug(
-            "Could not update IQ Inspection status "
-            f"from selected node: {e}"
-        )
 
     try:
         await SingleActionTabSlots.update_single_action_status_from_selected_node(
@@ -1753,11 +1533,6 @@ async def sendArtifactsListTakReturn(component: object, node_uid: str = "", arti
 
     for artifact_record in normalized_records:
         try:
-            IQDataTabSlots.handle_iq_record_artifact_complete(dashboard, artifact_record)
-        except Exception as error:
-            component.logger.debug(f"Could not route Artifact metadata to IQ Record: {error}")
-
-        try:
             TSITabSlots.handle_sa_capture_artifact_complete(dashboard, artifact_record)
         except Exception as error:
             component.logger.debug(
@@ -2084,33 +1859,6 @@ def queryPluginActionsResults(
         )
         return    
 
-    if context.startswith("iq.record"):
-        IQDataTabSlots.handle_iq_record_action_query_results(
-            frontend,
-            node_uid=node_uid,
-            context=context,
-            actions=actions,
-        )
-        return
-
-    if context.startswith("iq.playback"):
-        IQDataTabSlots.handle_iq_playback_action_query_results(
-            frontend,
-            node_uid=node_uid,
-            context=context,
-            actions=actions,
-        )
-        return
-
-    if context.startswith("iq.inspection"):
-        IQDataTabSlots.handle_iq_inspection_action_query_results(
-            frontend,
-            node_uid=node_uid,
-            context=context,
-            actions=actions,
-        )
-        return
-
     if context.startswith("archive.replay"):
         ArchiveTabSlots.handle_archive_replay_action_query_results(
             frontend,
@@ -2277,36 +2025,6 @@ def queryPluginActionSchemaResults(
             parameters=schema.get("params", []),
         )
         return    
-
-    if context.startswith("iq.record"):
-        IQDataTabSlots.handle_iq_record_action_schema(
-            frontend,
-            plugin_name=plugin_name,
-            action_name=action_name,
-            node_uid=node_uid,
-            parameters=schema.get("params", []),
-        )
-        return
-
-    if context.startswith("iq.playback"):
-        IQDataTabSlots.handle_iq_playback_action_schema(
-            frontend,
-            plugin_name=plugin_name,
-            action_name=action_name,
-            node_uid=node_uid,
-            parameters=schema.get("params", []),
-        )
-        return
-
-    if context.startswith("iq.inspection"):
-        IQDataTabSlots.handle_iq_inspection_action_schema(
-            frontend,
-            plugin_name=plugin_name,
-            action_name=action_name,
-            node_uid=node_uid,
-            parameters=schema.get("params", []),
-        )
-        return
 
     if context.startswith("archive.replay"):
         ArchiveTabSlots.handle_archive_replay_action_schema(

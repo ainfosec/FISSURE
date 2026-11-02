@@ -751,41 +751,8 @@ class Dashboard(QtWidgets.QMainWindow):
             str(fissure.utils.IQ_RECORDINGS_DIR)
         )
 
-        # IQ Record
-        try:
-            IQDataTabSlots.initialize_iq_record_controls(
-                self
-            )
-        except Exception:
-            self.logger.exception(
-                "Could not initialize IQ Record controls."
-            )
-
-        # IQ Playback
-        try:
-            IQDataTabSlots.initialize_iq_playback_controls(
-                self
-            )
-        except Exception:
-            self.logger.exception(
-                "Could not initialize IQ Playback controls."
-            )
-
-        # IQ Inspection
-        try:
-            IQDataTabSlots.initialize_iq_inspection_controls(
-                self
-            )
-        except Exception:
-            self.logger.exception(
-                "Could not initialize IQ Inspection controls."
-            )
-
-        # Open the IQ Record page and initialize shared IQ file-view state.
-        IQDataTabSlots._slotIQ_TabClicked(
-            self,
-            "pushButton1_iq_tab_record",
-        )
+        # Open Crop; the shared IQ file viewer remains available.
+        IQDataTabSlots._slotIQ_TabClicked(self, "pushButton1_iq_tab_crop")
 
         self.ui.label_iq_folder.setVisible(False)
         self.iq_plot_range_start = 0
@@ -1465,193 +1432,6 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
 
-    def configureIQ_Hardware(self):
-        """
-        Configure IQ hardware/source selectors for the selected Sensor Node.
-
-        Record and Playback use the selected node's SDR display names directly.
-
-        IQ Inspection uses a Source selector containing:
-            configured SDR hardware + File
-
-        Preserve current selections across periodic node-state refreshes.
-        """
-        iq_hardware_combos = []
-
-        combo_names = [
-            "comboBox_iq_record_hardware",
-            "comboBox_iq_playback_hardware",
-        ]
-
-        for combo_name in combo_names:
-            combo = getattr(
-                self.ui,
-                combo_name,
-                None,
-            )
-
-            if combo is not None:
-                iq_hardware_combos.append(
-                    combo
-                )
-
-        get_sensor_node_hardware = []
-
-        if self.selected_node_uid:
-            get_sensor_node_hardware = (
-                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                    self,
-                    "archive",
-                )
-            )
-
-        for combo in iq_hardware_combos:
-            current_text = str(
-                combo.currentText()
-                or ""
-            ).strip()
-
-            existing_items = [
-                str(
-                    combo.itemText(
-                        index
-                    )
-                )
-                for index in range(
-                    combo.count()
-                )
-            ]
-
-            if existing_items == get_sensor_node_hardware:
-                continue
-
-            combo.blockSignals(
-                True
-            )
-
-            try:
-                combo.clear()
-                combo.addItems(
-                    get_sensor_node_hardware
-                )
-
-                if current_text:
-                    restored_index = combo.findText(
-                        current_text,
-                        QtCore.Qt.MatchExactly,
-                    )
-
-                    if restored_index >= 0:
-                        combo.setCurrentIndex(
-                            restored_index
-                        )
-
-                    elif combo.count() > 0:
-                        combo.setCurrentIndex(
-                            0
-                        )
-
-                elif combo.count() > 0:
-                    combo.setCurrentIndex(
-                        0
-                    )
-
-            finally:
-                combo.blockSignals(
-                    False
-                )
-
-        inspection_source_combo = getattr(
-            self.ui,
-            "comboBox_iq_inspection_source",
-            None,
-        )
-
-        if inspection_source_combo is not None:
-            inspection_sources = []
-
-            if (
-                self.selected_node_uid
-                and selected_node_is_local(
-                    self
-                )
-            ):
-                inspection_sources.extend(
-                    get_sensor_node_hardware
-                )
-
-                inspection_sources.append(
-                    "File"
-                )
-
-            current_source = str(
-                inspection_source_combo.currentText()
-                or ""
-            ).strip()
-
-            existing_sources = [
-                str(
-                    inspection_source_combo.itemText(
-                        index
-                    )
-                )
-                for index in range(
-                    inspection_source_combo.count()
-                )
-            ]
-
-            if existing_sources != inspection_sources:
-                inspection_source_combo.blockSignals(
-                    True
-                )
-
-                try:
-                    inspection_source_combo.clear()
-                    inspection_source_combo.addItems(
-                        inspection_sources
-                    )
-
-                    if current_source:
-                        restored_index = (
-                            inspection_source_combo.findText(
-                                current_source,
-                                QtCore.Qt.MatchExactly,
-                            )
-                        )
-
-                        if restored_index >= 0:
-                            inspection_source_combo.setCurrentIndex(
-                                restored_index
-                            )
-
-                        elif inspection_source_combo.count() > 0:
-                            inspection_source_combo.setCurrentIndex(
-                                0
-                            )
-
-                    elif inspection_source_combo.count() > 0:
-                        inspection_source_combo.setCurrentIndex(
-                            0
-                        )
-
-                finally:
-                    inspection_source_combo.blockSignals(
-                        False
-                    )
-
-        IQDataTabSlots.update_iq_record_selected_node_gate(
-            self
-        )
-
-        IQDataTabSlots.update_iq_playback_selected_node_gate(
-            self
-        )
-
-        IQDataTabSlots.update_iq_inspection_selected_node_gate(
-            self
-        )
-
-
     def configureArchiveHardware(self):
         """Refresh Archive Replay hardware without disturbing a stable action selection."""
         hardware_combo = self.ui.comboBox_archive_replay_hardware
@@ -1716,7 +1496,6 @@ class Dashboard(QtWidgets.QMainWindow):
         SequentialActionTabSlots.update_sequential_actions_selected_node_gate(self)
         FuzzingTabSlots.update_fuzzing_selected_node_gate(self)
         ScapyTabSlots.update_scapy_selected_node_gate(self)
-        self.configureIQ_Hardware()
         self.configureArchiveHardware()
         self.configureSensorNodeHardware()
 
@@ -2579,9 +2358,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionDemo_Attack_Packet_Crafter_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoAttackPacketCrafterTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_All.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataAllClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Data_Viewer.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataDataViewerClicked(dashboard))
-    dashboard.window.actionDemo_IQ_Data_Record_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataRecordTabClicked(dashboard))
-    dashboard.window.actionDemo_IQ_Data_Playback_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataPlaybackTabClicked(dashboard))
-    dashboard.window.actionDemo_IQ_Data_Inspection_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataInspectionTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Crop_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataCropTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Convert_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataConvertTabClicked(dashboard))
     dashboard.window.actionDemo_IQ_Data_Append_Tab.triggered.connect(lambda: MenuBarSlots._slotMenuDemoIQ_DataAppendTabClicked(dashboard))
@@ -4043,33 +3819,6 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_iq_filter_type.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_FilterTypeChanged(dashboard)
     )
-    dashboard.ui.comboBox_iq_record_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordActionHardwareChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_record_plugin.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordPluginChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_record_method.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordMethodChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_playback_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackActionHardwareChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_playback_plugin.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackPluginChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_playback_method.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackMethodChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_inspection_source.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionSourceChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_inspection_plugin.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionPluginChanged(dashboard)
-    )
-    dashboard.ui.comboBox_iq_inspection_action.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionActionChanged(dashboard)
-    )
     dashboard.ui.comboBox_iq_artifacts.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_ArtifactsChanged(dashboard)
     )
@@ -4089,15 +3838,6 @@ def connect_iq_slots(dashboard: Dashboard):
     )
 
     # Push Button
-    dashboard.ui.pushButton1_iq_tab_record.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_record")
-    )
-    dashboard.ui.pushButton1_iq_tab_playback.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_playback")
-    )
-    dashboard.ui.pushButton1_iq_tab_inspection.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_inspection")
-    )
     dashboard.ui.pushButton1_iq_tab_crop.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_crop")
     )
@@ -4330,36 +4070,6 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_iq_unwrap.clicked.connect(lambda: IQDataTabSlots._slotIQ_UnwrapClicked(dashboard))
     dashboard.ui.pushButton_iq_filter.clicked.connect(lambda: IQDataTabSlots._slotIQ_FilterClicked(dashboard))
     dashboard.ui.pushButton_iq_ook_plot.clicked.connect(lambda: IQDataTabSlots._slotIQ_OOK_PlotClicked(dashboard))
-    dashboard.ui.pushButton_iq_record_query.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordQueryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_record_customize.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordCustomizeClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_record_start_stop.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordStartStopClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_record_download_artifact.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordDownloadArtifactClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_playback_query.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackQueryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_playback_customize.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackCustomizeClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_playback_start_stop.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackStartStopClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_query.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionQueryClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_customize.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionCustomizeClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_start_stop.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionStartStopClicked(dashboard)
-    )
     dashboard.ui.pushButton_iq_iqengine.clicked.connect(lambda: IQDataTabSlots._slotIQ_IQEngineClicked(dashboard))
     dashboard.ui.pushButton1_iq_tab_endianness.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_endianness")

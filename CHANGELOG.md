@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-11-01
+
+Streamline IQ Data and retire redundant workflows
+
+### Changed
+
+- Removed the redundant Record, Playback, and Inspection subpages from IQ Data, leaving acquisition, playback, and detailed inspection to their existing workflows elsewhere in FISSURE.
+- Consolidated IQ Data around its 13 remaining manipulation and transformation tools, reorganizing the button rows and making Crop the default page while retaining shared Files/Artifacts browsing and plotting.
+- Removed obsolete IQ-specific initialization, handlers, callbacks, and styling while preserving shared capabilities used by other tabs.
+- Updated IQ Data page selection and theme refresh to use widget names instead of fixed stacked-widget indices, allowing pages to be reordered safely.
+- Reformatted the Artifact Transfer Controller for more conventional Python line wrapping and indentation without changing its behavior.
+
 ## 2026-10-31
 
 Retire legacy Protocol Discovery backend and streamline Dashboard

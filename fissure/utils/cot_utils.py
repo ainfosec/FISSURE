@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 from fissure.Dashboard.Slots import (
     TacticalTabSlots,
     TargetsTabSlots,
-    IQDataTabSlots,
     SensorNodesTabSlots,
     TSITabSlots,
 )
@@ -1724,11 +1723,6 @@ def handle_tactical_artifact_message(dashboard, cot_message):
                 frontend,
                 artifact_record,
             )
-
-    IQDataTabSlots.handle_iq_record_artifact_complete(
-        frontend,
-        artifact_record,
-    )
 
     TSITabSlots.handle_sa_capture_artifact_complete(
         frontend,

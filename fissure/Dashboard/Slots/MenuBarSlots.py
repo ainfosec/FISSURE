@@ -271,38 +271,13 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     """
     Reloads the custom widgets for the new stylesheet settings.
     """
-    if dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 0:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_record")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 1:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_playback")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 2:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_inspection")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 3:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_crop")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 4:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_convert")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 5:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_append")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 6:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_transfer")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 7:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_timeslot")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 8:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_overlap")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 9:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_resample")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 10:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_ofdm")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 11:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_normalize")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 12:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_strip")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 13:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_split")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 14:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_ook")
-    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 15:
-        IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_endianness")        
+    # Refresh by page object name; stacked indices change when IQ pages are removed.
+    current_page = dashboard.ui.stackedWidget3_iq_pages.currentWidget()
+    page_name = current_page.objectName() if current_page is not None else ""
+    if page_name.startswith("page_iq_"):
+        button_name = page_name.replace("page_iq_", "pushButton1_iq_tab_", 1)
+        if hasattr(dashboard.ui, button_name):
+            IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name)
 
     dashboard.iq_matplotlib_widget.configureAxes(polar=False,background_color=dashboard.backend.settings['color2'],face_color=dashboard.backend.settings['color5'],text_color=dashboard.backend.settings['color4'])
     dashboard.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=dashboard.backend.settings['color4'])
@@ -461,7 +436,6 @@ def _slotMenuLoadConfigurationClicked(dashboard: QtWidgets.QMainWindow):
         # self.configureTSI_Hardware()
         # self.configurePD_Hardware()
         # self.configureAttackHardware()
-        # self.configureIQ_Hardware()
         # self.configureArchiveHardware()
 
 
@@ -5474,30 +5448,6 @@ async def _slotMenuDemoIQ_DataAllClicked(dashboard: QtWidgets.QMainWindow):
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotMenuDemoIQ_DataDataViewerClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoIQ_DataRecordTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoIQ_DataPlaybackTabClicked(dashboard: QtWidgets.QMainWindow):
-    """
-    Executes the demo script and logs its progress.
-    """
-    pass
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotMenuDemoIQ_DataInspectionTabClicked(dashboard: QtWidgets.QMainWindow):
     """
     Executes the demo script and logs its progress.
     """
