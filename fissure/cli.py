@@ -1,4 +1,3 @@
-# from fissure import Dashboard, HiprFisr, ProtocolDiscovery, Server, TargetSignalIdentification
 from fissure.comms.CertificateGenerator import CertificateGenerator
 from multiprocessing import Process
 
@@ -37,10 +36,6 @@ def run_server():
 
 def run_hiprfisr():
     fissure.Server.HiprFisr.run()
-
-
-def run_target_signal_identification():
-    fissure.Server.TargetSignalIdentification.run()
 
 
 def run_sensor_node():

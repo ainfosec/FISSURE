@@ -14,13 +14,7 @@ class Identifiers:
     HIPRFISR = "HiprFisr"
     HIPRFISR_LT = "H"
     DASHBOARD = "Dashboard"
-    TSI = "TSI"
     SENSOR_NODE = "Sensor Node"
-    SENSOR_NODE_0 = "Sensor Node 0"
-    SENSOR_NODE_1 = "Sensor Node 1"
-    SENSOR_NODE_2 = "Sensor Node 2"
-    SENSOR_NODE_3 = "Sensor Node 3"
-    SENSOR_NODE_4 = "Sensor Node 4"
 
 
 class MessageFields:

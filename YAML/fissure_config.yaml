@@ -77,7 +77,3 @@ tak:
   webadmin_cert: /home/user/Installed_by_FISSURE/takserver-docker-5.3-RELEASE-24/tak/certs/files/webadmin.p12
   node_idle_icon: 'a-f-G-E'
   node_busy_icon: 'a-f-G-E-X-M-C'
-tsi_hiprfisr_dealer_port: 5052
-tsi_pub_port: 5059
-tsi_pub_port_classification: 5065
-tsi_pub_port_id: 5060

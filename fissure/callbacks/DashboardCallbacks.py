@@ -185,30 +185,13 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
 
 
 async def componentDisconnected(component: object, component_name=""):
-    """
-    Update status bar and other widgets with new connection status.
-    """
-    if component_name == fissure.comms.Identifiers.DASHBOARD:
-        pass
-    elif component_name == fissure.comms.Identifiers.TSI:
-        component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.TSI, False, component.frontend.statusBar())
-    else:
-        pass
-        # component.frontend.popups["NodeConfigureDialog"].sensorNodeDisconnected()
+    """Component-status callback retained for future optional components."""
+    return
 
 
 async def componentConnected(component: object, component_name=""):
-    """
-    Update status bar and other widgets with new connection status.
-    """
-    if component_name == fissure.comms.Identifiers.TSI:
-        component.frontend.signals.ComponentStatus.emit(fissure.comms.Identifiers.TSI, True, component.frontend.statusBar())
-    elif component_name == fissure.comms.Identifiers.DASHBOARD:
-        pass
-    else:
-        pass
-        # component.frontend.popups["NodeConfigureDialog"].sensorNodeConnected(serial=False)
-
+    """Handle HIPRFISR component-status notifications (currently informational)."""
+    return
 
 
 async def hiprfisrDisconnectedSerial(component: object):
@@ -223,64 +206,6 @@ async def hiprfisrConnectedSerial(component: object):
     Keeps track if the Meshtastic serial port at the HIPRFISR is connected.
     """
     component.hiprfisr_serial_connected = True
-
-
-async def feProgressBarReturn(component: object, progress=0, file_index=0):
-    """ 
-    Updates the TSI Conditioner progress bar.
-    """
-    # Update the Progress Bar
-    if int(progress) < 100:
-        component.frontend.ui.progressBar_tsi_fe_operation.setValue(int(progress))
-        if component.frontend.ui.comboBox_tsi_fe_settings_input_source.currentText() == "Folder":
-            component.frontend.ui.listWidget_tsi_fe_input_files.setCurrentRow(file_index)
-            TSITabSlots._slotTSI_FE_InputLoadFileClicked(component.frontend)
-
-
-async def tsiFE_Finished(component: object, table_strings=[]):
-    """ 
-    Acting on a TSI Conditioner Finished message from the TSI Component.
-    """       
-    # Set Selection to Last Item in Listbox
-    component.frontend.ui.listWidget_tsi_fe_input_files.setCurrentRow(len(table_strings)-2)
-
-    # Clear Table
-    component.frontend.ui.tableWidget_tsi_fe_results.clear()
-            
-    # Row
-    component.frontend.ui.tableWidget_tsi_fe_results.setColumnCount(len(table_strings[0])-1)
-    for n in range(0,len(table_strings)):
-        # Column Headers
-        if n == 0:
-            for m in range(1,len(table_strings[0])):
-                component.frontend.ui.tableWidget_tsi_fe_results.setHorizontalHeaderItem(m-1,QtWidgets.QTableWidgetItem(table_strings[n][m]))  
-        
-        else:
-            component.frontend.ui.tableWidget_tsi_fe_results.setRowCount(component.frontend.ui.tableWidget_tsi_fe_results.rowCount()+1)
-            
-            # Column
-            for m in range(0,len(table_strings[0])):
-                # File/Row Headers
-                if m == 0:
-                    table_item = QtWidgets.QTableWidgetItem(table_strings[n][m])
-                    table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                    component.frontend.ui.tableWidget_tsi_fe_results.setVerticalHeaderItem(n-1,table_item)
-        
-                # Table Cells                    
-                else:
-                    table_item = QtWidgets.QTableWidgetItem(table_strings[n][m])
-                    table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                    component.frontend.ui.tableWidget_tsi_fe_results.setItem(component.frontend.ui.tableWidget_tsi_fe_results.rowCount()-1,m-1,table_item)
-            
-    # Resize Table
-    component.frontend.ui.tableWidget_tsi_fe_results.resizeRowsToContents()
-    component.frontend.ui.tableWidget_tsi_fe_results.resizeColumnsToContents()
-    component.frontend.ui.tableWidget_tsi_fe_results.horizontalHeader().setStretchLastSection(False)
-    component.frontend.ui.tableWidget_tsi_fe_results.horizontalHeader().setStretchLastSection(True)
-        
-    # Set Progress Bar
-    component.frontend.ui.progressBar_tsi_fe_operation.setValue(100)
-    component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
 
 
 async def flowGraphError(component: object, error=""):

@@ -6,5 +6,4 @@ from . import (
     HiprFisrCallbacksLT,
     SensorNodeCallbacks,
     SensorNodeCallbacksLT,
-    TargetSignalIdentificationCallbacks,
 )

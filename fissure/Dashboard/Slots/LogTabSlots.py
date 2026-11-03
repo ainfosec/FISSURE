@@ -5,16 +5,11 @@ import fissure.utils
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotLogRefreshClicked(dashboard: QtCore.QObject):
-    """ 
-    Refresh is clicked in the Log tab
-    """
-    # Attain Keywords
+    """Refresh the Log tab while excluding checked categories."""
     bad_words = []
     if dashboard.ui.checkBox_log_heartbeats.isChecked():
         bad_words.append('Heartbeat')
         bad_words.append('heartbeat')
-    if dashboard.ui.checkBox_log_tsi.isChecked():
-        bad_words.append('fissure.tsi')
     if dashboard.ui.checkBox_log_sensor_node.isChecked():
         bad_words.append('fissure.sensor node')
     if dashboard.ui.checkBox_log_dashboard.isChecked():
@@ -30,7 +25,6 @@ def _slotLogRefreshClicked(dashboard: QtCore.QObject):
     if dashboard.ui.checkBox_log_error.isChecked():
         bad_words.append('[ERROR]')
 
-    # Remove Lines with Keywords
     event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
     filtered_log_lines = []
     with open(event_log_filepath) as oldfile:
@@ -38,24 +32,17 @@ def _slotLogRefreshClicked(dashboard: QtCore.QObject):
             if not any(bad_word in line for bad_word in bad_words):
                 filtered_log_lines.append(line)
 
-    # Display the filtered log content directly in the UI
-    temp_log_contents = ''.join(filtered_log_lines)
-    dashboard.ui.textEdit2_log.setPlainText(temp_log_contents)
+    dashboard.ui.textEdit2_log.setPlainText(''.join(filtered_log_lines))
     dashboard.ui.textEdit2_log.moveCursor(QtGui.QTextCursor.End)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
-    """ 
-    Permit refresh is clicked in the Log tab
-    """
-    # Attain Keywords
+    """Refresh the Log tab while including checked categories."""
     good_words = []
     if dashboard.ui.checkBox_log_heartbeats_permit.isChecked():
         good_words.append('Heartbeat')
         good_words.append('heartbeat')
-    if dashboard.ui.checkBox_log_tsi_permit.isChecked():
-        good_words.append('fissure.tsi')
     if dashboard.ui.checkBox_log_sensor_node_permit.isChecked():
         good_words.append('fissure.sensor node')
     if dashboard.ui.checkBox_log_dashboard_permit.isChecked():
@@ -71,7 +58,6 @@ def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
     if dashboard.ui.checkBox_log_error_permit.isChecked():
         good_words.append('[ERROR]')
 
-    # Read and Filter the Log File Content Directly
     event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
     filtered_log_lines = []
     with open(event_log_filepath) as oldfile:
@@ -79,9 +65,7 @@ def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
             if any(good_word in line for good_word in good_words):
                 filtered_log_lines.append(line)
 
-    # Display the Text
-    temp_log_contents = ''.join(filtered_log_lines)
-    dashboard.ui.textEdit2_log.setPlainText(temp_log_contents)
+    dashboard.ui.textEdit2_log.setPlainText(''.join(filtered_log_lines))
     dashboard.ui.textEdit2_log.moveCursor(QtGui.QTextCursor.End)
 
 

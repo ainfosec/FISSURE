@@ -99,19 +99,6 @@ async def shutdown(component: object, identifiers: List[str]):
         if identifier == component.identifier:
             # component.shutdown = True  # before or after?
 
-            # forward 'Shutdown' command to PD and TSI)
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "shutdown",
-                fissure.comms.MessageFields.PARAMETERS: {
-                    fissure.comms.Parameters.IDENTIFIERS: [fissure.comms.Identifiers.TSI]
-                },
-            }
-            if component.tsi_id is not None:
-                await component.backend_router.send_msg(
-                    fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id]
-                )
-
             component.shutdown = True
         else:
             # forward 'Shutdown' command to specified fissure component(s)
@@ -510,18 +497,8 @@ async def newCoTLogSession(component: object):
 ##########################################################################
 
 async def updateFISSURE_Configuration(component: object, settings_dict={}):
-    """Reload FISSURE configuration and forward it to TSI."""
+    """Reload HIPRFISR configuration."""
     component.settings = settings_dict
-
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "updateFISSURE_Configuration",
-        fissure.comms.MessageFields.PARAMETERS: {"settings_dict": settings_dict},
-    }
-    if component.tsi_connected and component.tsi_id is not None:
-        await component.backend_router.send_msg(
-            fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id]
-        )
 
 
 async def updateLoggingLevels(component: object, new_console_level="", new_file_level=""):
@@ -589,103 +566,6 @@ async def classifierLibraryMatch(component: object, request_id="", frequency_mhz
 #     }
 #     if component.dashboard_connected:
 #         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-# ############################ To TSI ####################################
-
-
-async def startTSI_FE(component: object, common_parameter_names=[], common_parameter_values=[]):
-    """
-    Signals to TSI to start TSI feature extractor.
-    """
-    # Forward Message to TSI
-    PARAMETERS = {"common_parameter_names": common_parameter_names, "common_parameter_values": common_parameter_values}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_FE",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id])
-
-
-async def stopTSI_FE(component: object):
-    """
-    Signals to TSI to stop TSI feature extractor.
-    """
-    # Forward Message to TSI
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_FE",
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id])
-
-
-async def startTSI_Conditioner(
-    component: object,
-    common_parameter_names=[],
-    common_parameter_values=[],
-    method_parameter_names=[],
-    method_parameter_values=[],
-    method_filepath=""
-):
-    """
-    Signals to TSI to start TSI Conditioner.
-    """
-    # Forward Message to TSI
-    PARAMETERS = {
-        "common_parameter_names": common_parameter_names,
-        "common_parameter_values": common_parameter_values,
-        "method_parameter_names": method_parameter_names,
-        "method_parameter_values": method_parameter_values,
-        "method_filepath": method_filepath
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_Conditioner",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id])
-
-
-async def stopTSI_Conditioner(component):
-    """
-    Signals to TSI to stop TSI conditioner.
-    """
-    # Forward Message to TSI
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_Conditioner",
-    }
-    await component.backend_router.send_msg(fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id])
-
-
-# ############################# From TSI #################################
-
-
-async def feProgressBarReturn(component: object, progress=0, file_index=0):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"progress": progress, "file_index": file_index}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "feProgressBarReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def tsiFE_Finished(component: object, table_strings=[]):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"table_strings": table_strings}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "tsiFE_Finished",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
 ##########################################################################

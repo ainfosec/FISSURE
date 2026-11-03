@@ -181,8 +181,6 @@ class SensorNode(object):
     """
     
     # settings: Dict
-    # identifier: str = "sensor node " + str(uuid.uuid4())[:8]  #fissure.comms.Identifiers.SENSOR_NODE_0
-    #logger: logging.Logger = fissure.utils.get_logger(fissure.comms.Identifiers.SENSOR_NODE_0)
     # logger: logging.Logger = fissure.utils.get_logger(identifier)
     # ip_address: str
     # hiprfisr_socket: fissure.comms.Server  # PAIR

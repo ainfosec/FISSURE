@@ -43514,30 +43514,11 @@ p, li { white-space: pre-wrap; }
        <string>Heartbeats</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_log_tsi">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>25</y>
-        <width>120</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <strikeout>false</strikeout>
-       </font>
-      </property>
-      <property name="text">
-       <string>TSI</string>
-      </property>
-     </widget>
      <widget class="QCheckBox" name="checkBox_log_hiprfisr">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>85</y>
+        <y>65</y>
         <width>120</width>
         <height>22</height>
        </rect>
@@ -43556,7 +43537,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>45</y>
+        <y>25</y>
         <width>120</width>
         <height>22</height>
        </rect>
@@ -43575,7 +43556,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>65</y>
+        <y>45</y>
         <width>120</width>
         <height>22</height>
        </rect>
@@ -43705,25 +43686,6 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>45</y>
-        <width>120</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <strikeout>false</strikeout>
-       </font>
-      </property>
-      <property name="text">
-       <string>Sensor Node</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_log_tsi_permit">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
         <y>25</y>
         <width>120</width>
         <height>22</height>
@@ -43736,7 +43698,7 @@ p, li { white-space: pre-wrap; }
        </font>
       </property>
       <property name="text">
-       <string>TSI</string>
+       <string>Sensor Node</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_log_heartbeats_permit">
@@ -43762,7 +43724,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>65</y>
+        <y>45</y>
         <width>120</width>
         <height>22</height>
        </rect>
@@ -43781,7 +43743,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>85</y>
+        <y>65</y>
         <width>120</width>
         <height>22</height>
        </rect>

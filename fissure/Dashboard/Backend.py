@@ -60,7 +60,6 @@ class DashboardBackend:
     heartbeats: Dict[str, float]  # {name: time, name: time, ...}
     hiprfisr_address: fissure.comms.Address
     hiprfisr_connected: bool
-    tsi_connected: bool
     session_active: bool  # For keeping track of StatusBar status
     shutdown: bool
     identifier: str = fissure.comms.Identifiers.DASHBOARD
@@ -91,18 +90,9 @@ class DashboardBackend:
         self.heartbeats = {
             fissure.comms.Identifiers.DASHBOARD: None,
             fissure.comms.Identifiers.HIPRFISR: None,
-            fissure.comms.Identifiers.TSI: None,
-            fissure.comms.Identifiers.SENSOR_NODE: [
-                {"time": None, "interval": None},
-                {"time": None, "interval": None},
-                {"time": None, "interval": None},
-                {"time": None, "interval": None},
-                {"time": None, "interval": None},
-            ],
         }
         self.hiprfisr_address = None
         self.hiprfisr_connected = False
-        self.tsi_connected = False
         self.session_active = False
         self.shutdown = False
         self.shutting_down_message_received = False
@@ -292,8 +282,7 @@ class DashboardBackend:
 
 
     async def recv_heartbeat(self):
-        """
-        """
+        """Receive HIPRFISR liveness updates."""
         if self.shutdown:
             return
 
@@ -302,48 +291,23 @@ class DashboardBackend:
         except asyncio.CancelledError:
             return
         except Exception:
-            # socket closed / shutdown in progress
+            # Socket closed or shutdown in progress.
             return
 
         if heartbeat is None or self.shutdown:
             return
 
-        # HIPRFISR heartbeat timestamp
         heartbeat_time = float(heartbeat.get(fissure.comms.MessageFields.TIME))
         self.heartbeats[fissure.comms.Identifiers.HIPRFISR] = heartbeat_time
         self.logger.debug(
             f"received HiprFisr heartbeat ({fissure.utils.get_timestamp(heartbeat_time)})"
         )
 
-        params = heartbeat.get(fissure.comms.MessageFields.PARAMETERS)
-        if params is None or self.shutdown:
-            return
-
-        # TSI heartbeats
-        self.heartbeats[fissure.comms.Identifiers.TSI] = params.get(fissure.comms.Identifiers.TSI)
-
-        # sensor nodes
-        sensor_data = params.get(fissure.comms.Identifiers.SENSOR_NODE)
-        if sensor_data is None or self.shutdown:
-            return
-
-        node_list = self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE]
-
-        incoming_times = sensor_data.get(fissure.comms.MessageFields.TIME, [])
-        incoming_intervals = sensor_data.get(fissure.comms.MessageFields.INTERVAL, [])
-
-        for idx in range(5):
-            if idx < len(incoming_times) and incoming_times[idx] is not None:
-                node_list[idx]["time"] = incoming_times[idx]
-
-            if idx < len(incoming_intervals) and incoming_intervals[idx] is not None:
-                node_list[idx]["interval"] = incoming_intervals[idx]
-
 
     def check_heartbeats(self):
         current_time = time.time()
 
-        # Global fallback interval used for HIPRFISR, PD, TSI, and nodes that have not reported yet
+        # Global fallback interval for HIPRFISR and nodes that have not reported yet
         global_interval = float(self.settings.get("heartbeat_interval"))
         failure_multiple = float(self.settings.get("failure_multiple"))
 
@@ -371,24 +335,6 @@ class DashboardBackend:
                     )
                 else:
                     self.session_active = True
-
-        #
-        # --- TSI CHECK ---
-        #
-        last_tsi = self.heartbeats.get(fissure.comms.Identifiers.TSI)
-        tsi_cutoff = current_time - (global_interval * failure_multiple)
-
-        if last_tsi is not None:
-            if self.tsi_connected and last_tsi < tsi_cutoff:
-                self.tsi_connected = False
-                self.frontend.signals.ComponentStatus.emit(
-                    fissure.comms.Identifiers.TSI, False, self.frontend.statusBar()
-                )
-            elif (not self.tsi_connected) and last_tsi > tsi_cutoff:
-                self.tsi_connected = True
-                self.frontend.signals.ComponentStatus.emit(
-                    fissure.comms.Identifiers.TSI, True, self.frontend.statusBar()
-                )
 
 
     async def read_hiprfisr_messages(self):
@@ -581,11 +527,8 @@ class DashboardBackend:
         # Reset connections
         self.heartbeats[fissure.comms.Identifiers.DASHBOARD] = 0
         self.heartbeats[fissure.comms.Identifiers.HIPRFISR] = 0
-        self.heartbeats[fissure.comms.Identifiers.TSI] = 0
-        # self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE] = 0
 
         self.hiprfisr_connected = False
-        self.tsi_connected = False
         self.session_active = False
 
         # Reset frontend/database
@@ -1332,84 +1275,6 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
     
-    async def startTSI_Conditioner(
-        self,
-        node_uid="",
-        common_parameter_names=[],
-        common_parameter_values=[],
-        method_parameter_names=[],
-        method_parameter_values=[],
-        method_filepath=""
-    ):
-        """
-        Signals to TSI to start TSI Conditioner.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "common_parameter_names": common_parameter_names,
-                "common_parameter_values": common_parameter_values,
-                "method_parameter_names": method_parameter_names,
-                "method_parameter_values": method_parameter_values,
-                "method_filepath": method_filepath,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_Conditioner",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def stopTSI_Conditioner(self, node_uid=""):
-        """
-        Signals to TSI to stop TSI conditioner.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_Conditioner",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def startTSI_FE(self, common_parameter_names=[], common_parameter_values=[]):
-        """
-        Signals to TSI to start TSI feature extractor.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "common_parameter_names": common_parameter_names,
-                "common_parameter_values": common_parameter_values,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_FE",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def stopTSI_FE(self):
-        """
-        Signals to TSI to stop TSI feature extractor.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_FE",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
     async def refreshScapyInterfaces(self, node_uid=""):
         """Request Scapy-visible interfaces from the selected Sensor Node."""
         if self.hiprfisr_connected is not True:

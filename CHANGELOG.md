@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-11-02
+
+Retire standalone TSI and simplify component connectivity
+
+### Added
+
+- Added optional external backend-client connectivity and heartbeat handling for future HIPRFISR integrations, with a minimal standalone component example.
+
+### Changed
+
+- Retired the standalone Target Signal Identification (TSI) process and removed its startup, connection, messaging, heartbeat, logging, and shutdown integration with HIPRFISR and Dashboard.
+- Removed obsolete TSI Conditioner and Feature Extractor handlers, callbacks, and unused supporting code while preserving the modern plugin-driven analysis tabs and TSITabSlots.
+- Simplified Dashboard heartbeat tracking by removing the unused five-slot Sensor Node cache and numbered Sensor Node identifiers, while retaining HIPRFISR's UUID-based Sensor Node connection monitoring.
+- Removed TSI-specific Log tab checkboxes and include/exclude filtering, and cleaned up component status references associated with the retired process.
+
 ## 2026-11-01
 
 Streamline IQ Data and retire redundant workflows
