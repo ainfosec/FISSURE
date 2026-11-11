@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-11-11
+
+Add AIS plugin with multi-SDR reception and transmission
+
+### Added
+
+- Added an AIS v1.0 plugin with dual-channel reception for USRP B210, HackRF One, and RTL-SDR on Ubuntu 20.04/GNU Radio 3.8 and Ubuntu 24.04/GNU Radio 3.10.
+- Added continuous AIS monitoring with automatic carrier-frequency recovery, hardware-specific receive configuration, and support for both standard AIS channels at 161.975 and 162.025 MHz.
+- Added synthetic AIS vessel generation and RF transmission through B210 and HackRF, including configurable vessel messages, repeated transmissions, and loopback testing.
+- Added offline IQ generation and decoding, NMEA file and UDP ingestion, and integration with AIS decoding and maritime visualization tools.
+- Added AIS Detections and persistent vessel Targets with channel-frequency metadata, self-reported position handling, message-aware reporting limits, and compact JSON session Artifacts without automatic IQ recordings.
+- Added plugin documentation and automated tests covering decoding, transmission, callback delivery, receiver shutdown, and GNU Radio compatibility.
+
+### Changed
+
+- Refined AI plugin development guidance for GNU Radio receiver migration, end-to-end Detection validation, and reliable shutdown of streaming subprocesses.
+
 ## 2026-11-02
 
 Retire standalone TSI and simplify component connectivity

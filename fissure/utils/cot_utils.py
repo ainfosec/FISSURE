@@ -1000,7 +1000,6 @@ def handle_tactical_node_message(dashboard, cot_message):
 
 def handle_tactical_target_message(dashboard, cot_message):
     frontend = dashboard.frontend
-
     target_record = cot_to_tactical_target_record(cot_message)
     if not target_record:
         return
@@ -1028,14 +1027,33 @@ def handle_tactical_target_message(dashboard, cot_message):
         target_record["_replay_only"] = True
 
     is_new_target = existing_target is None
+    pending_first_plot = bool(
+        isinstance(existing_target, dict)
+        and existing_target.get("_ais_auto_plot_pending")
+    )
+
+    # Static/name messages can arrive before the first position report.
+    # Preserve an auto-plot request until coordinates become available.
+    auto_plot = frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked()
+    valid_position = (
+        target_record.get("lat") not in (None, "", "None")
+        and target_record.get("lon") not in (None, "", "None")
+    )
+
+    if not target_was_plotted and auto_plot and (is_new_target or pending_first_plot):
+        if not valid_position:
+            target_record["_ais_auto_plot_pending"] = True
+
     frontend.tactical_targets[target_id] = target_record
 
     TacticalTabSlots.update_tactical_target_row(frontend, target_record)
     TargetsTabSlots.update_target_record(frontend, target_record)
 
-    if is_new_target and frontend.ui.checkBox_tactical_targets_show_new_targets.isChecked():
+    if target_was_plotted:
+        # Existing markers follow subsequent live position updates.
         TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
-    elif target_was_plotted:
+    elif auto_plot and valid_position and (is_new_target or pending_first_plot):
+        # First usable location for a target initially seen without position.
         TacticalTabSlots.plot_tactical_target(frontend, target_record, zoom=False)
 
     if frontend.selected_tactical_target_id == target_id:

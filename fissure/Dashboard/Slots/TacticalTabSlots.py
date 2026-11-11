@@ -715,13 +715,12 @@ def update_tactical_ecosystem_action_combo(
 
     combo.blockSignals(True)
     combo.clear()
-    combo.addItems(action_names)
+    combo.addItems(sorted(action_names, key=str.casefold))
 
     if current_text in action_names:
         combo.setCurrentText(current_text)
 
     combo.blockSignals(False)
-
     has_actions = bool(action_names)
 
     combo.setEnabled(has_actions)
@@ -729,18 +728,18 @@ def update_tactical_ecosystem_action_combo(
     dashboard.ui.label2_tactical_ecosystem_action.setEnabled(has_actions)
     dashboard.ui.pushButton_tactical_ecosystem_execute.setEnabled(has_actions)
 
-def update_tactical_node_plugin_combo(    
+
+def update_tactical_node_plugin_combo(
     dashboard: QtCore.QObject,
     plugin_names,
     preserve_current_selection=False,
 ):
     combo = dashboard.ui.comboBox_tactical_node_plugins
-
     current_text = combo.currentText().strip()
 
     combo.blockSignals(True)
     combo.clear()
-    combo.addItems(plugin_names)
+    combo.addItems(sorted(plugin_names, key=str.casefold))
 
     if preserve_current_selection and current_text in plugin_names:
         combo.setCurrentText(current_text)
@@ -763,7 +762,7 @@ def update_tactical_ecosystem_plugin_combo(
 
     combo.blockSignals(True)
     combo.clear()
-    combo.addItems(plugin_names)
+    combo.addItems(sorted(plugin_names, key=str.casefold))
 
     if current_text in plugin_names:
         combo.setCurrentText(current_text)
@@ -773,7 +772,6 @@ def update_tactical_ecosystem_plugin_combo(
     has_plugins = bool(plugin_names)
 
     combo.setEnabled(has_plugins)
-
     dashboard.ui.pushButton_tactical_ecosystem_select.setEnabled(
         has_plugins
     )
@@ -872,7 +870,7 @@ def update_tactical_node_action_combo(
 
     combo.blockSignals(True)
     combo.clear()
-    combo.addItems(action_names)
+    combo.addItems(sorted(action_names, key=str.casefold))
 
     if preserve_current_selection and current_text in action_names:
         combo.setCurrentText(current_text)

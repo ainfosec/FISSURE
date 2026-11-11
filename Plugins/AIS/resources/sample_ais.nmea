@@ -1,0 +1,6 @@
+# Public example AIS NMEA sentences from pyais documentation. Not live observations.
+!AIVDM,1,1,,A,13HOI:0P0000VOHLCnHQKwvL05Ip,0*23
+!AIVDM,1,1,,A,133sVfPP00PD>hRMDH@jNOvN20S8,0*7F
+!AIVDM,1,1,,B,100h00PP0@PHFV`Mg5gTH?vNPUIp,0*3B
+!AIVDM,1,1,,A,14eGrSPP00ncMJTO5C6aBwvP2D0?,0*7A
+!AIVDM,1,1,,A,15MrVH0000KH<:V:NtBLoqFP2H9:,0*2F

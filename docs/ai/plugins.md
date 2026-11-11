@@ -289,6 +289,10 @@ Use the fields expected by the current core path rather than inventing plugin-on
 
 For callbacks used in loops or high-rate processing, avoid allowing a stalled callback to block the Operation indefinitely. Follow current Operations that use bounded waits where appropriate, and preserve `asyncio.CancelledError`.
 
+Validate callback results through the complete FISSURE processing and presentation path, not just successful callback invocation. Confirm that Detections contain the metadata required by downstream consumers, including RF frequency when known. Account for channel offsets from the receiver center frequency, and do not invent frequency values when the source does not provide reliable RF context.
+
+Apply Detection throttling by observation type when different message categories have different operational significance. A static or informational message should not unintentionally suppress a subsequent position or measurement report. When investigating missing results, distinguish generated observations, throttled observations, successful callback delivery, and actual Dashboard visibility.
+
 ## Location and Position
 
 If an Operation needs the Sensor Node's current position, use the injected `position_callback`.
@@ -382,6 +386,12 @@ Keep the `.grc` source and its generated `.py` file together in the appropriate 
 
 Before adding a new flow-graph category directory, inspect the installer/compilation logic and existing plugin categories. If the installer recognizes specific folder names, either use the appropriate recognized category or make an intentional framework/installer change rather than creating a directory that installation will silently ignore.
 
+### Receiver Migration and Signal Processing
+
+When adapting an existing receiver to another GNU Radio version, compare the working and replacement signal chains before reconstructing or substituting blocks. Verify sample rates, resampling, channel offsets, filter placement and bandwidth, carrier synchronization, timing recovery, demodulation, and framing. Inspect the actual installed block implementations and configuration rather than assuming that reference flow graphs behave identically across versions.
+
+For acquisition problems, distinguish RF tuning errors from signal-processing failures. Use representative recorded IQ and known-good transmitters to test initial acquisition, frequency-offset tolerance, short bursts, and reacquisition. Prefer correcting an identified signal-processing issue over introducing frequency sweeps, parallel decoders, or additional operator-facing parameters.
+
 ### Runtime Resolution
 
 Resolve the active GNU Radio maintenance version with the normal FISSURE library-version mechanism instead of hardcoding one version globally.
@@ -430,6 +440,10 @@ Use the Operation framework's `_stop` flag and cooperative async behavior. Prefe
 Loops should periodically yield to the event loop.
 
 Clean up subprocesses, GNU Radio top blocks, temporary handles, monitor modes, or similar resources in reliable cleanup paths, normally `finally` and/or the Operation teardown mechanism.
+
+When an Operation launches wrappers or child processes, ensure Stop cleans up the entire process hierarchy owned by that Operation, not only the immediate subprocess. Use scoped process groups or equivalent mechanisms where appropriate, without terminating unrelated processes.
+
+Cancellation must remain responsive while callbacks or message-processing tasks are busy. Test repeated start/stop cycles during active processing and verify that external processes exit, hardware resources are released, and subsequent Operations can reacquire the device.
 
 A Stop request targets the specific active Operation ID. Do not implement plugin Stop behavior by stopping every Operation on the Sensor Node or every Operation in the plugin.
 

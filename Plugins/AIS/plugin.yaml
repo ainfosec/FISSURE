@@ -1,0 +1,3 @@
+name: AIS
+version: "1.0"
+description: Maritime AIS decoding, simulation, IQ and B210 loopback; hardware-specific streaming USRP B210, HackRF, and RTL-SDR receive Actions.
