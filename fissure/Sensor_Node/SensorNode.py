@@ -300,6 +300,10 @@ class SensorNode(object):
 
         self.operations = {} # operation tracking dictionary
 
+        # Short-lived stops protect against Stop arriving before Action registration.
+        self._pending_plugin_stops = {}
+        self._plugin_operation_event_sequences = {}
+
         self.autorun_state = "Idle"
         self.autorun_source = ""
         self.autorun_message = ""
@@ -1161,6 +1165,121 @@ class SensorNode(object):
         return "Idle"
 
 
+    async def publish_plugin_operation_state(
+        self,
+        operation_id: str,
+        plugin: str,
+        operation: str,
+        state: str,
+        error: str = "",
+    ) -> None:
+        """Publish an individual operation lifecycle edge through HIPRFISR.
+
+        This is independent of the aggregate Sensor Node Running/Idle heartbeat.
+        Sequences let the Dashboard discard reordered messages during quick runs.
+        """
+        if self.network_type != "IP":
+            return  # The existing Meshtastic control path has no lifecycle protocol yet.
+
+        sequence = self._plugin_operation_event_sequences.get(operation_id, 0) + 1
+        self._plugin_operation_event_sequences[operation_id] = sequence
+        if len(self._plugin_operation_event_sequences) > 2048:
+            # Bound completed-operation history; never prune an active operation.
+            for past_id in list(self._plugin_operation_event_sequences):
+                if past_id not in self.operations and past_id != operation_id:
+                    self._plugin_operation_event_sequences.pop(past_id, None)
+                    if len(self._plugin_operation_event_sequences) <= 1024:
+                        break
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "pluginOperationState",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": self.uuid,
+                "operation_id": str(operation_id),
+                "plugin": str(plugin),
+                "operation": str(operation),
+                "state": str(state),
+                "event_sequence": sequence,
+                "error": str(error or "")[:512],
+            },
+        }
+        try:
+            await self.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS, msg
+            )
+        except Exception:
+            self.logger.warning(
+                "Could not publish lifecycle state %s for operation %s",
+                state, operation_id, exc_info=True,
+            )
+
+
+    async def _publish_active_plugin_status(self, last_failed: bool = False) -> None:
+        """Publish a truthful node-wide status derived from active Actions.
+
+        Plugin progress belongs to its execution. A plugin's own "Idle" or
+        "Stopped" message must not make the whole Sensor Node appear idle while
+        another Action is still running. When only one Action remains, preserve
+        its useful progress text where possible.
+        """
+        active = [
+            str(operation_id)
+            for operation_id in getattr(self, "_active_operation_ids", set())
+            if str(operation_id) in self.operations
+        ]
+
+        if not active:
+            status = "Error" if last_failed else self._autorun_node_status()
+        elif len(active) > 1:
+            status = "Running ({} Actions)".format(len(active))
+        else:
+            record = self.operations[active[0]]
+            operation_name = str(record.get("operation") or "Action").replace(".py", "")
+            if record.get("stop_requested"):
+                status = "Stopping: {}".format(operation_name)
+            else:
+                progress = str(record.get("latest_status") or "").strip()
+                if progress.lower() in {
+                    "idle", "stopped", "stopping", "error", "offline",
+                    "completed", "complete", "failed", "failure",
+                }:
+                    progress = ""
+                status = progress or "Running: {}".format(operation_name)
+
+        # publish_status_to_hiprfisr owns the heartbeat/throttle cache. Calling
+        # it only for genuine status changes preserves the existing behavior.
+        if str(getattr(self, "current_status", "")) != status:
+            try:
+                await self.publish_status_to_hiprfisr(status)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                # Status traffic must never abort setup, execution, or teardown.
+                self.logger.debug("Could not publish node Action status.", exc_info=True)
+
+
+    async def _receive_plugin_status(self, operation_id: str, *args) -> None:
+        """Consume the status_callback for exactly one registered Action.
+
+        Existing plugins use callback(text), callback(opid, text), or
+        callback(node_uid, opid, text). In all cases the final argument is text.
+        The callback is bound to its owning operation at launch so updates from
+        one Action cannot claim the status of another.
+        """
+        if not args:
+            return
+        record = self.operations.get(str(operation_id or ""))
+        if record is None:
+            # Ignore setup-time / late callbacks from an unregistered Action.
+            return
+        text = str(args[-1] or "").strip()
+        if not text:
+            return
+        record["latest_status"] = text
+        await self._publish_active_plugin_status()
+
+
     async def _request_plugin_operation_stop(self, operation_id, op):
         """Request one plugin operation stop exactly once and wait for it to finish."""
         if not op:
@@ -1168,6 +1287,7 @@ class SensorNode(object):
 
         stop_task = op.get("stop_task")
         if stop_task is None:
+            op["stop_requested"] = True
             stop_callback = op.get("stop")
             if not callable(stop_callback):
                 self.logger.error(f"No callable stop method for operation {operation_id}.")
@@ -1202,11 +1322,11 @@ class SensorNode(object):
         """
         Runs a plugin operation on the Sensor Node.
 
-        Behavior (low-traffic + no duplicates):
-        - No pluginOperationStarted/Stopped messages
+        Behavior:
+        - Publish per-operation Starting/Running/Stopping/terminal lifecycle edges
         - Node status auto-reverts to Idle when the LAST active operation completes
         - Finalizer is the ONLY owner of teardown + registry removal
-        - stop_plugin_operation should only request stop + await task (no teardown/pop)
+        - stop_plugin_operation requests stop and awaits task/finalizer, without teardown/pop
 
         Parameters
         ----------
@@ -1241,33 +1361,19 @@ class SensorNode(object):
         if not hasattr(self, "current_status"):
             self.current_status = self._idle_status_text  # canonical, used by beacons
 
-        async def _set_status_edge(status_text: str, *, force: bool = False) -> None:
-            """
-            Canonical status setter + optional low-traffic publisher.
+        requested_parameters = parameters.get("parameters", {})
+        requested_operation_id = str(
+            parameters.get("operation_id")
+            or (requested_parameters.get("operation_id") if isinstance(requested_parameters, dict) else "")
+            or ""
+        ).strip()
 
-            - self.current_status is the source of truth (beacons read this)
-            - publish_status_to_hiprfisr is best-effort
-            - sends ONLY on change unless force=True
-            """
-            s = (status_text or "").strip() or self._autorun_node_status()
-
-            # If state didn't change and we're not forcing, do nothing
-            if (not force) and self.current_status == s:
-                return
-
-            # Update canonical state first (so beacons reflect immediately)
-            self.current_status = s
-
-            # Publish only if we haven't already published this value (unless force=True).
-            # publish_status_to_hiprfisr() owns the published-status cache. Do not
-            # update _last_published_status here before calling it, or the publisher
-            # will treat this new edge as a duplicate and suppress it.
-            if force or (self._last_published_status != s):
-                try:
-                    await self.publish_status_to_hiprfisr(s)
-                except Exception:
-                    # Comms is best-effort; do not fail operation
-                    self.logger.debug("Status publish failed.", exc_info=True)
+        async def _launch_failure(reason: str):
+            if requested_operation_id:
+                await self.publish_plugin_operation_state(
+                    requested_operation_id, plugin, operation, "Failed", reason,
+                )
+            return None
 
         self.logger.info(f"Running plugin operation: {plugin} - {operation} with parameters: {parameters}")
 
@@ -1277,13 +1383,13 @@ class SensorNode(object):
         plugin_path = os.path.join(PLUGIN_DIR, plugin)
         if not os.path.exists(plugin_path):
             self.logger.error(f"Plugin path does not exist: {plugin_path}")
-            return None
+            return await _launch_failure("Plugin path does not exist")
         self.logger.info(f"Plugin path resolved: {plugin_path}")
 
         plugin_script_path = os.path.join(plugin_path, "operations", operation)
         if not os.path.exists(plugin_script_path):
             self.logger.error(f"Plugin script does not exist: {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin operation script does not exist")
         self.logger.info(f"Plugin script resolved: {plugin_script_path}")
 
         # -------------------------------------------------------------------------
@@ -1293,13 +1399,13 @@ class SensorNode(object):
             spec = importlib.util.spec_from_file_location("plugin_module", plugin_script_path)
             if spec is None or spec.loader is None:
                 self.logger.error(f"Could not load spec for plugin script: {plugin_script_path}")
-                return None
+                return await _launch_failure("Plugin initialization or setup failed")
             plugin_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(plugin_module)
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error importing plugin script {plugin_script_path}: {e}\n{tb_str}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
 
         # -------------------------------------------------------------------------
         # Get OperationMain
@@ -1307,26 +1413,26 @@ class SensorNode(object):
         operation_main = getattr(plugin_module, "OperationMain", None)
         if operation_main is None:
             self.logger.error(f"No OperationMain class found in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not inspect.isclass(operation_main):
             self.logger.error(f"OperationMain is not a class in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
 
         # -------------------------------------------------------------------------
         # Resources
         # -------------------------------------------------------------------------
         if not hasattr(operation_main, "get_resources") or not callable(getattr(operation_main, "get_resources")):
             self.logger.error(f"No callable get_resources() found in {plugin_script_path} OperationMain class")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         try:
             resources = operation_main.get_resources()
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error calling get_resources() in {plugin_script_path}: {e}\n{tb_str}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not isinstance(resources, dict):
             self.logger.error(f"get_resources() did not return a dictionary: {resources}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         self.logger.info(f"Plugin operation resources: {resources}")
 
         # Record user parameters (for UI/reporting/logging only; not sent over air)
@@ -1350,7 +1456,16 @@ class SensorNode(object):
         parameters["alert_callback"] = self.send_alert
         parameters["tak_cot_callback"] = self.send_tak_cot
         parameters["detection_callback"] = self.send_detection
-        parameters["status_callback"] = self.publish_status_to_hiprfisr
+        # A bound callback keeps legacy one/two/three-argument plugin status
+        # messages scoped to this Action rather than writing node-wide status.
+        status_identity = {"operation_id": ""}
+
+        async def status_for_this_operation(*status_args):
+            await self._receive_plugin_status(
+                status_identity["operation_id"], *status_args
+            )
+
+        parameters["status_callback"] = status_for_this_operation
         parameters["target_callback"] = self.send_target_patch  #self.send_target_update
         parameters["soi_callback"] = self.send_soi_update
         parameters["recommendation_callback"] = self.send_recommendation
@@ -1387,7 +1502,7 @@ class SensorNode(object):
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error initializing operation class from {plugin_script_path}: {e}\n{tb_str}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         self.logger.info(f"Plugin operation initialized: {operation}")
 
         # -------------------------------------------------------------------------
@@ -1395,22 +1510,22 @@ class SensorNode(object):
         # -------------------------------------------------------------------------
         if not hasattr(operation_inst, "opid"):
             self.logger.error(f"No operation ID (opid) found in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not hasattr(operation_inst, "running") or not callable(operation_inst.running):
             self.logger.error(f"No running flag found in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not hasattr(operation_inst, "stop") or not callable(operation_inst.stop):
             self.logger.error(f"No callable stop() method found in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not hasattr(operation_inst, "teardown") or not callable(operation_inst.teardown):
             self.logger.error(f"No callable teardown() method found in {plugin_script_path}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not hasattr(operation_inst, "run") or not callable(operation_inst.run):
             self.logger.error(f"No callable run() method found in {plugin_script_path} OperationMain class")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not hasattr(operation_inst, "setup") or not callable(operation_inst.setup):
             self.logger.error(f"No callable setup() method found in {plugin_script_path} OperationMain class")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
 
         # -------------------------------------------------------------------------
         # Setup environment
@@ -1420,16 +1535,24 @@ class SensorNode(object):
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error during setup() for {plugin_script_path}: {e}\n{tb_str}")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         if not env_ready:
             self.logger.error(f"Plugin operation {operation} setup failed.")
-            return None
+            return await _launch_failure("Plugin initialization or setup failed")
         self.logger.info(f"Plugin operation environment for {operation} is ready.")
 
         # -------------------------------------------------------------------------
         # Register operation
         # -------------------------------------------------------------------------
-        operation_id = operation_inst.opid
+        operation_id = str(operation_inst.opid)
+        status_identity["operation_id"] = operation_id
+        if operation_id in self.operations:
+            self.logger.error("Duplicate active operation ID %s; rejecting launch", operation_id)
+            try:
+                await operation_inst.teardown()
+            except Exception:
+                self.logger.warning("Teardown failed for duplicate operation ID", exc_info=True)
+            return None
         self.operations[operation_id] = {
             "plugin": plugin,
             "operation": operation,
@@ -1443,6 +1566,8 @@ class SensorNode(object):
             "task": None,
             "stop_task": None,
             "finalize_task": None,
+            "stop_requested": False,
+            "latest_status": "",
         }
 
         operation_owner = str(self._operation_owner_context.get() or "").strip()
@@ -1453,10 +1578,9 @@ class SensorNode(object):
         # Track "busy vs idle" based on active operation IDs
         self._active_operation_ids.add(operation_id)
 
-        # Transition idle->running exactly once (edge-triggered)
-        if len(self._active_operation_ids) == 1:
-            # Keep short. If you prefer "Running" only, do that.
-            await _set_status_edge(f"Running: {operation}")
+        # Derive a node-wide status from all active operations, not one Action's
+        # progress callback. The second concurrent Action becomes Running (2).
+        await self._publish_active_plugin_status()
 
         # -------------------------------------------------------------------------
         # Start the operation task
@@ -1489,22 +1613,27 @@ class SensorNode(object):
                 try:
                     await operation_inst.teardown()
                 except Exception:
+                    teardown_error = traceback.format_exc()
+                    if not err_str:
+                        err_str = teardown_error
                     self.logger.error(
-                        f"Error tearing down plugin operation {operation_id}:\n{traceback.format_exc()}"
+                        f"Error tearing down plugin operation {operation_id}:\n{teardown_error}"
                     )
 
                 # Remove from registry (exactly once, owned here)
-                self.operations.pop(operation_id, None)
+                op_record = self.operations.pop(operation_id, None)
 
-                # Update active set
+                # Update active set and independently report this operation's outcome.
                 self._active_operation_ids.discard(operation_id)
+                was_stopped = bool(op_record.get("stop_requested")) if op_record else False
+                final_state = "Failed" if err_str else ("Stopped" if was_stopped else "Completed")
+                await self.publish_plugin_operation_state(
+                    operation_id, plugin, operation, final_state, err_str,
+                )
 
-                # If this was the last active op, revert status once (edge-triggered)
-                if len(self._active_operation_ids) == 0:
-                    if err_str:
-                        await _set_status_edge("Error")
-                    else:
-                        await _set_status_edge(self._autorun_node_status())
+                # Status follows surviving Actions. Only the LAST Action may
+                # restore Idle or Error for the Sensor Node as a whole.
+                await self._publish_active_plugin_status(last_failed=bool(err_str))
 
                 if operation_owner:
                     owner_operations = self._operation_owner_ids.get(operation_owner)
@@ -1516,6 +1645,19 @@ class SensorNode(object):
         finalize_task = asyncio.create_task(_finalize_operation(), name=f"op_finalize:{operation_id}")
         self.operations[operation_id]["finalize_task"] = finalize_task
 
+        # Starting is per-operation; the aggregate node status is intentionally separate.
+        await self.publish_plugin_operation_state(
+            operation_id, plugin, operation, "Starting",
+        )
+
+        # An earlier stop command may have arrived while setup() was running.
+        pending_until = self._pending_plugin_stops.pop(operation_id, 0)
+        if pending_until >= time.monotonic():
+            asyncio.create_task(
+                self.stop_plugin_operation(self, operation_id),
+                name=f"op_pending_stop:{operation_id}",
+            )
+
         # -------------------------------------------------------------------------
         # Startup handshake: wait for running() to become non-None OR task to finish quickly
         # -------------------------------------------------------------------------
@@ -1524,7 +1666,7 @@ class SensorNode(object):
             await asyncio.sleep(0.05)
 
         if task.done():
-            exc = task.exception()
+            exc = None if task.cancelled() else task.exception()
             if exc is None:
                 self.logger.info(f"Plugin operation {operation_id} completed quickly.")
             else:
@@ -1535,12 +1677,16 @@ class SensorNode(object):
 
         # Long-running (or still starting but past timeout)
         self.logger.info(f"Plugin operation {operation_id} running (running()={operation_inst.running()}).")
+        if operation_id in self.operations and not self.operations[operation_id].get("stop_requested"):
+            await self.publish_plugin_operation_state(
+                operation_id, plugin, operation, "Running",
+            )
 
         if wait:
             await finalize_task
 
         return operation_id
-    
+
 
     async def stop_plugin_operation(
         self,
@@ -1558,9 +1704,23 @@ class SensorNode(object):
 
         op = self.operations.get(operation_id)
         if not op:
-            self.logger.debug(f"Operation ID {operation_id} is no longer active.")
+            # A targeted Stop can outrun an Action's setup and registration.
+            # Retain it only briefly; unknown/stale IDs must not accumulate forever.
+            now = time.monotonic()
+            self._pending_plugin_stops = {
+                key: deadline for key, deadline in self._pending_plugin_stops.items()
+                if deadline > now
+            }
+            if operation_id and len(self._pending_plugin_stops) < 256:
+                self._pending_plugin_stops[operation_id] = now + 30.0
+                self.logger.debug("Queued pre-registration Stop for %s", operation_id)
             return
 
+        if not op.get("stop_requested"):
+            op["stop_requested"] = True
+            await self.publish_plugin_operation_state(
+                operation_id, op.get("plugin", ""), op.get("operation", ""), "Stopping",
+            )
         await self._request_plugin_operation_stop(operation_id, op)
         self.logger.info(f"Operation {operation_id} stop requested.")
 
@@ -1596,8 +1756,17 @@ class SensorNode(object):
         if self.autorun_state in {"Waiting", "Running", "Stopping"}:
             await self.stop_autorun_playlist()
 
-        for operation_id in list(self.operations.keys()):
-            await self.stop_plugin_operation(component, operation_id)
+        operation_ids = list(self.operations.keys())
+        # Request independent stops together, so one slow device cannot block
+        # delivery of Stop to every other running operation on this node.
+        if operation_ids:
+            results = await asyncio.gather(
+                *(self.stop_plugin_operation(component, operation_id) for operation_id in operation_ids),
+                return_exceptions=True,
+            )
+            for operation_id, result in zip(operation_ids, results):
+                if isinstance(result, BaseException):
+                    self.logger.error("Failed stopping operation %s: %r", operation_id, result)
 
 
     async def plugin_action(

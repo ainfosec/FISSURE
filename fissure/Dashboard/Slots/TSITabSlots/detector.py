@@ -2278,6 +2278,8 @@ def update_tsi_detector_selected_node_gate(dashboard: QtCore.QObject):
     selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     has_selected_node = bool(selected_uid)
 
+    active = bool(getattr(dashboard, "tsi_detector_running", False))
+
     if has_selected_node:
         node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid)
         if isinstance(node_state, dict) and node_state.get("connected") is False:
@@ -2285,12 +2287,13 @@ def update_tsi_detector_selected_node_gate(dashboard: QtCore.QObject):
 
     stack = getattr(dashboard.ui, "stackedWidget_tsi_detector", None)
     if stack is not None:
-        stack.setCurrentIndex(0 if has_selected_node else 1)
+        stack.setCurrentIndex(0 if has_selected_node or active else 1)
 
-    if getattr(dashboard, "tsi_detector_running", False):
+    if active:
         _tsi_detector_set_controls_enabled(dashboard, False)
-        _tsi_detector_set_card3_enabled(dashboard, True)
-        update_tsi_detector_status_from_node(dashboard, node_uid=selected_uid)
+        _tsi_detector_set_card3_enabled(
+            dashboard, not bool(getattr(dashboard, "tsi_detector_stop_pending", False))
+        )
         return
 
     _tsi_detector_set_start_stop_button(dashboard, False)
@@ -2369,7 +2372,7 @@ def update_tsi_detector_selected_node_gate(dashboard: QtCore.QObject):
         )
     elif not has_action:
         dashboard.ui.label_tsi_detector_setup_info.setText("No detector actions match the selected hardware.")
-    
+ 
 
 def _tsi_detector_set_start_stop_button(
     dashboard: QtCore.QObject,
@@ -2456,6 +2459,7 @@ def _tsi_detector_set_running(
     Status label follows the selected node action status, same as Fixed/Sweep.
     """
     dashboard.tsi_detector_running = True
+    dashboard.tsi_detector_stop_pending = False
     dashboard.tsi_detector_node_uid = node_uid or ""
     dashboard.tsi_detector_opid = operation_id or ""
     dashboard.tsi_detector_waiting_for_opid = False
@@ -2472,7 +2476,6 @@ def _tsi_detector_set_running(
 
     _tsi_detector_set_start_stop_button(dashboard, True)
     _tsi_detector_set_status_text(dashboard, "Starting...")
-    update_tsi_detector_status_from_node(dashboard, node_uid=node_uid)
 
     dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(True)
     _tsi_detector_set_controls_enabled(dashboard, False)
@@ -2485,6 +2488,7 @@ def _tsi_detector_set_stopped(dashboard: QtCore.QObject):
     _tsi_detector_plot_stop(dashboard)
 
     dashboard.tsi_detector_running = False
+    dashboard.tsi_detector_stop_pending = False
     dashboard.tsi_detector_node_uid = ""
     dashboard.tsi_detector_opid = ""
     dashboard.tsi_detector_waiting_for_opid = False
@@ -2499,44 +2503,58 @@ def _tsi_detector_set_stopped(dashboard: QtCore.QObject):
     update_tsi_detector_selected_node_gate(dashboard)
 
 
+def handle_tsi_detector_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    operation_id: str,
+    state: str,
+    error: str = "",
+):
+    """Apply only this Detector panel's lifecycle edges, including external Stop."""
+    if not bool(getattr(dashboard, "tsi_detector_running", False)):
+        return
+    if (
+        str(node_uid or "") != str(getattr(dashboard, "tsi_detector_node_uid", "") or "")
+        or str(operation_id or "") != str(getattr(dashboard, "tsi_detector_opid", "") or "")
+    ):
+        return
+
+    state = str(state or "").strip()
+    if state in {"Completed", "Stopped", "Failed"}:
+        _tsi_detector_cleanup_remote_xpra(dashboard)
+        _tsi_detector_set_stopped(dashboard)
+        if state != "Stopped":
+            _tsi_detector_set_status_text(dashboard, state)
+        if state == "Failed" and error:
+            dashboard.ui.label2_tsi_detector_status.setToolTip(str(error))
+        else:
+            dashboard.ui.label2_tsi_detector_status.setToolTip("")
+        dashboard.refreshStatusBarText()
+        return
+
+    if bool(getattr(dashboard, "tsi_detector_stop_pending", False)) or state == "Stopping":
+        dashboard.tsi_detector_stop_pending = True
+        _tsi_detector_set_status_text(dashboard, "Stopping...")
+        dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+    elif state in {"Starting", "Running"}:
+        _tsi_detector_set_status_text(dashboard, state)
+
+
 def update_tsi_detector_status_from_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
 ):
-    """
-    Mirrors the selected node's operation/status text into the unified detector
-    status label.
-    """
-    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
-
-    if node_uid and selected_uid and node_uid != selected_uid:
+    """Do not mirror aggregate Sensor Node status into an active Detector Action."""
+    if bool(getattr(dashboard, "tsi_detector_running", False)):
         return
-
-    if not selected_uid:
-        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "")
+    if node_uid and selected_uid and str(node_uid) != selected_uid:
         return
-
-    if not getattr(dashboard, "tsi_detector_running", False):
-        _tsi_detector_set_status_text(dashboard, "Idle")
-        return
-
-    node_states = getattr(dashboard, "node_states", {}) or {}
-    node_state = node_states.get(selected_uid, {}) or {}
-
-    status_text = (
-        node_state.get("status")
-        or node_state.get("state")
-        or node_state.get("operation_status")
-        or node_state.get("last_status")
-        or ""
+    node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid, {}) or {}
+    available = bool(selected_uid) and not (
+        isinstance(node_state, dict) and node_state.get("connected") is False
     )
-
-    status_text = str(status_text).strip()
-
-    if not status_text:
-        status_text = "Running"
-
-    _tsi_detector_set_status_text(dashboard, status_text)
+    _tsi_detector_set_status_text(dashboard, "Idle" if available else "Sensor Node Unavailable")
 
 
 def update_tsi_detector_status_from_selected_node(
@@ -2544,46 +2562,18 @@ def update_tsi_detector_status_from_selected_node(
     node_uid: str = "",
     status: str = "",
 ):
-    """
-    Mirrors the top-panel selected node's operation/status text into the
-    unified detector status label.
-
-    This uses dashboard.selected_node_uid, not selected_tactical_node_uid.
-    """
-    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
-
-    if not selected_uid:
-        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+    """Update Detector availability only when it does not own an active Action."""
+    if bool(getattr(dashboard, "tsi_detector_running", False)):
+        # Per-operation lifecycle events, not aggregate status, control this label.
         return
-
-    if node_uid and node_uid != selected_uid:
+    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "")
+    if node_uid and selected_uid and str(node_uid) != selected_uid:
         return
-
-    node_states = getattr(dashboard, "node_states", {}) or {}
-    node_state = node_states.get(selected_uid, {}) or {}
-
-    if isinstance(node_state, dict) and node_state.get("connected") is False:
-        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
-        return
-
-    status_text = str(
-        status
-        or node_state.get("status", "")
-        or ""
-    ).strip()
-
-    detector_running = bool(
-        getattr(dashboard, "tsi_detector_running", False)
+    node_state = (getattr(dashboard, "node_states", {}) or {}).get(selected_uid, {}) or {}
+    available = bool(selected_uid) and not (
+        isinstance(node_state, dict) and node_state.get("connected") is False
     )
-
-    if not detector_running:
-        _tsi_detector_set_status_text(dashboard, "Idle")
-        return
-
-    if not status_text:
-        status_text = "Starting..."
-
-    _tsi_detector_set_status_text(dashboard, status_text)
+    _tsi_detector_set_status_text(dashboard, "Idle" if available else "Sensor Node Unavailable")
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -2592,35 +2582,44 @@ async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
     Starts/stops the unified TSI Detector action through the plugin action path.
     Remote IP GUI actions use Xpra only as their presentation channel.
     """
-    uid = getattr(dashboard, "selected_node_uid", "") or ""
+    uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
 
-    if not uid:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Select a Sensor Node before starting the detector.",
-        )
-        return
-
-    if getattr(dashboard, "tsi_detector_running", False):
+    # Stop the Action originally launched from this panel, even if the user
+    # subsequently selects a different node.
+    if bool(getattr(dashboard, "tsi_detector_running", False)):
+        if bool(getattr(dashboard, "tsi_detector_stop_pending", False)):
+            return
         node_uid = str(getattr(dashboard, "tsi_detector_node_uid", "") or "").strip()
         operation_id = str(getattr(dashboard, "tsi_detector_opid", "") or "").strip()
-
         if not node_uid or not operation_id:
             dashboard.logger.error(
-                "[TSI Detector] Cannot stop detector because its active node or operation ID is missing."
+                "[TSI Detector] Cannot stop detector: active node or operation ID is missing."
             )
             await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Could not identify the active detector operation to stop.",
+                dashboard, "Could not identify the active detector operation to stop."
             )
             return
 
+        dashboard.tsi_detector_stop_pending = True
+        _tsi_detector_set_status_text(dashboard, "Stopping...")
+        dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
         try:
             await dashboard.backend.stopPluginOperation(node_uid, operation_id)
-        finally:
-            _tsi_detector_cleanup_remote_xpra(dashboard)
-            _tsi_detector_set_stopped(dashboard)
-            dashboard.refreshStatusBarText()
+        except Exception as error:
+            dashboard.logger.error(f"[TSI Detector] Failed to request stop: {error}")
+            if (
+                bool(getattr(dashboard, "tsi_detector_running", False))
+                and str(getattr(dashboard, "tsi_detector_opid", "")) == operation_id
+            ):
+                dashboard.tsi_detector_stop_pending = False
+                _tsi_detector_set_status_text(dashboard, "Stop Failed — Retry")
+                dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(True)
+        return
+
+    if not uid:
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard, "Select a Sensor Node before starting the detector."
+        )
         return
 
     plugin_name = getattr(dashboard, "tsi_detector_selected_plugin", "") or ""

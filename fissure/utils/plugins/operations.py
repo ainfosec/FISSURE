@@ -174,8 +174,11 @@ def run_decorator(func):
             # importantly, never leave running() stuck True after cancellation.
             self._stop = True
             raise
-        except Exception as e:
-            self.logger.error(f"Error during operation run: {e}")
+        except Exception:
+            # The Sensor Node finalizer owns terminal failure reporting.
+            # Swallowing this exception incorrectly reports a Completed operation.
+            self.logger.exception("Error during operation run")
+            raise
         finally:
             self._running = False
 

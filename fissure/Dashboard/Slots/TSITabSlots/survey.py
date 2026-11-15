@@ -994,8 +994,13 @@ def update_sa_survey_selected_node_gate(dashboard: QtCore.QObject):
     if active:
         _set_sa_survey_execution_locked(dashboard, True)
         _set_sa_survey_start_stop_button(dashboard, True)
+        tracked_uid = str(getattr(dashboard, "sa_survey_node_uid", "") or "").strip()
+        node = (getattr(dashboard, "node_states", {}) or {}).get(tracked_uid, {}) or {}
+        pending = (getattr(dashboard, "_manual_action_recovery_pending", {}) or {}).get("survey")
         dashboard.ui.pushButton_sa_survey_execution_start_stop.setEnabled(
             not bool(getattr(dashboard, "sa_survey_stop_requested", False))
+            and not (isinstance(node, dict) and node.get("connected") is False)
+            and pending != (tracked_uid, str(getattr(dashboard, "sa_survey_operation_id", "") or ""))
         )
         dashboard.ui.pushButton_sa_survey_execution_add_soi.setEnabled(True)
         return
@@ -1381,6 +1386,8 @@ def _finish_sa_survey(dashboard: QtCore.QObject, status_text: str):
 async def _slotSA_SurveyStartStopClicked(dashboard: QtCore.QObject):
     """Start the selected Survey action or stop its active operation."""
     if _sa_survey_active(dashboard):
+        if bool(getattr(dashboard, "sa_survey_stop_requested", False)):
+            return
         node_uid = str(dashboard.sa_survey_node_uid or "").strip()
         operation_id = str(dashboard.sa_survey_operation_id or "").strip()
         if not node_uid or not operation_id:
@@ -1475,14 +1482,48 @@ async def _slotSA_SurveyStartStopClicked(dashboard: QtCore.QObject):
             parameters,
         )
 
+        # The operation can finish while the command is still awaiting routing.
+        # Its lifecycle callback may already have cleared this run's identity.
+        if str(getattr(dashboard, "sa_survey_operation_id", "") or "") != str(parameters["operation_id"]):
+            return
         dashboard.sa_survey_monitor_action_status = True
         dashboard.sa_survey_start_pending = False
         dashboard.sa_survey_running = True
-        dashboard.ui.label_sa_survey_execution_status.setText("Running")
+        if not bool(getattr(dashboard, "sa_survey_stop_requested", False)):
+            dashboard.ui.label_sa_survey_execution_status.setText("Running")
 
     except Exception as error:
         dashboard.logger.error(f"Could not start Survey action: {error}")
-        _finish_sa_survey(dashboard, "Start Failed")
+        if str(getattr(dashboard, "sa_survey_operation_id", "") or "") == str(parameters["operation_id"]):
+            _finish_sa_survey(dashboard, "Start Failed")
+
+
+def handle_sa_survey_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Finish Survey only on a lifecycle event for its own Action."""
+    if not _sa_survey_active(dashboard):
+        return
+    if str(getattr(dashboard, "sa_survey_node_uid", "") or "").strip() != str(node_uid or "").strip():
+        return
+    if str(getattr(dashboard, "sa_survey_operation_id", "") or "").strip() != str(operation_id or "").strip():
+        return
+    state = str(state or "").strip()
+    if state in {"Starting", "Running"}:
+        dashboard.sa_survey_running = state == "Running"
+        dashboard.sa_survey_start_pending = state == "Starting"
+        if not bool(getattr(dashboard, "sa_survey_stop_requested", False)):
+            dashboard.ui.label_sa_survey_execution_status.setText(state)
+            dashboard.ui.pushButton_sa_survey_execution_start_stop.setEnabled(True)
+        return
+    if state in {"Completed", "Stopped", "Failed"}:
+        if state == "Failed" and error:
+            dashboard.logger.warning("[Survey] Action failed: %s", error)
+        _finish_sa_survey(dashboard, state)
 
 
 def update_sa_survey_status_from_selected_node(
@@ -1490,51 +1531,12 @@ def update_sa_survey_status_from_selected_node(
     node_uid: str = "",
     status: str = "",
 ):
-    """Track Survey lifecycle from the selected Sensor Node status."""
-    if not _sa_survey_active(dashboard):
-        return
+    """Aggregate node status is not the lifecycle of the Survey Action.
 
-    tracked_node_uid = str(
-        getattr(dashboard, "sa_survey_node_uid", "") or ""
-    ).strip()
-    if tracked_node_uid != str(node_uid or "").strip():
-        return
-
-    if not bool(
-        getattr(dashboard, "sa_survey_monitor_action_status", False)
-    ):
-        return
-
-    status_text = str(status or "").strip()
-    if not status_text:
-        return
-
-    if status_text.startswith("Running"):
-        dashboard.sa_survey_seen_running_status = True
-        dashboard.sa_survey_start_pending = False
-        dashboard.sa_survey_running = True
-
-        if not bool(
-            getattr(dashboard, "sa_survey_stop_requested", False)
-        ):
-            dashboard.ui.label_sa_survey_execution_status.setText("Running")
-            dashboard.ui.pushButton_sa_survey_execution_start_stop.setEnabled(True)
-        return
-
-    if status_text == "Error":
-        _finish_sa_survey(dashboard, "Error")
-        return
-
-    if status_text == "Idle" and (
-        bool(getattr(dashboard, "sa_survey_seen_running_status", False))
-        or bool(getattr(dashboard, "sa_survey_stop_requested", False))
-    ):
-        final_status = (
-            "Stopped"
-            if bool(getattr(dashboard, "sa_survey_stop_requested", False))
-            else "Completed"
-        )
-        _finish_sa_survey(dashboard, final_status)
+    Retained for the existing node-state callback; Survey completion is handled
+    exclusively by handle_sa_survey_operation_state().
+    """
+    return
 
 
 __all__ = [

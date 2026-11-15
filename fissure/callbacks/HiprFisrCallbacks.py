@@ -2151,12 +2151,14 @@ async def refreshSensorNodeActivityResults(
     node_uid="",
     operations=None,
     log_entries=None,
+    request_id="",
 ):
     """Forward one Sensor Node Activity snapshot to the Dashboard."""
     PARAMETERS = {
         "node_uid": node_uid,
         "operations": operations or [],
         "log_entries": log_entries or [],
+        "request_id": str(request_id or ""),
     }
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
@@ -2171,7 +2173,7 @@ async def refreshSensorNodeActivityResults(
         )
 
 
-async def refreshSensorNodeActivity(component: object, node_uid="", log_limit=100):
+async def refreshSensorNodeActivity(component: object, node_uid="", log_limit=100, request_id=""):
     """Request one bounded Activity snapshot from an IP/local Sensor Node."""
     node = (component.nodes or {}).get(node_uid, {}) or {}
     identity = node.get("identity")
@@ -2184,6 +2186,7 @@ async def refreshSensorNodeActivity(component: object, node_uid="", log_limit=10
 
     PARAMETERS = {
         "log_limit": log_limit,
+        "request_id": str(request_id or ""),
     }
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
@@ -4164,6 +4167,59 @@ async def removeManagedPluginResults(
     )
 
 
+async def pluginOperationState(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+    state: str,
+    event_sequence: int = 0,
+    error: str = "",
+):
+    """Relay authoritative Sensor Node lifecycle edges to the Dashboard.
+
+    HIPRFISR holds only an active-state mirror; it never owns process teardown.
+    """
+    node_operations = getattr(component, "active_plugin_operations", None)
+    if node_operations is None:
+        node_operations = component.active_plugin_operations = {}
+    active = node_operations.setdefault(node_uid, {})
+    record = {
+        "node_uid": node_uid,
+        "operation_id": operation_id,
+        "plugin": plugin,
+        "operation": operation,
+        "state": state,
+        "event_sequence": int(event_sequence),
+        "error": str(error or "")[:512],
+    }
+    sequence_cache = getattr(component, "_plugin_operation_last_event_sequences", None)
+    if sequence_cache is None:
+        sequence_cache = component._plugin_operation_last_event_sequences = {}
+    key = (node_uid, operation_id)
+    if record["event_sequence"] <= sequence_cache.get(key, 0):
+        return
+    sequence_cache[key] = record["event_sequence"]
+    if len(sequence_cache) > 2048:
+        for old_key in list(sequence_cache)[:1024]:
+            sequence_cache.pop(old_key, None)
+    if state in {"Completed", "Stopped", "Failed"}:
+        active.pop(operation_id, None)
+    else:
+        active[operation_id] = record
+
+    if component.dashboard_connected:
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "pluginOperationState",
+            fissure.comms.MessageFields.PARAMETERS: record,
+        }
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS, msg,
+        )
+
+        
 async def stop_plugin_operation(component: object, node_uid: str, operation_id: str):
     """Stop a running plugin operation on the sensor node.
 

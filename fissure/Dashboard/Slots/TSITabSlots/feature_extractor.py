@@ -1362,6 +1362,8 @@ def reset_tsi_fe_for_selected_node_change(dashboard: QtCore.QObject):
     dashboard.ui.listWidget_tsi_fe_input_files.clear()
 
     dashboard.tsi_fe_running = False
+    dashboard.tsi_fe_stop_requested = False
+    dashboard.tsi_fe_node_uid = ""
     dashboard.tsi_fe_started_at = None
     dashboard.tsi_fe_completed_at = None
     dashboard.tsi_fe_operation_id = ""
@@ -1545,6 +1547,8 @@ def _tsi_fe_update_artifact_download_button(
 def initialize_tsi_fe_run_controls(dashboard: QtCore.QObject):
     """Initialize Feature Extractor execution state."""
     dashboard.tsi_fe_running = False
+    dashboard.tsi_fe_stop_requested = False
+    dashboard.tsi_fe_node_uid = ""
     dashboard.tsi_fe_started_at = None
     dashboard.tsi_fe_completed_at = None
     dashboard.tsi_fe_operation_id = ""
@@ -1666,32 +1670,20 @@ def _tsi_fe_run_readiness(dashboard: QtCore.QObject) -> tuple:
 def update_tsi_fe_run_start_state(
     dashboard: QtCore.QObject,
 ):
-    """
-    Enables Start when the current source/node/action/destination combination
-    is executable.
-
-    While running, the same button remains enabled as Stop.
-    """
+    """Enable one Stop only while the panel's own Action is running."""
     button = dashboard.ui.pushButton_tsi_fe_run_start_stop
-    running = bool(
-        getattr(dashboard, "tsi_fe_running", False)
-    )
-
+    running = bool(getattr(dashboard, "tsi_fe_running", False))
     if running:
-        button.setText("Stop")
-        button.setEnabled(True)
-        button.setToolTip("Stop the active feature extraction operation.")
+        stopping = bool(getattr(dashboard, "tsi_fe_stop_requested", False))
+        button.setText("Stopping..." if stopping else "Stop")
+        button.setEnabled(not stopping)
+        button.setToolTip("Waiting for the Sensor Node to stop this Action." if stopping
+                          else "Stop this Feature Extractor Action only.")
         return
-
     ready, reason = _tsi_fe_run_readiness(dashboard)
-
     button.setText("Start")
     button.setEnabled(ready)
-    button.setToolTip(
-        "Start feature extraction."
-        if ready
-        else reason
-    )
+    button.setToolTip("Start feature extraction." if ready else reason)
 
 
 def _tsi_fe_collect_method_parameters(
@@ -1881,6 +1873,8 @@ def _tsi_fe_finish_local_run(
     completed_at = time.time()
 
     dashboard.tsi_fe_running = False
+    dashboard.tsi_fe_stop_requested = False
+    dashboard.tsi_fe_node_uid = ""
     dashboard.tsi_fe_completed_at = completed_at
 
     try:
@@ -2105,20 +2099,70 @@ def _tsi_fe_start_local_result_timer(
     timer.start()
 
 
+def handle_tsi_fe_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Handle execution state only for the current Feature Extractor Action."""
+    if not bool(getattr(dashboard, "tsi_fe_running", False)):
+        return
+    tracked_uid = str(getattr(dashboard, "tsi_fe_node_uid", "") or "").strip()
+    tracked_id = str(getattr(dashboard, "tsi_fe_operation_id", "") or "").strip()
+    if not tracked_uid or not tracked_id:
+        return
+    if tracked_uid != str(node_uid or "").strip() or tracked_id != str(operation_id or "").strip():
+        return
+
+    stopping = bool(getattr(dashboard, "tsi_fe_stop_requested", False))
+    if state == "Starting" and not stopping:
+        dashboard.ui.label2_tsi_fe_run_status.setText("Starting...")
+    elif state == "Running" and not stopping:
+        dashboard.ui.label2_tsi_fe_run_status.setText("Running")
+    elif state == "Stopping":
+        dashboard.tsi_fe_stop_requested = True
+        dashboard.ui.label2_tsi_fe_run_status.setText("Stopping...")
+        update_tsi_fe_run_start_state(dashboard)
+    elif state == "Completed":
+        # Local Results and Artifact output are delivered through separate paths.
+        # Keep their completion handlers alive until the result arrives.
+        dashboard.ui.label2_tsi_fe_run_status.setText("Finishing Feature Results...")
+    elif state in {"Stopped", "Failed"}:
+        message = "Stopped" if state == "Stopped" else "Feature Extractor Action Failed"
+        if error:
+            message += ": " + str(error).strip()[:180]
+        _tsi_fe_finish_local_run(dashboard, status=message, progress=0)
+
+
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTSI_FE_RunStartStopClicked(dashboard: QtCore.QObject):
     """Start or stop Feature extraction with Artifact-first managed input/output."""
+    if bool(getattr(dashboard, "tsi_fe_running", False)):
+        if bool(getattr(dashboard, "tsi_fe_stop_requested", False)):
+            return
+        run_uid = str(getattr(dashboard, "tsi_fe_node_uid", "") or "").strip()
+        operation_id = str(getattr(dashboard, "tsi_fe_operation_id", "") or "").strip()
+        if not run_uid or not operation_id:
+            dashboard.logger.error("[Feature Extractor] Refusing Stop All: Action identity is missing.")
+            dashboard.ui.label2_tsi_fe_run_status.setText("Cannot stop: Action identity unavailable")
+            return
+        dashboard.tsi_fe_stop_requested = True
+        dashboard.ui.label2_tsi_fe_run_status.setText("Stopping...")
+        update_tsi_fe_run_start_state(dashboard)
+        try:
+            await dashboard.backend.stopPluginOperation(run_uid, operation_id)
+        except Exception as error:
+            dashboard.tsi_fe_stop_requested = False
+            dashboard.logger.error("[Feature Extractor] Targeted Stop failed: %r", error)
+            dashboard.ui.label2_tsi_fe_run_status.setText("Stop request failed")
+            update_tsi_fe_run_start_state(dashboard)
+        return
+
     uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
     if not uid:
         update_tsi_fe_run_start_state(dashboard)
-        return
-
-    if bool(getattr(dashboard, "tsi_fe_running", False)):
-        try:
-            await dashboard.backend.tacticalNodeStop([uid])
-        except Exception as error:
-            dashboard.logger.error(f"[Feature Extractor] Stop request failed: {error!r}")
-        _tsi_fe_finish_local_run(dashboard, status="Stopped", progress=0)
         return
 
     ready, reason = _tsi_fe_run_readiness(dashboard)
@@ -2154,11 +2198,10 @@ async def _slotTSI_FE_RunStartStopClicked(dashboard: QtCore.QObject):
     parameters["node_uid"] = uid
 
     remote_selected = _tsi_fe_selected_node_is_remote(dashboard)
-    operation_id = ""
+    # Every execution gets an ID, including Local Results runs.
+    operation_id = str(uuid.uuid4())
+    parameters["operation_id"] = operation_id
     source_operation_id = ""
-    if destination == "Artifact" or source == "Artifact":
-        operation_id = str(uuid.uuid4())
-        parameters["operation_id"] = operation_id
     if destination == "Artifact" and source in {"Files", "Folder"}:
         source_operation_id = str(uuid.uuid4())
         parameters["source_operation_id"] = source_operation_id
@@ -2183,6 +2226,8 @@ async def _slotTSI_FE_RunStartStopClicked(dashboard: QtCore.QObject):
     _tsi_fe_update_result_button_state(dashboard)
 
     dashboard.tsi_fe_running = True
+    dashboard.tsi_fe_stop_requested = False
+    dashboard.tsi_fe_node_uid = uid
     dashboard.tsi_fe_started_at = started_at
     dashboard.tsi_fe_completed_at = None
     dashboard.tsi_fe_operation_id = operation_id

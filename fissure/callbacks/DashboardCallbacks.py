@@ -363,11 +363,101 @@ async def refreshSensorNodeFilesResults(
     component.frontend.ui.tableWidget_sensor_nodes_fn_files.resizeRowsToContents()
 
 
+async def pluginOperationState(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+    state: str,
+    event_sequence: int = 0,
+    error: str = "",
+):
+    """Accept node-specific lifecycle edges without relying on aggregate node status."""
+    frontend = component.frontend
+    sequence_by_key = getattr(frontend, "plugin_operation_event_sequences", None)
+    if sequence_by_key is None:
+        sequence_by_key = frontend.plugin_operation_event_sequences = {}
+    key = (str(node_uid), str(operation_id))
+    sequence = int(event_sequence)
+    if sequence <= sequence_by_key.get(key, 0):
+        return
+    sequence_by_key[key] = sequence
+    times = getattr(frontend, "plugin_operation_last_event_times", None)
+    if times is None:
+        times = frontend.plugin_operation_last_event_times = {}
+    times[key] = time.monotonic()
+    if len(times) > 4096:
+        for old_key in list(times)[:2048]:
+            times.pop(old_key, None)
+    if len(sequence_by_key) > 2048:
+        for old_key in list(sequence_by_key)[:1024]:
+            sequence_by_key.pop(old_key, None)
+
+    states = getattr(frontend, "active_plugin_operations", None)
+    if states is None:
+        states = frontend.active_plugin_operations = {}
+    node_states = states.setdefault(node_uid, {})
+    if state in {"Completed", "Stopped", "Failed"}:
+        node_states.pop(operation_id, None)
+    else:
+        node_states[operation_id] = {
+            "node_uid": node_uid,
+            "operation_id": operation_id,
+            "plugin": plugin,
+            "operation": operation,
+            "state": state,
+            "event_sequence": sequence,
+        }
+
+    await SingleActionTabSlots.handle_single_action_operation_state(
+        frontend,
+        node_uid=node_uid,
+        operation_id=operation_id,
+        state=state,
+        error=error,
+    )
+    TSITabSlots.handle_tsi_conditioner_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_tsi_fe_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_sa_capture_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_tsi_detector_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_sa_survey_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_sa_inspection_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    TSITabSlots.handle_sa_classifier_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id, state=state, error=error,
+    )
+    await FuzzingTabSlots.handle_fuzzing_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id,
+        state=state, error=error,
+    )
+    SequentialActionTabSlots.handle_sequential_actions_operation_state(
+        frontend, node_uid=node_uid, operation_id=operation_id,
+        state=state, error=error,
+    )
+    TacticalTabSlots.refresh_tactical_operation_manager(frontend)
+    if str(getattr(frontend, "selected_tactical_node_uid", "") or "") == str(node_uid):
+        node = (getattr(frontend, "tactical_nodes", {}) or {}).get(str(node_uid), {"uid": str(node_uid)})
+        TacticalTabSlots.update_tactical_node_stop_button_state(frontend, node)
+
+
 async def refreshSensorNodeActivityResults(
     component: object,
     node_uid="",
     operations=None,
     log_entries=None,
+    request_id="",
 ):
     """Populate the read-only Sensor Nodes Activity snapshot."""
     SensorNodesTabSlots.populate_sensor_nodes_activity_snapshot(
@@ -376,6 +466,26 @@ async def refreshSensorNodeActivityResults(
         operations=operations or [],
         log_entries=log_entries or [],
     )
+    frontend = component.frontend
+    # Only the exact request that produced this reply may reconcile the
+    # Tactical operation registry or release a Node Stop waiter.
+    uid = str(node_uid or "")
+    request_ids = getattr(frontend, "_tactical_operation_snapshot_request_ids", {}) or {}
+    requests = getattr(frontend, "_tactical_operation_snapshot_requests", {}) or {}
+    token = str(request_id or "")
+    if token and request_ids.get(uid) == token:
+        request_time = requests.pop(uid, None)
+        request_ids.pop(uid, None)
+        if request_time is not None:
+            TacticalTabSlots.reconcile_tactical_operation_snapshot(
+                frontend, uid, operations or [], request_time,
+            )
+            # This is the SAME correlated, current response used by Tactical.
+            # A missing Action is an unknown outcome, not a Stopped/Failed edge.
+            from fissure.Dashboard.Slots import ActionRecovery
+            await ActionRecovery.reconcile_from_activity_snapshot(
+                frontend, uid, operations or [], request_time,
+            )
 
 
 async def fileDownloaded(component: object):
@@ -936,6 +1046,11 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     )
 
     frontend.node_states[node_uid] = node
+
+    if connection_state_changed:
+        # Invalidate in-flight Stop snapshots on disconnect and reconcile after reconnect.
+        # These are node-wide connectivity transitions, NOT Action terminal events.
+        TacticalTabSlots._tactical_handle_node_connectivity(frontend, node_uid, connected)
 
     tactical_nodes = getattr(frontend, "tactical_nodes", None)
     tactical_node = (

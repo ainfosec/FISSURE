@@ -220,7 +220,7 @@ class OperationMain(Operation):
 
 The Sensor Node runner imports the file, creates `OperationMain`, injects supported framework callbacks/context based on the constructor signature, runs setup, registers the Operation, starts it, handles Stop requests, performs teardown, and removes it from the active-operation registry.
 
-Do not duplicate that lifecycle inside plugin code.
+Do not duplicate that lifecycle inside plugin code. For IP/local Sensor Nodes, the runner reports operation-specific lifecycle edges (`Starting`, `Running`, `Stopping`, `Completed`, `Stopped`, `Failed`) through HIPRFISR to the Dashboard. The node-wide `Running`/`Idle` status is an aggregate indicator, not a reliable completion signal for an individual Operation. Manual panels should track the unique Operation ID they launched and must not reset from another Operation's status changes.
 
 ### Operation Constructors
 
@@ -449,11 +449,11 @@ A Stop request targets the specific active Operation ID. Do not implement plugin
 
 The Sensor Node runner owns Operation registration, finalization, teardown sequencing, and removal from the active-operation registry.
 
-Use `status_callback` for useful Operation progress, but do not create a parallel started/stopped lifecycle protocol. Be careful about forcing a global-looking `Idle` status from one Operation when other Operations may still be active; the Sensor Node runner owns the overall idle transition after the last active Operation completes.
+Use `status_callback` for useful Operation progress, but do not create a parallel started/stopped lifecycle protocol inside a plugin. The Sensor Node runner publishes lifecycle events; each UI workflow is responsible for correlating the unique Operation ID. Be careful about forcing a global-looking `Idle` status from one Operation when other Operations may still be active; the Sensor Node runner owns the overall idle transition after the last active Operation completes.
 
 ### Completion, Failure, and Artifact Outcomes
 
-Distinguish completed, interrupted, and failed runs in operator-visible status where the existing framework supports it and in result metadata. Avoid requiring the operator to open a diagnostic JSON file just to learn the reason an Action failed: include a concise actionable error in the available status path, while preserving the original tool output and context in logs or a diagnostic Artifact. Inspect current status callback semantics and the Sensor Node Operation wrapper; raising an exception may be caught and logged without automatically surfacing an operator-visible failure.
+Distinguish completed, interrupted, and failed runs in operator-visible status where the existing framework supports it and in result metadata. Avoid requiring the operator to open a diagnostic JSON file just to learn the reason an Action failed: include a concise actionable error in the available status path, while preserving the original tool output and context in logs or a diagnostic Artifact. Inspect current status callback semantics and the Sensor Node Operation wrapper; propagate unexpected run exceptions so the Sensor Node finalizer can report a `Failed` lifecycle state instead of incorrectly reporting `Completed`.
 
 Check required result operations for success. For example, `Operation.create_artifact(...)` can return an empty identifier instead of raising an exception. If an Artifact is an expected deliverable, verify registration and report its failure using existing mechanisms. A partial or failed run must not be presented as fully successful. Keep cancellation distinct from failure and always clean up subprocesses and hardware resources.
 

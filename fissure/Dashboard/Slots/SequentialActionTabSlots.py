@@ -597,6 +597,7 @@ def _clear_sequential_actions_current_state(dashboard: QtCore.QObject):
     dashboard.sequential_actions_current_seen_running = False
     dashboard.sequential_actions_current_monitor_status = False
     dashboard.sequential_actions_current_stop_reason = ""
+    dashboard.sequential_actions_current_stop_sent = False
 
 
 def _clear_sequential_actions_run_state(dashboard: QtCore.QObject):
@@ -636,51 +637,72 @@ async def _wait_for_current_sequence_action(
     duration: float,
     advance_early: bool,
 ):
-    """Wait for one action repeat using configured duration and completion behavior."""
+    """Wait for this repeat's terminal lifecycle event, not the node's Idle."""
     event = getattr(dashboard, "sequential_actions_current_event", None)
     if event is None:
         return "error"
-
     duration = max(0.0, float(duration or 0.0))
     started = time.monotonic()
 
-    while True:
-        if bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
-            operation_id = str(getattr(dashboard, "sequential_actions_current_operation_id", "") or "").strip()
-            if operation_id and not event.is_set():
-                dashboard.sequential_actions_current_stop_reason = "sequence"
-                await dashboard.backend.stopPluginOperation(node_uid, operation_id)
-            return "stopped"
+    async def request_stop(reason):
+        if event.is_set() or bool(getattr(dashboard, "sequential_actions_current_stop_sent", False)):
+            return True
+        operation_id = str(getattr(dashboard, "sequential_actions_current_operation_id", "") or "").strip()
+        if not operation_id:
+            return False
+        dashboard.sequential_actions_current_stop_reason = reason
+        dashboard.sequential_actions_current_stop_sent = True
+        try:
+            await dashboard.backend.stopPluginOperation(node_uid, operation_id)
+            return True
+        except Exception as error:
+            dashboard.logger.error(f"Could not stop sequence Action {operation_id}: {error}")
+            return False
 
+    while True:
         elapsed = time.monotonic() - started
         partial = min(1.0, elapsed / duration) if duration > 0.0 else 0.0
         _update_sequential_actions_elapsed(dashboard)
         _update_sequential_actions_progress(dashboard, partial)
 
         if event.is_set():
-            result = str(getattr(dashboard, "sequential_actions_current_result", "") or "").strip().lower()
+            result = str(getattr(dashboard, "sequential_actions_current_result", "") or "").lower()
+            reason = str(getattr(dashboard, "sequential_actions_current_stop_reason", "") or "")
+            if result == "error":
+                return "error"
+            if result == "stopped" and reason != "duration":
+                return "stopped"
+            if result == "completed" and (advance_early or duration <= 0.0):
+                return "completed"
+
+        if bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
+            if not event.is_set() and not await request_stop("sequence"):
+                return "error"
+            if not event.is_set():
+                try:
+                    await asyncio.wait_for(event.wait(), timeout=8.0)
+                except asyncio.TimeoutError:
+                    _append_action_log(dashboard, "Stop not confirmed; Action may still be running.")
+                    return "error"
+            return "error" if dashboard.sequential_actions_current_result == "error" else "stopped"
+
+        if duration > 0.0 and elapsed >= duration:
+            if not event.is_set():
+                operation_id = str(getattr(dashboard, "sequential_actions_current_operation_id", "") or "")
+                _append_action_log(dashboard, f"Duration reached; stopping operation {operation_id}.")
+                if not await request_stop("duration"):
+                    return "error"
+                try:
+                    await asyncio.wait_for(event.wait(), timeout=8.0)
+                except asyncio.TimeoutError:
+                    _append_action_log(dashboard, "Duration stop not confirmed; Action may still be running.")
+                    return "error"
+            result = str(getattr(dashboard, "sequential_actions_current_result", "") or "").lower()
             if result == "error":
                 return "error"
             if result == "stopped" and dashboard.sequential_actions_current_stop_reason != "duration":
                 return "stopped"
-            if advance_early or duration <= 0.0:
-                return "completed"
-
-        if duration > 0.0 and elapsed >= duration:
-            if not event.is_set():
-                operation_id = str(getattr(dashboard, "sequential_actions_current_operation_id", "") or "").strip()
-                if operation_id:
-                    dashboard.sequential_actions_current_stop_reason = "duration"
-                    _append_action_log(dashboard, f"Duration reached; stopping operation {operation_id}.")
-                    await dashboard.backend.stopPluginOperation(node_uid, operation_id)
-
-                try:
-                    await asyncio.wait_for(event.wait(), timeout=5.0)
-                except asyncio.TimeoutError:
-                    _append_action_log(dashboard, "Timed out waiting for operation stop confirmation.")
-
-            result = str(getattr(dashboard, "sequential_actions_current_result", "") or "").strip().lower()
-            return "error" if result == "error" else "completed"
+            return "completed"
 
         await asyncio.sleep(0.1)
 
@@ -710,6 +732,7 @@ async def _run_sequence_action_repeat(
     dashboard.sequential_actions_current_seen_running = False
     dashboard.sequential_actions_current_monitor_status = False
     dashboard.sequential_actions_current_stop_reason = ""
+    dashboard.sequential_actions_current_stop_sent = False
 
     action_text = f"{plugin_name}: {action_name}"
     dashboard.ui.label_ta_sequential_actions_execution_current_action.setText(
@@ -850,6 +873,7 @@ async def _start_sequential_actions_detectors(
         launch_requests.append((plugin_name, action_name, parameters))
 
     dashboard.sequential_actions_detector_operation_ids = operation_ids
+    dashboard.sequential_actions_detector_finished_ids = set()
 
     tasks = [
         dashboard.backend.tacticalNodeExecute([node_uid], plugin_name, action_name, parameters)
@@ -868,6 +892,12 @@ async def _stop_sequential_actions_detectors(dashboard: QtCore.QObject, node_uid
     """Stop detector operations launched for the current sequence gate."""
     operation_ids = list(getattr(dashboard, "sequential_actions_detector_operation_ids", set()) or set())
     dashboard.sequential_actions_detector_operation_ids = set()
+    state = (getattr(dashboard, "node_states", {}) or {}).get(node_uid, {}) or {}
+    if isinstance(state, dict) and state.get("connected") is False:
+        dashboard.logger.warning(
+            "Sequential detector Stop skipped: Sensor Node %s is offline", node_uid
+        )
+        return
 
     for operation_id in operation_ids:
         try:
@@ -890,7 +920,10 @@ async def _wait_for_sequential_actions_detection(dashboard: QtCore.QObject):
         _update_sequential_actions_elapsed(dashboard)
         await asyncio.sleep(0.05)
 
-    return not bool(getattr(dashboard, "sequential_actions_stop_requested", False))
+    return (
+        not bool(getattr(dashboard, "sequential_actions_stop_requested", False))
+        and bool(getattr(dashboard, "sequential_actions_detection", None))
+    )
 
 
 def handle_sequential_actions_detection(dashboard: QtCore.QObject, detection: dict):
@@ -1020,6 +1053,14 @@ async def _run_sequential_actions(dashboard: QtCore.QObject):
                         repeat_index,
                     )
 
+                    # A Tactical Stop wins over On Sequence Error: Continue,
+                    # normal completion, repeats, and Repeat Sequence. Never
+                    # dispatch another Action after an external stop request.
+                    if bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
+                        _set_sequential_actions_timeline_state(dashboard, action_index, "stopped")
+                        final_status = "Stopped"
+                        break
+
                     if result == "stopped":
                         _set_sequential_actions_timeline_state(dashboard, action_index, "stopped")
                         final_status = "Stopped"
@@ -1060,6 +1101,10 @@ async def _run_sequential_actions(dashboard: QtCore.QObject):
                     continue
 
             if final_status in {"Stopped", "Error"}:
+                break
+
+            if bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
+                final_status = "Stopped"
                 break
 
             _update_sequential_actions_progress(dashboard, 1.0)
@@ -1122,6 +1167,9 @@ async def _record_sequential_actions_target_history(
 
 async def _finish_sequential_actions(dashboard: QtCore.QObject, status_text: str):
     """Restore Sequential Actions controls after completion, Stop, or error."""
+    # A locally halted sequence is not proof that its remote Action stopped.
+    if bool(getattr(dashboard, "sequential_actions_connection_lost", False)):
+        status_text = "Outcome Unknown (Connection Lost)"
     _update_sequential_actions_elapsed(dashboard)
     _append_sequence_log(dashboard, f"Sequence {status_text.lower()}.")
 
@@ -1131,6 +1179,7 @@ async def _finish_sequential_actions(dashboard: QtCore.QObject, status_text: str
         dashboard.logger.error(f"Could not record Sequential Actions Target history: {error}")
 
     _clear_sequential_actions_run_state(dashboard)
+    dashboard.sequential_actions_connection_lost = False
 
     _set_sequential_actions_start_stop_button(dashboard, False)
     dashboard.ui.label_ta_sequential_actions_execution_status.setText(status_text)
@@ -1167,12 +1216,17 @@ async def _slotSequentialActionsStartStopClicked(dashboard: QtCore.QObject):
         operation_id = str(getattr(dashboard, "sequential_actions_current_operation_id", "") or "").strip()
         event = getattr(dashboard, "sequential_actions_current_event", None)
         if operation_id and node_uid and event is not None and not event.is_set():
-            dashboard.sequential_actions_current_stop_reason = "sequence"
-            try:
-                await dashboard.backend.stopPluginOperation(node_uid, operation_id)
-            except Exception as error:
-                dashboard.logger.error(f"Could not stop Sequential Actions operation {operation_id}: {error}")
-                dashboard.ui.pushButton_ta_sequential_actions_start_stop.setEnabled(True)
+            if not bool(getattr(dashboard, "sequential_actions_current_stop_sent", False)):
+                dashboard.sequential_actions_current_stop_reason = "sequence"
+                dashboard.sequential_actions_current_stop_sent = True
+                try:
+                    await dashboard.backend.stopPluginOperation(node_uid, operation_id)
+                except Exception as error:
+                    dashboard.logger.error(f"Could not stop Sequential Actions operation {operation_id}: {error}")
+                    dashboard.sequential_actions_stop_requested = False
+                    dashboard.sequential_actions_current_stop_sent = False
+                    dashboard.ui.label_ta_sequential_actions_execution_status.setText("Stop Failed")
+                    dashboard.ui.pushButton_ta_sequential_actions_start_stop.setEnabled(True)
         return
 
     node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
@@ -1229,48 +1283,116 @@ async def _slotSequentialActionsStartStopClicked(dashboard: QtCore.QObject):
     )
 
 
+def handle_sequential_actions_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    operation_id: str,
+    state: str,
+    error: str = "",
+):
+    """Handle lifecycle for the sequence's own Action and detector gate.
+
+    An external stop of the active sequence Action is an operator cancellation:
+    the owning sequence must not advance to its next repeat, Action, or cycle.
+    A deliberate sequence Duration stop is different and may advance normally.
+    """
+    if not _sequential_actions_active(dashboard):
+        return
+    if not _sequential_actions_node_uids_match(
+        getattr(dashboard, "sequential_actions_node_uid", ""), node_uid
+    ):
+        return
+
+    operation_id = str(operation_id or "").strip()
+    if not operation_id:
+        return
+
+    # Detector-gate Actions are tracked separately. Do not interpret the
+    # sequence's own detector shutdown after a Detection as an external stop.
+    if bool(getattr(dashboard, "sequential_actions_waiting_for_detection", False)):
+        detector_ids = getattr(dashboard, "sequential_actions_detector_operation_ids", set()) or set()
+        detection_event = getattr(dashboard, "sequential_actions_detection_event", None)
+        if operation_id in detector_ids and state in {"Completed", "Stopped", "Failed"}:
+            finished = getattr(dashboard, "sequential_actions_detector_finished_ids", None)
+            if finished is None:
+                finished = dashboard.sequential_actions_detector_finished_ids = set()
+            finished.add(operation_id)
+            if state == "Failed":
+                _append_sequence_log(dashboard, f"Detector {operation_id} failed: {error or 'unknown error'}")
+            if detector_ids.issubset(finished) and detection_event is not None and not detection_event.is_set():
+                _append_sequence_log(dashboard, "All detector Actions ended without a Detection.")
+                detection_event.set()
+        return
+
+    if operation_id != str(getattr(dashboard, "sequential_actions_current_operation_id", "") or ""):
+        return
+    event = getattr(dashboard, "sequential_actions_current_event", None)
+    if event is None or event.is_set():
+        return
+
+    # The sequence itself requests Stop for two reasons. A stop from Tactical
+    # (including Stop All) has neither reason. Do not overwrite an intentional
+    # "duration" stop, which must count as an ordinary timed step completion.
+    stop_reason = str(getattr(dashboard, "sequential_actions_current_stop_reason", "") or "")
+
+    def cancel_from_external_stop():
+        if stop_reason in {"duration", "sequence"}:
+            return
+        if stop_reason != "external":
+            dashboard.sequential_actions_current_stop_reason = "external"
+            dashboard.sequential_actions_current_stop_sent = True
+            dashboard.sequential_actions_stop_requested = True
+            _append_sequence_log(
+                dashboard,
+                "Action stopped outside Sequential Actions; cancelling the remaining sequence.",
+            )
+            _append_action_log(dashboard, "External Stop received. Sequence cancelled.")
+        dashboard.ui.label_ta_sequential_actions_execution_status.setText("Stopping Sequence...")
+        dashboard.ui.pushButton_ta_sequential_actions_start_stop.setEnabled(False)
+
+    if state in {"Starting", "Running"}:
+        if state == "Running":
+            dashboard.sequential_actions_current_seen_running = True
+        if not bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
+            dashboard.ui.label_ta_sequential_actions_execution_status.setText(state)
+        return
+
+    if state == "Stopping":
+        cancel_from_external_stop()
+        if str(getattr(dashboard, "sequential_actions_current_stop_reason", "") or "") != "external":
+            dashboard.ui.label_ta_sequential_actions_execution_status.setText("Stopping...")
+        return
+
+    if state in {"Completed", "Stopped", "Failed"}:
+        # A Stopped edge may arrive without its preceding Stopping edge (for
+        # example, after reconnect). Treat it as external unless the sequence
+        # itself initiated the stop for its Duration or Stop Sequence button.
+        if state == "Stopped":
+            cancel_from_external_stop()
+
+        # If the external Stop raced with natural completion/failure, preserve
+        # the operator's intent even if the terminal state is not "Stopped".
+        external = str(getattr(dashboard, "sequential_actions_current_stop_reason", "") or "") == "external"
+        if state == "Failed" and error:
+            _append_action_log(dashboard, f"Action failed: {error}")
+        dashboard.sequential_actions_current_result = (
+            "stopped" if external else
+            {"Completed": "completed", "Stopped": "stopped", "Failed": "error"}[state]
+        )
+        event.set()
+
+
 async def update_sequential_actions_status_from_selected_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
     status: str = "",
 ):
-    """Track the current sequence action using the existing Sensor Node status path."""
-    if not _sequential_actions_active(dashboard):
-        return
+    """Node-wide status is informational, not an Action lifecycle event.
 
-    tracked_node_uid = str(getattr(dashboard, "sequential_actions_node_uid", "") or "").strip()
-    if not _sequential_actions_node_uids_match(tracked_node_uid, node_uid):
-        return
-    if not bool(getattr(dashboard, "sequential_actions_current_monitor_status", False)):
-        return
-
-    event = getattr(dashboard, "sequential_actions_current_event", None)
-    if event is None or event.is_set():
-        return
-
-    status_text = str(status or "").strip()
-    if not status_text:
-        return
-
-    if status_text.startswith("Running"):
-        if not bool(getattr(dashboard, "sequential_actions_current_seen_running", False)):
-            _append_action_log(dashboard, status_text)
-        dashboard.sequential_actions_current_seen_running = True
-        if not bool(getattr(dashboard, "sequential_actions_stop_requested", False)):
-            dashboard.ui.label_ta_sequential_actions_execution_status.setText(status_text)
-        return
-
-    if status_text == "Error":
-        dashboard.sequential_actions_current_result = "error"
-        _append_action_log(dashboard, "Sensor Node status: Error")
-        event.set()
-        return
-
-    if status_text == "Idle" and bool(getattr(dashboard, "sequential_actions_current_seen_running", False)):
-        stop_reason = str(getattr(dashboard, "sequential_actions_current_stop_reason", "") or "")
-        dashboard.sequential_actions_current_result = "stopped" if stop_reason else "completed"
-        _append_action_log(dashboard, "Sensor Node status: Idle")
-        event.set()
+    Retained to avoid changing the existing nodeStateUpdate callback.
+    The sequence advances only on its matching pluginOperationState event.
+    """
+    return
 
 
 def _slotSequentialActionsSelectionChanged(dashboard: QtCore.QObject):

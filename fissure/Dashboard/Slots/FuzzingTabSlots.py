@@ -818,7 +818,10 @@ async def _finish_fuzzing(dashboard: QtCore.QObject, status_text: str):
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotFuzzingStartStopClicked(dashboard: QtCore.QObject):
+    """Launch one Fuzzing Action; stop only the Action owned by this panel."""
     if _fuzzing_active(dashboard):
+        if bool(getattr(dashboard, "fuzzing_stop_requested", False)):
+            return
         node_uid = str(getattr(dashboard, "fuzzing_node_uid", "") or "").strip()
         operation_id = str(getattr(dashboard, "fuzzing_operation_id", "") or "").strip()
         if not node_uid or not operation_id:
@@ -830,9 +833,10 @@ async def _slotFuzzingStartStopClicked(dashboard: QtCore.QObject):
             await dashboard.backend.stopPluginOperation(node_uid, operation_id)
         except Exception as error:
             dashboard.logger.error(f"Could not stop Fuzzing operation {operation_id}: {error}")
-            dashboard.fuzzing_stop_requested = False
-            dashboard.ui.label_ta_fuzzing_execution_status.setText("Running")
-            dashboard.ui.pushButton_ta_fuzzing_start_stop.setEnabled(True)
+            if str(getattr(dashboard, "fuzzing_operation_id", "") or "") == operation_id:
+                dashboard.fuzzing_stop_requested = False
+                dashboard.ui.label_ta_fuzzing_execution_status.setText("Stop Failed")
+                dashboard.ui.pushButton_ta_fuzzing_start_stop.setEnabled(True)
         return
 
     node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
@@ -859,7 +863,7 @@ async def _slotFuzzingStartStopClicked(dashboard: QtCore.QObject):
     dashboard.fuzzing_started_at = time.time()
     dashboard.fuzzing_seen_running_status = False
     dashboard.fuzzing_stop_requested = False
-    dashboard.fuzzing_monitor_action_status = False
+    dashboard.fuzzing_monitor_action_status = True
 
     _fuzzing_set_execution_locked(dashboard, True)
     _set_fuzzing_start_stop_button(dashboard, True)
@@ -869,36 +873,60 @@ async def _slotFuzzingStartStopClicked(dashboard: QtCore.QObject):
 
     try:
         await dashboard.backend.tacticalNodeExecute([node_uid], plugin_name, action_name, parameters)
-        dashboard.fuzzing_monitor_action_status = True
+        # A quick Action may already have emitted its terminal event while the
+        # launch command was still awaiting dispatch. Never resurrect its UI.
+        if str(getattr(dashboard, "fuzzing_operation_id", "") or "") != operation_id:
+            return
         dashboard.fuzzing_start_pending = False
         dashboard.fuzzing_running = True
     except Exception as error:
         dashboard.logger.error(f"Could not start Fuzzing action: {error}")
-        await _finish_fuzzing(dashboard, "Start Failed")
+        if str(getattr(dashboard, "fuzzing_operation_id", "") or "") == operation_id:
+            await _finish_fuzzing(dashboard, "Start Failed")
 
 
 async def update_fuzzing_status_from_selected_node(dashboard: QtCore.QObject, node_uid: str = "", status: str = ""):
-    if not _fuzzing_active(dashboard) or not dashboard.fuzzing_monitor_action_status:
+    """Aggregate Sensor Node status is not an Action completion signal.
+
+    Kept for the existing nodeStateUpdate callback; per-operation events are
+    handled by handle_fuzzing_operation_state instead.
+    """
+    return
+
+
+async def handle_fuzzing_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    operation_id: str,
+    state: str,
+    error: str = "",
+):
+    """Update Fuzzing only when its own Action changes lifecycle state."""
+    if not _fuzzing_active(dashboard):
         return
-    if not _fuzzing_node_uids_match(dashboard.fuzzing_node_uid, node_uid):
+    if str(getattr(dashboard, "fuzzing_operation_id", "") or "") != str(operation_id or ""):
+        return
+    if not _fuzzing_node_uids_match(getattr(dashboard, "fuzzing_node_uid", ""), node_uid):
         return
 
-    status_text = str(status or "").strip()
-    if not status_text:
-        return
-    if status_text.startswith("Running"):
-        dashboard.fuzzing_seen_running_status = True
+    if state in {"Starting", "Running"}:
         dashboard.fuzzing_start_pending = False
         dashboard.fuzzing_running = True
-        if not dashboard.fuzzing_stop_requested:
-            dashboard.ui.label_ta_fuzzing_execution_status.setText(status_text)
+        if not bool(getattr(dashboard, "fuzzing_stop_requested", False)):
+            dashboard.ui.label_ta_fuzzing_execution_status.setText(state)
             dashboard.ui.pushButton_ta_fuzzing_start_stop.setEnabled(True)
         return
-    if status_text == "Error":
-        await _finish_fuzzing(dashboard, "Error")
+    if state == "Stopping":
+        dashboard.ui.label_ta_fuzzing_execution_status.setText("Stopping...")
+        dashboard.ui.pushButton_ta_fuzzing_start_stop.setEnabled(False)
         return
-    if status_text == "Idle" and dashboard.fuzzing_seen_running_status:
-        await _finish_fuzzing(dashboard, "Stopped" if dashboard.fuzzing_stop_requested else "Completed")
+    if state in {"Completed", "Stopped", "Failed"}:
+        if state == "Failed" and error:
+            dashboard.logger.error("Fuzzing Action %s failed: %s", operation_id, error)
+        await _finish_fuzzing(
+            dashboard,
+            "Error" if state == "Failed" else state,
+        )
 
 
 @QtCore.pyqtSlot(QtCore.QObject, int, int)

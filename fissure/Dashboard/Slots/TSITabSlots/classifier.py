@@ -938,6 +938,11 @@ def initialize_sa_classifier_controls(dashboard: QtCore.QObject):
     dashboard.sa_classifier_running = False
     dashboard.sa_classifier_run_id = ""
     dashboard.sa_classifier_operation_id = ""
+    dashboard.sa_classifier_model_node_uid = ""
+    dashboard.sa_classifier_model_launched = False
+    dashboard.sa_classifier_model_operation_complete = False
+    dashboard.sa_classifier_run_local_results = False
+    dashboard.sa_classifier_stop_requested = False
     dashboard.sa_classifier_artifact_id = ""
     dashboard.sa_classifier_library_pending = False
     dashboard.sa_classifier_model_pending = False
@@ -1053,7 +1058,17 @@ def _sa_classifier_update_run_state(dashboard: QtCore.QObject):
 
     if bool(getattr(dashboard, "sa_classifier_running", False)):
         button.setText("Stop")
-        button.setEnabled(True)
+        uid = str(getattr(dashboard, "sa_classifier_model_node_uid", "") or "").strip()
+        node = (getattr(dashboard, "node_states", {}) or {}).get(uid, {}) or {}
+        pending = (getattr(dashboard, "_manual_action_recovery_pending", {}) or {}).get("classifier")
+        blocked = (
+            bool(getattr(dashboard, "sa_classifier_stop_requested", False))
+            or (bool(getattr(dashboard, "sa_classifier_model_launched", False)) and (
+                (isinstance(node, dict) and node.get("connected") is False)
+                or pending == (uid, str(getattr(dashboard, "sa_classifier_operation_id", "") or ""))
+            ))
+        )
+        button.setEnabled(not blocked)
         return
 
     library_enabled = (
@@ -1181,6 +1196,15 @@ def _sa_classifier_set_running(dashboard: QtCore.QObject, running: bool, status:
 
 
 def _sa_classifier_finish_if_complete(dashboard: QtCore.QObject):
+    if not bool(getattr(dashboard, "sa_classifier_running", False)):
+        return
+    if bool(getattr(dashboard, "sa_classifier_stop_requested", False)):
+        return
+    # Model results and the remote operation terminal event can arrive in
+    # either order. Both must finish before releasing this run's widgets.
+    if (bool(getattr(dashboard, "sa_classifier_model_launched", False))
+            and not bool(getattr(dashboard, "sa_classifier_model_operation_complete", False))):
+        return
     library_pending = bool(getattr(dashboard, "sa_classifier_library_pending", False))
     model_pending = bool(getattr(dashboard, "sa_classifier_model_pending", False))
     if library_pending or model_pending:
@@ -2481,6 +2505,9 @@ def _sa_classifier_model_parameters(dashboard: QtCore.QObject, operation_id: str
 
 
 async def _sa_classifier_start_model(dashboard: QtCore.QObject):
+    if (not bool(getattr(dashboard, "sa_classifier_running", False))
+            or bool(getattr(dashboard, "sa_classifier_stop_requested", False))):
+        return
     if not dashboard.ui.checkBox_sa_classifier_classify_model_enable.isChecked():
         dashboard.sa_classifier_model_pending = False
         _sa_classifier_finish_if_complete(dashboard)
@@ -2492,10 +2519,16 @@ async def _sa_classifier_start_model(dashboard: QtCore.QObject):
         dashboard.ui.label2_sa_classifier_classify_run_status.setText(reason or "Model classification unavailable")
         _sa_classifier_finish_if_complete(dashboard)
         return
-    uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    uid = str(getattr(dashboard, "sa_classifier_model_node_uid", "") or "").strip()
     operation_id = str(getattr(dashboard, "sa_classifier_operation_id", "") or "").strip()
+    if not uid or not operation_id:
+        dashboard.sa_classifier_model_pending = False
+        _sa_classifier_set_running(dashboard, False, "Model Node Unavailable")
+        return
     params = _sa_classifier_model_parameters(dashboard, operation_id)
     dashboard.sa_classifier_model_pending = True
+    dashboard.sa_classifier_model_launched = True
+    dashboard.sa_classifier_model_operation_complete = False
     try:
         await dashboard.backend.tacticalNodeExecute(
             [uid],
@@ -2506,12 +2539,17 @@ async def _sa_classifier_start_model(dashboard: QtCore.QObject):
         destination = str(
             dashboard.ui.comboBox_sa_classifier_classify_run_destination.currentText() or ""
         ).strip()
-        if destination == "Local Results" and selected_node_is_local(dashboard):
+        if (not bool(getattr(dashboard, "sa_classifier_stop_requested", False))
+                and bool(getattr(dashboard, "sa_classifier_running", False))
+                and str(getattr(dashboard, "sa_classifier_operation_id", "") or "") == operation_id
+                and bool(getattr(dashboard, "sa_classifier_run_local_results", False))):
             _sa_classifier_start_local_result_timer(dashboard)
     except Exception as error:
         dashboard.logger.error(f"[Classifier] Model start failed: {error!r}")
-        dashboard.sa_classifier_model_pending = False
-        _sa_classifier_finish_if_complete(dashboard)
+        if str(getattr(dashboard, "sa_classifier_operation_id", "") or "") == operation_id:
+            dashboard.sa_classifier_model_pending = False
+            dashboard.sa_classifier_model_operation_complete = True
+            _sa_classifier_set_running(dashboard, False, "Model Start Failed")
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -2519,51 +2557,36 @@ async def _slotSA_ClassifierRunStartStopClicked(
     dashboard: QtCore.QObject,
 ):
     if bool(getattr(dashboard, "sa_classifier_running", False)):
-        uid = str(
-            getattr(
-                dashboard,
-                "selected_node_uid",
-                "",
-            )
-            or ""
-        ).strip()
-        opid = str(
-            getattr(
-                dashboard,
-                "sa_classifier_operation_id",
-                "",
-            )
-            or ""
-        ).strip()
-
-        if (
-            uid
-            and opid
-            and bool(
-                getattr(
-                    dashboard,
-                    "sa_classifier_model_pending",
-                    False,
-                )
-            )
-        ):
-            try:
-                await dashboard.backend.stopPluginOperation(
-                    uid,
-                    opid,
-                )
-            except Exception as error:
-                dashboard.logger.error(
-                    f"[Classifier] Stop failed: {error!r}"
-                )
-
+        if bool(getattr(dashboard, "sa_classifier_stop_requested", False)):
+            return
+        operation_id = str(getattr(dashboard, "sa_classifier_operation_id", "") or "").strip()
+        uid = str(getattr(dashboard, "sa_classifier_model_node_uid", "") or "").strip()
+        dashboard.sa_classifier_stop_requested = True
         dashboard.sa_classifier_library_pending = False
+        timer = getattr(dashboard, "sa_classifier_result_timer", None)
+        if timer is not None:
+            timer.stop()
+
+        if bool(getattr(dashboard, "sa_classifier_model_launched", False)) and not bool(
+            getattr(dashboard, "sa_classifier_model_operation_complete", False)
+        ) and operation_id and uid:
+            dashboard.ui.label2_sa_classifier_classify_run_status.setText("Stopping...")
+            dashboard.ui.pushButton_sa_classifier_classify_run_start_stop.setEnabled(False)
+            try:
+                await dashboard.backend.stopPluginOperation(uid, operation_id)
+            except Exception as error:
+                dashboard.logger.error("[Classifier] Stop failed: %r", error)
+                if (bool(getattr(dashboard, "sa_classifier_running", False))
+                        and str(getattr(dashboard, "sa_classifier_operation_id", "") or "") == operation_id):
+                    dashboard.sa_classifier_stop_requested = False
+                    dashboard.ui.label2_sa_classifier_classify_run_status.setText("Stop Failed — Retry")
+                    dashboard.ui.pushButton_sa_classifier_classify_run_start_stop.setEnabled(True)
+            # Do not reset until a terminal lifecycle event arrives.
+            return
+
+        # Library-only run or remote model already completed; cancel locally.
         dashboard.sa_classifier_model_pending = False
-        _sa_classifier_set_running(
-            dashboard,
-            False,
-            "Stopped",
-        )
+        _sa_classifier_set_running(dashboard, False, "Stopped")
         return
 
     library_selected = (
@@ -2627,6 +2650,18 @@ async def _slotSA_ClassifierRunStartStopClicked(
     dashboard.sa_classifier_run_id = run_id
     dashboard.sa_classifier_operation_id = run_id
     dashboard.sa_classifier_artifact_id = ""
+    dashboard.sa_classifier_model_node_uid = (
+        str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+        if run_model else ""
+    )
+    dashboard.sa_classifier_run_local_results = bool(
+        run_model
+        and dashboard.ui.comboBox_sa_classifier_classify_run_destination.currentText() == "Local Results"
+        and selected_node_is_local(dashboard)
+    )
+    dashboard.sa_classifier_model_launched = False
+    dashboard.sa_classifier_model_operation_complete = False
+    dashboard.sa_classifier_stop_requested = False
 
     dashboard.ui.label2_sa_classifier_classify_run_operation_id.setText(
         run_id
@@ -2675,6 +2710,9 @@ def handle_sa_classifier_library_match_results(
 ):
     if str(request_id or "").strip() != str(getattr(dashboard, "sa_classifier_run_id", "") or "").strip():
         return
+    if (not bool(getattr(dashboard, "sa_classifier_running", False))
+            or bool(getattr(dashboard, "sa_classifier_stop_requested", False))):
+        return
     dashboard.sa_classifier_library_pending = False
     dashboard.sa_classifier_library_results = matches if isinstance(matches, list) else []
     if error:
@@ -2685,38 +2723,59 @@ def handle_sa_classifier_library_match_results(
         _sa_classifier_finish_if_complete(dashboard)
 
 
+def handle_sa_classifier_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Handle model plugin lifecycle independently of local Library Match."""
+    if not bool(getattr(dashboard, "sa_classifier_running", False)):
+        return
+    if not bool(getattr(dashboard, "sa_classifier_model_launched", False)):
+        return
+    if str(getattr(dashboard, "sa_classifier_model_node_uid", "") or "").strip() != str(node_uid or "").strip():
+        return
+    if str(getattr(dashboard, "sa_classifier_operation_id", "") or "").strip() != str(operation_id or "").strip():
+        return
+    state = str(state or "").strip()
+    if state in {"Starting", "Running"}:
+        if not bool(getattr(dashboard, "sa_classifier_stop_requested", False)):
+            dashboard.ui.label2_sa_classifier_classify_run_status.setText(state)
+            dashboard.ui.pushButton_sa_classifier_classify_run_start_stop.setEnabled(True)
+        return
+    if state not in {"Completed", "Stopped", "Failed"}:
+        return
+
+    dashboard.sa_classifier_model_operation_complete = True
+    if state in {"Stopped", "Failed"}:
+        timer = getattr(dashboard, "sa_classifier_result_timer", None)
+        if timer is not None:
+            timer.stop()
+        dashboard.sa_classifier_library_pending = False
+        dashboard.sa_classifier_model_pending = False
+        if state == "Failed" and error:
+            dashboard.logger.warning("[Classifier] Model failed: %s", error)
+        _sa_classifier_set_running(dashboard, False, "Model Failed" if state == "Failed" else "Stopped")
+        return
+
+    if bool(getattr(dashboard, "sa_classifier_stop_requested", False)):
+        dashboard.sa_classifier_model_pending = False
+        _sa_classifier_set_running(dashboard, False, "Completed Before Stop")
+    elif bool(getattr(dashboard, "sa_classifier_model_pending", False)):
+        dashboard.ui.label2_sa_classifier_classify_run_status.setText("Awaiting Model Results...")
+    else:
+        _sa_classifier_finish_if_complete(dashboard)
+
+
 def update_sa_classifier_status_from_selected_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
     status: str = "",
 ):
-    """Stop a pending model run cleanly when the selected Sensor Node reports an error."""
-    if not bool(getattr(dashboard, "sa_classifier_running", False)):
-        return
-    if not bool(getattr(dashboard, "sa_classifier_model_pending", False)):
-        return
-
-    selected_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
-    node_uid = str(node_uid or "").strip()
-    if not selected_uid or not node_uid:
-        return
-    if not (
-        selected_uid == node_uid
-        or selected_uid.endswith(node_uid)
-        or node_uid.endswith(selected_uid)
-        or selected_uid in node_uid
-        or node_uid in selected_uid
-    ):
-        return
-    if str(status or "").strip().lower() != "error":
-        return
-
-    dashboard.sa_classifier_model_pending = False
-    dashboard.ui.label_sa_classifier_classify_model_info.setText(
-        "Model classification failed. See the Sensor Node log for details."
-    )
-    _sa_classifier_render_results(dashboard)
-    _sa_classifier_set_running(dashboard, False, "Model Error")
+    """Aggregate node Error is not evidence that this Classifier Action failed."""
+    return
 
 
 def _sa_classifier_local_result_path(dashboard: QtCore.QObject) -> str:

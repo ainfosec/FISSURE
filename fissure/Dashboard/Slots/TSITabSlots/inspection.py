@@ -2864,16 +2864,20 @@ def _update_sa_inspection_action_controls(dashboard: QtCore.QObject):
         if widget is not None:
             widget.setEnabled(not running)
 
+    uid = str(getattr(dashboard, "sa_inspection_action_node_uid", "") or "").strip()
+    node = (getattr(dashboard, "node_states", {}) or {}).get(uid, {}) or {}
+    recovering = (getattr(dashboard, "_manual_action_recovery_pending", {}) or {}).get("inspection")
+    stop_allowed = (
+        running
+        and not bool(getattr(dashboard, "sa_inspection_action_stop_requested", False))
+        and not (isinstance(node, dict) and node.get("connected") is False)
+        and recovering != (uid, str(getattr(dashboard, "sa_inspection_action_operation_id", "") or ""))
+    )
     dashboard.ui.pushButton_sa_inspection_actions_start_stop.setEnabled(
-        bool(
-            running
-            or (
-                ready
-                and local_node
-                and has_action
-                and getattr(dashboard, "sa_inspection_action_customized", False)
-            )
-        )
+        bool(stop_allowed or (
+            not running and ready and local_node and has_action
+            and getattr(dashboard, "sa_inspection_action_customized", False)
+        ))
     )
 
     if running:
@@ -3092,6 +3096,7 @@ def _set_sa_inspection_action_evidence_locked(dashboard: QtCore.QObject, locked:
 
 def _set_sa_inspection_action_running(dashboard: QtCore.QObject, node_uid: str, operation_id: str):
     dashboard.sa_inspection_action_running = True
+    dashboard.sa_inspection_action_stop_requested = False
     dashboard.sa_inspection_action_node_uid = str(node_uid or "")
     dashboard.sa_inspection_action_operation_id = str(operation_id or "")
     dashboard.ui.label_sa_inspection_actions_status.setText("Running")
@@ -3105,6 +3110,7 @@ def _set_sa_inspection_action_running(dashboard: QtCore.QObject, node_uid: str, 
 
 def _set_sa_inspection_action_stopped(dashboard: QtCore.QObject, status_text: str = "Idle"):
     dashboard.sa_inspection_action_running = False
+    dashboard.sa_inspection_action_stop_requested = False
     dashboard.sa_inspection_action_node_uid = ""
     dashboard.ui.label_sa_inspection_actions_status.setText(status_text)
     _set_sa_inspection_action_start_stop_button(dashboard, False)
@@ -3417,19 +3423,26 @@ def handle_sa_inspection_action_schema(
 async def _slotSA_InspectionActionsStartStopClicked(dashboard: QtCore.QObject):
     """Start or stop the selected Inspection analysis operation."""
     if bool(getattr(dashboard, "sa_inspection_action_running", False)):
+        if bool(getattr(dashboard, "sa_inspection_action_stop_requested", False)):
+            return
         node_uid = str(getattr(dashboard, "sa_inspection_action_node_uid", "") or "").strip()
         operation_id = str(getattr(dashboard, "sa_inspection_action_operation_id", "") or "").strip()
         if not node_uid or not operation_id:
             await Qt5.async_ok_dialog(dashboard, "Could not identify the active Inspection operation to stop.")
             return
+        dashboard.sa_inspection_action_stop_requested = True
         dashboard.ui.label_sa_inspection_actions_status.setText("Stopping...")
+        dashboard.ui.pushButton_sa_inspection_actions_start_stop.setEnabled(False)
         try:
             await dashboard.backend.stopPluginOperation(node_uid, operation_id)
         except Exception as error:
             dashboard.logger.error(f"Failed to stop Inspection analysis: {error}")
-            _set_sa_inspection_action_stopped(dashboard, "Stop Failed")
-            return
-        _set_sa_inspection_action_stopped(dashboard, "Stopped")
+            if (bool(getattr(dashboard, "sa_inspection_action_running", False))
+                    and str(getattr(dashboard, "sa_inspection_action_operation_id", "") or "") == operation_id):
+                dashboard.sa_inspection_action_stop_requested = False
+                dashboard.ui.label_sa_inspection_actions_status.setText("Stop Failed — Retry")
+                dashboard.ui.pushButton_sa_inspection_actions_start_stop.setEnabled(True)
+        # The operation remains active until its own terminal lifecycle event.
         return
 
     if not _sa_inspection_action_local_ready(dashboard):
@@ -3462,8 +3475,38 @@ async def _slotSA_InspectionActionsStartStopClicked(dashboard: QtCore.QObject):
             parameters,
         )
     except Exception:
-        _set_sa_inspection_action_stopped(dashboard, "Start Failed")
+        if (bool(getattr(dashboard, "sa_inspection_action_running", False))
+                and str(getattr(dashboard, "sa_inspection_action_operation_id", "") or "") == operation_id):
+            _set_sa_inspection_action_stopped(dashboard, "Start Failed")
         raise
+
+
+def handle_sa_inspection_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Update only the Inspection execution that owns the operation ID."""
+    if not bool(getattr(dashboard, "sa_inspection_action_running", False)):
+        return
+    if str(getattr(dashboard, "sa_inspection_action_node_uid", "") or "").strip() != str(node_uid or "").strip():
+        return
+    if str(getattr(dashboard, "sa_inspection_action_operation_id", "") or "").strip() != str(operation_id or "").strip():
+        return
+    state = str(state or "").strip()
+    if state in {"Starting", "Running"}:
+        if not bool(getattr(dashboard, "sa_inspection_action_stop_requested", False)):
+            dashboard.ui.label_sa_inspection_actions_status.setText(state)
+            dashboard.ui.pushButton_sa_inspection_actions_start_stop.setEnabled(True)
+    elif state in {"Completed", "Stopped", "Failed"}:
+        if state == "Failed" and error:
+            dashboard.logger.warning("[Inspection] Action failed: %s", error)
+        _set_sa_inspection_action_stopped(dashboard, state)
+        dashboard.ui.pushButton_sa_inspection_actions_save_as_finding.setEnabled(
+            getattr(dashboard, "sa_inspection_action_last_result", None) is not None
+        )
 
 
 def handle_sa_inspection_return(
@@ -3514,15 +3557,15 @@ def handle_sa_inspection_return(
     dashboard.ui.pushButton_sa_inspection_actions_view_result.setEnabled(True)
 
     if final:
-        status = (
-            "Error"
-            if str(inspection.get("error") or "").strip()
-            else "Completed"
-        )
-        _set_sa_inspection_action_stopped(
-            dashboard,
-            status,
-        )
+        # Final output may precede the operation's teardown. Keep controls
+        # locked until its matching Completed/Stopped/Failed lifecycle event.
+        if (bool(getattr(dashboard, "sa_inspection_action_running", False))
+                and str(inspection.get("error") or "").strip()):
+            dashboard.ui.label_sa_inspection_actions_status.setText("Result Error — Finalizing")
+        elif bool(getattr(dashboard, "sa_inspection_action_running", False)) and not bool(
+            getattr(dashboard, "sa_inspection_action_stop_requested", False)
+        ):
+            dashboard.ui.label_sa_inspection_actions_status.setText("Result Ready — Finalizing")
 
     dashboard.ui.pushButton_sa_inspection_actions_save_as_finding.setEnabled(
         dashboard.sa_inspection_action_last_result is not None

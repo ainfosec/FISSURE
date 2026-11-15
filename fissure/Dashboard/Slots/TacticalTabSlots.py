@@ -9,6 +9,8 @@ import subprocess
 import os
 import asyncio
 import html
+import time
+import uuid
 
 
 def _replot_tactical_nodes_on_map(dashboard):
@@ -299,16 +301,23 @@ def populate_tactical_node_details(dashboard: QtCore.QObject, node_uid):
 
 
 def update_tactical_node_stop_button_state(dashboard: QtCore.QObject, node: dict):
-    status = (node.get("status") or "").strip().lower()
+    """Never offer a Stop decision when the selected node is offline."""
+    button = dashboard.ui.pushButton_tactical_node_stop
+    button.setText("Stop Action...")
+    uid = str(node.get("uid") or "").strip()
+    if not uid or not _tactical_node_is_online(dashboard, uid):
+        button.setEnabled(False)
+        return
 
-    stop_enabled = status not in [
-        "",
-        "idle",
-        "stopped",
-        "unknown",
-    ]
-
-    dashboard.ui.pushButton_tactical_node_stop.setEnabled(stop_enabled)
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", set()) or set()
+    actions = (getattr(dashboard, "active_plugin_operations", {}) or {}).get(uid, {}) or {}
+    active = any(
+        isinstance(record, dict)
+        and record.get("state") not in {"Completed", "Stopped", "Failed", "Unknown"}
+        for record in actions.values()
+    )
+    busy = uid in (getattr(dashboard, "_tactical_single_stop_requests", set()) or set())
+    button.setEnabled(not busy and (uid not in confirmed or active))
 
 
 def update_tactical_node_stream_button_state(
@@ -584,7 +593,8 @@ def update_selected_tactical_nodes(dashboard: QtCore.QObject):
     dashboard.ui.label2_tactical_ecosystem_reference_node2.setEnabled(True)
     dashboard.ui.label2_tactical_ecosystem_plugin.setEnabled(True)
     dashboard.ui.pushButton_tactical_ecosystem_query.setEnabled(True)
-    dashboard.ui.pushButton_tactical_ecosystem_stop.setEnabled(True)
+    dashboard.ui.pushButton_tactical_ecosystem_stop.setText("Stop Actions...")
+    dashboard.ui.pushButton_tactical_ecosystem_stop.setEnabled(bool(selected_uids))
 
     
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1629,7 +1639,485 @@ def update_tactical_ecosystem_action_parameters(
         widget.update()
 
     scroll_area.update()
-    
+
+
+def _tactical_node_display_name(dashboard, uid, peer_uids=None):
+    """Return a readable Tactical callsign with a UID suffix for duplicates."""
+    uid = str(uid)
+    nodes = getattr(dashboard, "tactical_nodes", {}) or {}
+
+    def callsign_for(node_uid):
+        node = nodes.get(node_uid, {})
+        if not isinstance(node, dict):
+            node = {}
+        return str(node.get("callsign") or node.get("nickname") or "").strip()
+
+    label = callsign_for(uid)
+    if not label:
+        return uid[:8]
+    if peer_uids and sum(callsign_for(str(peer)) == label for peer in peer_uids) > 1:
+        return f"{label} ({uid[:8]})"
+    return label
+
+
+def _tactical_node_is_online(dashboard, uid):
+    """Prefer the authoritative HIPRFISR connectivity cache; never guess online."""
+    uid = str(uid or "").strip()
+    state = (getattr(dashboard, "node_states", {}) or {}).get(uid)
+    if isinstance(state, dict) and "connected" in state:
+        return bool(state["connected"])
+    node = (getattr(dashboard, "tactical_nodes", {}) or {}).get(uid)
+    return bool(node.get("connected", False)) if isinstance(node, dict) else False
+
+
+def _tactical_update_stop_selection(dashboard):
+    """Enable selected Stop only for verified Actions on online nodes."""
+    dialog = getattr(dashboard, "_tactical_operations_dialog", None)
+    if dialog is None:
+        return
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", set()) or set()
+    mirror = getattr(dashboard, "active_plugin_operations", {}) or {}
+    enabled = False
+    for item in dialog.operations_table.selectedItems():
+        if item.column() != 0:
+            continue
+        key = item.data(QtCore.Qt.UserRole)
+        if not isinstance(key, (tuple, list)) or len(key) != 2:
+            continue
+        uid, operation_id = map(str, key)
+        record = (mirror.get(uid, {}) or {}).get(operation_id)
+        if (
+            uid in confirmed
+            and _tactical_node_is_online(dashboard, uid)
+            and isinstance(record, dict)
+            and record.get("state") in {"Starting", "Running"}
+        ):
+            enabled = True
+            break
+    dialog.stop_selected_button.setEnabled(enabled)
+
+
+def _tactical_handle_node_connectivity(dashboard, node_uid, connected):
+    """Invalidate stale snapshots on loss; re-query the node on reconnection.
+
+    A disconnected Action is UNKNOWN, not Stopped. Only a fresh correlated
+    Activity snapshot can establish whether it is still registered on the node.
+    """
+    uid = str(node_uid or "").strip()
+    if not uid:
+        return
+
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", None)
+    if confirmed is None:
+        confirmed = dashboard._tactical_operation_snapshot_confirmed_nodes = set()
+    confirmed.discard(uid)
+
+    requests = getattr(dashboard, "_tactical_operation_snapshot_requests", {}) or {}
+    request_ids = getattr(dashboard, "_tactical_operation_snapshot_request_ids", {}) or {}
+    requests.pop(uid, None)
+    request_ids.pop(uid, None)
+
+    waiters = getattr(dashboard, "_tactical_single_stop_snapshot_waiters", {}) or {}
+    waiter = waiters.pop(uid, None)
+    if waiter is not None and not waiter.done():
+        waiter.set_result(False)  # Never turn disconnection into authorization to Stop.
+
+    recovering = getattr(dashboard, "_tactical_nodes_pending_recovery", None)
+    if recovering is None:
+        recovering = dashboard._tactical_nodes_pending_recovery = set()
+    recovering.add(uid)
+
+    from . import ActionRecovery
+
+    if not connected:
+        ActionRecovery.mark_node_disconnected(dashboard, uid)
+        operations = (getattr(dashboard, "active_plugin_operations", {}) or {}).get(uid, {}) or {}
+        for record in operations.values():
+            if not isinstance(record, dict):
+                continue
+            if record.get("state") not in {"Completed", "Stopped", "Failed", "Unknown"}:
+                record["last_known_state"] = record.get("state")
+                record["state"] = "Unknown"
+        dashboard.logger.warning(
+            "[Tactical] Sensor Node %s disconnected; Action states are unverified.", uid
+        )
+    else:
+        ActionRecovery.mark_node_reconnected(dashboard, uid)
+        # Do not resume old Stop requests or infer that the old Actions ended.
+        # Every reconnect (including first discovery) gets a fresh correlated snapshot.
+        dashboard.logger.info(
+            "[Tactical] Sensor Node %s online; refreshing authoritative Action state.", uid
+        )
+        asyncio.create_task(_refresh_tactical_operation_snapshots(dashboard, [uid]))
+
+    if str(getattr(dashboard, "selected_tactical_node_uid", "") or "") == uid:
+        node = (getattr(dashboard, "tactical_nodes", {}) or {}).get(uid, {"uid": uid})
+        update_tactical_node_stop_button_state(dashboard, node)
+    refresh_tactical_operation_manager(dashboard)
+
+
+def refresh_tactical_operation_manager(dashboard):
+    """Display running Actions by callsign while preserving exact operation identities."""
+    dialog = getattr(dashboard, "_tactical_operations_dialog", None)
+    if dialog is None or not dialog.isVisible():
+        return
+
+    table = dialog.operations_table
+    selected = set()
+    for item in table.selectedItems():
+        if item.column() == 0:
+            key = item.data(QtCore.Qt.UserRole)
+            if key:
+                selected.add(tuple(key))
+
+    nodes = list(getattr(dashboard, "_tactical_operations_nodes", []) or [])
+    by_node = getattr(dashboard, "active_plugin_operations", {}) or {}
+    records = []
+    for uid in nodes:
+        for operation_id, record in (by_node.get(uid, {}) or {}).items():
+            if not isinstance(record, dict) or record.get("state") in {"Completed", "Stopped", "Failed"}:
+                continue
+            records.append((
+                str(uid), str(operation_id), record,
+                _tactical_node_display_name(dashboard, uid, nodes),
+            ))
+
+    records.sort(key=lambda item: (
+        item[3].casefold(),
+        str(item[2].get("plugin") or "").casefold(),
+        str(item[2].get("operation") or "").casefold(),
+        item[1],
+    ))
+
+    table.setSortingEnabled(False)
+    table.setRowCount(0)
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", set()) or set()
+    offline_count = sum(not _tactical_node_is_online(dashboard, uid) for uid in nodes)
+    for uid, operation_id, record, node_name in records:
+        online = _tactical_node_is_online(dashboard, uid)
+        display_state = (
+            "Unknown (Offline)" if not online
+            else "Verifying..." if uid not in confirmed
+            else str(record.get("state") or "Running")
+        )
+        row_index = table.rowCount()
+        table.insertRow(row_index)
+        shortened_id = operation_id[:8] + ("..." if len(operation_id) > 8 else "")
+        fields = (
+            node_name,
+            str(record.get("plugin") or ""),
+            str(record.get("operation") or ""),
+            display_state,
+            shortened_id,
+        )
+        for col, value in enumerate(fields):
+            item = QtWidgets.QTableWidgetItem(value)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            if col == 0:
+                # Stop calls use the real node UID, never a callsign or short ID.
+                item.setData(QtCore.Qt.UserRole, (uid, operation_id))
+                item.setToolTip(f"Sensor Node UID: {uid}")
+            if col == 4:
+                item.setData(QtCore.Qt.UserRole, operation_id)
+                item.setToolTip(f"Full Operation ID: {operation_id}")
+            table.setItem(row_index, col, item)
+    table.setSortingEnabled(True)
+
+    selection_model = table.selectionModel()
+    for row_index in range(table.rowCount()):
+        first_item = table.item(row_index, 0)
+        key = tuple(first_item.data(QtCore.Qt.UserRole)) if first_item else ()
+        if key in selected:
+            selection_model.select(
+                table.model().index(row_index, 0),
+                QtCore.QItemSelectionModel.Select | QtCore.QItemSelectionModel.Rows,
+            )
+
+    # Column sizing is configured on the table's header in open_tactical_operation_manager.
+    summary = f"{len(records)} last-known/active Action(s) across {len(nodes)} selected node(s)"
+    if offline_count:
+        summary += f" — {offline_count} node(s) offline; their Actions are unverified"
+    dialog.operation_summary.setText(summary)
+    _tactical_update_stop_selection(dashboard)
+
+
+def reconcile_tactical_operation_snapshot(dashboard, node_uid, operations, requested_at):
+    """Merge an Activity snapshot and notify any Node Stop waiting on it."""
+    if not requested_at:
+        return
+    uid = str(node_uid)
+    if not _tactical_node_is_online(dashboard, uid):
+        return  # Do not reconcile an old reply after the node went offline.
+    mirror = getattr(dashboard, "active_plugin_operations", None)
+    if mirror is None:
+        mirror = dashboard.active_plugin_operations = {}
+    active = mirror.setdefault(uid, {})
+    event_times = getattr(dashboard, "plugin_operation_last_event_times", {}) or {}
+    snapshots = {}
+    for entry in operations or []:
+        if not isinstance(entry, dict):
+            continue
+        operation_id = str(entry.get("operation_id") or "").strip()
+        if not operation_id:
+            continue
+        if event_times.get((uid, operation_id), 0) > requested_at:
+            continue
+        snapshots[operation_id] = {
+            "node_uid": uid,
+            "operation_id": operation_id,
+            "plugin": str(entry.get("plugin") or ""),
+            "operation": str(entry.get("activity") or ""),
+            "state": "Running",
+            "owner": str(entry.get("owner") or ""),
+        }
+    for operation_id in list(active):
+        if event_times.get((uid, operation_id), 0) <= requested_at:
+            active.pop(operation_id, None)
+    active.update(snapshots)
+
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", None)
+    if confirmed is None:
+        confirmed = dashboard._tactical_operation_snapshot_confirmed_nodes = set()
+    confirmed.add(uid)
+    recovering = getattr(dashboard, "_tactical_nodes_pending_recovery", None)
+    if recovering is not None:
+        recovering.discard(uid)
+
+    waiters = getattr(dashboard, "_tactical_single_stop_snapshot_waiters", {}) or {}
+    waiter = waiters.get(uid)
+    if waiter is not None and not waiter.done():
+        waiter.set_result(True)
+
+    if str(getattr(dashboard, "selected_tactical_node_uid", "") or "") == uid:
+        node = (getattr(dashboard, "tactical_nodes", {}) or {}).get(uid, {"uid": uid})
+        update_tactical_node_stop_button_state(dashboard, node)
+    refresh_tactical_operation_manager(dashboard)
+
+
+async def _refresh_tactical_operation_snapshots(dashboard, nodes):
+    """Refresh non-busy Sensor Nodes without interfering with Node Stop snapshots."""
+    requests = getattr(dashboard, "_tactical_operation_snapshot_requests", None)
+    if requests is None:
+        requests = dashboard._tactical_operation_snapshot_requests = {}
+    request_ids = getattr(dashboard, "_tactical_operation_snapshot_request_ids", None)
+    if request_ids is None:
+        request_ids = dashboard._tactical_operation_snapshot_request_ids = {}
+    waiters = getattr(dashboard, "_tactical_single_stop_snapshot_waiters", {}) or {}
+    now = time.monotonic()
+    targets = []
+    for uid in dict.fromkeys(str(n) for n in nodes if str(n).strip()):
+        if not _tactical_node_is_online(dashboard, uid):
+            continue  # Cannot validate a disconnected node with a stale snapshot.
+        waiter = waiters.get(uid)
+        if waiter is not None and not waiter.done():
+            continue  # Node Stop is waiting for this node's response.
+        previous = requests.get(uid)
+        if previous is not None and now - previous < 5.0:
+            continue  # Avoid overlapping Activity responses for the same node.
+        requests[uid] = time.monotonic()
+        request_id = str(uuid.uuid4())
+        request_ids[uid] = request_id
+        targets.append((uid, request_id))
+    results = await asyncio.gather(
+        *(dashboard.backend.refreshSensorNodeActivity(uid, log_limit=0, request_id=request_id) for uid, request_id in targets),
+        return_exceptions=True,
+    )
+    for (uid, request_id), result in zip(targets, results):
+        if isinstance(result, BaseException):
+            # A newer request must never be removed by an older failed request.
+            if request_ids.get(uid) == request_id:
+                request_ids.pop(uid, None)
+                requests.pop(uid, None)
+            dashboard.logger.error(f"[Tactical] Activity refresh failed on {uid}: {result}")
+
+
+async def _stop_selected_tactical_operations(dashboard):
+    dialog = getattr(dashboard, "_tactical_operations_dialog", None)
+    if dialog is None:
+        return
+    table = dialog.operations_table
+    targets = set()
+    for item in table.selectedItems():
+        if item.column() == 0:
+            key = item.data(QtCore.Qt.UserRole)
+            if key:
+                targets.add(tuple(key))
+    if not targets:
+        return
+    confirmed = getattr(dashboard, "_tactical_operation_snapshot_confirmed_nodes", set()) or set()
+    mirror = getattr(dashboard, "active_plugin_operations", {}) or {}
+    allowed = []
+    for uid, operation_id in sorted(targets):
+        record = (mirror.get(uid, {}) or {}).get(operation_id)
+        if (
+            uid in confirmed
+            and _tactical_node_is_online(dashboard, uid)
+            and isinstance(record, dict)
+            and record.get("state") in {"Starting", "Running"}
+        ):
+            allowed.append((uid, operation_id, record, record.get("state")))
+        else:
+            dashboard.logger.warning(
+                "[Tactical] Not stopping unverified/offline Action %s/%s", uid, operation_id
+            )
+    if not allowed:
+        _tactical_update_stop_selection(dashboard)
+        return
+    for uid, operation_id, record, old_state in allowed:
+        record["state"] = "Stopping"
+    refresh_tactical_operation_manager(dashboard)
+    results = await asyncio.gather(
+        *(dashboard.backend.stopPluginOperation(uid, operation_id) for uid, operation_id, _, _ in allowed),
+        return_exceptions=True,
+    )
+    for (uid, operation_id, record, old_state), result in zip(allowed, results):
+        if isinstance(result, BaseException):
+            dashboard.logger.error(
+                f"[Tactical] Stop failed on {uid}/{operation_id}: {result}"
+            )
+            # A failed send is not proof that an Action has stopped.
+            if record.get("state") == "Stopping":
+                record["state"] = old_state
+    refresh_tactical_operation_manager(dashboard)
+
+
+async def _stop_all_tactical_operations(dashboard):
+    """Confirm Stop All without running a nested Qt event loop under qasync."""
+    dialog = getattr(dashboard, "_tactical_operations_dialog", None)
+    nodes = list(dict.fromkeys(
+        str(uid).strip()
+        for uid in (getattr(dashboard, "_tactical_operations_nodes", []) or [])
+        if str(uid).strip()
+    ))
+    if dialog is None or not nodes:
+        return
+    offline = [uid for uid in nodes if not _tactical_node_is_online(dashboard, uid)]
+    if offline:
+        dashboard.logger.warning(
+            "[Tactical] Stop All cancelled: %s selected node(s) are offline.", len(offline)
+        )
+        dialog.operation_summary.setText(
+            "Stop All unavailable while selected nodes are offline. "
+            "Deselect offline nodes and retry."
+        )
+        return
+
+    # Avoid stacking confirmation dialogs if the user clicks repeatedly.
+    if getattr(dashboard, "_tactical_stop_all_confirmation_pending", False):
+        return
+    dashboard._tactical_stop_all_confirmation_pending = True
+    confirmation = None
+
+    try:
+        confirmation = QtWidgets.QMessageBox(dialog)
+        confirmation.setIcon(QtWidgets.QMessageBox.Warning)
+        confirmation.setWindowTitle("Stop All Actions")
+        confirmation.setText(
+            f"Stop all running plugin Actions on {len(nodes)} selected node(s)?"
+        )
+        confirmation.setInformativeText(
+            "This also stops Actions launched from other Dashboard tabs or TAK."
+        )
+        confirmation.setStandardButtons(
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel
+        )
+        confirmation.setDefaultButton(QtWidgets.QMessageBox.Cancel)
+        confirmation.setWindowModality(QtCore.Qt.WindowModal)
+
+        response = asyncio.get_running_loop().create_future()
+
+        def _on_finished(result):
+            if not response.done():
+                response.set_result(result)
+
+        confirmation.finished.connect(_on_finished)
+        confirmation.open()  # Non-blocking: never call question() or exec_() here.
+        result = await response
+        if result == QtWidgets.QMessageBox.Yes:
+            if any(not _tactical_node_is_online(dashboard, uid) for uid in nodes):
+                dashboard.logger.warning("[Tactical] Stop All aborted: node disconnected during confirmation.")
+                return
+            await dashboard.backend.tacticalNodeStop(nodes)
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        dashboard.logger.error(
+            f"[Tactical] Stop All Actions failed: {exc}", exc_info=True
+        )
+    finally:
+        dashboard._tactical_stop_all_confirmation_pending = False
+        if confirmation is not None:
+            confirmation.deleteLater()
+
+
+def open_tactical_operation_manager(dashboard, nodes, refresh=True):
+    """Open a modeless Stop Actions dialog; names are visual only, UIDs are authoritative."""
+    nodes = list(dict.fromkeys(str(uid).strip() for uid in nodes if str(uid).strip()))
+    if not nodes:
+        return
+    dashboard._tactical_operations_nodes = nodes
+    dialog = getattr(dashboard, "_tactical_operations_dialog", None)
+    if dialog is None:
+        dialog = QtWidgets.QDialog(dashboard)
+        dialog.setWindowTitle("Stop Actions")
+        dialog.resize(930, 390)
+        dialog.setModal(False)
+        layout = QtWidgets.QVBoxLayout(dialog)
+        dialog.operation_summary = QtWidgets.QLabel(dialog)
+        layout.addWidget(dialog.operation_summary)
+        table = QtWidgets.QTableWidget(0, 5, dialog)
+        table.setHorizontalHeaderLabels(["Node", "Plugin", "Action", "State", "Operation ID"])
+        table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        table.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        table.setSortingEnabled(True)
+        header = table.horizontalHeader()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)  # Action
+        table.setWordWrap(False)
+        dialog.operations_table = table
+        layout.addWidget(table)
+
+        controls = QtWidgets.QHBoxLayout()
+        refresh_button = QtWidgets.QPushButton("Refresh", dialog)
+        stop_selected = QtWidgets.QPushButton("Stop Selected Actions", dialog)
+        stop_selected.setEnabled(False)
+        stop_all_button = QtWidgets.QPushButton("Stop All Actions on Selected Nodes", dialog)
+        close_button = QtWidgets.QPushButton("Close", dialog)
+        controls.addWidget(refresh_button)
+        controls.addWidget(stop_selected)
+        controls.addWidget(stop_all_button)
+        controls.addStretch()
+        controls.addWidget(close_button)
+        layout.addLayout(controls)
+        dialog.stop_selected_button = stop_selected
+        table.itemSelectionChanged.connect(
+            lambda: _tactical_update_stop_selection(dashboard)
+        )
+        refresh_button.clicked.connect(
+            lambda: asyncio.create_task(_refresh_tactical_operation_snapshots(
+                dashboard, list(getattr(dashboard, "_tactical_operations_nodes", []) or [])
+            ))
+        )
+        stop_selected.clicked.connect(
+            lambda: asyncio.create_task(_stop_selected_tactical_operations(dashboard))
+        )
+        stop_all_button.clicked.connect(
+            lambda: asyncio.create_task(_stop_all_tactical_operations(dashboard))
+        )
+        close_button.clicked.connect(dialog.close)
+        dashboard._tactical_operations_dialog = dialog
+
+    title_target = _tactical_node_display_name(dashboard, nodes[0], nodes) if len(nodes) == 1 else f"{len(nodes)} Nodes"
+    dialog.setWindowTitle(f"Stop Actions — {title_target}")
+    dialog.show()
+    dialog.raise_()
+    dialog.activateWindow()
+    refresh_tactical_operation_manager(dashboard)
+    if refresh:
+        asyncio.create_task(_refresh_tactical_operation_snapshots(dashboard, nodes))
+
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeExecuteClicked(dashboard):
@@ -1697,12 +2185,20 @@ async def _slotTacticalNodeExecuteClicked(dashboard):
                 f"{parameter_name}: {type(widget)}"
             )
 
-    await dashboard.backend.tacticalNodeExecute(
-        [uid],
-        plugin_name,
-        action_name,
-        parameters,
-    )
+    # Node UID + Operation ID identifies each launch, including ecosystem groups.
+    parameters["operation_id"] = str(uuid.uuid4())
+    button = dashboard.ui.pushButton_tactical_node_execute
+    was_enabled = button.isEnabled()
+    button.setEnabled(False)
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            [uid],
+            plugin_name,
+            action_name,
+            parameters,
+        )
+    finally:
+        button.setEnabled(was_enabled)
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -1794,69 +2290,145 @@ async def _slotTacticalEcosystemExecuteClicked(dashboard):
                 f"{parameter_name}: {type(widget)}"
             )
 
-    await dashboard.backend.tacticalNodeExecute(
-        uids,
-        plugin_name,
-        action_name,
-        parameters,
-    )
+    # Node UID + Operation ID identifies each launch, including ecosystem groups.
+    parameters["operation_id"] = str(uuid.uuid4())
+    button = dashboard.ui.pushButton_tactical_ecosystem_execute
+    was_enabled = button.isEnabled()
+    button.setEnabled(False)
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            uids,
+            plugin_name,
+            action_name,
+            parameters,
+        )
+    finally:
+        button.setEnabled(was_enabled)
 
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeStopClicked(dashboard):
-    """
-    Stops any running actions for a node.
-    """
+    """Stop the only Action directly, or display choices if multiple are running."""
     uid = dashboard.ui.label2_tactical_node_uuid.text().strip()
-
     if not uid:
-        dashboard.logger.warning(
-            "[Tactical] No node UID selected for plugin query."
-        )
+        dashboard.logger.warning("[Tactical] No node selected for Stop Action.")
+        return
+    if not _tactical_node_is_online(dashboard, uid):
+        dashboard.logger.warning("[Tactical] Cannot stop Actions on offline node %s.", uid)
+        return
+    busy = getattr(dashboard, "_tactical_single_stop_requests", None)
+    if busy is None:
+        busy = dashboard._tactical_single_stop_requests = set()
+    if uid in busy:
         return
 
-    await dashboard.backend.tacticalNodeStop([uid])
+    # The existing Activity command returns asynchronously through DashboardCallbacks.
+    # Never pick an Action to stop from an unverified (possibly stale) local mirror.
+    requests = getattr(dashboard, "_tactical_operation_snapshot_requests", None)
+    if requests is None:
+        requests = dashboard._tactical_operation_snapshot_requests = {}
+    if uid in requests:
+        # A response is already in flight for this node. Show the manager;
+        # do not make a direct-stop decision using a different request's data.
+        open_tactical_operation_manager(dashboard, [uid])
+        return
+
+    request_ids = getattr(dashboard, "_tactical_operation_snapshot_request_ids", None)
+    if request_ids is None:
+        request_ids = dashboard._tactical_operation_snapshot_request_ids = {}
+
+    busy.add(uid)
+    waiters = getattr(dashboard, "_tactical_single_stop_snapshot_waiters", None)
+    if waiters is None:
+        waiters = dashboard._tactical_single_stop_snapshot_waiters = {}
+    waiter = asyncio.get_running_loop().create_future()
+    waiters[uid] = waiter
+    requested_at = time.monotonic()
+    requests[uid] = requested_at
+    request_id = str(uuid.uuid4())
+    request_ids[uid] = request_id
+    update_tactical_node_stop_button_state(
+        dashboard, (getattr(dashboard, "tactical_nodes", {}) or {}).get(uid, {"uid": uid})
+    )
+    try:
+        await dashboard.backend.refreshSensorNodeActivity(uid, log_limit=0, request_id=request_id)
+        verified = await asyncio.wait_for(waiter, timeout=4.0)
+        if verified is not True or not _tactical_node_is_online(dashboard, uid):
+            dashboard.logger.warning("[Tactical] Stop cancelled: node %s disconnected during refresh.", uid)
+            return
+
+        actions = [
+            (str(operation_id), record)
+            for operation_id, record in
+            ((getattr(dashboard, "active_plugin_operations", {}) or {}).get(uid, {}) or {}).items()
+            if isinstance(record, dict) and record.get("state") not in {"Completed", "Stopped", "Failed"}
+        ]
+        if len(actions) == 0:
+            dashboard.logger.info("[Tactical] No running Actions on the selected node.")
+        elif len(actions) == 1:
+            operation_id, record = actions[0]
+            if record.get("state") in {"Stopping", "Unknown"}:
+                dashboard.logger.info("[Tactical] The selected Action is already stopping.")
+            else:
+                old_state = record.get("state", "Running")
+                record["state"] = "Stopping"
+                try:
+                    if not _tactical_node_is_online(dashboard, uid):
+                        record["state"] = old_state
+                        return
+                    await dashboard.backend.stopPluginOperation(uid, operation_id)
+                except Exception:
+                    record["state"] = old_state
+                    raise
+        else:
+            open_tactical_operation_manager(dashboard, [uid], refresh=False)
+    except asyncio.TimeoutError:
+        dashboard.logger.warning(
+            "[Tactical] Timed out waiting for an Activity snapshot; opening the Stop Actions dialog."
+        )
+        if request_ids.get(uid) == request_id:
+            request_ids.pop(uid, None)
+            requests.pop(uid, None)
+        if _tactical_node_is_online(dashboard, uid):
+            open_tactical_operation_manager(dashboard, [uid])
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        dashboard.logger.error(f"[Tactical] Stop Action failed: {exc}", exc_info=True)
+        if request_ids.get(uid) == request_id:
+            request_ids.pop(uid, None)
+            requests.pop(uid, None)
+        if _tactical_node_is_online(dashboard, uid):
+            open_tactical_operation_manager(dashboard, [uid])
+    finally:
+        if waiters.get(uid) is waiter:
+            waiters.pop(uid, None)
+        # Clear only the request we placed, not a newer request from the dialog.
+        if request_ids.get(uid) == request_id:
+            request_ids.pop(uid, None)
+            if requests.get(uid) == requested_at:
+                requests.pop(uid, None)
+        busy.discard(uid)
+        if dashboard.ui.label2_tactical_node_uuid.text().strip() == uid:
+            node = (getattr(dashboard, "tactical_nodes", {}) or {}).get(uid, {"uid": uid})
+            update_tactical_node_stop_button_state(dashboard, node)
 
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalEcosystemStopClicked(dashboard):
-    """
-    Stops running actions on selected ecosystem nodes.
-    """
+    """Choose which Actions to stop across selected ecosystem nodes."""
     table = dashboard.ui.tableWidget_tactical_ecosystem
-
+    selected_rows = sorted(set(index.row() for index in table.selectedIndexes()))
     uids = []
-
-    selected_rows = sorted(
-        set(index.row() for index in table.selectedIndexes())
-    )
-
-    if not selected_rows:
-        dashboard.logger.warning(
-            "[Tactical] No ecosystem nodes selected for stop request."
-        )
-        return
-
     for row in selected_rows:
         item = table.item(row, 0)
-
-        if item is None:
-            continue
-
-        uid = item.data(QtCore.Qt.UserRole)
-
+        uid = item.data(QtCore.Qt.UserRole) if item is not None else None
         if uid and uid not in uids:
             uids.append(uid)
-
     if not uids:
-        dashboard.logger.warning(
-            "[Tactical] Selected ecosystem rows do not contain valid node UIDs."
-        )
+        dashboard.logger.warning("[Tactical] Select one or more ecosystem nodes for Stop Action.")
         return
-
-    await dashboard.backend.tacticalNodeStop(
-        uids,
-    )
+    open_tactical_operation_manager(dashboard, uids)
 
 
 @qasync.asyncSlot(QtCore.QObject)

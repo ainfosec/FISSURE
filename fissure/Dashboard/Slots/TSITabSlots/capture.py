@@ -692,6 +692,7 @@ def _set_sa_capture_running(
     operation_id: str,
 ):
     dashboard.sa_capture_running = True
+    dashboard.sa_capture_stop_pending = False
     dashboard.sa_capture_node_uid = str(node_uid or "")
     dashboard.sa_capture_operation_id = str(operation_id or "")
     dashboard.sa_capture_last_requested_operation_id = dashboard.sa_capture_operation_id
@@ -714,6 +715,7 @@ def _set_sa_capture_stopped(
     ).strip()
 
     dashboard.sa_capture_running = False
+    dashboard.sa_capture_stop_pending = False
     dashboard.sa_capture_node_uid = ""
     dashboard.sa_capture_operation_id = ""
 
@@ -911,7 +913,7 @@ def handle_sa_capture_artifact_complete(
     dashboard: QtCore.QObject,
     artifact_record: dict,
 ):
-    """Finish the active Capture run when its matching Artifact metadata arrives."""
+    """Display a matching Capture Artifact; lifecycle events own execution cleanup."""
     if not isinstance(artifact_record, dict):
         return
 
@@ -926,11 +928,43 @@ def handle_sa_capture_artifact_complete(
     ):
         return
 
-    was_running = bool(getattr(dashboard, "sa_capture_running", False))
     _populate_sa_capture_last_capture(dashboard, artifact_record)
     _request_sa_capture_artifact_refresh(dashboard, artifact_record)
-    if was_running:
-        _set_sa_capture_stopped(dashboard, "Completed")
+
+
+def handle_sa_capture_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    operation_id: str,
+    state: str,
+    error: str = "",
+):
+    """Update Capture only for its own authoritative Sensor Node lifecycle events."""
+    if not bool(getattr(dashboard, "sa_capture_running", False)):
+        return
+    if (
+        str(node_uid or "") != str(getattr(dashboard, "sa_capture_node_uid", "") or "")
+        or str(operation_id or "") != str(getattr(dashboard, "sa_capture_operation_id", "") or "")
+    ):
+        return
+
+    state = str(state or "").strip()
+    if state in {"Completed", "Stopped", "Failed"}:
+        _set_sa_capture_stopped(dashboard, state)
+        if state == "Failed" and error:
+            dashboard.ui.label_sa_capture_execution_status.setToolTip(str(error))
+        else:
+            dashboard.ui.label_sa_capture_execution_status.setToolTip("")
+        return
+
+    if bool(getattr(dashboard, "sa_capture_stop_pending", False)) or state == "Stopping":
+        dashboard.sa_capture_stop_pending = True
+        dashboard.ui.label_sa_capture_execution_status.setText("Stopping...")
+        dashboard.ui.pushButton_sa_capture_start_stop.setEnabled(False)
+    elif state in {"Starting", "Running"}:
+        dashboard.ui.label_sa_capture_execution_status.setText(
+            "Starting..." if state == "Starting" else "Capturing..."
+        )
 
 
 def refresh_sa_capture_artifact_state(dashboard: QtCore.QObject):
@@ -1147,21 +1181,31 @@ def handle_sa_capture_action_schema(
 async def _slotSA_CaptureStartStopClicked(dashboard: QtCore.QObject):
     """Start or stop the selected Capture action."""
     if bool(getattr(dashboard, "sa_capture_running", False)):
+        if bool(getattr(dashboard, "sa_capture_stop_pending", False)):
+            return
+
         node_uid = str(getattr(dashboard, "sa_capture_node_uid", "") or "").strip()
         operation_id = str(getattr(dashboard, "sa_capture_operation_id", "") or "").strip()
         if not node_uid or not operation_id:
             await Qt5.async_ok_dialog(dashboard, "Could not identify the active Capture operation to stop.")
             return
 
+        dashboard.sa_capture_stop_pending = True
         dashboard.ui.label_sa_capture_execution_status.setText("Stopping...")
+        dashboard.ui.pushButton_sa_capture_start_stop.setEnabled(False)
         try:
             await dashboard.backend.stopPluginOperation(node_uid, operation_id)
         except Exception as error:
-            dashboard.logger.error(f"Failed to stop Capture operation: {error}")
-            _set_sa_capture_stopped(dashboard, "Stop Failed")
-            return
-
-        _set_sa_capture_stopped(dashboard, "Stopped")
+            dashboard.logger.error(f"Failed to request Capture stop: {error}")
+            # A failed send does not prove the Action stopped. Preserve its identity
+            # and allow retry unless a terminal event already completed it.
+            if (
+                bool(getattr(dashboard, "sa_capture_running", False))
+                and str(getattr(dashboard, "sa_capture_operation_id", "")) == operation_id
+            ):
+                dashboard.sa_capture_stop_pending = False
+                dashboard.ui.label_sa_capture_execution_status.setText("Stop Failed — Retry")
+                dashboard.ui.pushButton_sa_capture_start_stop.setEnabled(True)
         return
 
     node_uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()

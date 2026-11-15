@@ -802,7 +802,7 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def refreshSensorNodeActivity(self, node_uid="", log_limit=100):
+    async def refreshSensorNodeActivity(self, node_uid="", log_limit=100, request_id=""):
         """Request one bounded read-only Activity snapshot from the selected Sensor Node."""
         if self.hiprfisr_connected is not True:
             return
@@ -810,6 +810,7 @@ class DashboardBackend:
         PARAMETERS = {
             "node_uid": node_uid,
             "log_limit": log_limit,
+            "request_id": str(request_id or ""),
         }
         msg = {
             fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,

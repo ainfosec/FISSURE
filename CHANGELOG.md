@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-11-15
+
+Unify concurrent Action lifecycle management
+
+### Added
+
+- Added operation-specific lifecycle reporting from Sensor Nodes through HIPRFISR to the Dashboard, with Operation IDs, terminal outcomes, and request-correlated Activity snapshots.
+- Added Tactical Action management for selected Sensor Nodes, including individual stopping, explicit Stop All, callsign-based identification, and a sortable, content-sized Action table.
+- Added disconnect/reconnect reconciliation for Tactical and manual Action workflows, preserving uncertain outcomes while offline and refreshing active operations when Sensor Nodes reconnect.
+
+### Changed
+
+- Standardized Action start, stop, completion, and widget-reset handling across Single Action, Conditioner, Feature Extractor, Fuzzing, Sequential Actions, Capture, Detector, Survey, Inspection, and Classifier.
+- Updated Sequential Actions to distinguish completed Actions from remaining duration waits, advance by operation-specific events, and cancel the owning sequence when its active Action is stopped externally.
+- Refined Tactical Node and Ecosystem controls for concurrent execution, context-sensitive single-node stopping, and stopping Actions only on selected nodes.
+- Consolidated AIS plugin documentation into its README, removing the additional Markdown files.
+
+### Fixed
+
+- Fixed stopping Actions in one Dashboard tab unintentionally stopping unrelated Actions running on the same Sensor Node.
+- Fixed individual plugin status updates incorrectly marking a Sensor Node Idle while other Actions were still running, with aggregate status maintained during concurrent execution.
+- Fixed Action controls becoming stale or resetting prematurely when results arrived, Sensor Node selections changed, or lifecycle events were missed.
+
 ## 2026-11-11
 
 Add AIS plugin with multi-SDR reception and transmission

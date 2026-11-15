@@ -240,14 +240,3 @@ Python/GNU Radio version compatibility, and whether the transmitter is
 actually sending repeated batches. B210 serial/RF connector selection and
 HackRF USB connection are common hardware checks.
 
-## Additional reference notes
-
-- [GNU Radio 3.8/3.10 compatibility](DUAL_GNURADIO_3_8_3_10.md)
-- [Standalone SDR implementation history](STANDALONE_SDR.md)
-- [Offline IQ receiver](IQ_RECEIVER.md) and [offline IQ loopback](IQ_LOOPBACK.md)
-- [B210 loopback](B210_LOOPBACK.md)
-
-These companion documents contain **development history** and may mention
-retired test configurations. This v1.0 README and the live Action schema in
-`actions.py` describe the current release; use those instead of obsolete
-manual frequency-correction guidance from pre-release notes.

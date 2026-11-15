@@ -1673,6 +1673,7 @@ def _initialize_tsi_conditioner_preview_canvas(
 def _tsi_conditioner_clear_session_results(dashboard: QtCore.QObject):
     """Clear Conditioner result state without deleting any files or Artifacts."""
     dashboard.tsi_conditioner_running = False
+    dashboard.tsi_conditioner_stop_requested = False
     dashboard.tsi_conditioner_node_uid = ""
     dashboard.tsi_conditioner_opid = ""
     dashboard.tsi_conditioner_waiting_for_opid = False
@@ -4336,22 +4337,17 @@ def _tsi_conditioner_set_run_button_state(
     dashboard: QtCore.QObject,
     running: bool,
 ):
-    """
-    Updates the Conditioner Section 3 Start/Stop button.
-    """
-    button = getattr(
-        dashboard.ui,
-        "pushButton_tsi_conditioner_run_start_stop",
-        None,
-    )
-
+    """Display Start/Stop, withholding repeat Stop requests while stopping."""
+    button = getattr(dashboard.ui, "pushButton_tsi_conditioner_run_start_stop", None)
     if button is None:
         return
-
-    button.setText("Stop" if running else "Start")
+    stopping = bool(running and getattr(dashboard, "tsi_conditioner_stop_requested", False))
+    button.setText("Stopping..." if stopping else ("Stop" if running else "Start"))
+    button.setEnabled(not stopping)
     button.setProperty("running", "true" if running else "false")
     button.style().unpolish(button)
     button.style().polish(button)
+
 
 def _tsi_conditioner_set_run_status(
     dashboard: QtCore.QObject,
@@ -4463,6 +4459,57 @@ def _tsi_conditioner_samples_from_size(
 
     return int(size_bytes / bytes_per_sample)
 
+
+def handle_tsi_conditioner_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Consume only lifecycle events for this Conditioner's active Action."""
+    if not bool(getattr(dashboard, "tsi_conditioner_running", False)):
+        return
+    tracked_uid = str(getattr(dashboard, "tsi_conditioner_node_uid", "") or "").strip()
+    tracked_id = str(getattr(dashboard, "tsi_conditioner_opid", "") or "").strip()
+    if not tracked_uid or not tracked_id:
+        return
+    if tracked_uid != str(node_uid or "").strip() or tracked_id != str(operation_id or "").strip():
+        return
+
+    stopping = bool(getattr(dashboard, "tsi_conditioner_stop_requested", False))
+    if state == "Starting" and not stopping:
+        _tsi_conditioner_set_run_status(dashboard, "Starting Conditioner action...")
+    elif state == "Running" and not stopping:
+        _tsi_conditioner_set_run_status(dashboard, "Running Conditioner action...")
+    elif state == "Stopping":
+        dashboard.tsi_conditioner_stop_requested = True
+        _tsi_conditioner_set_run_status(dashboard, "Stopping Conditioner action...")
+        _tsi_conditioner_set_run_button_state(dashboard, True)
+    elif state == "Completed":
+        # Results and Artifact metadata may arrive AFTER the execution ends.
+        # Existing completion polling/Artifact callbacks own successful results.
+        _tsi_conditioner_set_run_status(dashboard, "Finishing Conditioner results...")
+    elif state in {"Stopped", "Failed"}:
+        dashboard.tsi_conditioner_running = False
+        dashboard.tsi_conditioner_stop_requested = False
+        dashboard.tsi_conditioner_node_uid = ""
+        dashboard.tsi_conditioner_waiting_for_opid = False
+        # Keep tsi_conditioner_opid for late-result/Artifact correlation.
+        _tsi_conditioner_set_run_button_state(dashboard, False)
+        progress = getattr(dashboard.ui, "progressBar_tsi_conditioner_run_progress", None)
+        if progress is not None:
+            progress.setRange(0, 100)
+            progress.setValue(0)
+        message = "Stopped" if state == "Stopped" else "Conditioner Action Failed"
+        if error:
+            message += ": " + str(error).strip()[:180]
+        _tsi_conditioner_set_run_status(dashboard, message)
+        _tsi_conditioner_update_workflow_ribbon(dashboard)
+        if hasattr(dashboard, "refreshStatusBarText"):
+            dashboard.refreshStatusBarText()
+
+
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTSI_ConditionerRunStartStopClicked(
     dashboard: QtCore.QObject,
@@ -4482,54 +4529,34 @@ async def _slotTSI_ConditionerRunStartStopClicked(
     action. Artifact metadata returns are only allowed to finish this run when
     their operation_id matches dashboard.tsi_conditioner_opid.
     """
-    uid = str(
-        getattr(dashboard, "selected_node_uid", "") or ""
-    ).strip()
-
-    if not uid:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Select a Sensor Node before starting the Conditioner.",
-        )
+    # Stop the execution this panel launched, not everything on the node.
+    # Keep the panel in Stopping until the matching Sensor Node lifecycle event.
+    if bool(getattr(dashboard, "tsi_conditioner_running", False)):
+        if bool(getattr(dashboard, "tsi_conditioner_stop_requested", False)):
+            return
+        run_uid = str(getattr(dashboard, "tsi_conditioner_node_uid", "") or "").strip()
+        operation_id = str(getattr(dashboard, "tsi_conditioner_opid", "") or "").strip()
+        if not run_uid or not operation_id:
+            _tsi_conditioner_set_run_status(dashboard, "Cannot stop: Action identity unavailable")
+            dashboard.logger.error("[Conditioner] Refusing node-wide Stop All; active Action ID is missing.")
+            return
+        dashboard.tsi_conditioner_stop_requested = True
+        _tsi_conditioner_set_run_status(dashboard, "Stopping Conditioner action...")
+        _tsi_conditioner_set_run_button_state(dashboard, True)
+        try:
+            await dashboard.backend.stopPluginOperation(run_uid, operation_id)
+        except Exception as error:
+            dashboard.tsi_conditioner_stop_requested = False
+            dashboard.logger.error("[Conditioner] Targeted Stop failed: %r", error)
+            _tsi_conditioner_set_run_status(dashboard, "Stop request failed")
+            _tsi_conditioner_set_run_button_state(dashboard, True)
         return
 
-    if bool(getattr(dashboard, "tsi_conditioner_running", False)):
-        try:
-            _tsi_conditioner_set_run_status(
-                dashboard,
-                "Stopping Conditioner action...",
-            )
-
-            await dashboard.backend.tacticalNodeStop([uid])
-
-        finally:
-            dashboard.tsi_conditioner_running = False
-            dashboard.tsi_conditioner_node_uid = ""
-            dashboard.tsi_conditioner_opid = ""
-            dashboard.tsi_conditioner_waiting_for_opid = False
-
-            _tsi_conditioner_set_run_button_state(
-                dashboard,
-                False,
-            )
-
-            progress_bar = getattr(
-                dashboard.ui,
-                "progressBar_tsi_conditioner_run_progress",
-                None,
-            )
-            if progress_bar is not None:
-                progress_bar.setRange(0, 100)
-                progress_bar.setValue(0)
-
-            _tsi_conditioner_set_run_status(
-                dashboard,
-                "Stopped",
-            )
-
-            if hasattr(dashboard, "refreshStatusBarText"):
-                dashboard.refreshStatusBarText()
-
+    uid = str(getattr(dashboard, "selected_node_uid", "") or "").strip()
+    if not uid:
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard, "Select a Sensor Node before starting the Conditioner.",
+        )
         return
 
     _tsi_conditioner_update_run_output_mode_gate(dashboard)
@@ -4777,6 +4804,7 @@ async def _slotTSI_ConditionerRunStartStopClicked(
 
     dashboard.tsi_conditioner_run_started_at = time.time()
     dashboard.tsi_conditioner_running = True
+    dashboard.tsi_conditioner_stop_requested = False
     dashboard.tsi_conditioner_node_uid = uid
     dashboard.tsi_conditioner_opid = operation_id
     dashboard.tsi_conditioner_waiting_for_opid = False
@@ -4864,6 +4892,7 @@ async def _slotTSI_ConditionerRunStartStopClicked(
         )
 
         dashboard.tsi_conditioner_running = False
+        dashboard.tsi_conditioner_stop_requested = False
         dashboard.tsi_conditioner_node_uid = ""
         dashboard.tsi_conditioner_opid = ""
         dashboard.tsi_conditioner_waiting_for_opid = False
@@ -4906,6 +4935,7 @@ async def _slotTSI_ConditionerRunStartStopClicked(
         1000,
         lambda: _tsi_conditioner_poll_run_completion(dashboard),
     )
+
 
 def _tsi_conditioner_latest_metadata_path(
     dashboard: QtCore.QObject,
@@ -5383,6 +5413,16 @@ def _tsi_conditioner_poll_run_completion(
     if not bool(
         getattr(dashboard, "tsi_conditioner_running", False)
     ):
+        return
+
+    if bool(getattr(dashboard, "tsi_conditioner_connection_suspended", False)):
+        # A lost connection is neither completion nor a metadata timeout.
+        # Keep the attempt budget unchanged until an Activity snapshot resolves
+        # the Action or the node comes back and local metadata is available.
+        QtCore.QTimer.singleShot(
+            1000,
+            lambda: _tsi_conditioner_poll_run_completion(dashboard, attempts_remaining),
+        )
         return
 
     uid = str(
@@ -6643,101 +6683,29 @@ def _slotTSI_ConditionerResultsExportClicked(dashboard: QtCore.QObject):
             f"Failed to export Conditioner results CSV:\n{e}"
         )
 
+
 def update_tsi_conditioner_status_from_selected_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
     status: str = "",
 ):
+    """Only report node connectivity; aggregate node status is not Action progress.
+
+    Another Action on this node may set the shared status to Running/Idle.
+    Operation-specific state is handled by handle_tsi_conditioner_operation_state.
     """
-    Mirrors selected Sensor Node status into the Conditioner Run status.
-
-    Also parses operation progress strings formatted as:
-
-        25% | Conditioning 1/3: input.iq
-
-    This follows dashboard.selected_node_uid from the top node selector.
-    """
-    selected_uid = str(
-        getattr(dashboard, "selected_node_uid", "") or ""
-    ).strip()
-
-    if not selected_uid:
-        _tsi_conditioner_set_run_status(
-            dashboard,
-            "Sensor Node Unavailable",
-        )
-        return
-
-    if node_uid and str(node_uid).strip() != selected_uid:
-        return
-
     if not bool(getattr(dashboard, "tsi_conditioner_running", False)):
         return
-
+    # Preserve the recovery notice until a correlated Activity reply arrives.
+    if bool(getattr(dashboard, "tsi_conditioner_connection_suspended", False)):
+        return
+    tracked_uid = str(getattr(dashboard, "tsi_conditioner_node_uid", "") or "").strip()
+    if not tracked_uid or (node_uid and str(node_uid).strip() != tracked_uid):
+        return
     node_states = getattr(dashboard, "node_states", {}) or {}
-    node_state = node_states.get(selected_uid, {}) or {}
-
-    if isinstance(node_state, dict):
-        if node_state.get("connected") is False:
-            _tsi_conditioner_set_run_status(
-                dashboard,
-                "Sensor Node Unavailable",
-            )
-            return
-
-        status_text = str(
-            status
-            or node_state.get("status", "")
-            or node_state.get("state", "")
-            or node_state.get("operation_status", "")
-            or node_state.get("last_status", "")
-            or ""
-        ).strip()
-
-    else:
-        status_text = str(status or "").strip()
-
-    if not status_text:
-        status_text = "Running Conditioner action..."
-
-    display_status = status_text
-    progress_percent = None
-
-    if "%" in status_text:
-        first_part, remaining = status_text.split("%", 1)
-        first_part = first_part.strip()
-
-        try:
-            parsed_percent = int(float(first_part))
-
-            if 0 <= parsed_percent <= 100:
-                progress_percent = parsed_percent
-
-                remaining = remaining.strip()
-
-                if remaining.startswith("|"):
-                    remaining = remaining[1:].strip()
-
-                display_status = remaining or status_text
-
-        except Exception:
-            progress_percent = None
-
-    if progress_percent is not None:
-        progress_bar = getattr(
-            dashboard.ui,
-            "progressBar_tsi_conditioner_run_progress",
-            None,
-        )
-
-        if progress_bar is not None:
-            progress_bar.setRange(0, 100)
-            progress_bar.setValue(progress_percent)
-
-    _tsi_conditioner_set_run_status(
-        dashboard,
-        display_status,
-    )
+    node_state = node_states.get(tracked_uid, {}) or {}
+    if isinstance(node_state, dict) and node_state.get("connected") is False:
+        _tsi_conditioner_set_run_status(dashboard, "Sensor Node Unavailable")
 
 
 def _tsi_conditioner_selected_source_type(dashboard: QtCore.QObject) -> str:

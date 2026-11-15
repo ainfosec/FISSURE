@@ -211,7 +211,7 @@ async def refreshSensorNodeFiles(component: object, sensor_node_folder=""):
         await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def refreshSensorNodeActivity(component: object, log_limit=100):
+async def refreshSensorNodeActivity(component: object, log_limit=100, request_id=""):
     """Return one bounded read-only Activity snapshot to HIPRFISR."""
     def safe_text(value, max_chars=2048):
         try:
@@ -384,6 +384,7 @@ async def refreshSensorNodeActivity(component: object, log_limit=100):
             "node_uid": component.uuid,
             "operations": operations,
             "log_entries": log_entries,
+            "request_id": str(request_id or ""),
         },
     }
     await component.hiprfisr_socket.send_msg(

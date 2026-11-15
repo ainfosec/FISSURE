@@ -1173,6 +1173,14 @@ async def _stop_single_action_detectors(dashboard: QtCore.QObject, node_uid: str
     """Stop detector operations launched for the current Single Action."""
     operation_ids = list(getattr(dashboard, "single_action_detector_operation_ids", set()) or set())
     dashboard.single_action_detector_operation_ids = set()
+    state = (getattr(dashboard, "node_states", {}) or {}).get(node_uid, {}) or {}
+    if isinstance(state, dict) and state.get("connected") is False:
+        # The node might still be executing these detectors; don't send a Stop
+        # to an offline node or claim the detector was successfully stopped.
+        dashboard.logger.warning(
+            "Single Action detector Stop skipped: Sensor Node %s is offline", node_uid
+        )
+        return
 
     for operation_id in operation_ids:
         try:
@@ -1278,9 +1286,13 @@ async def _run_single_action(
             parameters,
         )
 
-        dashboard.single_action_monitor_action_status = True
-        dashboard.single_action_start_pending = False
-        dashboard.single_action_running = True
+        # Only the Sensor Node's operation-specific Running event confirms startup.
+        # A very short action may already have completed while send_msg returned.
+        if (
+            _single_action_active(dashboard)
+            and str(getattr(dashboard, "single_action_operation_id", "")) == str(parameters.get("operation_id", ""))
+        ):
+            dashboard.single_action_monitor_action_status = True
 
     except Exception as error:
         dashboard.logger.error(f"Could not start Single Action: {error}")
@@ -1426,6 +1438,11 @@ async def _finish_single_action(
     node_status: str = "",
 ):
     """Restore the Single Action UI after Stop, natural completion, or error."""
+    # Detector-gated work halted by a node disconnect has no confirmed remote
+    # terminal result. Do not mislabel its local cancellation as "Stopped".
+    if bool(getattr(dashboard, "single_action_connection_lost", False)):
+        status_text = "Outcome Unknown"
+        node_status = "Connection lost during detector-gated Action"
     result_text = _single_action_result_text(dashboard, status_text, node_status)
 
     node_uid = str(getattr(dashboard, "single_action_node_uid", "") or "").strip()
@@ -1443,6 +1460,7 @@ async def _finish_single_action(
     ).strip()
     dashboard.single_action_last_node_uid = node_uid
     _single_action_clear_run_state(dashboard)
+    dashboard.single_action_connection_lost = False
     _single_action_set_execution_locked(dashboard, False)
     update_single_action_selected_node_gate(dashboard)
 
@@ -1556,53 +1574,86 @@ async def _slotSingleActionStartStopClicked(dashboard: QtCore.QObject):
     )
 
 
+async def handle_single_action_operation_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    operation_id: str = "",
+    state: str = "",
+    error: str = "",
+):
+    """Update Single Action only for the exact operation launched in this panel."""
+    if not _single_action_active(dashboard):
+        return
+    tracked_uid = str(getattr(dashboard, "single_action_node_uid", "") or "").strip()
+    tracked_id = str(getattr(dashboard, "single_action_operation_id", "") or "").strip()
+    if not _single_action_node_uids_match(tracked_uid, node_uid) or tracked_id != str(operation_id):
+        return
+
+    if state == "Starting":
+        if not bool(getattr(dashboard, "single_action_stop_requested", False)):
+            dashboard.ui.label_ta_single_action_execution_status.setText("Starting...")
+    elif state == "Running":
+        dashboard.single_action_seen_running_status = True
+        dashboard.single_action_start_pending = False
+        dashboard.single_action_running = True
+        if not bool(getattr(dashboard, "single_action_stop_requested", False)):
+            dashboard.ui.label_ta_single_action_execution_status.setText("Running")
+            dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(True)
+    elif state == "Stopping":
+        dashboard.single_action_stop_requested = True
+        dashboard.ui.label_ta_single_action_execution_status.setText("Stopping...")
+        dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(False)
+    elif state in {"Completed", "Stopped", "Failed"}:
+        result = "Error" if state == "Failed" else state
+        await _finish_single_action(dashboard, result)
+        if error:
+            existing = dashboard.ui.textEdit_ta_single_action_execution_result.toPlainText()
+            dashboard.ui.textEdit_ta_single_action_execution_result.setPlainText(
+                existing + "\nError: " + str(error).strip()[:1024]
+            )
+
+
 async def update_single_action_status_from_selected_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
     status: str = "",
 ):
-    """
-    Track generic Single Action lifecycle from the same Sensor Node status path
-    already used by IQ Playback and IQ Inspection.
+    """Legacy fallback ONLY for Meshtastic; IP uses per-operation lifecycle.
+
+    Meshtastic does not currently relay pluginOperationState events. Keeping its
+    previous aggregate status behavior avoids a silent regression for LT nodes.
     """
     if not _single_action_active(dashboard):
         return
-
-    tracked_node_uid = str(getattr(dashboard, "single_action_node_uid", "") or "").strip()
-    if not _single_action_node_uids_match(tracked_node_uid, node_uid):
+    tracked_uid = str(getattr(dashboard, "single_action_node_uid", "") or "").strip()
+    if not _single_action_node_uids_match(tracked_uid, node_uid):
         return
 
+    node = (getattr(dashboard, "node_states", {}) or {}).get(tracked_uid, {}) or {}
+    settings = getattr(dashboard, "selected_node_settings", {}) or {}
+    network_type = str(
+        node.get("network_type")
+        or (settings.get("Sensor Node", {}) or {}).get("network_type")
+        or ""
+    ).strip().lower()
+    if network_type != "meshtastic":
+        return
     if (
         bool(getattr(dashboard, "single_action_waiting_for_detection", False))
         or not bool(getattr(dashboard, "single_action_monitor_action_status", False))
     ):
         return
 
-    status_text = str(status or "").strip()
-    if not status_text:
-        return
-
-    if status_text.startswith("Running"):
+    state = str(status or "").strip()
+    if state.startswith("Running"):
         dashboard.single_action_seen_running_status = True
         dashboard.single_action_start_pending = False
         dashboard.single_action_running = True
-
         if not bool(getattr(dashboard, "single_action_stop_requested", False)):
-            dashboard.ui.label_ta_single_action_execution_status.setText(status_text)
+            dashboard.ui.label_ta_single_action_execution_status.setText(state)
             dashboard.ui.pushButton_ta_single_action_start_stop.setEnabled(True)
-        return
-
-    if status_text == "Error":
-        await _finish_single_action(dashboard, "Error", node_status=status_text)
-        return
-
-    if (
-        status_text == "Idle"
-        and bool(getattr(dashboard, "single_action_seen_running_status", False))
-    ):
-        final_status = (
-            "Stopped"
-            if bool(getattr(dashboard, "single_action_stop_requested", False))
-            else "Completed"
-        )
-        await _finish_single_action(dashboard, final_status, node_status=status_text)
+    elif state == "Error":
+        await _finish_single_action(dashboard, "Error", node_status=state)
+    elif state == "Idle" and bool(getattr(dashboard, "single_action_seen_running_status", False)):
+        final_state = "Stopped" if bool(getattr(dashboard, "single_action_stop_requested", False)) else "Completed"
+        await _finish_single_action(dashboard, final_state, node_status=state)

@@ -470,7 +470,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Stop</string>
+         <string>Stop Action...</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_tactical_node_execute">
@@ -488,7 +488,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Execute</string>
+         <string>Start</string>
         </property>
        </widget>
        <widget class="QTabWidget" name="tabWidget_tactical_node">
@@ -2196,7 +2196,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Stop</string>
+         <string>Stop Actions...</string>
         </property>
        </widget>
       </widget>
