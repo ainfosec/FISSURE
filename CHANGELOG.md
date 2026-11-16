@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+Fix circular import when `fissure.utils` is imported first
+
+### Fixed
+
+- Fixed `import fissure.utils` failing with a circular-import `AttributeError` unless `fissure.comms` had been imported first. `fissure.utils.tak_messages` now imports `fissure.comms` inside `_dispatch_cot()`, its only user, so standalone scripts, plugins and the pytest suite can import `fissure.utils` directly.
+
 ## 2026-11-15
 
 Unify concurrent Action lifecycle management

@@ -19,8 +19,6 @@ from fissure.utils.artifacts import Artifact
 from fissure.utils.common import extractFrequencyFromUID, get_fissure_config
 from fissure.utils.library import classifyFrequencyFromTextDirect
 
-import fissure.comms
-
 # ---------------------------------------------------------
 # Base COT builder
 # ---------------------------------------------------------
@@ -317,6 +315,10 @@ async def _dispatch_cot(
     destination="broadcast",
     requester_uid=None,
 ):
+    # Imported here: fissure.comms imports fissure.utils at class-definition
+    # time, so a module-level import makes `import fissure.utils` circular.
+    import fissure.comms
+
     msg_bytes = ET.tostring(msg, encoding="utf-8")
 
     component.logger.debug(
