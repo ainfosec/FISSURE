@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+Resolve the active log file instead of hardcoding `event.log` (#41)
+
+### Added
+
+- Added `fissure.utils.get_log_file_path()`, which returns the active log file from the live logging handlers, falling back to `YAML/logging.yaml` and then `Logs/event.log`.
+
+### Fixed
+
+- Fixed the Dashboard Log tab (refresh, filtered refresh, and save) and Sensor Node log lookups breaking when the file handler in `logging.yaml` is renamed.
+
 ## 2026-11-15
 
 Unify concurrent Action lifecycle management
