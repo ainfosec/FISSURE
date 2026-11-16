@@ -25,7 +25,7 @@ def _slotLogRefreshClicked(dashboard: QtCore.QObject):
     if dashboard.ui.checkBox_log_error.isChecked():
         bad_words.append('[ERROR]')
 
-    event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
+    event_log_filepath = fissure.utils.get_log_file_path()
     filtered_log_lines = []
     with open(event_log_filepath) as oldfile:
         for line in oldfile:
@@ -58,7 +58,7 @@ def _slotLogRefreshPermitClicked(dashboard: QtCore.QObject):
     if dashboard.ui.checkBox_log_error_permit.isChecked():
         good_words.append('[ERROR]')
 
-    event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
+    event_log_filepath = fissure.utils.get_log_file_path()
     filtered_log_lines = []
     with open(event_log_filepath) as oldfile:
         for line in oldfile:
@@ -92,7 +92,7 @@ def _slotLogSaveAllClicked(dashboard: QtCore.QObject):
     if not fname.endswith(".log"):
         fname += ".log"
 
-    event_log_filepath = os.path.join(fissure.utils.LOG_DIR, "event.log")
+    event_log_filepath = fissure.utils.get_log_file_path()
 
     with open(fname, "w") as new_file:
         if dashboard.ui.checkBox_log_system_log.isChecked():

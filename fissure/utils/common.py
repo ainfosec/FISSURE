@@ -94,7 +94,7 @@ def init_logging():
     for handler in config["handlers"]:
         handler_info = config["handlers"][handler]
         if handler_info.get("filename") is not None:
-            logfile = os.path.join(FISSURE_ROOT, handler_info.get("filename"))
+            logfile = _resolve_log_filename(handler_info.get("filename"))
             config["handlers"][handler]["filename"] = logfile
 
     # Set Logging Config
@@ -104,6 +104,53 @@ def init_logging():
     # for name, logger in logging.Logger.manager.loggerDict.items():
     #     if isinstance(logger, logging.Logger):
     #         print(f"Logger: {name}, Handlers: {logger.handlers}, Propagate: {logger.propagate}")
+
+
+DEFAULT_LOG_FILENAME = "event.log"
+
+
+def _resolve_log_filename(filename: str) -> str:
+    """Resolve a handler filename the same way init_logging() does."""
+    return os.path.join(FISSURE_ROOT, filename)
+
+
+def get_log_file_path(logger_name: str = "fissure") -> str:
+    """
+    Return the path of the file FISSURE is currently logging to.
+
+    The Log tab and Sensor Node log readers used to assume ``Logs/event.log``,
+    which broke as soon as the file handler in ``logging.yaml`` was renamed.
+    Resolution order:
+
+    1. A live file handler attached to ``logger_name`` (after init_logging()).
+    2. The first file handler configured for ``logger_name`` in ``logging.yaml``,
+       then any file handler in that file.
+    3. ``LOG_DIR/event.log``.
+
+    :param logger_name: logger whose file output should be located
+    :type logger_name: str
+    :return: absolute path to the active log file
+    :rtype: str
+    """
+    for handler in logging.getLogger(logger_name).handlers:
+        filename = getattr(handler, "baseFilename", None)
+        if isinstance(handler, logging.FileHandler) and filename:
+            return filename
+
+    try:
+        config = load_yaml(LOG_CONFIG_FILE) or {}
+    except (OSError, yaml.YAMLError):
+        config = {}
+
+    handlers = config.get("handlers") or {}
+    logger_config = (config.get("loggers") or {}).get(logger_name) or {}
+    preferred = list(logger_config.get("handlers") or [])
+    for handler_name in preferred + [name for name in handlers if name not in preferred]:
+        filename = (handlers.get(handler_name) or {}).get("filename")
+        if filename:
+            return _resolve_log_filename(filename)
+
+    return os.path.join(LOG_DIR, DEFAULT_LOG_FILENAME)
 
 
 def get_logger(source: str) -> logging.Logger:

@@ -277,7 +277,7 @@ async def refreshSensorNodeActivity(component: object, log_limit=100, request_id
         log_limit = 100
 
     log_entries = []
-    log_path = os.path.join(fissure.utils.LOG_DIR, "event.log")
+    log_path = fissure.utils.get_log_file_path()
     logger_token = f"fissure.sensor node {component.uuid[:8]}".lower()
     max_scan_bytes = 2 * 1024 * 1024
 
