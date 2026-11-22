@@ -19,8 +19,6 @@ from fissure.utils.artifacts import Artifact
 from fissure.utils.common import extractFrequencyFromUID, get_fissure_config
 from fissure.utils.library import classifyFrequencyFromTextDirect
 
-import fissure.comms
-
 # ---------------------------------------------------------
 # Base COT builder
 # ---------------------------------------------------------
@@ -337,6 +335,11 @@ async def _dispatch_cot(
     # -------------------------------------------------
     if destination in ("broadcast", "dashboard"):
         if component.dashboard_connected:
+
+            # Imported here: fissure.comms imports fissure.utils, so a
+            # module-level import would make the fissure.utils package
+            # unimportable on a fresh interpreter.
+            import fissure.comms
 
             PARAMETERS = {
                 "raw_xml": msg_bytes.decode("utf-8")
